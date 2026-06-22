@@ -1,7 +1,6 @@
 import { useState } from "react";
 import DayCell from "../DayCell";
 import "./index.css";
-import DropdownList from "../../components/DropdownList";
 import Toggle from "../Toggle";
 import BoschButton from "../BoschButton";
 
