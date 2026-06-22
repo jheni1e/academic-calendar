@@ -1,0 +1,15 @@
+.day-cell {
+  background-color: #fff;
+  border: 1px solid #cfcfcf;
+  min-height: 100px;
+  padding: 8px;
+}
+
+.day-number {
+  font-size: 1.5rem;
+  font-weight: 500;
+}
+
+.events {
+  margin-top: 8px;
+}
