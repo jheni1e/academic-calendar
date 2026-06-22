@@ -1,21 +1,17 @@
 import React, { useState, useEffect } from "react";
 import "./index.css";
+import { useNavigate } from "react-router-dom";
 
-const HeaderOption = ({ option, onClick }) => {
+const HeaderOption = ({ option, route }) => {
   const [isHovered, setIsHovered] = useState(false);
-  const [isCurrentOption, setIsCurrentOption] = useState(false);
-
-  const handleOptionClick = () => {
-    console.log("handleOptionClick");
-    onClick({ name: option });
-  };
+  const navigate = useNavigate();
 
   return (
     <div
       className="menu-option"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      onClick={() => ({ name: option, page: option.toLowerCase() })}
+      onClick={() => navigate("/" + route.toLowerCase())}
     >
       <h1 className="optionText">{option}</h1>
     </div>
