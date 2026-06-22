@@ -1,11 +1,12 @@
 .divMenuSideBar {
     display: flex;
     flex-direction: column;
-    background-color: #2E3033;
     transition: width 0.3s ease, max-height 0.3s ease-in-out;
     overflow: hidden;
-    width: 18rem;
-    margin-top: 1rem;
+    width: 18vw;
+    min-width: 200px;
+    height: 100%;
+    border-right: 1px solid black;
   }
   
   .divMenuSideBar.collapsed {
@@ -15,7 +16,7 @@
   .menuHeader {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
     padding: 1rem;
     box-sizing: border-box;
   }
@@ -77,4 +78,10 @@
     .divMenuSideBar {
       display: none;
     }
+  }
+
+  .divItem {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
   }
