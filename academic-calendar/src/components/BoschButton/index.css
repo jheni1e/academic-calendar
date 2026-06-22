@@ -1,0 +1,85 @@
+.container {
+    width: 100%;
+}
+
+.primaryButton, .secondaryButton, .terciaryButton, .disabledButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    height: 48px;
+    width: 100%;
+    padding: 1rem;
+    cursor: pointer;
+}
+
+.primaryButton {
+    background-color: #007bc0;
+}
+
+    .primaryButton:hover {
+        background-color: #00629a;
+    }
+
+    .primaryButton:active {
+        background-color: #004975;
+    }
+
+.secondaryButton {
+    background-color: transparent;
+    border-color: #007bc0;
+    border-width: 1px;
+    border-style: solid;
+    color: #007bc0;
+}
+
+    .secondaryButton:hover {
+        background-color: #d1e4ff;
+    }
+
+    .secondaryButton:active {
+        background-color: #9dc9ff;
+    }
+
+.terciaryButton {
+    background-color: transparent;
+    border-style: solid;
+    color: #007bc0;
+    border: none;
+}
+
+    .terciaryButton:hover {
+        background-color: #d1e4ff;
+    }
+
+    .terciaryButton:active {
+        background-color: #9dc9ff;
+    }
+
+.disabledButton {
+    background-color: #C1C7CC;
+}
+
+.text, .secondaryText, .disabledText {
+    color: #fff;
+    font-size: 20px;
+}
+
+.secondaryText {
+    color: #007bc0;
+}
+
+.disabledText {
+    color: #8a9097;
+}
+
+.paginationButton {
+    height: 2rem;
+    max-width: 4.75rem;
+}
+
+.paginationButton .text, 
+.paginationButton .secondaryText, 
+.paginationButton .disabledText {
+    font-size: 16px;
+}
