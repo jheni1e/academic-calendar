@@ -51,7 +51,7 @@ export default function MonthlyCalendar() {
 
         <div className="actions">
           <BoschButton text="+" type="secondary" />
-          <Toggle leftText="Mensal" rightText="Semanal" />
+          <Toggle id="calendar-toggle" leftText="Mensal" rightText="Semanal" />
         </div>
       </div>
 
