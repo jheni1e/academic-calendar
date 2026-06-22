@@ -1,0 +1,110 @@
+.header {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    border-bottom: 1px solid #000;
+}
+
+.divSupergraphic {
+    display: flex;
+    width: 100%;
+    height: 0.75rem;
+    background-image: url( '../../images/supergraphic.svg' );
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.divHeaderElements {
+    display: flex;
+    width: 100%;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.divLogo {
+    display: flex;
+    width: 100%;
+    height: 5rem;
+    background-image: url( '../../images/BoschLogo.svg' );
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.divUser {
+display: flex;
+    width: 100%;
+    height: 3rem;
+    background-image: url( '../../images/UserIcon.svg' );
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.txtLogo {
+    color: #000;
+    font-size: 22px;
+    font-weight: 700;
+    margin-left: 0.5rem;
+    white-space: nowrap;
+}
+
+.divHeaderOptions {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+}
+
+.divHeaderInfos {
+    display: flex;
+    flex-direction: row;
+    margin-right: 1rem;
+    align-items: center;
+}
+
+.txtUserName {
+    color: #000;
+    font-size: 16px;
+    white-space: nowrap;
+    margin-left: 0.5rem;
+}
+
+@media screen and (max-width: 768px) {
+    .divHeaderElements {
+        flex-direction: column;
+        align-items: center;
+        padding: 0 10px;
+    }
+
+    .divLogo, .divHeaderInfos {
+        justify-content: center;
+        margin: 1rem 0;
+    }
+
+    .txtLogo {
+        font-size: 18px;
+        text-align: center;
+    }
+
+    .divHeaderOptions {
+        justify-content: space-around;
+        flex-direction: column;
+    }
+    
+    .txtUserName {
+        font-size: 14px;
+        text-align: center;
+    }
+}
+
+.menu-option {
+    position: relative;
+    padding: 10px;
+    cursor: pointer;
+    color: #000;
+    transition: color 0.2s ease;
+    margin: 0rem 0.5rem;
+}
