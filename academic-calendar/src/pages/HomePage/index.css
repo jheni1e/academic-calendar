@@ -1,0 +1,11 @@
+.divTitle {
+  display: flex;
+  justify-content: center;
+}
+
+.divCalendar {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    margin: 1rem;
+}
