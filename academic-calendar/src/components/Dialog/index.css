@@ -4,6 +4,7 @@
     box-shadow: 0 4px 12px rgba(207, 207, 207, 0.15);
     max-width: 600px;
     width: 100%;
+    padding: 0;
 }
 
 .customDialog::backdrop {
@@ -15,7 +16,7 @@
     background-color: transparent;
     font-size: 1.5rem;
     cursor: pointer;
-    margin-right: 0.5rem;
+    margin-right: 1rem;
 }
 
 .dialogHeader {
@@ -28,7 +29,7 @@
 }
 
 .dialogHeader h2 {
-    margin-left: 1rem;
+    margin-left: 1.5rem;
 }
 
 .dialogContent {
@@ -37,6 +38,7 @@
     width: 100%;
     box-sizing: border-box;
     gap: 1rem;
+    padding: 1rem;
 }
 
 .dialogInput {
@@ -54,8 +56,9 @@
     justify-content: flex-end;
     align-items: center;
     gap: 12px;
+    padding: 0 1rem 1rem 1rem;
+    box-sizing: border-box;
     width: 100%;
-    margin-top: 24px;
 }
 
 .dialogButtons > div {
