@@ -4,9 +4,18 @@ import Toggle from "../Toggle";
 import CircleChartItem from "../CircleChartItem";
 import DropdownList from "../DropdownList";
 
-const MenuSideBar = ({ items, option1, option2, hasToggle, hasItems, hasDropDown, LabelDropDown, OptionsDropDown}) => {
+const MenuSideBar = ({ 
+  items, 
+  option1, 
+  option2, 
+  hasToggle, 
+  hasItems, 
+  hasDropDown, 
+  LabelDropDown, 
+  OptionsDropDown, 
+  selectedValueDrop, 
+  onDropDownChange}) => {
   
-  const [selectedClass, setSelectedClass] = useState("");
   const [activeItem, setActiveItem] = useState(option1);
   const color1 = "#19375E";
   const color2 = "#007BC0";
@@ -30,8 +39,8 @@ const MenuSideBar = ({ items, option1, option2, hasToggle, hasItems, hasDropDown
           <DropdownList
             label={LabelDropDown}
             options={OptionsDropDown}
-            selectedValue={selectedClass}
-            onChange={(e) => setSelectedClass(e.target.value)}
+            selectedValue={selectedValueDrop}
+            onChange={onDropDownChange}
           />
         }
       </div>
