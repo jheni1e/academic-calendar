@@ -1,0 +1,26 @@
+.days-container {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.day-circle {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    border: 1px solid #0078d4;
+    background: transparent;
+    color: #0078d4;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.day-circle:hover {
+    background-color: #eef7ff;
+}
+
+.day-circle.selected {
+    background-color: #0078d4;
+    color: white;
+}
