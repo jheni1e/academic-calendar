@@ -1,3 +1,4 @@
+import { Subject } from "../../../generated/prisma/client.ts";
 import { CreateSubjectDTO, UpdateSubjectDTO } from "../SubjectDto.ts";
 
 export interface ISubjectRepository {

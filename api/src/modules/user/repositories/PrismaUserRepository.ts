@@ -1,8 +1,7 @@
-import { PrismaClient, User } from "@prisma/client";
-import { CreateUserDTO, UpdateUserDTO } from "../dto/UserDto";
-import { IUserRepository } from "./IUserRepository";
-
-const prisma = new PrismaClient();
+import { User } from "../../../generated/prisma/client.ts";
+import { prisma } from "../../../lib/prisma.ts";
+import { CreateUserDTO, UpdateUserDTO } from "../UserDto.ts";
+import { IUserRepository } from "./IUserRepository.ts";
 
 export class PrismaUserRepository implements IUserRepository {
 
@@ -31,6 +30,28 @@ export class PrismaUserRepository implements IUserRepository {
         });
     }
 
+    async findByName(
+        name: string
+    ): Promise<User | null> {
+
+        return await prisma.user.findUnique({
+            where: {
+                name: name
+            }
+        });
+    }
+
+    async findById(
+        userId: number
+    ): Promise<User | null> {
+
+        return await prisma.user.findUnique({
+            where: {
+                user_id: userId
+            }
+        });
+    }
+
     async findAll(): Promise<User[]> {
 
         return await prisma.user.findMany();
@@ -47,8 +68,7 @@ export class PrismaUserRepository implements IUserRepository {
             },
             data: {
                 name: data.name,
-                birthdate: data.birthdate,
-                is_active: data.isActive
+                birthdate: data.birthdate
             }
         });
     }

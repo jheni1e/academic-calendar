@@ -1,3 +1,4 @@
+import { User } from "../../../generated/prisma/client.ts";
 import { CreateUserDTO, UpdateUserDTO } from "../UserDto.ts";
 
 export interface IUserRepository {

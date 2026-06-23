@@ -6,8 +6,6 @@ export interface CreateUserDTO {
 }
 
 export interface UpdateUserDTO {
-    userId: number;
-    userEdv: number;
     name: string;
     birthdate: Date;
 }
