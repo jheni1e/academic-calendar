@@ -13,3 +13,12 @@
 .events {
   margin-top: 8px;
 }
+
+.day-cell.month {
+  min-height: 80px;
+}
+
+.day-cell.week {
+  min-height: 380px;
+  height: 66.3vh;
+}

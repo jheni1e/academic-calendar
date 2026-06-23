@@ -4,8 +4,29 @@
 }
 
 .divCalendar {
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
-    margin: 1rem;
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
+  width: 100%;
+  height: 88vh;
+}
+
+.calendarWrapper {
+  flex: 1;
+  height: 100vh;
+  overflow: auto;
+}
+
+.body {
+  display: flex;
+  height: calc(100vh - 112px); 
+  width: 100%;
+}
+
+.content {
+  display: flex;
+  flex: 1;
+  height: 100%;
+  overflow: auto;
+  justify-content: center;
 }
