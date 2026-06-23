@@ -1,7 +1,6 @@
 import { useState } from "react";
 import DayCell from "../DayCell";
 import "./index.css";
-import DropdownList from "../../components/DropdownList";
 import Toggle from "../Toggle";
 import BoschButton from "../BoschButton";
 
@@ -22,6 +21,7 @@ const months = [
 
 export default function MonthlyCalendar() {
   const [currentDate, setCurrentDate] = useState(new Date());
+  const [viewMode, setViewMode] = useState("month");
 
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
@@ -39,12 +39,38 @@ export default function MonthlyCalendar() {
     value: index,
   }));
 
+  const startOfWeek = (date) => {
+    const d = new Date(date);
+    const day = d.getDay();
+    d.setDate(d.getDate() - day);
+    d.setHours(0, 0, 0, 0);
+    return d;
+  };
+
+  const weekDays = Array.from({ length: 7 }, (_, i) => {
+    const date = new Date(startOfWeek(currentDate));
+    date.setDate(date.getDate() + i);
+    return date;
+  });
+
+  const goPrev = () => {
+    const newDate = new Date(currentDate);
+    newDate.setDate(currentDate.getDate() - (viewMode === "week" ? 7 : 30));
+    setCurrentDate(newDate);
+  };
+  
+  const goNext = () => {
+    const newDate = new Date(currentDate);
+    newDate.setDate(currentDate.getDate() + (viewMode === "week" ? 7 : 30));
+    setCurrentDate(newDate);
+  };
+
   return (
     <div className="calendar-container">
       <div className="calendar-header">
         <div className="actions">
-          <BoschButton text="<" type="secondary" />
-          <BoschButton text=">" type="secondary" />
+          <BoschButton text="<" type="secondary" onClick={goPrev} />
+          <BoschButton text=">" type="secondary" onClick={goNext} />
         </div>
         <h1 style={{ fontSize: '2rem', fontWeight: 'normal' }}>
           {months[month]} {year}
@@ -52,7 +78,7 @@ export default function MonthlyCalendar() {
 
         <div className="actions">
           <BoschButton text="+" type="secondary" />
-          <Toggle leftText="Mensal" rightText="Semanal" />
+          <Toggle id="calendar-toggle" leftText="Mensal" rightText="Semanal" onChange={() => setViewMode((prev) => (prev === "month" ? "week" : "month"))} />
         </div>
       </div>
 
@@ -67,13 +93,27 @@ export default function MonthlyCalendar() {
       </div>
 
       <div className="calendar-grid">
-        {emptyCells.map((_, index) => (
-          <div key={`empty-${index}`} className="empty-cell" />
-        ))}
+        {viewMode === "month" ? (
+          <>
+            {emptyCells.map((_, index) => (
+              <div key={`empty-${index}`} className="empty-cell" />
+            ))}
 
-        {days.map((day) => (
-          <DayCell key={day} day={day} events={[]} />
-        ))}
+            {days.map((day) => (
+              <DayCell key={day} day={day} events={[]} viewMode={viewMode} />
+            ))}
+          </>
+        ) : (
+          weekDays.map((date) => (
+            <DayCell
+              key={date.toISOString()}
+              day={date.getDate()}
+              events={[]}
+              isToday={date.toDateString() === new Date().toDateString()}
+              viewMode={viewMode}
+            />
+          ))
+        )}
       </div>
     </div>
   );
