@@ -23,7 +23,7 @@ model User {
 
   assignments Assignment[]
   participations Participation[]
-  subjects SubjectResponsable[]
+  subjects SubjectResponsible[]
   classes ClassUser[]
 }
 
@@ -34,6 +34,8 @@ model ClassUser {
 
   class Class @relation(fields: [class_id], references: [class_id])
   user User @relation(fields: [user_id], references: [user_id])
+
+  @@unique([class_id, user_id])
 }
 
 model Role {
@@ -49,6 +51,8 @@ model Assignment {
 
   role Role  @relation(fields: [role_id], references: [role_id])
   user User @relation(fields: [user_id], references: [user_id])
+
+  @@unique([role_id, user_id])
 }
 
 model Class {
@@ -68,18 +72,20 @@ model Subject {
   end_date DateTime
   class_id Int
   events Event[]
-  responsables SubjectResponsable[]
+  responsables SubjectResponsible[]
 
   class Class @relation(fields: [class_id], references: [class_id])
 }
 
-model SubjectResponsable {
+model SubjectResponsible {
   subject_responsable_id Int @id @default(autoincrement())
   subject_id Int
   instructor_id Int
 
   subject Subject @relation(fields: [subject_id], references: [subject_id])
   instructor User @relation(fields: [instructor_id], references: [user_id])
+
+  @@unique([subject_id, instructor_id])
 }
 
 model EventType {
@@ -98,7 +104,7 @@ model Event {
   participations Participation[]
   reservations Reservation[]
 
-  subject Subject @relation(fields: [subject_id], references: [subject_id])
+  subject Subject? @relation(fields: [subject_id], references: [subject_id])
   event_type EventType @relation(fields: [event_type_id], references: [event_type_id])
 }                                  
 
@@ -117,7 +123,7 @@ model Reservation {
   is_blocked Boolean
   is_confirmed Boolean
   room_id Int
-  event_id Int
+  event_id Int @unique
 
   room Room @relation(fields: [room_id], references: [room_id])
   event Event @relation(fields: [event_id], references: [event_id])
@@ -136,9 +142,11 @@ model Participation {
   event_id Int
   is_confirmed Boolean
 
-  user User @relation(fields: [user_id], references: [user_id])
+  user User @relation(fields: [user_id], references: [user_id]) 
   event_role EventRole @relation(fields: [event_role_id], references: [event_role_id])
   event Event @relation(fields: [event_id], references: [event_id])
+
+  @@unique([user_id, event_id])
 }
 
 
