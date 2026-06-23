@@ -26,7 +26,7 @@ const MenuSideBar = ({ onItemSelect, setSidebarHeight }) => {
   return (
     <div className={`divMenuSideBar`}>
       <div className="menuHeader">
-        <Toggle leftText="Pessoal" rightText="Turma" onChange={handleToggleChange} />
+        <Toggle id="sidebar-toggle" leftText="Pessoal" rightText="Turma" onChange={handleToggleChange} />
       </div>
       {mockItems.map((item) => {
         return (
