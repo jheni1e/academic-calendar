@@ -4,7 +4,9 @@ import Toggle from "../Toggle";
 import CircleChartItem from "../CircleChartItem";
 import DropdownList from "../DropdownList";
 
-const MenuSideBar = ({ items, option1, option2, hasToggle, hasDropDown, LabelDropDown, OptionsDropDown }) => {
+const MenuSideBar = ({ items, option1, option2, hasToggle, hasItems, hasDropDown, LabelDropDown, OptionsDropDown}) => {
+  
+  const [selectedClass, setSelectedClass] = useState("");
   const [activeItem, setActiveItem] = useState(option1);
   const color1 = "#19375E";
   const color2 = "#007BC0";
@@ -25,16 +27,23 @@ const MenuSideBar = ({ items, option1, option2, hasToggle, hasDropDown, LabelDro
           <Toggle leftText={option1} rightText={option2} onChange={handleToggleChange} />
         }
         {hasDropDown &&
-          <DropdownList label={LabelDropDown} options={OptionsDropDown}></DropdownList>
+          <DropdownList
+            label={LabelDropDown}
+            options={OptionsDropDown}
+            selectedValue={selectedClass}
+            onChange={(e) => setSelectedClass(e.target.value)}
+          />
         }
       </div>
-      {items.map((item) => {
-        return (
-          <div className="divItem">
-            <CircleChartItem percentage={item.value} color1={color1} color2={color2} />
-            <h2>{item.name}</h2>
-          </div>
-        );
+      {hasItems && 
+      
+        items.map((item) => {
+          return (
+            <div className="divItem">
+              <CircleChartItem percentage={item.value} color1={color1} color2={color2} />
+              <h2>{item.name}</h2>
+            </div>
+          );
       })}
     </div>
   );

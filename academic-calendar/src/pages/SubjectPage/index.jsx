@@ -4,7 +4,12 @@ import "./index.css";
 import MenuSideBar from "../../components/MenuSideBar";
 
 function Subject() {
-  const listMenu = ["analise", "dta", "manufatura", "mecanico"]
+  
+  const listMenu = [
+    { value: "analise", label: "Análise" },
+    { value: "dta", label: "DTA" },
+    { value: "manufatura", label: "Manufatura" }
+  ];
   return (
     <>
       <div className="container-page">
@@ -15,13 +20,11 @@ function Subject() {
             <div className="button">
               <BoschButton text={"+  Adicionar Matéria"} type={"secondary"}></BoschButton>
             </div>
-
           </div>
           <ViewSubjectComponent SubjectName={"IOT"} Responsible={"Patrick"} Percentage={78}></ViewSubjectComponent>
           <ViewSubjectComponent SubjectName={"Projeto FullStack"} Responsible={"Cristian"} Percentage={48}></ViewSubjectComponent>
           <ViewSubjectComponent SubjectName={"Excell"} Responsible={"Queila"} Percentage={68}></ViewSubjectComponent>
           <ViewSubjectComponent SubjectName={"Python"} Responsible={"Queila"} Percentage={100}></ViewSubjectComponent>
-          <ViewSubjectComponent SubjectName={"C#"} Responsible={"Trevisan"} Percentage={64}></ViewSubjectComponent>
         </div>
       </div>
     </>
