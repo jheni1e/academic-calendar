@@ -1,0 +1,147 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  user_id Int @id @default(autoincrement())
+  user_edv Int @unique
+  name String 
+  birthday DateTime
+  is_active Boolean @default(true)
+
+  assignments Assignment[]
+  participations Participation[]
+  subjects SubjectResponsable[]
+  classes ClassUser[]
+}
+
+model ClassUser {
+  class_user_id Int @id @default(autoincrement())
+  class_id Int
+  user_id Int
+
+  class Class @relation(fields: [class_id], references: [class_id])
+  user User @relation(fields: [user_id], references: [user_id])
+}
+
+model Role {
+  role_id Int @id @default(autoincrement())
+  name String @unique
+  assignments Assignment[]
+}
+
+model Assignment {
+  assignment_id Int @id @default(autoincrement())
+  role_id Int
+  user_id Int
+
+  role Role  @relation(fields: [role_id], references: [role_id])
+  user User @relation(fields: [user_id], references: [user_id])
+}
+
+model Class {
+  class_id Int @id @default(autoincrement())
+  name String
+  is_active Boolean @default(true)
+  class_users ClassUser[]
+  subjects Subject[]
+}
+
+
+model Subject {
+  subject_id Int @id @default(autoincrement())
+  name String
+  workload Int
+  start_date DateTime
+  end_date DateTime
+  class_id Int
+  events Event[]
+  responsables SubjectResponsable[]
+
+  class Class @relation(fields: [class_id], references: [class_id])
+}
+
+model SubjectResponsable {
+  subject_responsable_id Int @id @default(autoincrement())
+  subject_id Int
+  instructor_id Int
+
+  subject Subject @relation(fields: [subject_id], references: [subject_id])
+  instructor User @relation(fields: [instructor_id], references: [user_id])
+}
+
+model EventType {
+  event_type_id Int @id @default(autoincrement())
+  name String @unique
+  events Event[]
+}
+
+model Event {
+  event_id Int @id @default(autoincrement())
+  title String
+  description String?
+  created_at DateTime @default(now())
+  subject_id Int
+  event_type_id Int
+  participations Participation[]
+  reservations Reservation[]
+
+  subject Subject @relation(fields: [subject_id], references: [subject_id])
+  event_type EventType @relation(fields: [event_type_id], references: [event_type_id])
+}                                  
+
+model Room {
+  room_id Int @id @default(autoincrement())
+  title String
+  description String?   
+  reservations Reservation[]     
+}
+
+model Reservation {
+  reservation_id Int @id @default(autoincrement())
+  description String?
+  schedule_start DateTime
+  schedule_end DateTime
+  is_blocked Boolean
+  is_confirmed Boolean
+  room_id Int
+  event_id Int
+
+  room Room @relation(fields: [room_id], references: [room_id])
+  event Event @relation(fields: [event_id], references: [event_id])
+}
+
+model EventRole {
+  event_role_id Int @id @default(autoincrement())
+  name String @unique
+  participations Participation[]
+}
+
+model Participation {
+  participation_id Int @id @default(autoincrement())
+  user_id Int
+  event_role_id Int
+  event_id Int
+  is_confirmed Boolean
+
+  user User @relation(fields: [user_id], references: [user_id])
+  event_role EventRole @relation(fields: [event_role_id], references: [event_role_id])
+  event Event @relation(fields: [event_id], references: [event_id])
+}
+
+
+ 
+
+ 

@@ -36,6 +36,7 @@ npx tsc --init
 
 npm install prisma @types/pg --save-dev
 npm install @prisma/client @prisma/adapter-pg pg dotenv
+npx prisma init
 
 ### Dotenv and Express
 
