@@ -1,0 +1,22 @@
+import { CreateEventDTO, UpdateEventDTO } from "../EventDto.ts";
+import { Event } from "../../../generated/prisma/client.ts";
+
+export interface IEventRepository {
+
+    create(data: CreateEventDTO): Promise<Event>;
+
+    findById(
+        eventId: number
+    ): Promise<Event | null>;
+
+    findAll(): Promise<Event[]>;
+
+    update(
+        eventId: number,
+        data: UpdateEventDTO
+    ): Promise<Event>;
+
+    delete(
+        eventId: number
+    ): Promise<void>;
+}

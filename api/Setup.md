@@ -42,3 +42,14 @@ npx prisma init
 
 npm install dotenv
 npm install express
+
+## Get Prisma Database
+
+npx prisma db push
+
+## Setup
+
+git pull
+npm install
+npx prisma generate
+npx prisma migrate dev
