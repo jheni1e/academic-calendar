@@ -1,5 +1,11 @@
 # BackEnd Setup
 
+## Dependencies
+
+- React Router Dom
+- Express
+- Prisma
+- DotEnv
 
 ## Structure
 
@@ -18,3 +24,20 @@ feature/
 Makes the business rule work.
 ### Repository
 Comunicates directly with the Database
+
+## Installed
+
+
+### TypeScript
+add typescript tsx @types/node --dev
+npx tsc --init
+
+### Prisma
+
+npm install prisma @types/pg --save-dev
+npm install @prisma/client @prisma/adapter-pg pg dotenv
+
+### Dotenv and Express
+
+npm install dotenv
+npm install express
