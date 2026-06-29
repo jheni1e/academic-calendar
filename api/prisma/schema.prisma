@@ -14,6 +14,20 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum ReservationStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  BLOCKED
+}
+
+enum ParticipationStatus {
+  PENDING
+  CONFIRMED
+  DECLINED
+  ATTENDED // Optional
+  CANCELLED
+}
 model User {
   user_id Int @id @default(autoincrement())
   user_edv Int @unique
@@ -23,7 +37,7 @@ model User {
 
   assignments Assignment[]
   participations Participation[]
-  subjects SubjectResponsible[]
+  subjects SubjectInstructor[]
   classes ClassUser[]
 }
 
@@ -72,13 +86,15 @@ model Subject {
   end_date DateTime
   class_id Int
   events Event[]
-  responsables SubjectResponsible[]
+
+  responsables SubjectInstructor[]
+  requirements SubjectRequirement[]
 
   class Class @relation(fields: [class_id], references: [class_id])
 }
 
-model SubjectResponsible {
-  subject_responsable_id Int @id @default(autoincrement())
+model SubjectInstructor {
+  subject_instructor_id Int @id @default(autoincrement())// @map("subject_responsable_id")
   subject_id Int
   instructor_id Int
 
@@ -86,6 +102,21 @@ model SubjectResponsible {
   instructor User @relation(fields: [instructor_id], references: [user_id])
 
   @@unique([subject_id, instructor_id])
+  @@index([subject_id])
+  @@index([instructor_id])
+}
+
+model SubjectRequirement {
+  subject_requirement_id Int @id @default(autoincrement())
+  subject_id Int
+  feature_id Int
+
+  subject Subject @relation(fields: [subject_id], references: [subject_id])
+  feature Feature @relation(fields: [feature_id], references: [feature_id])
+  
+  @@unique([subject_id, feature_id])
+  @@index([subject_id])
+  @@index([feature_id])
 }
 
 model EventType {
@@ -99,20 +130,52 @@ model Event {
   title String
   description String?
   created_at DateTime @default(now())
-  subject_id Int
   event_type_id Int
-  participations Participation[]
-  reservations Reservation[]
 
-  subject Subject? @relation(fields: [subject_id], references: [subject_id])
+  subject_id Int?
+  class_id Int?
+
+  participations Participation[]
+  reservation Reservation?
+
   event_type EventType @relation(fields: [event_type_id], references: [event_type_id])
+  subject Subject? @relation(fields: [subject_id], references: [subject_id])
+  class Class? @relation(fields: [class_id], references: [class_id])
+
+  @@index([subject_id])
+  @@index([class_id])
+  @@index([event_type_id])
 }                                  
 
 model Room {
   room_id Int @id @default(autoincrement())
   title String
+  capacity Int
   description String?   
+
   reservations Reservation[]     
+  roomFeatures RoomFeature[]
+}
+
+model Feature {
+  feature_id Int @id @default(autoincrement())
+  name String @unique
+  
+  roomFeatures RoomFeature[]
+  subjectRequirements SubjectRequirement[]
+}
+
+model RoomFeature {
+  room_feature_id Int @id @default(autoincrement())
+  room_id Int
+  feature_id Int
+
+  room Room @relation(fields: [room_id], references: [room_id])
+  feature Feature @relation(fields: [feature_id], references: [feature_id])
+  
+  @@unique([room_id, feature_id])
+  @@index([room_id])
+  @@index([feature_id])
 }
 
 model Reservation {
@@ -120,13 +183,15 @@ model Reservation {
   description String?
   schedule_start DateTime
   schedule_end DateTime
-  is_blocked Boolean
-  is_confirmed Boolean
+  status ReservationStatus
   room_id Int
   event_id Int @unique
 
   room Room @relation(fields: [room_id], references: [room_id])
   event Event @relation(fields: [event_id], references: [event_id])
+
+  @@index([room_id])
+  @@index([event_id])
 }
 
 model EventRole {
@@ -140,13 +205,15 @@ model Participation {
   user_id Int
   event_role_id Int
   event_id Int
-  is_confirmed Boolean
+  status ParticipationStatus
 
   user User @relation(fields: [user_id], references: [user_id]) 
   event_role EventRole @relation(fields: [event_role_id], references: [event_role_id])
   event Event @relation(fields: [event_id], references: [event_id])
 
   @@unique([user_id, event_id])
+  @@index([user_id])
+  @@index([event_id])
 }
 
 
