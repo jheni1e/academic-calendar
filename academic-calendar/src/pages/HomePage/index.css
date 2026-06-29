@@ -30,3 +30,15 @@
   overflow: auto;
   justify-content: center;
 }
+
+.event {
+  position: relative;
+}
+
+.event .popupBody {
+  display: none;
+}
+
+.event:hover .popupBody {
+  display: block;
+}
