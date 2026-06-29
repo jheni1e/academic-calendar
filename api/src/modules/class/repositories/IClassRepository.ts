@@ -1,3 +1,4 @@
+import { Class } from "../../../generated/prisma/client.ts";
 import { CreateClassDTO, UpdateClassDTO } from "../ClassDto.ts";
 
 export interface IClassRepository {
