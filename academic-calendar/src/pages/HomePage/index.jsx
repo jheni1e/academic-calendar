@@ -2,12 +2,9 @@ import { useState } from "react";
 import MenuSideBar from "../../components/MenuSideBar";
 import MonthlyCalendar from "../../components/MonthlyCalendar";
 import "./index.css";
-import PopupDetails from "../../components/PopupDetails";
-import Dialog from "../../components/Dialog";
 
 function Home() {
   const [isInstructor, setIsInstructor] = useState(false);
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const [dropdownOptions, setDropdownOptions] = useState([
     { value: 1, label: "oii" }
@@ -21,12 +18,6 @@ function Home() {
   ]);
 
   const [selectedRoom, setSelectedRoom] = useState("");
-
-  const dsIoT = {
-    name: "DS-IoT",
-    totalHours: 60,
-    leftHours: 20
-  }
 
   return (
     <>
@@ -52,18 +43,7 @@ function Home() {
         }
         <div className="content">
           <MonthlyCalendar />
-          <div className="event">
-            DS IoT
-
-            <PopupDetails type="class" selectedClass={dsIoT} isEditable={true} onEdit={() => setIsDialogOpen(true)} />
-          </div>
         </div>
-        <Dialog
-            title="Editar horário"
-            type="editDate"
-            isOpen={isDialogOpen}
-            onClose={() => setIsDialogOpen(false)}
-        />
       </div>
     </>
   );
