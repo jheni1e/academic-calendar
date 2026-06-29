@@ -1,4 +1,5 @@
-import { CreateParticipationDTO, ParticipationResponseDTO, UpdateParticipationDTO } from "../participationDTO.ts";
+import { CreateParticipationDTO, ParticipationResponseDTO, UpdateParticipationDTO } from "../ParticipationDTO.ts";
+
 
 export interface IParticipationRepository {
     create(data: CreateParticipationDTO) : Promise<ParticipationResponseDTO>,

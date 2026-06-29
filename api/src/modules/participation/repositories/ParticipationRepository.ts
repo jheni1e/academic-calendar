@@ -1,5 +1,5 @@
 import { prisma } from "../../../lib/prisma.ts";
-import { CreateParticipationDTO, ParticipationResponseDTO, UpdateParticipationDTO } from "../participationDTO.ts";
+import { CreateParticipationDTO, ParticipationResponseDTO, UpdateParticipationDTO } from "../ParticipationDTO.ts";
 import { IParticipationRepository } from "./IParticipationRepository.ts";
 
 export class ParticipationRepository
