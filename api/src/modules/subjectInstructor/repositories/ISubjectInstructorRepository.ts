@@ -1,4 +1,4 @@
-import { SubjectInstructor } from "../../../generated/prisma/client";
+import { SubjectInstructor } from "../../../generated/prisma/client.ts";
 import { CreateSubjectInstructorDTO, UpdateSubjectInstructorDTO } from "../SubjectInstructorDto.ts";
 export interface ISubjectInstructorRepository {
 

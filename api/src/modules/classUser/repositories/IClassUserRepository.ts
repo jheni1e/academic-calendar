@@ -1,3 +1,4 @@
+import { ClassUser } from "../../../generated/prisma/client.ts";
 import { CreateClassUserDto } from "../ClassUserDto.ts";
 
 export interface IClassUserRepository {
