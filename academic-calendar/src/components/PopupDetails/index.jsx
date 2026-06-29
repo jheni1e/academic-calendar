@@ -1,7 +1,6 @@
 import './index.css';
 
 function PopupDetails({ type, isEditable, selectedClass, selectedEvent, onEdit }) {
-
     return (
         <div className="popupBody">
             <div className="popupHeader">
@@ -10,7 +9,7 @@ function PopupDetails({ type, isEditable, selectedClass, selectedEvent, onEdit }
                 {type === "event" &&
                     <h3 className="title">{selectedEvent.name}</h3>}
                 {isEditable &&
-                    <button className="headerButton">✎</button>}
+                    <button onClick={onEdit} className="headerButton">✎</button>}
             </div>
             {type === "class" &&
                 <div className="content">
