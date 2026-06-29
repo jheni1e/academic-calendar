@@ -1,5 +1,5 @@
 import { UpdateEventDTO } from "../../event/EventDto.ts";
-import { CreateReservationDTO } from "../reservationDto.ts";
+import { CreateReservationDTO, UpdateReservationDTO } from "../reservationDto.ts";
 
 export interface IReservationRepository {
     create(data: CreateReservationDTO) : Promise<Event>;
@@ -10,7 +10,7 @@ export interface IReservationRepository {
 
     update(
         reservationId: number,
-        data: UpdateEventDTO
+        data: UpdateReservationDTO
     ) : Promise<Event>;
 
     delete(reservationId: number) : Promise<Event>;

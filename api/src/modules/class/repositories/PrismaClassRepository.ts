@@ -1,3 +1,4 @@
+import { Class } from "../../../generated/prisma/client.ts";
 import { prisma } from "../../../lib/prisma.ts";
 import { CreateClassDTO, UpdateClassDTO } from "../ClassDto.ts";
 import { IClassRepository } from "./IClassRepository.ts";
