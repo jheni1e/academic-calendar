@@ -16,7 +16,7 @@ function CheckBox({ id, label, isChecked, onCheckboxChange, ...rest }) {
                     {...rest} 
                 />
                 <div className="fakeCheckbox">
-                    {isChecked && <img src={checkmarkWhite} className='imgCheckMark' alt='checkmark' />}
+                    {isChecked && <img src={CheckmarkWhite} className='imgCheckMark' alt='checkmark' />}
                 </div>
                 {label}
             </label>
