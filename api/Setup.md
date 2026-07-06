@@ -49,6 +49,8 @@ npx prisma db push
 
 ## Setup
 
+Create .env
+
 git pull
 npm install
 npx prisma generate
