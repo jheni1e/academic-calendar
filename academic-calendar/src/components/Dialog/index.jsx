@@ -174,6 +174,18 @@ function Dialog({ isOpen, onClose, type, title }) {
                     </div>
                 </div>
             }
+            {type === "editDate" &&
+                <div className="dialogContent">
+                    <div className="dialogInput">
+                        <h4>Início:</h4>
+                        <TextBox placeholder="XX/XX/XXXX XX:XX" style={{ width: '152px' }} />
+                    </div>
+                    <div className="dialogInput">
+                        <h4>Encerramento:</h4>
+                        <TextBox placeholder="XX/XX/XXXX XX:XX" style={{ width: '152px' }} />
+                    </div>
+                </div>
+            }
             <div className="dialogButtons">
                 <BoschButton text="Confirmar" type="primary" />
                 <BoschButton text="Cancelar" type="secondary" onClick={onClose} />

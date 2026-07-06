@@ -1,0 +1,87 @@
+.customDialog {
+    border: none;
+    border-radius: 0;
+    box-shadow: 0 4px 12px rgba(207, 207, 207, 0.15);
+    max-width: 600px;
+    width: 100%;
+    padding: 0;
+}
+
+.customDialog::backdrop {
+    background-color: rgba(207, 207, 207, 0.6);
+    backdrop-filter: blur(4px);
+}
+
+.closeButton {
+    background-color: transparent;
+    font-size: 1.5rem;
+    cursor: pointer;
+    margin-right: 1rem;
+}
+
+.dialogHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #000;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.dialogHeader h2 {
+    margin-left: 1.5rem;
+}
+
+.dialogInput h2 {
+    margin: 5px 0 5px 0;
+}
+
+.dialogContent {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.5rem;
+    gap: 2rem;
+}
+
+.studentInfo {
+    flex: 1;
+}
+
+.dialogInput {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+}
+
+.title {
+    font-weight: bold;
+    font-size: 1.4rem;
+    width: auto !important;
+}
+
+.content {
+    font-size: 1.4rem;
+    width: auto !important;
+    display: flex;
+    justify-content: flex-start;
+}
+
+.studentGraph {
+    flex-shrink: 0;
+}
+
+.dialogButtons {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 12px;
+    padding: 0 1rem 1rem 1rem;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+.dialogButtons > div {
+    width: auto !important;
+    flex: 0 0 auto;
+}
