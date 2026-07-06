@@ -5,6 +5,7 @@ import Home from "../pages/HomePage";
 import NotFound from "../pages/NotFoundPage";
 import Subject from "../pages/SubjectPage";
 import Register from "../pages/RegisterPage";
+import Login from "../pages/LoginPage";
 
 function WithHeader() {
   return (
@@ -36,6 +37,7 @@ export default function AppRouter() {
         </Route>
         <Route element={<WithoutHeader />}>
           <Route path="/register" element={<Register />} />
+          <Route path="/login" element={<Login />} />
         </Route>
       </Routes>
     </Router>
