@@ -3,8 +3,8 @@ import { useState } from "react";
 
 const days = ["D", "S", "T", "Q", "Q", "S", "S"];
 
-export default function FrequencySelector() {
-    const [selectedDays, setSelectedDays] = useState([]);
+export default function FrequencySelector({ daysSelected = [] }) {
+    const [selectedDays, setSelectedDays] = useState(daysSelected);
 
     const toggleDay = (index) => {
         setSelectedDays((prev) =>

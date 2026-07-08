@@ -6,11 +6,18 @@ import DropdownList from "../DropdownList";
 import ColorPicker from "../ColorPicker";
 import FrequencySelector from "../FrequencySelector";
 
-function Dialog({ isOpen, onClose, type, title }) {
+function Dialog({ isOpen, onClose, type, title, event }) {
     const dialogRef = useRef(null);
     const [responsible, setResponsible] = useState(null);
     const [room, setRoom] = useState(null);
     const [classs, setClasss] = useState(null);
+    const [editedEvent, setEditedEvent] = useState(null);
+
+    useEffect(() => {
+        if (event) {
+            setEditedEvent(event);
+        }
+    }, [event]);
 
     useEffect(() => {
         const dialog = dialogRef.current;
@@ -191,6 +198,63 @@ function Dialog({ isOpen, onClose, type, title }) {
                     </div>
                 </div>
             }
+            {type === "editEvent" &&  editedEvent && (
+                <div className="dialogContent">
+                    <div className="dialogInput">
+                        <h4>Nome do evento:</h4>
+                        <TextBox 
+                            value={editedEvent.name} 
+                            onChange={(e) =>
+                                setEditedEvent({
+                                    ...editedEvent,
+                                    name: e.target.value,
+                                })}
+                                style={{ width: '320px' }} />
+                    </div>
+                    <div className="dialogInput">
+                        <h4>Participantes:</h4>
+                        <DropdownList 
+                            options={usersMock} 
+                            selectedValue={editedEvent.responsible} 
+                            onChange={(e) =>
+                                setEditedEvent({
+                                    ...editedEvent,
+                                    responsible: e.target.value,
+                                })}/>
+                    </div>
+                    <div className="dialogInput">
+                        <h4>Início:</h4>
+                        <TextBox 
+                            value={editedEvent.initial}
+                            onChange={(e) =>
+                                setEditedEvent({
+                                    ...editedEvent,
+                                    initial: e.target.value,
+                                })}
+                            style={{ width: '152px' }} />
+                    </div>
+                    <div className="dialogInput">
+                        <h4>Encerramento:</h4>
+                        <TextBox 
+                            value={editedEvent.end}
+                            onChange={(e) =>
+                                setEditedEvent({
+                                    ...editedEvent,
+                                    end: e.target.value,
+                                })}
+                            style={{ width: '152px' }} />
+                    </div>
+                    <div className="dialogInput">
+                        <h4>Cor:</h4>
+                        <ColorPicker color={editedEvent.color} />
+                    </div>
+
+                    <div className="dialogInput">
+                        <h4>Frequência:</h4>
+                        <FrequencySelector daysSelected={editedEvent.frequencyDays} />
+                    </div>
+                </div>
+            )}
             <div className="dialogButtons">
                 <BoschButton text="Confirmar" type="primary" />
                 <BoschButton text="Cancelar" type="secondary" onClick={onClose} />

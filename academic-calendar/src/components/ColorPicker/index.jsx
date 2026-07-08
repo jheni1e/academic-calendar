@@ -1,22 +1,17 @@
 import { useState } from 'react';
 import './index.css';
 
-function ColorPicker() {
-    const [color, setColor] = useState('#007BC0');
-
-    const handleColorChange = (e) => {
-        setColor(e.target.value);
-    };
+function ColorPicker({ color }) {
+    const [selectedColor, setSelectedColor] = useState(color ?? "#007BC0");
 
     return (
         <input
-            id="vanilla-picker"
             type="color"
-            value={color}
-            onChange={handleColorChange}
+            value={selectedColor}
+            onChange={(e) => setSelectedColor(e.target.value)}
             className="colorPicker"
         />
-    )
+    );
 }
 
 export default ColorPicker;
