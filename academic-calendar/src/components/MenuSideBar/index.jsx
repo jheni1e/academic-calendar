@@ -62,11 +62,11 @@ const MenuSideBar = ({
         <div className="checkboxWrapper">
           <div className="divCheckbox">
             <CheckBox isChecked={eventsFilter} onCheckboxChange={() => setEventsFilter(!eventsFilter)} />
-            <h4>Eventos</h4>
+            <h4>Manhã</h4>
           </div>
           <div className="divCheckbox">
             <CheckBox isChecked={classesFilter} onCheckboxChange={() => setClassesFilter(!classesFilter)} />
-            <h4>Aulas</h4>
+            <h4>Tarde</h4>
           </div>
         </div>}
     </div>

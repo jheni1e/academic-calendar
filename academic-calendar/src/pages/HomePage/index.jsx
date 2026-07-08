@@ -4,7 +4,7 @@ import MonthlyCalendar from "../../components/MonthlyCalendar";
 import "./index.css";
 
 function Home() {
-  const [isInstructor, setIsInstructor] = useState(false);
+  const [isInstructor, setIsInstructor] = useState(true);
 
   const [dropdownOptions, setDropdownOptions] = useState([
     { value: 1, label: "oii" }
