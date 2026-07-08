@@ -3,9 +3,11 @@ import BoschButton from "../../components/BoschButton";
 import "./index.css";
 import MenuSideBar from "../../components/MenuSideBar";
 import { useState } from "react";
+import Dialog from "../../components/Dialog";
 
 function Subject() {
   const [selectedValue, setSelectedValue] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const subjects = [
     {name: "IOT", reponsible: "Patrick", class: "dta", percentage: 78},
     {name: "Projeto FullStack", reponsible: "Cristian", class: "dta", percentage: 98},
@@ -18,6 +20,9 @@ function Subject() {
     { value: "dta", label: "DTA" },
     { value: "manufatura", label: "Manufatura" }
   ];
+  const changeModal = ()=>{
+    setIsModalOpen(!isModalOpen);
+  }
 
   console.log(selectedValue);
   return (
@@ -34,9 +39,12 @@ function Subject() {
           <div className="title">
             <h1 >Todas as Matérias</h1>
             <div className="button">
-              <BoschButton text={"+  Adicionar Matéria"} type={"secondary"}></BoschButton>
+              <BoschButton onClick={() => changeModal()} text={"+  Adicionar Matéria"} type={"secondary"}></BoschButton>
             </div>
           </div>
+          {isModalOpen &&
+            <Dialog isOpen={isModalOpen} type={"subject"} title={"Adicionar Matéria"} onClose={() => changeModal()} ></Dialog>
+          }
           {subjects
             .filter(subject =>
               selectedValue === "" || subject.class === selectedValue

@@ -45,11 +45,10 @@ function Dialog({ isOpen, onClose, type, title }) {
     ];
 
     const salasMock = [
-        { value: 1, label: "Sala Digital" },
-        { value: 2, label: "Fábrica" },
-        { value: 3, label: "Sala Fábio" },
-        { value: 4, label: "Sala Fedida" },
-        { value: 5, label: "War Room" },
+        { value: 1, label: "Sala Digital 1" },
+        { value: 2, label: "Sala Digital 2" },
+        { value: 3, label: "Sala de Aula" },
+        { value: 4, label: "Outro" },
     ];
 
     const turmasMock = [
@@ -95,6 +94,9 @@ function Dialog({ isOpen, onClose, type, title }) {
                     <div className="dialogInput" style={{ marginRight: "2.5rem" }}>
                         <h4>Salas:</h4>
                         <DropdownList options={salasMock} selectedValue={room} onChange={(e) => setRoom(e.target.value)} />
+                        { room === "4" &&
+                            <TextBox placeholder="e.g.: Oficina" style={{ width: '100%'}}></TextBox> 
+                        }
                     </div>
                     <div className="dialogInput">
                         <h4>Frequência:</h4>
@@ -149,8 +151,11 @@ function Dialog({ isOpen, onClose, type, title }) {
                         <TextBox placeholder="XX/XX/XXXX XX:XX" style={{ width: '152px' }} />
                     </div>
                     <div className="dialogInput">
-                        <h4>Sala:</h4>
+                        <h4>Salas:</h4>
                         <DropdownList options={salasMock} selectedValue={room} onChange={(e) => setRoom(e.target.value)} />
+                        { room === "4" &&
+                            <TextBox placeholder="e.g.: Oficina"></TextBox> 
+                        }
                     </div>
                 </div>
             }
