@@ -15,3 +15,8 @@ export type UserResponseDTO = {
     name: string;
     isActive: boolean;
 }
+
+export type LoginDTO = {
+    edv: number
+    password: string
+}
