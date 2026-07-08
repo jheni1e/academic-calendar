@@ -15,7 +15,7 @@ export default function AppRouter() {
         <Route path="/materias" element={<Subject/>} />
         <Route path="/home" element={<Home/>} />
         <Route path="/turmas" element={<Classes/>} />
-        <Route path="/turmas/:name" element={<Class/>} />
+        {/* <Route path="/turmas/:name" element={<Class/>} /> */}
         {/* <Route path="/group" element={ <Courses/>} />
         <Route path="/group/:eventId" element={ <Classes/>} /> */}
         <Route path="/*" element={<NotFound />} />

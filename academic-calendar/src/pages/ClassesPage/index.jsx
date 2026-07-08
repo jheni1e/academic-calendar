@@ -1,5 +1,6 @@
 import BoschButton from "../../components/BoschButton";
 import CardClass from "../../components/CardClass";
+import EventCard from "../../components/EventCard";
 import "./index.css";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -41,7 +42,7 @@ function Classes() {
         </div>
         <div className="container-cards">
           {classes.map((classe)=> (
-            <CardClass onClick={() => navigate("/turmas/dta")} NameClass={classe.name} Responsible={classe.reponsible} InitialDate={classe.initial} EndDate={classe.end}></CardClass>
+            <CardClass NameClass={classe.name} Responsible={classe.reponsible} InitialDate={classe.initial} EndDate={classe.end}></CardClass>
           ))}
         </div>
       </div>
