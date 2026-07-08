@@ -11,10 +11,10 @@ export class UpdateRoomUseCase{
         const room = await this.roomRepository.findById(roomId);
 
         if (!room)
-            throw new Error("Room not found.");
+            throw new Error("Sala não encontrada.");
 
         if (data.title !== undefined && !data.title.trim()) {
-            throw new Error("Room title is required.");
+            throw new Error("Nome da sala obrigatório");
         }      
 
         return await this.roomRepository.update(roomId, data)

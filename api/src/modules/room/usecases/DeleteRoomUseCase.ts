@@ -8,7 +8,8 @@ export class DeleteRoomUseCase{
     async execute(roomId: number){
         const room = await this.roomRepository.findById(roomId);
         
-        // Need User Type Verification before delete!
+        // TODO: Need User Type Verification before delete!
+        // TODO: Must be inactive!
         this.roomRepository.delete(roomId)
     }
 }

@@ -10,7 +10,7 @@ export class FindRoomByIdUseCase {
         const room = await this.roomRepository.findById(roomId);
 
         if (!room) {
-            throw new Error("Room not found.");
+            throw new Error("Sala não encontrada.");
         }
 
         return room;

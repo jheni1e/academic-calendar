@@ -10,11 +10,11 @@ export class DeactivateRoomUseCase{
         const room = await this.roomRepository.findById(roomId);
 
         if (!room) {
-            throw new Error("Room not found.");
+            throw new Error("Sala não encontrada.");
         }
 
         if (!room.is_active) {
-            throw new Error("Room is already inactive.");
+            throw new Error("A sala já está inativa.");
         }
 
         return await this.roomRepository.update(roomId, {
