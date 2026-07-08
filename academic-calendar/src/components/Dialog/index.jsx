@@ -84,11 +84,7 @@ function Dialog({ isOpen, onClose, type, title, event }) {
                     </div>
                     <div className="dialogInput">
                         <h4>Início:</h4>
-                        <TextBox placeholder="XX/XX/XXXX XX:XX" style={{ width: '152px' }} />
-                    </div>
-                    <div className="dialogInput">
-                        <h4>Encerramento:</h4>
-                        <TextBox placeholder="XX/XX/XXXX XX:XX" style={{ width: '152px' }} />
+                        <TextBox placeholder="XX/XX/XXXX XX:XX" style={{ width: '320px' }} />
                     </div>
                     <div className="dialogInput">
                         <h4>Carga horária:</h4>

@@ -15,7 +15,7 @@ function TextBox({ label, isBigInput, hasError, errorText, hasWarning, warningTe
     }
 
     return (
-        <div className={`a-text-field ${isPasswordInput ? 'a-text-field--password' : ''} ${isSearchInput ? 'a-text-field--search' : ''}`}>
+        <div className={`a-text-field ${isPasswordInput ? 'a-text-field--password' : ''} ${isSearchInput ? 'a-text-field--search' : ''}`} style={{width: '100%'}}>
             <label htmlFor="5">{label}</label>
             <InputElement
                 id="5"
