@@ -8,7 +8,7 @@ export class AuthController {
         private readonly authService: AuthService
     ) {}
 
-    async login(req: Request, res: Response) {
+    login = async(req: Request, res: Response) => {
         const data : authDTO = req.body;
         
         const token = await this.authService.login(
