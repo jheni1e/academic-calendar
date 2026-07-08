@@ -1,0 +1,51 @@
+.container-page{
+    width: 100%; 
+    height: calc(100vh - 112px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+.container-title{
+    width: 100%;
+    height: 15vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+.title{
+    font-family: 'Bosch Sans';
+    font-size: 40px;
+    font-weight: 500;
+}
+.sub-title{
+    font-family: 'Bosch Sans';
+    font-size: 30px;
+    font-weight: 300;
+}
+.container-duration{
+    width: 30vw;
+    height: 20vh;
+    position: absolute;
+    left: 2rem;
+    top: 16vh;
+    display: flex;
+    align-items: start;
+    justify-content: center;
+    flex-direction: column;
+}
+.container-graphic{
+    width: 70vw;
+    height: 20vh;
+    position: absolute;
+    right: 2rem;
+    top: 16vh;
+}
+.line{
+    background-color: rgba(128, 128, 128, 0.87);
+    width: 96vw;
+    height: 1px;
+    position: absolute;
+    top: 50vh;
+}

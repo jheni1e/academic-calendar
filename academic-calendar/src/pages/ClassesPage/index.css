@@ -1,0 +1,43 @@
+.container-page{
+    width: 100%;
+    height: calc(100vh - 112px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    flex-direction: column;
+}
+
+.container-cards{
+    width: 90%;
+    height: 85%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+    flex-direction: row;
+    flex-wrap: wrap;
+    position: absolute;
+    bottom: 0;
+}
+.container-title{
+    width: 100%;
+    height: 15%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 0;
+}
+.title{
+    font-family: 'Bosch Sans';
+    font-size: 40px;
+    font-weight: 500;
+}
+.button{
+    width: 14rem;
+    height: 4rem;
+    position: absolute;
+    right: 2rem;
+    top: 2rem;
+}
