@@ -11,14 +11,20 @@ export class AuthController {
     login = async(req: Request, res: Response) => {
         const data : authDTO = req.body;
         
-        const token = await this.authService.login(
-            data.edv,
-            data.password
-        );
+        try {
+            const token = await this.authService.login(
+                data.edv,
+                data.password
+            );
 
-        return res.status(200).send({
-            token
-        });
+            return res.status(200).send({ message: "User not found" });
+        } catch (error) {
+            if (error instanceof Error)
+                return res.status(401).send({ message : error.message})
+
+            return res.status(500).send({ message: "Internal server error"})
+        }
+
 
     }
 

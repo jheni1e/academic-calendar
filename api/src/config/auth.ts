@@ -1,9 +1,6 @@
 import { SignOptions } from "jsonwebtoken";
 
-export const authConfig: {
-  secret: string;
-  expiresIn: SignOptions["expiresIn"];
-} = {
-  secret: process.env.JWT_SECRET!,
-  expiresIn: "1h",
+export const authConfig = {
+    secret: process.env.JWT_SECRET!,
+    expiresIn: process.env.JWT_EXPIRES_IN || "1h"
 };
