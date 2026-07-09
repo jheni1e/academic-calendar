@@ -8,6 +8,7 @@ import Classes from "../pages/ClassesPage";
 import Register from "../pages/RegisterPage";
 import Semester from "../pages/SemesterPage";
 import './index.css'
+import Login from "../pages/LoginPage";
 
 function WithHeader() {
   return (
@@ -45,6 +46,7 @@ export default function AppRouter() {
         </Route>
         <Route element={<WithoutHeader />}>
           <Route path="/register" element={<Register />} />
+          <Route path="/login" element={<Login />} />
         </Route>
       </Routes>
     </Router>
