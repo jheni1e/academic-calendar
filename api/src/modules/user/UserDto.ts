@@ -6,12 +6,12 @@ export interface CreateUserDTO {
 }
 
 export interface UpdateUserDTO {
-    name: string;
-    birthdate: Date;
+    name?: string;
+    birthdate?: Date;
 }
 
 export type UserResponseDTO = {
-    userEdv: number;
+    edv: number;
     name: string;
     isActive: boolean;
 }

@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { CreateUserDTO } from "../UserDto.ts";
+import { CreateUserDTO, UpdateUserDTO } from "../UserDto.ts";
 import { PrismaUserRepository } from "../repositories/PrismaUserRepository.ts";
 import { CreateUserUseCase } from "../usecases/CreateUserUseCase.ts";
 import { FindUserByIdUseCase } from "../usecases/FindUserByIdUseCase.ts";
@@ -36,7 +36,6 @@ export class UserController {
 
     getAll = async(req: Request, res: Response) => {
         try {
-
             const users = await this.findAllUsers.execute();
             return res.status(200).send({ users })
 
@@ -46,6 +45,53 @@ export class UserController {
                 return res.status(401).send({ message : error.message})
 
             return res.status(500).send({ message: "Internal server error"})
+        }
+    }
+
+    getById = async(req: Request, res: Response) => {
+        const { id } = req.params;
+
+        try {
+            const user = await this.findUserById.execute(Number(id));
+            return res.status(200).send(user)
+
+        } catch (error) {
+            if (error instanceof Error)
+                return res.status(401).send({ message: error.message})
+
+            return res.status(500).send({ message: "Internal server error"})
+        }
+    }
+
+    getByEdv = async(req: Request, res: Response) => {
+        const { edv } = req.params;
+
+        try {
+            const user = await this.findUserByEdv.execute(Number(edv))
+            return res.status(200).send(user)
+        } catch (error) {
+            if (error instanceof Error) 
+                return res.status(401).send({ message: error.message })
+
+            return res.status(500).send({ message: "Internal server error" })
+        }
+    }
+
+    update = async(req: Request, res: Response) => {
+        const { id } = req.params
+        const data : UpdateUserDTO = req.body
+
+        try {
+            const user = await this.updateUser.execute(Number(id), data)
+
+            if(res.locals.user.edv == user.user_edv)
+                return res.status(200).send({ message: "User succesfully updated!", user})
+            return res.status(401).send({ message : "Access denied"})
+        } catch(error) {
+            if (error instanceof Error)
+                return res.status(401).send({ message : error.message})
+
+            return res.status(500).send({ message: "Internal server error" })
         }
     }
 

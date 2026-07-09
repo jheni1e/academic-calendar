@@ -6,12 +6,12 @@ export class UpdateUserUseCase {
         private readonly userRepository : IUserRepository
     ){}
 
-    async execute(edv : number, data : UpdateUserDTO) {
-        const user = this.userRepository.findByEdv(edv)
+    async execute(id : number, data : UpdateUserDTO) {
+        const user = this.userRepository.findById(id)
 
         if(!user)
             throw new Error("User not found")
         
-        return this.userRepository.update(edv, data)
+        return this.userRepository.update(id, data)
     }
 }
