@@ -1,8 +1,8 @@
 export interface CreateUserDTO {
-    userId: number;
-    userEdv: number;
+    edv: number;
     name: string;
     birthdate: Date;
+    password: string
 }
 
 export interface UpdateUserDTO {
@@ -20,3 +20,4 @@ export type LoginDTO = {
     edv: number
     password: string
 }
+

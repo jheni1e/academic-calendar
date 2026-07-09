@@ -17,7 +17,7 @@ export class AuthController {
                 data.password
             );
 
-            return res.status(200).send({ message: "User not found" });
+            return res.status(200).send({ message: `Welcome!` });
         } catch (error) {
             if (error instanceof Error)
                 return res.status(401).send({ message : error.message})

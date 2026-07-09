@@ -9,7 +9,7 @@ export class AuthService {
     ) {}
 
     async login(edv: number, password: string) {
-
+        console.log(typeof edv, edv)
         const user = await this.userRepository.findByEdv(edv);
 
         if (!user) {
@@ -22,13 +22,13 @@ export class AuthService {
         );
 
         if (!isCorrect) {
-            throw new Error("Invalid");
+            throw new Error("Invalid password");
         }
 
         return generateToken({
             id: user.user_id,
-            edv: user.user_edv,
-            role: user.role
+            edv: user.user_edv
+            // role: user.role
         });
 
     }
