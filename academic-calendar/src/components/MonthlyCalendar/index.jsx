@@ -19,8 +19,8 @@ const months = [
   "Dezembro",
 ];
 
-export default function MonthlyCalendar() {
-  const [currentDate, setCurrentDate] = useState(new Date());
+function MonthlyCalendar({ initialDate, compact = false }) {
+  const [currentDate, setCurrentDate] = useState(initialDate || new Date());
   const [viewMode, setViewMode] = useState("month");
 
   const year = currentDate.getFullYear();
@@ -55,31 +55,50 @@ export default function MonthlyCalendar() {
 
   const goPrev = () => {
     const newDate = new Date(currentDate);
-    newDate.setDate(currentDate.getDate() - (viewMode === "week" ? 7 : 30));
+
+    if (viewMode === "week") {
+      newDate.setDate(newDate.getDate() - 7);
+    } else {
+      newDate.setMonth(newDate.getMonth() - 1);
+    }
+
     setCurrentDate(newDate);
   };
-  
+
+
   const goNext = () => {
     const newDate = new Date(currentDate);
-    newDate.setDate(currentDate.getDate() + (viewMode === "week" ? 7 : 30));
+
+    if (viewMode === "week") {
+      newDate.setDate(newDate.getDate() + 7);
+    } else {
+      newDate.setMonth(newDate.getMonth() + 1);
+    }
+
     setCurrentDate(newDate);
   };
 
   return (
     <div className="calendar-container">
       <div className="calendar-header">
-        <div className="actions">
-          <BoschButton text="<" type="secondary" onClick={goPrev} />
-          <BoschButton text=">" type="secondary" onClick={goNext} />
-        </div>
+        {!compact && (
+          <div className="actions">
+            <BoschButton text="<" type="secondary" onClick={goPrev} />
+            <BoschButton text=">" type="secondary" onClick={goNext} />
+          </div>
+        )}
+
         <h1 style={{ fontSize: '2rem', fontWeight: 'normal' }}>
           {months[month]} {year}
         </h1>
 
-        <div className="actions">
-          <BoschButton text="+" type="secondary" />
-          <Toggle id="calendar-toggle" leftText="Mensal" rightText="Semanal" onChange={() => setViewMode((prev) => (prev === "month" ? "week" : "month"))} />
-        </div>
+        {!compact && (
+          <div className="actions">
+            <BoschButton text="+" type="secondary" />
+
+            <Toggle id="calendar-toggle" leftText="Mensal" rightText="Semanal" onChange={() => setViewMode((prev) => prev === "month" ? "week" : "month")} />
+          </div>
+        )}
       </div>
 
       <div className="weekdays">
@@ -118,3 +137,5 @@ export default function MonthlyCalendar() {
     </div>
   );
 }
+
+export default MonthlyCalendar;
