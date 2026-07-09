@@ -1,3 +1,4 @@
+import { Assignment } from "../../../generated/prisma/client.ts";
 import { prisma } from "../../../lib/prisma.ts";
 import { CreateAssignmentDTO } from "../AssignmentDTO.ts";
 import { IAssignmentRepository } from "./IAssignmentRepository.ts";
