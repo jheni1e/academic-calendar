@@ -3,6 +3,7 @@ import DayCell from "../DayCell";
 import "./index.css";
 import Toggle from "../Toggle";
 import BoschButton from "../BoschButton";
+import Dialog from "../Dialog";
 
 const months = [
   "Janeiro",
@@ -22,6 +23,7 @@ const months = [
 function MonthlyCalendar({ initialDate, compact = false }) {
   const [currentDate, setCurrentDate] = useState(initialDate || new Date());
   const [viewMode, setViewMode] = useState("month");
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
@@ -94,7 +96,7 @@ function MonthlyCalendar({ initialDate, compact = false }) {
 
         {!compact && (
           <div className="actions">
-            <BoschButton text="+" type="secondary" />
+            <BoschButton text="+" type="secondary" onClick={() => setIsModalOpen(!isModalOpen)} />
 
             <Toggle id="calendar-toggle" leftText="Mensal" rightText="Semanal" onChange={() => setViewMode((prev) => prev === "month" ? "week" : "month")} />
           </div>
@@ -134,6 +136,10 @@ function MonthlyCalendar({ initialDate, compact = false }) {
           ))
         )}
       </div>
+
+      {isModalOpen &&
+        <Dialog isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title="Registrar evento" type="event" />
+      }
     </div>
   );
 }

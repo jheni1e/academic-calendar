@@ -11,6 +11,7 @@ function Dialog({ isOpen, onClose, type, title }) {
     const [responsible, setResponsible] = useState(null);
     const [room, setRoom] = useState(null);
     const [classs, setClasss] = useState(null);
+    const [typeEvent, setTypeEvent] = useState(null);
 
     useEffect(() => {
         const dialog = dialogRef.current;
@@ -60,6 +61,12 @@ function Dialog({ isOpen, onClose, type, title }) {
         { value: 5, label: "MAN25" },
     ];
 
+    const typeEvents = [
+        { value: 1, label: "Evento" },
+        { value: 2, label: "Aula" },
+        { value: 3, label: "Avaliação" }
+    ];
+
     return (
         <dialog ref={dialogRef} className="customDialog">
             <div className="dialogHeader">
@@ -70,7 +77,7 @@ function Dialog({ isOpen, onClose, type, title }) {
                 <div className="dialogContent">
                     <div className="dialogInput">
                         <h4>Nome da matéria:</h4>
-                        <TextBox placeholder="e.g.: Internet das Coisas" style={{ width: '320px' }} />
+                        <TextBox placeholder="e.g.: Internet das Coisas" />
                     </div>
                     <div className="dialogInput">
                         <h4>Responsável:</h4>
@@ -78,21 +85,21 @@ function Dialog({ isOpen, onClose, type, title }) {
                     </div>
                     <div className="dialogInput">
                         <h4>Início:</h4>
-                        <TextBox placeholder="XX/XX/XXXX XX:XX" style={{ width: '152px' }} />
+                        <TextBox placeholder="XX/XX/XXXX XX:XX" />
                     </div>
                     <div className="dialogInput">
                         <h4>Encerramento:</h4>
-                        <TextBox placeholder="XX/XX/XXXX XX:XX" style={{ width: '152px' }} />
+                        <TextBox placeholder="XX/XX/XXXX XX:XX" />
                     </div>
                     <div className="dialogInput">
                         <h4>Carga horária:</h4>
-                        <TextBox placeholder="e.g.: 16h" style={{ width: '132px' }} />
+                        <TextBox placeholder="e.g.: 16h" />
                     </div>
                     <div className="dialogInput">
                         <h4>Cor:</h4>
                         <ColorPicker />
                     </div>
-                    <div className="dialogInput" style={{ marginRight: "2.5rem" }}>
+                    <div className="dialogInput">
                         <h4>Salas:</h4>
                         <DropdownList options={salasMock} selectedValue={room} onChange={(e) => setRoom(e.target.value)} />
                     </div>
@@ -105,60 +112,64 @@ function Dialog({ isOpen, onClose, type, title }) {
             {type === "event" &&
                 <div className="dialogContent">
                     <div className="dialogInput">
-                        <h4>Nome do evento:</h4>
-                        <TextBox placeholder="e.g.: Apresentação do subsolo Bosch" style={{ width: '320px' }} />
+                        <h4>Tipo do evento:</h4>
+                        <DropdownList options={typeEvents} selectedValue={typeEvent} onChange={(e) => setTypeEvent(Number(e.target.value))} />
                     </div>
                     <div className="dialogInput">
-                        <h4>Participantes:</h4>
-                        <DropdownList options={usersMock} selectedValue={responsible} onChange={(e) => setResponsible(e.target.value)} />
+                        <h4>Título:</h4>
+                        <TextBox placeholder="e.g.: Aula IoT/Setor/Prova Python" />
                     </div>
-                    <div className="dialogInput">
-                        <h4>Início:</h4>
-                        <TextBox placeholder="XX/XX/XXXX XX:XX" style={{ width: '152px' }} />
-                    </div>
-                    <div className="dialogInput">
-                        <h4>Encerramento:</h4>
-                        <TextBox placeholder="XX/XX/XXXX XX:XX" style={{ width: '152px' }} />
-                    </div>
-                    <div className="dialogInput">
-                        <h4>Cor:</h4>
-                        <ColorPicker />
-                    </div>
-                    <div className="dialogInput">
-                        <h4>Frequência:</h4>
-                        <FrequencySelector />
-                    </div>
-                </div>
-            }
-            {type === "class" &&
-                <div className="dialogContent">
-                    <div className="dialogInput">
-                        <h4>Nome da aula:</h4>
-                        <TextBox placeholder="e.g.: Projeto Fullstack" style={{ width: '320px' }} />
-                    </div>
-                    <div className="dialogInput">
-                        <h4>Professor:</h4>
-                        <DropdownList options={usersMock} selectedValue={responsible} onChange={(e) => setResponsible(e.target.value)} />
-                    </div>
-                    <div className="dialogInput">
-                        <h4>Início:</h4>
-                        <TextBox placeholder="XX/XX/XXXX XX:XX" style={{ width: '152px' }} />
-                    </div>
-                    <div className="dialogInput">
-                        <h4>Encerramento:</h4>
-                        <TextBox placeholder="XX/XX/XXXX XX:XX" style={{ width: '152px' }} />
-                    </div>
-                    <div className="dialogInput">
-                        <h4>Sala:</h4>
-                        <DropdownList options={salasMock} selectedValue={room} onChange={(e) => setRoom(e.target.value)} />
-                    </div>
+                    {typeEvent === 1 &&
+                        <>
+                            <div className="dialogInput">
+                                <h4>Participantes:</h4>
+                                <DropdownList options={usersMock} selectedValue={responsible} onChange={(e) => setResponsible(e.target.value)} />
+                            </div>
+                            <div className="dialogInput">
+                                <h4>Início:</h4>
+                                <TextBox placeholder="XX/XX/XXXX XX:XX" />
+                            </div>
+                            <div className="dialogInput">
+                                <h4>Encerramento:</h4>
+                                <TextBox placeholder="XX/XX/XXXX XX:XX" />
+                            </div>
+                            <div className="dialogInput">
+                                <h4>Cor:</h4>
+                                <ColorPicker />
+                            </div>
+                            <div style={{ display: "flex", flexDirection: "column", width: "500px" }}>
+                                <h4>Frequência:</h4>
+                                <FrequencySelector />
+                            </div>
+                        </>
+                    }
+                    {typeEvent === 2 &&
+                        <>
+                            <div className="dialogInput">
+                                <h4>Professor:</h4>
+                                <DropdownList options={usersMock} selectedValue={responsible} onChange={(e) => setResponsible(e.target.value)} />
+                            </div>
+                            <div className="dialogInput">
+                                <h4>Início:</h4>
+                                <TextBox placeholder="XX/XX/XXXX XX:XX" />
+                            </div>
+                            <div className="dialogInput">
+                                <h4>Encerramento:</h4>
+                                <TextBox placeholder="XX/XX/XXXX XX:XX" />
+                            </div>
+                            <div className="dialogInput">
+                                <h4>Sala:</h4>
+                                <DropdownList options={salasMock} selectedValue={room} onChange={(e) => setRoom(e.target.value)} />
+                            </div>
+                        </>
+                    }
                 </div>
             }
             {type === "student" &&
                 <div className="dialogContent">
                     <div className="dialogInput">
                         <h4>Nome do aluno:</h4>
-                        <TextBox placeholder="e.g.: João Silveira" style={{ width: '320px' }} />
+                        <TextBox placeholder="e.g.: João Silveira" />
                     </div>
                     <div className="dialogInput">
                         <h4>Turma:</h4>
@@ -178,11 +189,11 @@ function Dialog({ isOpen, onClose, type, title }) {
                 <div className="dialogContent">
                     <div className="dialogInput">
                         <h4>Início:</h4>
-                        <TextBox placeholder="XX/XX/XXXX XX:XX" style={{ width: '152px' }} />
+                        <TextBox placeholder="XX/XX/XXXX XX:XX" />
                     </div>
                     <div className="dialogInput">
                         <h4>Encerramento:</h4>
-                        <TextBox placeholder="XX/XX/XXXX XX:XX" style={{ width: '152px' }} />
+                        <TextBox placeholder="XX/XX/XXXX XX:XX" />
                     </div>
                 </div>
             }
