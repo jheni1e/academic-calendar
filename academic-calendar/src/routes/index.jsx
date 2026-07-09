@@ -7,6 +7,7 @@ import Subject from "../pages/SubjectPage";
 import Classes from "../pages/ClassesPage";
 import Class from "../pages/ClassPage";
 import Register from "../pages/RegisterPage";
+import Semester from "../pages/SemesterPage";
 
 function WithHeader() {
   return (
@@ -34,9 +35,7 @@ export default function AppRouter() {
           <Route path="/materias" element={<Subject />} />
           <Route path="/home" element={<Home />} />
           <Route path="/turmas" element={<Classes/>} />
-          {/* <Route path="/turmas/:name" element={<Class/>} /> */}
-          {/* <Route path="/group" element={ <Courses/>} />
-          <Route path="/group/:eventId" element={ <Classes/>} /> */}
+          <Route path="/semestre" element={<Semester/>} />
           <Route path="/*" element={<NotFound />} />
         </Route>
         <Route element={<WithoutHeader />}>
