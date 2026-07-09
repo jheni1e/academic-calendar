@@ -4,6 +4,7 @@ import { useNavigate } from "react-router";
 import TextBox from '../../components/TextBox';
 import BoschButton from '../../components/BoschButton';
 import boschImage from "../../images/bosch-renningen.jpg";
+import { toastSuccess, toastError, toastWarning } from '../../components/BoschToast';
 
 function Login() {
     const [email, setEmail] = useState("");
@@ -12,6 +13,11 @@ function Login() {
     const navigate = useNavigate();
 
     const handleLogin = () => {
+        if (!email || !password) {
+            toastWarning("Preencha todos os campos.");
+            return;
+        }
+
         var payload = {
             email: email,
             password: password
@@ -36,7 +42,7 @@ function Login() {
 
                     <div className="divInput">
                         <h3 className="inputTitle">Email</h3>
-                        <TextBox placeholder="Insira seu email" text={email} onChange={(e) => setEmail(e.target.value)} />
+                        <TextBox placeholder="Insira seu email" type="email" text={email} onChange={(e) => setEmail(e.target.value)} />
                     </div>
 
                     <div className="divInput">
