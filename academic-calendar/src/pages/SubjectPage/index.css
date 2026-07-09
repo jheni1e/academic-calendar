@@ -1,36 +1,37 @@
-.title{
-    width: 100%;
-    height: 5rem;
+.container-page {
     display: flex;
-    align-items: center;
-    justify-content: center;
-}
-.button{
-    width: 20%;
-    position: absolute;
-    right: 2rem;
-
-}
-.container-page{
     width: 100%;
-    height: calc(100vh - 112px);
-    position: absolute;
-    right: 0;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+    height: 100%;
     flex-direction: row;
-    gap: 2rem;
 }
 
-.container-subjects{
-    width: 82vw;
-    height:  calc(100vh - 112px);
-    position: absolute;
-    right: 0;
+.container-subjects {
+    flex: 1;
+    min-width: 0;
     display: flex;
-    align-items: center;
-    justify-content: start;
     flex-direction: column;
-    gap: 2rem;
+    padding: 24px;
+}
+
+.title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.title .container {
+    width: auto;
+    flex: 0;
+}
+
+.title h1 {
+    margin: 0;
+}
+
+.subjects-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    align-items: stretch;
 }
