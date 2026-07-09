@@ -1,16 +1,36 @@
-# React + Vite
+# Academic Calendar — Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Estrutura do Projeto
 
-Currently, two official plugins are available:
+```text
+src/
+├── components/
+├── fonts/
+├── images/
+├── objects/
+├── pages/
+├── routes/
+├── utils/
+├── App.jsx
+├── main.jsx
+└── index.css
+```
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Organização Geral
 
-## React Compiler
+A arquitetura do projeto foi organizada de forma modular, separando as responsabilidades entre componentes reutilizáveis, páginas, recursos estáticos e funções auxiliares. Essa estrutura facilita a manutenção, promove o reaproveitamento de código e torna a aplicação mais escalável, permitindo a inclusão de novas funcionalidades sem impactar significativamente as existentes.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### Estrutura dos diretórios
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+| Diretório | Descrição |
+|-----------|-----------|
+| **components/** | Componentes reutilizáveis da interface, como botões, campos de texto, modais, seletores e demais elementos visuais compartilhados entre as páginas. |
+| **fonts/** | Fontes utilizadas pela aplicação para manter a identidade visual do sistema. |
+| **images/** | Imagens, ícones, logotipos e outros recursos gráficos utilizados na interface. |
+| **objects/** | Objetos, constantes e listas compartilhadas, como tipos de eventos, frequências e demais dados estáticos da aplicação. |
+| **pages/** | Páginas da aplicação, responsáveis pela composição da interface e pela organização dos componentes de cada tela. |
+| **routes/** | Configuração das rotas da aplicação utilizando React Router, definindo a navegação entre as páginas. |
+| **utils/** | Funções utilitárias reutilizáveis, como formatação de datas, notificações (toast), validações e outras funções auxiliares. |
+| **App.jsx** | Componente principal da aplicação, responsável por estruturar a interface e renderizar as rotas e componentes globais. |
+| **main.jsx** | Ponto de entrada da aplicação React, responsável pela inicialização do projeto e renderização do componente principal. |
+| **index.css** | Arquivo de estilos globais utilizado por toda a aplicação. |
