@@ -2,10 +2,12 @@ import express from 'express'
 import { AuthController } from '../../modules/auth/Controllers/authController.ts';
 import { AuthService } from '../../shared/services/auth.service.ts';
 import { PrismaUserRepository } from '../../modules/user/repositories/PrismaUserRepository.ts';
+import { PrismaAssignmentRepository } from '../../modules/assignment/repositories/PrismaAssignmentRepository.ts';
 
 //dependencias
+const assignmentRepository = new PrismaAssignmentRepository();
 const userRepository = new PrismaUserRepository();
-const authService = new AuthService(userRepository);
+const authService = new AuthService(userRepository, assignmentRepository);
 const authController = new AuthController(authService);
 
 const route = express.Router();

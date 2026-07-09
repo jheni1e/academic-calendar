@@ -1,11 +1,13 @@
 import { generateToken } from "../../app/utils/jwt.ts";
 import { comparePassword } from "../../app/utils/password.ts";
 import { IUserRepository } from "../../modules/user/repositories/IUserRepository.ts";
-
+import { IAssignmentRepository } from "../../modules/assignment/repositories/IAssignmentRepository.ts";
+import { PrismaAssignmentRepository } from "../../modules/assignment/repositories/PrismaAssignmentRepository.ts";
 export class AuthService {
 
     constructor(
-        private readonly userRepository: IUserRepository
+        private readonly userRepository: IUserRepository,
+        private readonly assignmentRepository : IAssignmentRepository
     ) {}
 
     async login(edv: number, password: string) {
@@ -24,11 +26,13 @@ export class AuthService {
         if (!isCorrect) {
             throw new Error("Invalid password");
         }
+        
+        const role = await this.assignmentRepository.findByUserId(user.user_id)
 
         return generateToken({
             id: user.user_id,
-            edv: user.user_edv
-            // role: user.role
+            edv: user.user_edv,
+            role: role
         });
 
     }
