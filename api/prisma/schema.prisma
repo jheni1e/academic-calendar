@@ -46,25 +46,6 @@ model User {
   createdEvents  Event[]             @relation("CreatedEvents")
 }
 
-model ClassUser {
-  class_user_id Int @id @default(autoincrement())
-  class_id      Int
-  user_id       Int
-
-  class Class @relation(fields: [class_id], references: [class_id])
-  user  User  @relation(fields: [user_id], references: [user_id])
-
-  @@unique([class_id, user_id])
-  @@index([user_id])
-  @@index([class_id])
-}
-
-model Role {
-  role_id     Int          @id @default(autoincrement())
-  name        String       @unique
-  assignments Assignment[]
-}
-
 model Assignment {
   assignment_id Int @id @default(autoincrement())
   role_id       Int
@@ -91,6 +72,19 @@ model Class {
   events      Event[]
 }
 
+model ClassUser {
+  class_user_id Int @id @default(autoincrement())
+  class_id      Int
+  user_id       Int
+
+  class Class @relation(fields: [class_id], references: [class_id])
+  user  User  @relation(fields: [user_id], references: [user_id])
+
+  @@unique([class_id, user_id])
+  @@index([user_id])
+  @@index([class_id])
+}
+
 model Subject {
   subject_id Int      @id @default(autoincrement())
   name       String
@@ -99,12 +93,12 @@ model Subject {
   end_date   DateTime
   class_id   Int
   events     Event[]
+  is_active Boolean @default(true)
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
   responsables SubjectInstructor[]
-  // requirements SubjectRequirement[]
 
   class        Class         @relation(fields: [class_id], references: [class_id])
   subjectRooms SubjectRoom[]
@@ -125,29 +119,32 @@ model SubjectInstructor {
   @@index([instructor_id])
 }
 
-// model SubjectRequirement {
-//   subject_requirement_id Int @id @default(autoincrement())
-//   subject_id             Int
-//   feature_id             Int
-
-//   subject Subject @relation(fields: [subject_id], references: [subject_id])
-//   feature Feature @relation(fields: [feature_id], references: [feature_id])
-
-//   @@unique([subject_id, feature_id])
-//   @@index([subject_id])
-//   @@index([feature_id])
-// }
-
-model EventType {
-  event_type_id Int    @id @default(autoincrement())
-  name          String @unique
+model SubjectRoom {
+  
+  subject_room_id Int @id @default(autoincrement())
+  room_id    Int
+  subject_id Int
+  priority        Int
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
-  events Event[]
+  subject Subject @relation(fields: [subject_id], references: [subject_id])
+  room    Room    @relation(fields: [room_id], references: [room_id])
+
+  @@index([room_id])
+  @@index([subject_id])
+  @@unique([subject_id, room_id])
 }
 
+model Role {
+  role_id     Int          @id @default(autoincrement())
+  name        String       @unique
+  assignments Assignment[]
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
 model Event {
   event_id      Int     @id @default(autoincrement())
   title         String
@@ -175,6 +172,25 @@ model Event {
   @@index([created_by])
 }
 
+model EventType {
+  event_type_id Int    @id @default(autoincrement())
+  name          String @unique
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  events Event[]
+}
+
+model EventRole {
+  event_role_id  Int             @id @default(autoincrement())
+  name           String          @unique
+  participations Participation[]
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
+
 model Room {
   room_id     Int     @id @default(autoincrement())
   title       String
@@ -186,51 +202,8 @@ model Room {
   updated_at DateTime @updatedAt
 
   reservations Reservation[]
-  // roomFeatures RoomFeature[]
   subjectRooms SubjectRoom[]
 }
-
-model SubjectRoom {
-  subject_room_id Int @id @default(autoincrement())
-  priority        Int
-
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
-
-  room_id    Int
-  subject_id Int
-
-  subject Subject @relation(fields: [subject_id], references: [subject_id])
-  room    Room    @relation(fields: [room_id], references: [room_id])
-
-  @@index([room_id])
-  @@index([subject_id])
-  @@unique([subject_id, room_id])
-}
-
-// model Feature {
-//   feature_id Int    @id @default(autoincrement())
-//   name       String @unique
-
-//   created_at DateTime @default(now())
-//   updated_at DateTime @updatedAt
-
-//   roomFeatures        RoomFeature[]
-//   subjectRequirements SubjectRequirement[]
-// }
-
-// model RoomFeature {
-//   room_feature_id Int @id @default(autoincrement())
-//   room_id         Int
-//   feature_id      Int
-
-//   room    Room    @relation(fields: [room_id], references: [room_id])
-//   feature Feature @relation(fields: [feature_id], references: [feature_id])
-
-//   @@unique([room_id, feature_id])
-//   @@index([room_id])
-//   @@index([feature_id])
-// }
 
 model Reservation {
   reservation_id Int               @id @default(autoincrement())
@@ -251,12 +224,6 @@ model Reservation {
   @@index([room_id])
   @@index([event_id])
   @@index([room_id, schedule_start, schedule_end])
-}
-
-model EventRole {
-  event_role_id  Int             @id @default(autoincrement())
-  name           String          @unique
-  participations Participation[]
 }
 
 model Participation {
