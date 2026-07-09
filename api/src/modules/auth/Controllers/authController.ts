@@ -18,7 +18,7 @@ export class AuthController {
             );
 
             return res.status(200).send({ message: `Welcome!`, token});
-
+            
         } catch (error) {
             
             if (error instanceof Error)
