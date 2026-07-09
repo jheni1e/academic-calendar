@@ -1,0 +1,41 @@
+.divForm {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    height: 100%;
+}
+
+.divInput {
+    display: flex;
+    flex-direction: column;
+    width: 20vw;
+}
+
+.inputTitle {
+    font-size: 1.1rem;
+    margin: 10px 0;
+}
+
+.divButton {
+    width: 15vw;
+    margin-top: 3rem;
+}
+
+.formTitle {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.mainTitle {
+    font-size: 2.2rem;
+    font-weight: 600;
+}
+
+.mainSubtitle {
+    font-size: 1rem;
+    font-weight: 400;
+    margin: 4px;
+}
