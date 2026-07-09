@@ -24,6 +24,8 @@ function Login() {
         };
 
         //chamada de api para logar
+
+        navigate("/home");
     };
 
     return (
