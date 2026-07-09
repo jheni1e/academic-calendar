@@ -1,0 +1,3 @@
+GetAssignmentsByUserUseCase
+GetAssignmentsByRoleUseCase
+FindAssignmentByUserAndRoleUseCase

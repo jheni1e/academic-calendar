@@ -1,4 +1,4 @@
-import { CreateAssignmentDTO } from "../AssignmentDto.ts";
+import { CreateAssignmentDTO } from "../AssignmentDTO.ts";
 
 export interface IAssignmentRepository {
 
