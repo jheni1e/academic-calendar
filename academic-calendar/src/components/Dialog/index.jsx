@@ -11,7 +11,10 @@ function Dialog({ isOpen, onClose, type, title }) {
     const [responsible, setResponsible] = useState(null);
     const [room, setRoom] = useState(null);
     const [classs, setClasss] = useState(null);
+
     const [typeEvent, setTypeEvent] = useState(null);
+    const [selectedParticipant, setSelectedParticipant] = useState("");
+    const [participants, setParticipants] = useState([]);
 
     useEffect(() => {
         const dialog = dialogRef.current;
@@ -36,6 +39,25 @@ function Dialog({ isOpen, onClose, type, title }) {
         dialog.addEventListener("cancel", handleCancel);
         return () => dialog.removeEventListener("cancel", handleCancel);
     }, [onClose]);
+
+    const addParticipant = () => {
+        if (!selectedParticipant) return;
+
+        const participant = usersMock.find(
+            user => user.value === selectedParticipant
+        );
+
+        if (!participant) return;
+
+        if (participants.some(p => p.value === participant.value)) return;
+
+        setParticipants([...participants, participant]);
+        setSelectedParticipant("");
+    };
+
+    const removeParticipant = (id) => {
+        setParticipants(participants.filter(p => p.value !== id));
+    };
 
     const usersMock = [
         { value: 1, label: "Fabio Silveira" },
@@ -123,7 +145,19 @@ function Dialog({ isOpen, onClose, type, title }) {
                         <>
                             <div className="dialogInput">
                                 <h4>Participantes:</h4>
-                                <DropdownList options={usersMock} selectedValue={responsible} onChange={(e) => setResponsible(e.target.value)} />
+                                <div className="participantSelector">
+                                    <DropdownList options={usersMock} selectedValue={selectedParticipant} onChange={(e) => setSelectedParticipant(Number(e.target.value))} />
+                                    <button onClick={addParticipant} className="addParticipant">+</button>
+                                </div>
+                            </div>
+                            <div className="participantsList">
+                                {participants.map((participant) => (
+                                    <div key={participant.value} className="participantItem">
+                                        <span className="participantName">{participant.label}</span>
+
+                                        <button className="removeParticipant" onClick={() => removeParticipant(participant.value)}>×</button>
+                                    </div>
+                                ))}
                             </div>
                             <div className="dialogInput">
                                 <h4>Início:</h4>
@@ -133,13 +167,13 @@ function Dialog({ isOpen, onClose, type, title }) {
                                 <h4>Encerramento:</h4>
                                 <TextBox placeholder="XX/XX/XXXX XX:XX" />
                             </div>
-                            <div className="dialogInput">
-                                <h4>Cor:</h4>
-                                <ColorPicker />
-                            </div>
                             <div style={{ display: "flex", flexDirection: "column", width: "500px" }}>
                                 <h4>Frequência:</h4>
                                 <FrequencySelector />
+                            </div>
+                            <div className="dialogInput" style={{ marginLeft: "3rem" }}>
+                                <h4>Cor:</h4>
+                                <ColorPicker />
                             </div>
                         </>
                     }
