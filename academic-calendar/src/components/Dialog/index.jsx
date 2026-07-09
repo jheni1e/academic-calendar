@@ -9,8 +9,10 @@ import FrequencySelector from "../FrequencySelector";
 function Dialog({ isOpen, onClose, type, title }) {
     const dialogRef = useRef(null);
     const [responsible, setResponsible] = useState(null);
-    const [room, setRoom] = useState(null);
     const [classs, setClasss] = useState(null);
+
+    const [selectedRoom, setSelectedRoom] = useState(null);
+    const [rooms, setRooms] = useState([]);
 
     const [typeEvent, setTypeEvent] = useState(null);
     const [selectedParticipant, setSelectedParticipant] = useState("");
@@ -39,6 +41,36 @@ function Dialog({ isOpen, onClose, type, title }) {
         dialog.addEventListener("cancel", handleCancel);
         return () => dialog.removeEventListener("cancel", handleCancel);
     }, [onClose]);
+
+    const addRoom = () => {
+        if (!selectedRoom) return;
+
+        const room = salasMock.find(room => room.value === selectedRoom);
+
+        if (!room) return;
+
+        if (rooms.some(r => r.value === room.value)) return;
+
+        setRooms([
+            ...rooms,
+            {
+                ...room,
+                isMain: rooms.length === 0
+            }
+        ]);
+
+        setSelectedRoom("");
+    };
+
+    const removeRoom = (id) => {
+        const newRooms = rooms.filter(r => r.value !== id);
+    
+        if (!newRooms.some(r => r.isMain) && newRooms.length > 0) {
+            newRooms[0].isMain = true;
+        }
+    
+        setRooms([...newRooms]);
+    };
 
     const addParticipant = () => {
         if (!selectedParticipant) return;
@@ -110,24 +142,32 @@ function Dialog({ isOpen, onClose, type, title }) {
                         <TextBox placeholder="XX/XX/XXXX XX:XX" />
                     </div>
                     <div className="dialogInput">
-                        <h4>Encerramento:</h4>
-                        <TextBox placeholder="XX/XX/XXXX XX:XX" />
-                    </div>
-                    <div className="dialogInput">
                         <h4>Carga horária:</h4>
                         <TextBox placeholder="e.g.: 16h" />
                     </div>
                     <div className="dialogInput">
-                        <h4>Cor:</h4>
-                        <ColorPicker />
-                    </div>
-                    <div className="dialogInput">
                         <h4>Salas:</h4>
-                        <DropdownList options={salasMock} selectedValue={room} onChange={(e) => setRoom(e.target.value)} />
+                        <div className="itemSelector">
+                            <DropdownList options={salasMock} selectedValue={selectedRoom} onChange={(e) => setSelectedRoom(Number(e.target.value))} />
+                            <button onClick={addRoom} className="addItem">+</button>
+                        </div>
                     </div>
-                    <div className="dialogInput">
+                    <div className="roomsList">
+                        {rooms.map((room) => (
+                            <div key={room.value} className={`listItem ${room.isMain ? "mainRoom" : ""}`}>
+                                <span className="itemName">{room.isMain && "⭐ "}{room.label}</span>
+
+                                <button className="removeItem" onClick={() => removeRoom(room.value)}>×</button>
+                            </div>
+                        ))}
+                    </div>
+                    <div style={{ display: "flex", flexDirection: "column", width: "500px" }}>
                         <h4>Frequência:</h4>
                         <FrequencySelector />
+                    </div>
+                    <div className="dialogInput" style={{ marginLeft: "3rem" }}>
+                        <h4>Cor:</h4>
+                        <ColorPicker />
                     </div>
                 </div>
             }
@@ -145,17 +185,17 @@ function Dialog({ isOpen, onClose, type, title }) {
                         <>
                             <div className="dialogInput">
                                 <h4>Participantes:</h4>
-                                <div className="participantSelector">
+                                <div className="itemSelector">
                                     <DropdownList options={usersMock} selectedValue={selectedParticipant} onChange={(e) => setSelectedParticipant(Number(e.target.value))} />
-                                    <button onClick={addParticipant} className="addParticipant">+</button>
+                                    <button onClick={addParticipant} className="addItem">+</button>
                                 </div>
                             </div>
                             <div className="participantsList">
                                 {participants.map((participant) => (
-                                    <div key={participant.value} className="participantItem">
-                                        <span className="participantName">{participant.label}</span>
+                                    <div key={participant.value} className="listItem">
+                                        <span className="itemName">{participant.label}</span>
 
-                                        <button className="removeParticipant" onClick={() => removeParticipant(participant.value)}>×</button>
+                                        <button className="removeItem" onClick={() => removeParticipant(participant.value)}>×</button>
                                     </div>
                                 ))}
                             </div>
