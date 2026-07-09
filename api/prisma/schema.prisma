@@ -120,7 +120,7 @@ model SubjectInstructor {
   subject    Subject @relation(fields: [subject_id], references: [subject_id])
   instructor User    @relation(fields: [instructor_id], references: [user_id])
 
-  @@unique([subject_id, instructor_id])
+  @@unique([subject_id, instructor_id], name: "subject_instructor_unique")
   @@index([subject_id])
   @@index([instructor_id])
 }
@@ -205,6 +205,7 @@ model SubjectRoom {
 
   @@index([room_id])
   @@index([subject_id])
+  @@unique([subject_id, room_id])
 }
 
 // model Feature {
@@ -269,7 +270,7 @@ model Participation {
   event_role EventRole @relation(fields: [event_role_id], references: [event_role_id])
   event      Event     @relation(fields: [event_id], references: [event_id])
 
-  @@unique([user_id, event_id])
+  @@unique([user_id, event_id], name: "user_event_unique")
   @@index([user_id])
   @@index([event_id])
   @@index([event_role_id])

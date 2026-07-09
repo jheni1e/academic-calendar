@@ -1,0 +1,11 @@
+// TODO: Verificar se o usuário existe.
+
+// TODO: Verificar se o evento existe.
+
+// TODO: Verificar se o EventRole existe.
+
+// TODO: Não permitir cadastrar participação em eventos cancelados.
+
+// TODO: Não permitir cadastrar participação em eventos já encerrados.
+
+// TODO: Verificar permissões para alteração/exclusão da participação.

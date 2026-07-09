@@ -1,6 +1,7 @@
 import { prisma } from "../../../lib/prisma.ts";
 import { CreateSubjectInstructorDTO, UpdateSubjectInstructorDTO } from "../SubjectInstructorDto.ts";
 import { ISubjectInstructorRepository } from "./ISubjectInstructorRepository.ts";
+import { SubjectInstructor } from "../../../generated/prisma/client.ts";
 
 export class PrismaSubjectInstructorRepository implements ISubjectInstructorRepository{
 
@@ -20,6 +21,37 @@ export class PrismaSubjectInstructorRepository implements ISubjectInstructorRepo
                 subject_instructor_id: subjectInstructorId
             }
         })
+    }
+
+    async findBySubject(subjectId: number): Promise<SubjectInstructor[]> {
+        return prisma.subjectInstructor.findMany({
+            where: {
+                subject_id: subjectId
+            }
+        });
+    }
+
+    async findByInstructor(instructorId: number): Promise<SubjectInstructor | null> {
+        return prisma.subjectInstructor.findMany({
+            where: {
+                instructor_id: instructorId
+            }
+        })
+    }
+    
+    async findBySubjectAndInstructor(
+        subjectId: number,
+        instructorId: number
+    ): Promise<SubjectInstructor | null> {
+    
+        return prisma.subjectInstructor.findUnique({
+            where: {
+                subject_instructor_unique: {
+                    subject_id: subjectId,
+                    instructor_id: instructorId
+                }
+            }
+        });
     }
 
     async findAll(): Promise<SubjectInstructor[]> {

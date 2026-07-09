@@ -1,0 +1,15 @@
+import { IRoomRepository } from "../repositories/IRoomRepository.ts";
+
+export class DeleteRoomUseCase{
+    constructor(
+        private readonly roomRepository: IRoomRepository
+    ){}
+
+    async execute(roomId: number){
+        const room = await this.roomRepository.findById(roomId);
+        
+        // TODO: Need User Type Verification before delete!
+        // TODO: Must be inactive!
+        this.roomRepository.delete(roomId)
+    }
+}

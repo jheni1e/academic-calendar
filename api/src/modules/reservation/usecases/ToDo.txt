@@ -1,0 +1,13 @@
+// TODO: Verificar conflito de horários na mesma sala.
+
+// TODO: Verificar se a sala está ativa.
+
+// TODO: Verificar se o evento existe.
+
+// TODO: Não permitir reservas em datas passadas.
+
+// TODO: Não permitir alterar reservas bloqueadas.
+
+// TODO: Não permitir excluir reservas confirmadas ou bloqueadas.
+
+// TODO: Verificar se o horário está dentro do funcionamento da instituição.

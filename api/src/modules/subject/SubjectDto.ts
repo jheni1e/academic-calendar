@@ -12,6 +12,7 @@ export interface UpdateSubjectDTO {
     workload?: number;
     startDate?: Date;
     endDate?: Date;
+    isActive?: boolean;
 }
 
 // export type SubjectResponseDTO = {

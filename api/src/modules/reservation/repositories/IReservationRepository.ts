@@ -1,17 +1,16 @@
-import { UpdateEventDTO } from "../../event/EventDto.ts";
 import { CreateReservationDTO, UpdateReservationDTO } from "../reservationDto.ts";
-
+import { Reservation } from "../../../generated/prisma/client.ts";
 export interface IReservationRepository {
-    create(data: CreateReservationDTO) : Promise<Event>;
+    create(data: CreateReservationDTO) : Promise<Reservation>;
 
-    findById(reservationId: number) : Promise<Event>;
+    findById(reservationId: number) : Promise<Reservation>;
 
-    findAll() : Promise<Event>;
+    findAll() : Promise<Reservation>;
 
     update(
         reservationId: number,
         data: UpdateReservationDTO
-    ) : Promise<Event>;
+    ) : Promise<Reservation>;
 
-    delete(reservationId: number) : Promise<Event>;
+    delete(reservationId: number) : Promise<Reservation>;
 }

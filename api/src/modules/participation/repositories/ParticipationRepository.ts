@@ -1,53 +1,90 @@
-import { prisma } from "../../../lib/prisma.ts";
-import { CreateParticipationDTO, ParticipationResponseDTO, UpdateParticipationDTO } from "../ParticipationDTO.ts";
+import { prisma } from "../../../config/prisma.ts";
+import {
+    CreateParticipationDTO,
+    ParticipationResponseDTO,
+    UpdateParticipationDTO
+} from "../ParticipationDTO.ts";
 import { IParticipationRepository } from "./IParticipationRepository.ts";
 
-export class ParticipationRepository
-    implements IParticipationRepository {
-
-        async create(data: CreateParticipationDTO): Promise<ParticipationResponseDTO> {
-            return prisma.participation.create({
-                data: {
-                    user_id: data.user_id,
-                    event_role_id: data.event_role_id,
-                    event_id: data.event_id,
-                    is_confirmed: data.is_confirmed ?? true
-                }
-            })
-        }
-
-        async update(participationId : number, data: UpdateParticipationDTO): Promise<ParticipationResponseDTO> {
-            return prisma.participation.update({
-                where: {
-                    participationId : participationId
-                },
-
-                data: {
-                    user_id: data.user_id,
-                    event_role_id: data.event_role_id,
-                    event_id: data.event_id,
-                    is_confirmed: data.is_confirmed ?? true
-                }
-            })
-        }
-
-        async findAll(){
-            return prisma.participation.findMany();
-        }
-
-        async findById(participationId: number): Promise<ParticipationResponseDTO> {
-            return prisma.participation.findUnique({
-                where: {
-                    participationId : participationId
-                }
-            })
-        }
-
-        async delete(participationId: number): Promise<ParticipationResponseDTO> {
-            return prisma.participation.delete({
-                where: {
-                    participationId : participationId
-                }
-            })
-        }
+export class PrismaParticipationRepository
+    implements IParticipationRepository
+{
+    async create(
+        data: CreateParticipationDTO
+    ): Promise<ParticipationResponseDTO> {
+        return await prisma.participation.create({
+            data
+        });
     }
+
+    async update(
+        participationId: number,
+        data: UpdateParticipationDTO
+    ): Promise<ParticipationResponseDTO> {
+        return await prisma.participation.update({
+            where: {
+                participation_id: participationId
+            },
+            data
+        });
+    }
+
+    async findAll(): Promise<ParticipationResponseDTO[]> {
+        return await prisma.participation.findMany();
+    }
+
+    async findById(
+        participationId: number
+    ): Promise<ParticipationResponseDTO | null> {
+        return await prisma.participation.findUnique({
+            where: {
+                participation_id: participationId
+            }
+        });
+    }
+
+    async findByUserAndEvent(
+        userId: number,
+        eventId: number
+    ): Promise<ParticipationResponseDTO | null> {
+    
+        return await prisma.participation.findUnique({
+            where: {
+                user_event_unique: {
+                    user_id: userId,
+                    event_id: eventId
+                }
+            }
+        });
+    }
+
+    async findByUser(
+        userId: number
+    ): Promise<ParticipationResponseDTO[]> {
+        return await prisma.participation.findMany({
+            where: {
+                user_id: userId
+            }
+        });
+    }
+
+    async findByEvent(
+        eventId: number
+    ): Promise<ParticipationResponseDTO[]> {
+        return await prisma.participation.findMany({
+            where: {
+                event_id: eventId
+            }
+        });
+    }
+
+    async delete(
+        participationId: number
+    ): Promise<void> {
+        await prisma.participation.delete({
+            where: {
+                participation_id: participationId
+            }
+        });
+    }
+}
