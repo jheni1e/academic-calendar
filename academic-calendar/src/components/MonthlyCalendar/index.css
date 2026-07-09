@@ -1,6 +1,6 @@
 .calendar-container {
-  width: 95%;
-  padding: 40px;
+  max-width: 1400px;
+  padding: 20px;
 }
 
 .calendar-header {

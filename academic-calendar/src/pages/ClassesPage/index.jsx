@@ -27,12 +27,12 @@ function Classes() {
   };
   return (
     <>
-      <div className="container-page">
+      <div className="containerPage">
         {isModalOpen &&
           <Dialog onClose={() => changeModal()} type="class" isOpen={isModalOpen} title="Nova Turma"></Dialog>
 
         }
-        <div className="container-title">
+        <div className="containerTitle">
           <div className="title">
             Todas as Turmas
           </div>

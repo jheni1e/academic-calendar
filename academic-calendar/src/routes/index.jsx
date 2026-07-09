@@ -5,15 +5,20 @@ import Home from "../pages/HomePage";
 import NotFound from "../pages/NotFoundPage";
 import Subject from "../pages/SubjectPage";
 import Classes from "../pages/ClassesPage";
-import Class from "../pages/ClassPage";
 import Register from "../pages/RegisterPage";
 import Semester from "../pages/SemesterPage";
+import './index.css'
 
 function WithHeader() {
   return (
     <>
-      <Header />
-      <Outlet />
+      <div className="layout">
+        <Header />
+
+        <main className="layout-content">
+          <Outlet />
+        </main>
+      </div>
     </>
   );
 }
@@ -30,12 +35,12 @@ export default function AppRouter() {
   return (
     <Router basename="/calendario-academico">
       <Routes>
-          <Route path="/*" element={<NotFound />} />
-          <Route element={<WithHeader />}>
+        <Route path="/*" element={<NotFound />} />
+        <Route element={<WithHeader />}>
           <Route path="/materias" element={<Subject />} />
           <Route path="/home" element={<Home />} />
-          <Route path="/turmas" element={<Classes/>} />
-          <Route path="/semestre" element={<Semester/>} />
+          <Route path="/turmas" element={<Classes />} />
+          <Route path="/semestre" element={<Semester />} />
           <Route path="/*" element={<NotFound />} />
         </Route>
         <Route element={<WithoutHeader />}>

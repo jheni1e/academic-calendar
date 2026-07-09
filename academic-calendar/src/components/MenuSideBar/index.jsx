@@ -40,7 +40,7 @@ const MenuSideBar = ({
         }
       </div>
       {hasDropDown &&
-        <div style={{ width: "220px", marginLeft: "12%" }}>
+        <div style={{ width: "220px", marginLeft: "9%" }}>
           <DropdownList
             label={LabelDropDown}
             options={OptionsDropDown}
