@@ -28,7 +28,7 @@ export class UserController {
 
         try {
             const user = await this.createUser.execute(data);
-            return res.status(200).send({ message : "User created!", })
+            return res.status(200).send({ message : "User created!" })
 
         } catch (error) {
             if (error instanceof Error)
