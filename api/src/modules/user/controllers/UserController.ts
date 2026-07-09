@@ -87,7 +87,11 @@ export class UserController {
 
         try {
             const user = await this.updateUser.execute(Number(id), data)
+<<<<<<< HEAD
      
+=======
+
+>>>>>>> 49699ec (feat: update access control through JWT)
             if(res.locals.user.edv == user.user_edv)
                 return res.status(200).send({ message: "User succesfully updated!", user})
             return res.status(401).send({ message : "Access denied"})
@@ -99,6 +103,7 @@ export class UserController {
         }}
     
 
+<<<<<<< HEAD
     disable = async(req: Request, res: Response) => {
         const { id } = req.params
 
@@ -113,4 +118,6 @@ export class UserController {
         }
     }
 
+=======
+>>>>>>> 49699ec (feat: update access control through JWT)
 }

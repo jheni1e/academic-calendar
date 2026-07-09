@@ -8,8 +8,11 @@ export interface CreateUserDTO {
 export interface UpdateUserDTO {
     name?: string;
     birthdate?: Date;
+<<<<<<< HEAD
     roleToAdd?: string
     roleToRemove?: string
+=======
+>>>>>>> 49699ec (feat: update access control through JWT)
 }
 
 export type UserResponseDTO = {
