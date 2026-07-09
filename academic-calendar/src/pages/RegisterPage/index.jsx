@@ -3,10 +3,12 @@ import { useNavigate } from "react-router";
 import './index.css';
 import TextBox from '../../components/TextBox';
 import BoschButton from '../../components/BoschButton';
+import { toastSuccess, toastError, toastWarning } from '../../components/BoschToast';
 
 function Register() {
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
+    const [EDV, setEDV] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [email, setEmail] = useState("");
@@ -14,19 +16,34 @@ function Register() {
     const navigate = useNavigate();
 
     const handleSave = () => {
+        console.log("oi")
+
+        if (!firstName || !lastName || !EDV || !password || !confirmPassword) {
+            toastWarning("Preencha todos os campos.");
+            return;
+        }
+
+        if (password != confirmPassword) {
+            toastWarning("As senhas devem ser iguais.");
+            return;
+        }
+
         var payload = {
             firstName: firstName,
             lastName: lastName,
+            edv: EDV,
             email: email,
             password: password
         };
 
         //chamada de api para registrar
+
+        toastSuccess("Usuário registrado com sucesso!");
     };
 
     return (
         <div className="divForm">
-            <div className="formTitle">
+            <div className="registerTitle">
                 <h1 className="mainTitle">Crie sua conta</h1>
                 <h3 className="mainSubtitle">Já tem uma conta? Faça <span style={{ textDecoration: "underline", cursor: "pointer" }} onClick={() => navigate("/login")}>login</span>.</h3>
             </div>
@@ -41,6 +58,10 @@ function Register() {
             <div className="divInput">
                 <h3 className="inputTitle">Email:</h3>
                 <TextBox placeholder="e.g.: joao.silva@br.bosch.com" text={email} onChange={(e) => setEmail(e.target.value)} />
+            </div>
+            <div className="divInput">
+                <h3 className="inputTitle">EDV:</h3>
+                <TextBox placeholder="e.g.: 9290XXXX" text={email} onChange={(e) => setEDV(e.target.value)} />
             </div>
             <div className="divInput">
                 <h3 className="inputTitle">Senha:</h3>

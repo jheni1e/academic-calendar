@@ -17,9 +17,17 @@
     margin: 10px 0;
 }
 
+.registerTitle {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin: 2rem 0 2rem 0;
+}
+
 .divButton {
     width: 15vw;
-    margin-top: 3rem;
+    margin-top: 2rem;
 }
 
 .formTitle {
