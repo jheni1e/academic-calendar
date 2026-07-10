@@ -1,9 +1,9 @@
 import { AppError } from "./AppError.ts";
 
-export class NotFoundError extends AppError {
+export class ValidationError extends AppError {
 
     constructor(message: string) {
-        super(message, 404);
+        super(message, 422);
     }
 
 }
