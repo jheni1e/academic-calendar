@@ -1,5 +1,5 @@
 import { prisma } from "../../../lib/prisma.ts";
-import { CreateAssignmentDTO } from "../AssignmentDto.ts";
+import { CreateAssignmentDTO } from "../AssignmentDTO.ts";
 import { IAssignmentRepository } from "./IAssignmentRepository.ts";
 
 export class PrismaAssignmentRepository implements IAssignmentRepository {
