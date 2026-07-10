@@ -8,7 +8,8 @@ export interface CreateUserDTO {
 export interface UpdateUserDTO {
     name?: string;
     birthdate?: Date;
-    role?: string
+    roleToAdd?: string
+    roleToRemove?: string
 }
 
 export type UserResponseDTO = {

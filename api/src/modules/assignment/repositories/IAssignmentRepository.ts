@@ -18,6 +18,6 @@ export interface IAssignmentRepository {
     ): Promise<Assignment[]>;
     
     delete(
-        assignmentId: number
+        data : CreateAssignmentDTO
     ): Promise<void>;
 }

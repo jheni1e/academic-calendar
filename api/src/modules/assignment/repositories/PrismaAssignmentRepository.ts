@@ -43,14 +43,17 @@ export class PrismaAssignmentRepository implements IAssignmentRepository {
             }
         });
     }
-
+    
     async delete(
-        assignmentId: number
+        data: CreateAssignmentDTO
     ): Promise<void> {
 
         await prisma.assignment.delete({
             where: {
-                assignment_id: assignmentId
+                role_id_user_id: {
+                    role_id: data.roleId,
+                    user_id: data.userId
+                }
             }
         });
     }
