@@ -62,7 +62,7 @@ export class PrismaUserRepository implements IUserRepository {
         userId: number,
         data: UpdateUserDTO
     ): Promise<User> {
-
+    
         return await prisma.user.update({
             where: {
                 user_id: userId
@@ -75,12 +75,12 @@ export class PrismaUserRepository implements IUserRepository {
     }
 
     async disable(
-        userEdv: number
+        id: number
     ): Promise<User> {
 
         return await prisma.user.update({
             where: {
-                user_edv: userEdv
+                user_id: id
             },
             data: {
                 is_active: false

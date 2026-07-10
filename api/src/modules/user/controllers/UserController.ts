@@ -10,7 +10,7 @@ import { DisableUserUseCase } from "../usecases/DisableUserUseCase.ts";
 
 export class UserController {
     private readonly userRepository = new PrismaUserRepository();
-
+    private readonly findAssignment = new Find
     private readonly createUser = new CreateUserUseCase(this.userRepository);
     private readonly findUserById = new FindUserByIdUseCase(this.userRepository);
     private readonly findUserByEdv = new FindUserByEdvUseCase(this.userRepository);
@@ -24,7 +24,7 @@ export class UserController {
 
         try {
             const user = await this.createUser.execute(data);
-            return res.status(200).send({ message : "User created!"})
+            return res.status(200).send({ message : "User created!", })
 
         } catch (error) {
             if (error instanceof Error)
@@ -83,7 +83,33 @@ export class UserController {
 
         try {
             const user = await this.updateUser.execute(Number(id), data)
+            const role = await this..role.findFirst({
+            where: {
+                name: data.role
+            }
+        })
 
+        const user = await prisma.user.findUnique({
+            where : {
+                user_id : userId
+            }
+        })
+
+        if(!role || !user)
+            throw new Error("Invalid arguments")
+
+        await prisma.assignment.update({
+            where: {
+                role_id_user_id : {
+                    role_id : role.role_id,
+                    user_id : user.user_id
+                }
+            },
+            
+            data: {
+                role_id : role.role_id
+            }
+        })
             if(res.locals.user.edv == user.user_edv)
                 return res.status(200).send({ message: "User succesfully updated!", user})
             return res.status(401).send({ message : "Access denied"})
@@ -92,6 +118,20 @@ export class UserController {
                 return res.status(401).send({ message : error.message})
 
             return res.status(500).send({ message: "Internal server error" })
+        }
+    }
+
+    disable = async(req: Request, res: Response) => {
+        const { id } = req.params
+
+        try {
+            const user = await this.disableUser.execute(Number(id))
+            return res.status(200).send({ message: "User disabled"})
+
+        } catch (error) {
+            if (error instanceof Error)
+                return res.status(401).send({ message: error.message})
+            return res.status(500).send({ message: "Internal server error"})
         }
     }
 

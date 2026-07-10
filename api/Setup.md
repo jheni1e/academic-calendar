@@ -55,3 +55,8 @@ git pull
 npm install
 npx prisma generate
 npx prisma migrate dev
+
+## Data format - payload
+ 
+- ISO8601
+"2007-03-18T00:00:00.000Z"
