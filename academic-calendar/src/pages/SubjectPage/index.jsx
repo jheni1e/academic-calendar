@@ -3,9 +3,12 @@ import BoschButton from "../../components/BoschButton";
 import "./index.css";
 import MenuSideBar from "../../components/MenuSideBar";
 import { useState } from "react";
+import Dialog from "../../components/Dialog";
 
 function Subject() {
   const [selectedValue, setSelectedValue] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   const subjects = [
     { name: "IOT", reponsible: "Patrick", class: "dta", percentage: 78 },
     { name: "Projeto FullStack", reponsible: "Cristian", class: "dta", percentage: 98 },
@@ -39,7 +42,8 @@ function Subject() {
             <BoschButton
               text="+ Adicionar Matéria"
               type="secondary"
-              style={{width: "250px"}}
+              style={{ width: "250px" }}
+              onClick={() => setIsModalOpen(!isModalOpen)}
             />
           </div>
 
@@ -59,6 +63,9 @@ function Subject() {
               ))}
           </div>
         </div>
+        {isModalOpen &&
+          <Dialog isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title="Registrar matéria" type="subject" />
+        }
       </div>
     </>
   );
