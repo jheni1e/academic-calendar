@@ -12,6 +12,7 @@ import { PrismaRoleRepository } from "../../role/repositories/PrismaRoleReposito
 
 export class UserController {
     private readonly userRepository = new PrismaUserRepository();
+    private readonly findAssignment = new Find
     private readonly assignmentRepository = new PrismaAssignmentRepository();
     private readonly roleRepository = new PrismaRoleRepository();
 
@@ -87,11 +88,33 @@ export class UserController {
 
         try {
             const user = await this.updateUser.execute(Number(id), data)
-<<<<<<< HEAD
-     
-=======
+            const role = await this..role.findFirst({
+            where: {
+                name: data.role
+            }
+        })
 
->>>>>>> 49699ec (feat: update access control through JWT)
+        const user = await prisma.user.findUnique({
+            where : {
+                user_id : userId
+            }
+        })
+
+        if(!role || !user)
+            throw new Error("Invalid arguments")
+
+        await prisma.assignment.update({
+            where: {
+                role_id_user_id : {
+                    role_id : role.role_id,
+                    user_id : user.user_id
+                }
+            },
+            
+            data: {
+                role_id : role.role_id
+            }
+        })
             if(res.locals.user.edv == user.user_edv)
                 return res.status(200).send({ message: "User succesfully updated!", user})
             return res.status(401).send({ message : "Access denied"})
@@ -103,7 +126,6 @@ export class UserController {
         }}
     
 
-<<<<<<< HEAD
     disable = async(req: Request, res: Response) => {
         const { id } = req.params
 
@@ -118,6 +140,4 @@ export class UserController {
         }
     }
 
-=======
->>>>>>> 49699ec (feat: update access control through JWT)
 }
