@@ -33,7 +33,7 @@ export class UserController {
 
         } catch (error) {
             if (error instanceof Error)
-                return res.status(401).send({ message : error.message})
+                return res.status(401).send({ message : error.message })
 
             return res.status(500).send({ message : "Internal server error"})
         }
