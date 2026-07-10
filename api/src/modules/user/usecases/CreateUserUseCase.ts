@@ -21,13 +21,4 @@ export class CreateUserUseCase {
         })
     }
     
-        const password = await hashPassword(data.password)
-
-        return this.userRepository.create({
-            ...data,
-            password
-        })
-    }
-
-    
 }

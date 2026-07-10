@@ -14,16 +14,11 @@ export class UpdateUserUseCase {
     ){}
 
     async execute(id : number, data : UpdateUserDTO) {
-<<<<<<< HEAD
         const user = await this.userRepository.findById(id)
-=======
-        const user = this.userRepository.findById(id)
->>>>>>> 49699ec (feat: update access control through JWT)
 
         if(!user)
             throw new Error("User not found")
         
-<<<<<<< HEAD
         const assignments = await this.assignmentRepository.findByUserId(user.user_id)
         const currentRoleIds = assignments.map(a => a.role_id)
 
@@ -64,8 +59,5 @@ export class UpdateUserUseCase {
             ...updatedUser,
             roles : assignments.map(a => a)
         }
-=======
-        return this.userRepository.update(id, data)
->>>>>>> 49699ec (feat: update access control through JWT)
     }
 }
