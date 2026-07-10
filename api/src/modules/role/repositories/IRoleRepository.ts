@@ -14,6 +14,11 @@ export interface IRoleRepository {
         roleId: number
     ): Promise<Role | null>;
 
+    findByName(
+        name: string
+    ): Promise<Role | null>;
+
+
     findAll(): Promise<Role[]>;
 
     update(
