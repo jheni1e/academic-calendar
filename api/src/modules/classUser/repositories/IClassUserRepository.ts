@@ -1,10 +1,10 @@
 import { ClassUser } from "../../../generated/prisma/client.ts";
-import { CreateClassUserDto } from "../ClassUserDto.ts";
+import { CreateClassUserDTO } from "../ClassUserDto.ts";
 
 export interface IClassUserRepository {
-    
+
     create(
-        data: CreateClassUserDto
+        data: CreateClassUserDTO
     ): Promise<ClassUser>;
 
     findById(
@@ -19,12 +19,12 @@ export interface IClassUserRepository {
         classId: number
     ): Promise<ClassUser[]>;
 
-    findAll(): Promise<ClassUser[]>;
-
-    exists(
+    findByClassAndUser(
         classId: number,
         userId: number
-    ): Promise<boolean>;
+    ): Promise<ClassUser | null>;
+
+    findAll(): Promise<ClassUser[]>;
 
     delete(
         classUserId: number

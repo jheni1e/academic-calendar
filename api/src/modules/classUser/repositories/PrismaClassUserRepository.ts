@@ -1,31 +1,15 @@
-
 import { prisma } from "../../../lib/prisma.ts";
-import { CreateClassUserDto } from "../ClassUserDto.ts";
-
+import { ClassUser } from "../../../generated/prisma/client.ts";
+import { CreateClassUserDTO } from "../ClassUserDto.ts";
 import { IClassUserRepository } from "./IClassUserRepository.ts";
 
 export class PrismaClassUserRepository implements IClassUserRepository {
 
-    async exists(
-    classId: number,
-    userId: number
-    ): Promise<boolean> {
-        const relation = await prisma.classUser.findFirst({
-            where: {
-                class_id: classId,
-                user_id: userId
-            }
-    });
-
-    return relation !== null;
-}
-
-
     async create(
-        data: CreateClassUserDto
+        data: CreateClassUserDTO
     ): Promise<ClassUser> {
 
-        return prisma.classUser.create({
+        return await prisma.classUser.create({
             data: {
                 class_id: data.classId,
                 user_id: data.userId
@@ -37,7 +21,7 @@ export class PrismaClassUserRepository implements IClassUserRepository {
         classUserId: number
     ): Promise<ClassUser | null> {
 
-        return prisma.classUser.findUnique({
+        return await prisma.classUser.findUnique({
             where: {
                 class_user_id: classUserId
             }
@@ -48,7 +32,7 @@ export class PrismaClassUserRepository implements IClassUserRepository {
         userId: number
     ): Promise<ClassUser[]> {
 
-        return prisma.classUser.findMany({
+        return await prisma.classUser.findMany({
             where: {
                 user_id: userId
             }
@@ -59,16 +43,31 @@ export class PrismaClassUserRepository implements IClassUserRepository {
         classId: number
     ): Promise<ClassUser[]> {
 
-        return prisma.classUser.findMany({
+        return await prisma.classUser.findMany({
             where: {
                 class_id: classId
             }
         });
     }
 
+    async findByClassAndUser(
+        classId: number,
+        userId: number
+    ): Promise<ClassUser | null> {
+
+        return await prisma.classUser.findUnique({
+            where: {
+                class_id_user_id: {
+                    class_id: classId,
+                    user_id: userId
+                }
+            }
+        });
+    }
+
     async findAll(): Promise<ClassUser[]> {
 
-        return prisma.classUser.findMany();
+        return await prisma.classUser.findMany();
     }
 
     async delete(

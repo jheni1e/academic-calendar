@@ -80,7 +80,7 @@ model ClassUser {
   class Class @relation(fields: [class_id], references: [class_id])
   user  User  @relation(fields: [user_id], references: [user_id])
 
-  @@unique([class_id, user_id])
+  @@unique([class_id, user_id], name: "class_user_unique")
   @@index([user_id])
   @@index([class_id])
 }
