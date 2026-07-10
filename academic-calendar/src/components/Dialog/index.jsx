@@ -138,10 +138,6 @@ function Dialog({ isOpen, onClose, type, title }) {
                         <DropdownList options={usersMock} selectedValue={responsible} onChange={(e) => setResponsible(e.target.value)} />
                     </div>
                     <div className="dialogInput">
-                        <h4>Início:</h4>
-                        <TextBox placeholder="XX/XX/XXXX XX:XX" />
-                    </div>
-                    <div className="dialogInput">
                         <h4>Carga horária:</h4>
                         <TextBox placeholder="e.g.: 16h" />
                     </div>
@@ -151,6 +147,10 @@ function Dialog({ isOpen, onClose, type, title }) {
                             <DropdownList options={salasMock} selectedValue={selectedRoom} onChange={(e) => setSelectedRoom(Number(e.target.value))} />
                             <button onClick={addRoom} className="addItem">+</button>
                         </div>
+                    </div>
+                    <div className="dialogInput">
+                        <h4>Cor:</h4>
+                        <ColorPicker />
                     </div>
                     <div className="roomsList">
                         {rooms.map((room) => (
@@ -164,10 +164,6 @@ function Dialog({ isOpen, onClose, type, title }) {
                     <div style={{ display: "flex", flexDirection: "column", width: "500px" }}>
                         <h4>Frequência:</h4>
                         <FrequencySelector />
-                    </div>
-                    <div className="dialogInput" style={{ marginLeft: "3rem" }}>
-                        <h4>Cor:</h4>
-                        <ColorPicker />
                     </div>
                 </div>
             }
@@ -233,7 +229,7 @@ function Dialog({ isOpen, onClose, type, title }) {
                             </div>
                             <div className="dialogInput">
                                 <h4>Sala:</h4>
-                                <DropdownList options={salasMock} selectedValue={room} onChange={(e) => setRoom(e.target.value)} />
+                                <DropdownList options={salasMock} selectedValue={selectedRoom} onChange={(e) => setRoom(e.target.value)} />
                             </div>
                         </>
                     }
