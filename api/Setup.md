@@ -41,7 +41,11 @@ npx prisma init
 ### Dotenv and Express
 
 npm install dotenv
+
 npm install express
+npm install -D @types/express
+npm install cors dotenv
+npm install -D @types/cors
 
 ## Get Prisma Database
 
