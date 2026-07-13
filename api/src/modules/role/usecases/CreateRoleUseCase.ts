@@ -1,3 +1,4 @@
+import { BadRequestError } from "../../../shared/errors/BadRequestError.ts";
 import { IRoleRepository } from "../repositories/IRoleRepository.ts";
 import { CreateRoleDTO } from "../RoleDTO.ts";
 
@@ -10,7 +11,7 @@ export class CreateRoleUseCase {
 
         // Verifica se o nome foi informado
         if (!data.name.trim()) {
-            throw new Error("Nome do papel é obrigatório.");
+            throw new BadRequestError("Nome do papel é obrigatório.");
         }
 
         return await this.roleRepository.create(data);
