@@ -40,7 +40,6 @@ export default function AppRouter() {
         <Route element={<WithHeader />}>
           <Route path="/materias" element={<Subject />} />
           <Route path="/home" element={<Home />} />
-          <Route path="/semestre" element={<Semester />} />
           <Route path="/*" element={<NotFound />} />
           <Route path="/planejamento" element={<Planning />} />
         </Route>
