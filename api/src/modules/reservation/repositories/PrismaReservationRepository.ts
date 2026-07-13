@@ -1,9 +1,8 @@
 import { prisma } from "../../../lib/prisma.ts";
-import { UpdateEventDTO } from "../../event/EventDto.ts";
 import { CreateReservationDTO, UpdateReservationDTO } from "../reservationDto.ts";
 import { IReservationRepository } from "./IReservationRepository.ts";
 
-export class ReservationRepository
+export class PrismaReservationRepository
     implements IReservationRepository {
         async create(
             data : CreateReservationDTO
@@ -13,10 +12,10 @@ export class ReservationRepository
                 data: {
                     roomId: data.roomId,
                     eventId: data.eventId,
-                    schedule_start: data.schedule_start,
-                    schedule_end: data.schedule_end,
-                    is_blocked: data.is_blocked ?? false,
-                    is_confirmed: data.is_confirmed ?? true,
+                    schedule_start: data.scheduleStart,
+                    schedule_end: data.scheduleEnd,
+                    is_blocked: isBlocked ?? false,
+                    is_confirmed: data.isConfirmed ?? true,
                     description: data.description
                 }
             });
@@ -33,10 +32,10 @@ export class ReservationRepository
 
                 data : {
                     eventId : data.roomId,
-                    schedule_start: data.schedule_start,
-                    schedule_end: data.schedule_end,
-                    is_blocked: data.is_blocked ?? false,
-                    is_confirmed: data.is_confirmed ?? true,
+                    schedule_start: data.scheduleStart,
+                    schedule_end: data.scheduleEnd,
+                    is_blocked: data.isBlocked ?? false,
+                    is_confirmed: data.isConfirmed ?? true,
                     description: data.description
                 }
             })
