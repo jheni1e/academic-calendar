@@ -29,6 +29,7 @@ function Home() {
             OptionsDropDown={dropdownOptions}
             hasCheckbox={true}
             hasItems={true}
+            type={'calendar'}
             items={subjects}
             selectedValueDrop={selectedRoom}
             onDropDownChange={(e) => setSelectedRoom(e.target.value)} />
@@ -37,6 +38,7 @@ function Home() {
           <MenuSideBar option1="Pessoal" option2="Turma"
             hasToggle={true}
             hasItems={true}
+            type={'calendar'}
             items={subjects}
             selectedValueDrop={selectedRoom}
             onDropDownChange={(e) => setSelectedRoom(e.target.value)} />

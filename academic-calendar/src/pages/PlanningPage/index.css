@@ -1,0 +1,39 @@
+.divTitle {
+  display: flex;
+  justify-content: center;
+}
+
+.divCalendar {
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+  height: calc(100vh - 112px);
+}
+
+.calendarWrapper {
+  flex: 1;
+  overflow: auto;
+}
+
+.body {
+  display: flex;
+  height: 100%;
+}
+
+.content {
+  flex: 1;
+  min-width: 0;
+  overflow: auto;
+}
+
+.event {
+  position: relative;
+}
+
+.event .popupBody {
+  display: none;
+}
+
+.event:hover .popupBody {
+  display: block;
+}
