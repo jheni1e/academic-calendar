@@ -2,6 +2,7 @@ import { useState } from "react";
 import MenuSideBar from "../../components/MenuSideBar";
 import MonthlyCalendar from "../../components/MonthlyCalendar";
 import "./index.css";
+import Dialog from "../../components/Dialog";
 
 function Planning() {
   const [subjects, setSubjects] = useState([
@@ -12,6 +13,17 @@ function Planning() {
   ]);
 
   const [selectedRoom, setSelectedRoom] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [subjectSelected, setSujectSelected] = useState({});
+
+  const changeModal = () =>{
+    setIsModalOpen(!isModalOpen)
+  }
+
+  const handleSubjectClick = (item) =>{
+    changeModal()
+    setSujectSelected(item)
+  }
 
   return (
     <>
@@ -23,9 +35,13 @@ function Planning() {
             hasItems={true}
             items={subjects}
             selectedValueDrop={selectedRoom}
-            type={'planning'}/>
+            type={'planning'} 
+            />
         <div className="content">
-          <MonthlyCalendar />
+            {isModalOpen && 
+                <Dialog></Dialog>
+            }
+            <MonthlyCalendar />
         </div>
       </div>
     </>

@@ -20,7 +20,7 @@ const months = [
   "Dezembro",
 ];
 
-function MonthlyCalendar({ initialDate, compact = false }) {
+function MonthlyCalendar({ initialDate, compact = false, type }) {
   const [currentDate, setCurrentDate] = useState(initialDate || new Date());
   const [viewMode, setViewMode] = useState("month");
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -96,8 +96,9 @@ function MonthlyCalendar({ initialDate, compact = false }) {
 
         {!compact && (
           <div className="actions">
-            <BoschButton text="+" type="secondary" onClick={() => setIsModalOpen(!isModalOpen)} />
-
+            {type === "calendar" && 
+              <BoschButton text="+" type="secondary" onClick={() => setIsModalOpen(!isModalOpen)} />
+            }
             <Toggle id="calendar-toggle" leftText="Mensal" rightText="Semanal" onChange={() => setViewMode((prev) => prev === "month" ? "week" : "month")} />
           </div>
         )}

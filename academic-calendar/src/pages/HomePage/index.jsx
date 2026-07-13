@@ -44,7 +44,7 @@ function Home() {
             onDropDownChange={(e) => setSelectedRoom(e.target.value)} />
         }
         <div className="content">
-          <MonthlyCalendar />
+          <MonthlyCalendar type={'calendar'} />
         </div>
       </div>
     </>
