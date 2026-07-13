@@ -7,7 +7,7 @@ export interface CreateRoomDTO {
 export interface UpdateRoomDTO {
     title?: string;
     capacity?: number;
-    description?: Date;
+    description?: string;
     is_active?: boolean;
 }
 

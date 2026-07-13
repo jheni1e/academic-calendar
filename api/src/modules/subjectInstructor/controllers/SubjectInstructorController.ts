@@ -7,25 +7,26 @@ import { CreateSubjectInstructorUseCase } from "../usecases/CreateSubjectInstruc
 import { DeleteSubjectInstructorUseCase } from "../usecases/DeleteSubjectInstructorUseCase.ts";
 import { FindSubjectInstructorByIdUseCase } from "../usecases/FindSubjectInstructorByIdUseCase.ts";
 import { GetSubjectInstructorsBySubjectUseCase } from "../usecases/GetSubjectInstructorsBySubjectUseCase.ts";
-import { GetSubjectInstructorsUseCase } from "../usecases/GetSubjectInstructorsUseCase.ts";
 import { GetSubjectsByInstructorUseCase } from "../usecases/GetSubjectsByInstructorUseCase.ts";
+import { GetSubjectInstructorsUseCase } from "../usecases/GetSubjectInstructorsUseCase.ts";
+import { UpdateSubjectInstructorUseCase } from "../usecases/UpdateSubjectInstructorUseCase.ts";
 
-export class CreateSubjectInstructorController {
+export class SubjectInstructorController {
 
     private readonly repository = new PrismaSubjectInstructorRepository();
 
-    private readonly createSI = new CreateSubjectInstructorUseCase(this.repository);
-    private readonly deleteSI = new DeleteSubjectInstructorUseCase(this.repository);
-    private readonly findSIById = new FindSubjectInstructorByIdUseCase(this.repository);
-    private readonly getSIBySubject = new GetSubjectInstructorsBySubjectUseCase(this.repository);
-    private readonly getAllSI = new GetSubjectInstructorsUseCase(this.repository);
-    private readonly getSIByInstructor = new GetSubjectsByInstructorUseCase(this.repository);
+    private readonly createUseCase = new CreateSubjectInstructorUseCase(this.repository);
+    private readonly deleteUseCase = new DeleteSubjectInstructorUseCase(this.repository);
+    private readonly findUseCase = new FindSubjectInstructorByIdUseCase(this.repository);
+    private readonly getUseCase = new GetSubjectInstructorsUseCase(this.repository);
+    private readonly getInstructorByInstructorUseCase = new GetSubjectInstructorsBySubjectUseCase(this.repository);
+    private readonly getSubjectsByInstructorUseCase = new GetSubjectsByInstructorUseCase(this.repository);
+    private readonly updateUseCase = new UpdateSubjectInstructorUseCase(this.repository);
 
-
-    create = async (req: Request, res: Response) => {
+    async handleCreate(req: Request, res: Response) {
 
         try {
-            const subjectInstructor = await this.createSI.execute(req.body);
+            const subjectInstructor = await this.createUseCase.execute(req.body);
 
             return res.status(201).json(subjectInstructor);
 
@@ -42,13 +43,14 @@ export class CreateSubjectInstructorController {
             });
 
         }
+
     }
 
-    delete = async (req: Request, res: Response) => {
+    async handleDelete(req: Request, res: Response) {
 
         try {
 
-            await this.deleteSI.execute(
+            await this.deleteUseCase.execute(
                 Number(req.params.id)
             );
 
@@ -70,35 +72,11 @@ export class CreateSubjectInstructorController {
 
     }
 
-    getAll = async (req: Request, res: Response) => {
+    async handleFind(req: Request, res: Response) {
 
         try {
 
-            const subjectInstructors = await this.getAllSI.execute();
-
-            return res.status(200).json(subjectInstructors);
-
-        } catch (error) {
-
-            if (error instanceof AppError) {
-                return res.status(error.statusCode).json({
-                    message: error.message
-                });
-            }
-
-            return res.status(500).json({
-                message: "Internal server error."
-            });
-
-        }
-
-    }
-
-    getById = async (req: Request, res: Response) => {
-
-        try {
-
-            const subjectInstructor = await this.findSIById.execute(
+            const subjectInstructor = await this.findUseCase.execute(
                 Number(req.params.id)
             );
 
@@ -120,11 +98,35 @@ export class CreateSubjectInstructorController {
 
     }
 
-    getBySubject = async (req: Request, res: Response) => {
+    async handleGet(req: Request, res: Response) {
 
         try {
 
-            const subjectInstructors = await this.getSIBySubject.execute(
+            const subjectInstructors = await this.getUseCase.execute();
+
+            return res.status(200).json(subjectInstructors);
+
+        } catch (error) {
+
+            if (error instanceof AppError) {
+                return res.status(error.statusCode).json({
+                    message: error.message
+                });
+            }
+
+            return res.status(500).json({
+                message: "Internal server error."
+            });
+
+        }
+
+    }
+
+    async handleGetInstructorByInstructor(req: Request, res: Response) {
+
+        try {
+
+            const subjectInstructors = await this.getInstructorByInstructorUseCase.execute(
                 Number(req.params.subjectId)
             );
 
@@ -144,13 +146,13 @@ export class CreateSubjectInstructorController {
 
         }
 
-    } 
+    }
 
-    getByInstructor = async (req: Request, res: Response) => {
+    async handleGetSubjectsByInstructor(req: Request, res: Response) {
 
         try {
 
-            const subjects = await this.getSIByInstructor.execute(
+            const subjects = await this.getSubjectsByInstructorUseCase.execute(
                 Number(req.params.instructorId)
             );
 
@@ -172,32 +174,31 @@ export class CreateSubjectInstructorController {
 
     }
 
-    // update = async (req: Request, res: Response) => {
+    async handleUpdate(req: Request, res: Response) {
 
-    //     try {
+        try {
 
-    //         const subjectInstructor = await this.update.execute(
-    //             Number(req.params.id),
-    //             req.body
-    //         );
+            const subjectInstructor = await this.updateUseCase.execute(
+                Number(req.params.id),
+                req.body
+            );
 
-    //         return res.status(200).json(subjectInstructor);
+            return res.status(200).json(subjectInstructor);
 
-    //     } catch (error) {
+        } catch (error) {
 
-    //         if (error instanceof AppError) {
-    //             return res.status(error.statusCode).json({
-    //                 message: error.message
-    //             });
-    //         }
+            if (error instanceof AppError) {
+                return res.status(error.statusCode).json({
+                    message: error.message
+                });
+            }
 
-    //         return res.status(500).json({
-    //             message: "Internal server error."
-    //         });
+            return res.status(500).json({
+                message: "Internal server error."
+            });
 
-    //     }
+        }
 
-    // }
-    
+    }
 
 }

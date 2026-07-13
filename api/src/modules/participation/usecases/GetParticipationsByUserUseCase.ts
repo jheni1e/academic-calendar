@@ -1,4 +1,4 @@
-import { ParticipationResponseDTO } from "../ParticipationDTO.ts";
+import { Participation } from "../../../generated/prisma/client.ts";
 import { IParticipationRepository } from "../repositories/IParticipationRepository.ts";
 
 export class GetParticipationsByUserUseCase {
@@ -9,7 +9,7 @@ export class GetParticipationsByUserUseCase {
 
     async execute(
         userId: number
-    ): Promise<ParticipationResponseDTO[]> {
+    ): Promise<Participation[]> {
 
         return await this.participationRepository.findByUser(userId);
 
