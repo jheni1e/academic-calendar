@@ -4,7 +4,8 @@ import { CreateUserDTO } from "../UserDto.ts";
 
 export class CreateUserUseCase {
     constructor(
-        private readonly userRepository : IUserRepository
+        private readonly userRepository : IUserRepository,
+        private readonly assign
     ){}
 
     async execute(data: CreateUserDTO) {
@@ -15,10 +16,12 @@ export class CreateUserUseCase {
     
         const password = await hashPassword(data.password)
 
-        return this.userRepository.create({
+        const user = await this.userRepository.create({
             ...data,
             password
         })
+
+        await 
     }
     
 }
