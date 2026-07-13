@@ -1,7 +1,7 @@
 export interface CreateRoomDTO {
     title: string;
     capacity: number;
-    description: Date;
+    description: string;
 }
 
 export interface UpdateRoomDTO {

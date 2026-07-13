@@ -14,7 +14,7 @@ export class DeleteReservationUseCase {
         }
 
         // Não permite excluir reservas bloqueadas
-        if (reservation.isBlocked) {
+        if (reservation.is_blocked) {
             throw new Error("A reserva está bloqueada.");
         }
 

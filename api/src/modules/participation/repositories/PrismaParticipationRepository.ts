@@ -1,4 +1,4 @@
-import { prisma } from "../../../config/prisma.ts";
+import { prisma } from "../../../lib/prisma.ts";
 import {
     CreateParticipationDTO,
     ParticipationResponseDTO,

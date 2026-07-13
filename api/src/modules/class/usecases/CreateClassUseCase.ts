@@ -1,4 +1,4 @@
-import { CreateClassDTO } from "../ClassDto.ts";
+import { CreateClassDTO } from "../ClassDTO.ts";
 import { IClassRepository } from "../repositories/IClassRepository.ts";
 
 export class CreateClassUseCase {

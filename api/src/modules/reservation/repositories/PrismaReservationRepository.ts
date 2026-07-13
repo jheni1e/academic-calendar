@@ -1,3 +1,4 @@
+import { Reservation } from "../../../generated/prisma/client.ts";
 import { prisma } from "../../../lib/prisma.ts";
 import { CreateReservationDTO, UpdateReservationDTO } from "../reservationDto.ts";
 import { IReservationRepository } from "./IReservationRepository.ts";
@@ -6,7 +7,7 @@ export class PrismaReservationRepository
     implements IReservationRepository {
         async create(
             data : CreateReservationDTO
-        ): Promise<Event> {
+        ): Promise<Reservation> {
 
             return prisma.reservation.create({
                 data: {
@@ -23,15 +24,15 @@ export class PrismaReservationRepository
 
         async update(
             reservationId: number,
-            data: UpdateReservationDTO): Promise<Event> {
+            data: UpdateReservationDTO): Promise<Reservation> {
                 
             return prisma.reservation.update({
                 where: {
-                    reservationId : reservationId
+                    reservation_id : reservationId
                 },
 
                 data : {
-                    eventId : data.roomId,
+                    event_id : data.roomId,
                     schedule_start: data.scheduleStart,
                     schedule_end: data.scheduleEnd,
                     is_blocked: data.isBlocked ?? false,
@@ -41,22 +42,22 @@ export class PrismaReservationRepository
             })
         }
 
-        async findAll(): Promise<Event> {
+        async findAll(): Promise<Reservation[]> {
             return prisma.reservation.findMany();
         }
 
-        async findById(reservationId: number): Promise<Event> {
+        async findById(reservationId: number): Promise<Reservation | null> {
             return prisma.reservation.findUnique({
                 where: {
-                    reservationId : reservationId
+                    reservation_id : reservationId
                 }
             })
         }
 
-        async delete(reservationId: number): Promise<Event> {
+        async delete(reservationId: number): Promise<void> {
             return prisma.reservation.delete({
                 where: {
-                    reservationId : reservationId
+                    reservation_id : reservationId
                 }
             })
         }

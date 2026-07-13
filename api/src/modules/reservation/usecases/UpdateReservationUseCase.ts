@@ -15,13 +15,13 @@ export class UpdateReservationUseCase {
         }
 
         // Não permite editar reservas bloqueadas
-        if (reservation.isBlocked) {
+        if (reservation.is_blocked) {
             throw new Error("A reserva está bloqueada.");
         }
 
         // Valida o período caso tenha sido alterado
-        const start = data.scheduleStart ?? reservation.scheduleStart;
-        const end = data.scheduleEnd ?? reservation.scheduleEnd;
+        const start = data.scheduleStart ?? reservation.schedule_start;
+        const end = data.scheduleEnd ?? reservation.schedule_end;
 
         if (start >= end) {
             throw new Error("A data de início deve ser anterior à data de término.");
