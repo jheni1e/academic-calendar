@@ -24,7 +24,7 @@ function Header() {
         <div className="divHeaderOptions">
           <HeaderOption option="Calendário" route="home" />
           <HeaderOption option="Matérias" route="materias" />
-          <HeaderOption option="Turmas" route="turmas" />
+          <HeaderOption option="Planejamento" route="planejamento" />
         </div>
 
         <div className="divLogo" />

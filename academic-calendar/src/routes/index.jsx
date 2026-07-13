@@ -4,10 +4,9 @@ import Header from "../components/Header";
 import Home from "../pages/HomePage";
 import NotFound from "../pages/NotFoundPage";
 import Subject from "../pages/SubjectPage";
-import Classes from "../pages/ClassesPage";
 import Register from "../pages/RegisterPage";
 import Semester from "../pages/SemesterPage";
-import './index.css'
+import './index.css';
 import Login from "../pages/LoginPage";
 
 function WithHeader() {
@@ -40,7 +39,6 @@ export default function AppRouter() {
         <Route element={<WithHeader />}>
           <Route path="/materias" element={<Subject />} />
           <Route path="/home" element={<Home />} />
-          <Route path="/turmas" element={<Classes />} />
           <Route path="/semestre" element={<Semester />} />
           <Route path="/*" element={<NotFound />} />
         </Route>
