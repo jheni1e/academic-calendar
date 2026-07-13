@@ -57,7 +57,7 @@ export class PrismaClassUserRepository implements IClassUserRepository {
 
         return await prisma.classUser.findUnique({
             where: {
-                class_id_user_id: {
+                class_user_unique: {
                     class_id: classId,
                     user_id: userId
                 }
