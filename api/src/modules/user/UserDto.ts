@@ -1,17 +1,26 @@
 export interface CreateUserDTO {
-    userId: number;
-    userEdv: number;
+    edv: number;
     name: string;
     birthdate: Date;
+    password: string
+    role : string[]
 }
 
 export interface UpdateUserDTO {
-    name: string;
-    birthdate: Date;
+    name?: string;
+    birthdate?: Date;
+    roleToAdd?: string
+    roleToRemove?: string
 }
 
 export type UserResponseDTO = {
-    userEdv: number;
+    edv: number;
     name: string;
     isActive: boolean;
 }
+
+export type LoginDTO = {
+    edv: number
+    password: string
+}
+

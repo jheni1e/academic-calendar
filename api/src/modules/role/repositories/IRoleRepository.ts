@@ -18,7 +18,6 @@ export interface IRoleRepository {
         name: string
     ): Promise<Role | null>;
 
-
     findAll(): Promise<Role[]>;
 
     update(

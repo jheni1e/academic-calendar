@@ -1,3 +1,4 @@
+import { Assignment } from "../../../generated/prisma/client.ts";
 import { prisma } from "../../../lib/prisma.ts";
 import { CreateAssignmentDTO } from "../AssignmentDTO.ts";
 import { IAssignmentRepository } from "./IAssignmentRepository.ts";
@@ -42,14 +43,17 @@ export class PrismaAssignmentRepository implements IAssignmentRepository {
             }
         });
     }
-
+    
     async delete(
-        assignmentId: number
+        data: CreateAssignmentDTO
     ): Promise<void> {
 
         await prisma.assignment.delete({
             where: {
-                assignment_id: assignmentId
+                role_id_user_id: {
+                    role_id: data.roleId,
+                    user_id: data.userId
+                }
             }
         });
     }
