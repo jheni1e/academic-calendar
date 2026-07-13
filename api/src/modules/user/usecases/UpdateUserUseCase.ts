@@ -47,10 +47,17 @@ export class UpdateUserUseCase {
                 if (currentRoleIds.length === 1) 
                     throw new Error("User must have at least one role");
 
-                await this.assignmentRepository.delete({
-                    roleId : role.role_id, 
-                    userId : user.user_id
-                })
+                const assignment = assignments.find(
+                    a => a.role_id === role.role_id
+                );
+                
+                if (!assignment) {
+                    throw new Error("Assignment not found.");
+                }
+            
+                await this.assignmentRepository.delete(
+                    assignment.assignment_id
+                );
             }
         }
 
