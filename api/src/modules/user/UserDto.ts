@@ -3,6 +3,7 @@ export interface CreateUserDTO {
     name: string;
     birthdate: Date;
     password: string
+    role : string[]
 }
 
 export interface UpdateUserDTO {

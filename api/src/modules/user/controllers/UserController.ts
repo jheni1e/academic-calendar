@@ -17,7 +17,7 @@ export class UserController {
     private readonly roleRepository = new PrismaRoleRepository();
 
     private readonly findRole = new FindRoleByNameUseCase(this.roleRepository);
-    private readonly createUser = new CreateUserUseCase(this.userRepository);
+    private readonly createUser = new CreateUserUseCase(this.userRepository, this.assignmentRepository, this.roleRepository);
     private readonly findUserById = new FindUserByIdUseCase(this.userRepository);
     private readonly findUserByEdv = new FindUserByEdvUseCase(this.userRepository);
     private readonly findAllUsers = new FindAllUsersUseCase(this.userRepository);
