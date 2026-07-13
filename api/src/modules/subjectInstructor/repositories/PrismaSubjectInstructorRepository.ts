@@ -31,7 +31,7 @@ export class PrismaSubjectInstructorRepository implements ISubjectInstructorRepo
         });
     }
 
-    async findByInstructor(instructorId: number): Promise<SubjectInstructor | null> {
+    async findByInstructor(instructorId: number): Promise<SubjectInstructor[]> {
         return prisma.subjectInstructor.findMany({
             where: {
                 instructor_id: instructorId

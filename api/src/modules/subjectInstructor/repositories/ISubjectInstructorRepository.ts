@@ -25,11 +25,6 @@ export interface ISubjectInstructorRepository {
 
     findAll(): Promise<SubjectInstructor[]>;
 
-    // update(
-    //     subjectInstructorId: number,
-    //     data: UpdateSubjectInstructorDTO
-    // ): Promise<SubjectInstructor>;
-
     delete(
         subjectInstructorId: number
     ): Promise<void>;
