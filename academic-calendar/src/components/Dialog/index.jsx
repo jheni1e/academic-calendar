@@ -131,7 +131,7 @@ function Dialog({ isOpen, onClose, type, title }) {
                 <div className="dialogContent">
                     <div className="dialogInput">
                         <h4>Data de Inicio:</h4>
-                        <TextBox placeholder="e.g.: Internet das Coisas" />
+                        <TextBox placeholder="e.g.: XX/XX/XXXX" />
                     </div>
                 </div>
             }

@@ -36,10 +36,11 @@ function Planning() {
             items={subjects}
             selectedValueDrop={selectedRoom}
             type={'planning'} 
+            onItemClick={(item) => handleSubjectClick(item)}
             />
         <div className="content">
             { isModalOpen && 
-                <Dialog></Dialog>
+                <Dialog type={'planning'} isOpen={isModalOpen} onClose={changeModal} title={`Planejamento ${subjectSelected.name}`}></Dialog>
             }
             <MonthlyCalendar />
         </div>
