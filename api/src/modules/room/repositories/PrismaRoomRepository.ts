@@ -8,6 +8,8 @@ export class PrismaRoomRepository implements IRoomRepository {
     async create(data: CreateRoomDTO): Promise<Room> {
         return prisma.room.create({
             data: {
+                title: data.title,
+                capacity: data.capacity,
                 description: data.description
             }
         });

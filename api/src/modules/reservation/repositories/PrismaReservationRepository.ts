@@ -11,12 +11,12 @@ export class PrismaReservationRepository
 
             return prisma.reservation.create({
                 data: {
-                    roomId: data.roomId,
-                    eventId: data.eventId,
+                    room_id: data.roomId,
+                    event_id: data.eventId,
                     schedule_start: data.scheduleStart,
                     schedule_end: data.scheduleEnd,
-                    is_blocked: isBlocked ?? false,
-                    is_confirmed: data.isConfirmed ?? true,
+                    status: data.status,
+                    is_blocked: data.isBlocked ?? false,
                     description: data.description
                 }
             });
@@ -31,12 +31,13 @@ export class PrismaReservationRepository
                     reservation_id : reservationId
                 },
 
-                data : {
-                    event_id : data.roomId,
+                data: {
+                    room_id: data.roomId,
+                    event_id: data.eventId,
                     schedule_start: data.scheduleStart,
                     schedule_end: data.scheduleEnd,
-                    is_blocked: data.isBlocked ?? false,
-                    is_confirmed: data.isConfirmed ?? true,
+                    status: data.status,
+                    is_blocked: data.isBlocked,
                     description: data.description
                 }
             })
@@ -55,7 +56,7 @@ export class PrismaReservationRepository
         }
 
         async delete(reservationId: number): Promise<void> {
-            return prisma.reservation.delete({
+            await prisma.reservation.delete({
                 where: {
                     reservation_id : reservationId
                 }

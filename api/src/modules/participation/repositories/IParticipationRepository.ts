@@ -1,39 +1,44 @@
 import {
+    Participation
+} from "../../../generated/prisma/client.ts";
+
+import {
     CreateParticipationDTO,
-    ParticipationResponseDTO,
     UpdateParticipationDTO
 } from "../ParticipationDTO.ts";
 
 export interface IParticipationRepository {
+
     create(
         data: CreateParticipationDTO
-    ): Promise<ParticipationResponseDTO>;
+    ): Promise<Participation>;
 
     findById(
         participationId: number
-    ): Promise<ParticipationResponseDTO | null>;
-
-    findByUser(
-        userId: number
-    ): Promise<ParticipationResponseDTO[]>;
-    
-    findByEvent(
-        eventId: number
-    ): Promise<ParticipationResponseDTO[]>;
+    ): Promise<Participation | null>;
 
     findByUserAndEvent(
         userId: number,
         eventId: number
-    ): Promise<ParticipationResponseDTO | null>;
+    ): Promise<Participation | null>;
 
-    findAll(): Promise<ParticipationResponseDTO[]>;
+    findByUser(
+        userId: number
+    ): Promise<Participation[]>;
+
+    findByEvent(
+        eventId: number
+    ): Promise<Participation[]>;
+
+    findAll(): Promise<Participation[]>;
 
     update(
         participationId: number,
         data: UpdateParticipationDTO
-    ): Promise<ParticipationResponseDTO>;
+    ): Promise<Participation>;
 
     delete(
         participationId: number
     ): Promise<void>;
+
 }
