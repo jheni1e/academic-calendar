@@ -4,6 +4,7 @@ import "./index.css";
 import Toggle from "../Toggle";
 import BoschButton from "../BoschButton";
 import Dialog from "../Dialog";
+import DropdownList from "../DropdownList";
 
 const months = [
   "Janeiro",
@@ -18,6 +19,12 @@ const months = [
   "Outubro",
   "Novembro",
   "Dezembro",
+];
+
+const viewOptions = [
+  { value: "month", label: "Mensal" },
+  { value: "week", label: "Semanal" },
+  { value: "semester", label: "Semestral" }
 ];
 
 function MonthlyCalendar({ initialDate, compact = false }) {
@@ -41,6 +48,15 @@ function MonthlyCalendar({ initialDate, compact = false }) {
     value: index,
   }));
 
+  const [semester, setSemester] = useState(
+    currentDate.getMonth() < 6 ? 1 : 2
+  );
+
+  const semesterMonths =
+    semester === 1
+      ? [0, 1, 2, 3, 4, 5]
+      : [6, 7, 8, 9, 10, 11];
+
   const startOfWeek = (date) => {
     const d = new Date(date);
     const day = d.getDay();
@@ -58,10 +74,19 @@ function MonthlyCalendar({ initialDate, compact = false }) {
   const goPrev = () => {
     const newDate = new Date(currentDate);
 
-    if (viewMode === "week") {
-      newDate.setDate(newDate.getDate() - 7);
-    } else {
-      newDate.setMonth(newDate.getMonth() - 1);
+    switch (viewMode) {
+      case "week":
+        newDate.setDate(newDate.getDate() - 7);
+        break;
+
+      case "month":
+        newDate.setMonth(newDate.getMonth() - 1);
+        break;
+
+      case "semester":
+        newDate.setMonth(newDate.getMonth() - 6);
+        setSemester((prev) => (prev === 1 ? 2 : 1));
+        break;
     }
 
     setCurrentDate(newDate);
@@ -71,10 +96,22 @@ function MonthlyCalendar({ initialDate, compact = false }) {
   const goNext = () => {
     const newDate = new Date(currentDate);
 
-    if (viewMode === "week") {
-      newDate.setDate(newDate.getDate() + 7);
-    } else {
-      newDate.setMonth(newDate.getMonth() + 1);
+    switch (viewMode) {
+      case "week":
+        newDate.setDate(newDate.getDate() + 7);
+        break;
+
+      case "month":
+        newDate.setMonth(newDate.getMonth() + 1);
+        break;
+
+      case "semester":
+        newDate.setMonth(newDate.getMonth() + 6);
+        setSemester((prev) => (prev === 1 ? 2 : 1));
+        break;
+
+      default:
+        break;
     }
 
     setCurrentDate(newDate);
@@ -90,52 +127,72 @@ function MonthlyCalendar({ initialDate, compact = false }) {
           </div>
         )}
 
-        <h1 style={{ fontSize: '2rem', fontWeight: 'normal' }}>
-          {months[month]} {year}
-        </h1>
+        {viewMode !== "semester" && (
+          <h1 style={{ fontSize: '2rem', fontWeight: 'normal' }}>
+            {months[month]} {year}
+          </h1>
+        )}
 
         {!compact && (
           <div className="actions">
-            <BoschButton text="+" type="secondary" onClick={() => setIsModalOpen(!isModalOpen)} />
+            <div className="button-container">
+              <BoschButton text="+" type="secondary" onClick={() => setIsModalOpen(!isModalOpen)} />
+            </div>
 
-            <Toggle id="calendar-toggle" leftText="Mensal" rightText="Semanal" onChange={() => setViewMode((prev) => prev === "month" ? "week" : "month")} />
+            <DropdownList label="Visão" options={viewOptions} selectedValue={viewMode} onChange={(e) => setViewMode(e.target.value)} />
           </div>
         )}
       </div>
 
-      <div className="weekdays">
-        <span>DOM</span>
-        <span>SEG</span>
-        <span>TER</span>
-        <span>QUA</span>
-        <span>QUI</span>
-        <span>SEX</span>
-        <span>SAB</span>
-      </div>
+      {viewMode !== "semester" && (
+        <>
+          <div className="weekdays">
+            <span>DOM</span>
+            <span>SEG</span>
+            <span>TER</span>
+            <span>QUA</span>
+            <span>QUI</span>
+            <span>SEX</span>
+            <span>SAB</span>
+          </div>
+          <div className="calendar-grid">
+            {viewMode === "month" && (
+              <>
+                {emptyCells.map((_, index) => (
+                  <div key={`empty-${index}`} className="empty-cell" />
+                ))}
 
-      <div className="calendar-grid">
-        {viewMode === "month" ? (
-          <>
-            {emptyCells.map((_, index) => (
-              <div key={`empty-${index}`} className="empty-cell" />
-            ))}
+                {days.map((day) => (
+                  <DayCell key={day} day={day} events={[]} viewMode={viewMode} />
+                ))}
+              </>
+            )}
+            {viewMode === "week" && (
+              weekDays.map((date) => (
+                <DayCell
+                  key={date.toISOString()}
+                  day={date.getDate()}
+                  events={[]}
+                  isToday={date.toDateString() === new Date().toDateString()}
+                  viewMode={viewMode}
+                />
+              ))
+            )}
+          </div>
+        </>
+      )}
 
-            {days.map((day) => (
-              <DayCell key={day} day={day} events={[]} viewMode={viewMode} />
-            ))}
-          </>
-        ) : (
-          weekDays.map((date) => (
-            <DayCell
-              key={date.toISOString()}
-              day={date.getDate()}
-              events={[]}
-              isToday={date.toDateString() === new Date().toDateString()}
-              viewMode={viewMode}
+      {viewMode === "semester" && (
+        <div className="semester-calendar">
+          {semesterMonths.map(month => (
+            <MonthlyCalendar
+              key={month}
+              initialDate={new Date(year, month, 1)}
+              compact
             />
-          ))
-        )}
-      </div>
+          ))}
+        </div>
+      )}
 
       {isModalOpen &&
         <Dialog isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title="Registrar evento" type="event" />

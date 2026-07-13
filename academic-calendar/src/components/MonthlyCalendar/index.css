@@ -1,5 +1,5 @@
 .calendar-container {
-  max-width: 1400px;
+  max-width: 1600px;
   padding: 20px;
 }
 
@@ -16,6 +16,15 @@
   display: flex;
   gap: 12px;
   align-items: center;
+}
+
+.actions .button-container {
+  width: auto;
+}
+
+.actions .button-container button {
+  width: 48px;
+  height: 48px;
 }
 
 .weekdays {
@@ -51,4 +60,32 @@
   font-size: 14px;
   cursor: pointer;
   outline: none;
+}
+
+.semester-calendar {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  column-gap: 8px;
+  row-gap: 16px;
+}
+
+.semester-header {
+  display: grid;
+  grid-template-columns: 100px 1fr 100px;
+  align-items: center;
+  margin: 1rem 2rem 0 2rem;
+}
+
+.semester-header h1 {
+  text-align: center;
+  font-size: 2rem;
+  font-weight: normal;
+}
+
+.semester-header button:first-child {
+  justify-self: start;
+}
+
+.semester-header button:last-child {
+  justify-self: end;
 }
