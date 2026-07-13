@@ -19,7 +19,7 @@ function Header() {
       <div className="divSupergraphic" />
 
       <div className="divHeaderElements">
-        <div className="divUser" />
+        <div className="divLogo" />
 
         <div className="divHeaderOptions">
           <HeaderOption option="Calendário" route="home" />
@@ -27,7 +27,7 @@ function Header() {
           <HeaderOption option="Planejamento" route="planejamento" />
         </div>
 
-        <div className="divLogo" />
+        <div className="divUser" />
       </div>
     </div>
   );

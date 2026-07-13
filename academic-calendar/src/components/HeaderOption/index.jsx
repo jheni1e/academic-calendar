@@ -7,12 +7,10 @@ const HeaderOption = ({ option, route }) => {
   const navigate = useNavigate();
 
   return (
-    <div
-      className="menu-option"
+    <div className="menu-option"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      onClick={() => navigate("/" + route.toLowerCase())}
-    >
+      onClick={() => navigate("/" + route.toLowerCase())}>
       <h1 className="optionText">{option}</h1>
     </div>
   );
