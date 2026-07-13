@@ -38,7 +38,7 @@ function Planning() {
             type={'planning'} 
             />
         <div className="content">
-            {isModalOpen && 
+            { isModalOpen && 
                 <Dialog></Dialog>
             }
             <MonthlyCalendar />
