@@ -43,18 +43,32 @@ export class PrismaAssignmentRepository implements IAssignmentRepository {
             }
         });
     }
-    
-    async delete(
-        data: CreateAssignmentDTO
-    ): Promise<void> {
 
-        await prisma.assignment.delete({
+    async findByUserAndRole(
+        userId: number,
+        roleId: number
+    ): Promise<Assignment | null> {
+    
+        return prisma.assignment.findUnique({
             where: {
                 role_id_user_id: {
-                    role_id: data.roleId,
-                    user_id: data.userId
+                    role_id: roleId,
+                    user_id: userId
                 }
             }
         });
+    
+    }
+    
+    async delete(
+        assignmentId: number
+    ): Promise<void> {
+    
+        await prisma.assignment.delete({
+            where: {
+                assignment_id: assignmentId
+            }
+        });
+    
     }
 }

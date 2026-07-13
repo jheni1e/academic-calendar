@@ -1,5 +1,5 @@
 import { Assignment } from "../../../generated/prisma/client.ts";
-import { CreateAssignmentDTO } from "../AssignmentDto.ts";
+import { CreateAssignmentDTO } from "../AssignmentDTO.ts";
 
 export interface IAssignmentRepository {
 
@@ -16,8 +16,13 @@ export interface IAssignmentRepository {
     findByUserId(
         userId: number
     ): Promise<Assignment[]>;
+
+    findByUserAndRole(
+        userId: number,
+        roleId: number
+    ): Promise<Assignment | null>;
     
     delete(
-        data : CreateAssignmentDTO
+        assignmentId: number
     ): Promise<void>;
 }

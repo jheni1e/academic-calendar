@@ -1,6 +1,6 @@
 import { IAssignmentRepository } from "../repositories/IAssignmentRepository.ts";
 
-import { CreateAssignmentDTO } from "../AssignmentDto.ts";
+import { CreateAssignmentDTO } from "../AssignmentDTO.ts";
 
 export class CreateAssignmentUseCase {
     constructor(
