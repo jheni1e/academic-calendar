@@ -11,10 +11,11 @@ export class PrismaUserRepository implements IUserRepository {
 
         return await prisma.user.create({
             data: {
-                user_edv: data.userEdv,
+                user_edv: data.edv,
                 name: data.name,
-                birthdate: data.birthdate,
-                is_active: true
+                birthday: data.birthdate,
+                is_active: true,
+                password : data.password
             }
         });
     }
@@ -34,7 +35,7 @@ export class PrismaUserRepository implements IUserRepository {
         name: string
     ): Promise<User | null> {
 
-        return await prisma.user.findUnique({
+        return await prisma.user.findFirst({
             where: {
                 name: name
             }
@@ -58,28 +59,28 @@ export class PrismaUserRepository implements IUserRepository {
     }
 
     async update(
-        userEdv: number,
+        userId: number,
         data: UpdateUserDTO
     ): Promise<User> {
-
+    
         return await prisma.user.update({
             where: {
-                user_edv: userEdv
+                user_id: userId
             },
             data: {
                 name: data.name,
-                birthdate: data.birthdate
+                birthday: data.birthdate
             }
         });
     }
 
     async disable(
-        userEdv: number
+        id: number
     ): Promise<User> {
 
         return await prisma.user.update({
             where: {
-                user_edv: userEdv
+                user_id: id
             },
             data: {
                 is_active: false

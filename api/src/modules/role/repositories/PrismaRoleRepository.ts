@@ -42,8 +42,7 @@ export class PrismaRoleRepository implements IRoleRepository {
             }
         });
     }
-
-
+    
     async findAll(): Promise<Role[]> {
 
         return prisma.role.findMany();
