@@ -3,14 +3,14 @@ import { Request, Response } from "express";
 import { AppError } from "../../../shared/errors/AppError.ts";
 
 import { PrismaSubjectInstructorRepository } from "../repositories/PrismaSubjectInstructorRepository.ts";
-import { UpdateSubjectInstructorUseCase } from "../usecases/UpdateSubjectInstructorUseCase.ts";
+import { GetSubjectsByInstructorUseCase } from "../usecases/GetSubjectsByInstructorUseCase.ts";
 
-export class UpdateSubjectInstructorController {
+export class GetSubjectsByInstructorController {
 
     private readonly repository = new PrismaSubjectInstructorRepository();
 
-    
+   
 
-    
+   
 
 }
