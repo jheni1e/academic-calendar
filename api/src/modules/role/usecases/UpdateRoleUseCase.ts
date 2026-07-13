@@ -1,3 +1,5 @@
+import { BadRequestError } from "../../../shared/errors/BadRequestError.ts";
+import { NotFoundError } from "../../../shared/errors/NotFoundError.ts";
 import { IRoleRepository } from "../repositories/IRoleRepository.ts";
 import { UpdateRoleDTO } from "../RoleDTO.ts";
 
@@ -15,12 +17,12 @@ export class UpdateRoleUseCase {
         const role = await this.roleRepository.findById(roleId);
 
         if (!role) {
-            throw new Error("Papel não encontrado.");
+            throw new NotFoundError("Role not found.");
         }
 
         // Caso o nome seja informado, ele não pode ser vazio
         if (data.name !== undefined && !data.name.trim()) {
-            throw new Error("Nome do papel é obrigatório.");
+            throw new BadRequestError("Nome do papel é obrigatório.");
         }
 
         return await this.roleRepository.update(
