@@ -9,14 +9,12 @@ import { FindUserByEdvUseCase } from "../usecases/FindUserByEdvUseCase.ts";
 import { DisableUserUseCase } from "../usecases/DisableUserUseCase.ts";
 import { PrismaAssignmentRepository } from "../../assignment/repositories/PrismaAssignmentRepository.ts";
 import { PrismaRoleRepository } from "../../role/repositories/PrismaRoleRepository.ts";
-import { FindRoleByNameUseCase } from "../../role/usecases/FindRoleByNameUseCase.ts";
 
 export class UserController {
     private readonly userRepository = new PrismaUserRepository();
     private readonly assignmentRepository = new PrismaAssignmentRepository();
     private readonly roleRepository = new PrismaRoleRepository();
 
-    private readonly findRole = new FindRoleByNameUseCase(this.roleRepository);
     private readonly createUser = new CreateUserUseCase(this.userRepository, this.assignmentRepository, this.roleRepository);
     private readonly findUserById = new FindUserByIdUseCase(this.userRepository);
     private readonly findUserByEdv = new FindUserByEdvUseCase(this.userRepository);
