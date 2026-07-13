@@ -127,6 +127,14 @@ function Dialog({ isOpen, onClose, type, title }) {
                 <h2>{title}</h2>
                 <button onClick={onClose} className="closeButton">x</button>
             </div>
+            {type === "planning" &&
+                <div className="dialogContent">
+                    <div className="dialogInput">
+                        <h4>Data de Inicio:</h4>
+                        <TextBox placeholder="e.g.: XX/XX/XXXX" />
+                    </div>
+                </div>
+            }
             {type === "subject" &&
                 <div className="dialogContent">
                     <div className="dialogInput">

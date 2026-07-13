@@ -16,11 +16,14 @@ const MenuSideBar = ({
   OptionsDropDown,
   selectedValueDrop,
   onDropDownChange,
-  hasCheckbox }) => {
+  hasCheckbox,
+  type,
+  onItemClick }) => {
 
   const [activeItem, setActiveItem] = useState(option1);
   const color1 = "#19375E";
   const color2 = "#007BC0";
+  const arrow = " > "
   const [eventsFilter, setEventsFilter] = useState(false);
   const [classesFilter, setClassesFilter] = useState(false);
 
@@ -49,15 +52,30 @@ const MenuSideBar = ({
           />
         </div>
       }
-      {hasItems &&
-        items.map((item) => {
-          return (
-            <div className="divItem">
-              <CircleChartItem percentage={item.value} color1={color1} color2={color2} />
-              <h2>{item.name}</h2>
-            </div>
-          );
-        })}
+    {hasItems && (
+      type === "planning" ? (
+        items.map((item) => (
+          <div className="divItem" key={item.id || item.name} 
+            style={{
+              cursor: "pointer", 
+              justifyContent: "space-between", 
+              paddingRight: "1rem", 
+              paddingLeft: "1rem"}}
+            onClick={() => onItemClick?.(item)} >
+              
+            <h2>{item.name}</h2>
+            <h2>{arrow}</h2>
+          </div>
+        ))
+      ) : type === "calendar" ? (
+        items.map((item) => (
+          <div className="divItem" key={item.id || item.name}>
+            <CircleChartItem percentage={item.value} color1={color1} color2={color2} />
+            <h2>{item.name}</h2>
+          </div>
+        ))
+      ) : null
+    )}
       {hasCheckbox &&
         <div className="checkboxWrapper">
           <div className="divCheckbox">
