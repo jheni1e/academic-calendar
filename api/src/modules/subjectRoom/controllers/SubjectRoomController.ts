@@ -15,19 +15,19 @@ export class SubjectRoomController {
 
     private readonly repository = new PrismaSubjectRoomRepository();
 
-    private readonly createSubject = new CreateSubjectRoomUseCase(this.repository);
-    private readonly deleteSubject = new DeleteSubjectRoomUseCase(this.repository);
-    private readonly getSRtByRoom = new GetSubjectRoomsByRoomUseCase(this.repository);
-    private readonly getSRBySubject = new GetSubjectRoomsBySubjectUseCase(this.repository);
-    private readonly getAllSR = new GetSubjectRoomsUseCase(this.repository);
-    private readonly updateSR = new UpdateSubjectRoomUseCase(this.repository);
+    private readonly createUseCase = new CreateSubjectRoomUseCase(this.repository);
+    private readonly deleteUseCase = new DeleteSubjectRoomUseCase(this.repository);
+    private readonly getByRoomUseCase = new GetSubjectRoomsByRoomUseCase(this.repository);
+    private readonly getBySubjectUseCase = new GetSubjectRoomsBySubjectUseCase(this.repository);
+    private readonly getAllUseCase = new GetSubjectRoomsUseCase(this.repository);
+    private readonly updateUseCase = new UpdateSubjectRoomUseCase(this.repository);
 
 
-    create = async (req: Request, res: Response) => {
+    async handleCreate(req: Request, res: Response) {
 
         try {
 
-            const subjectRoom = await this.createSubject.execute(req.body);
+            const subjectRoom = await this.createUseCase.execute(req.body);
 
             return res.status(201).json(subjectRoom);
 
@@ -47,11 +47,11 @@ export class SubjectRoomController {
 
     }
 
-    delete = async (req: Request, res: Response) => {
+    async handleDelete(req: Request, res: Response) {
 
         try {
 
-            await this.deleteSubject.execute(
+            await this.deleteUseCase.execute(
                 Number(req.params.id)
             );
 
@@ -73,11 +73,11 @@ export class SubjectRoomController {
 
     }
 
-    getAll = async (req: Request, res: Response) => {
+    async handleGet(req: Request, res: Response) {
 
         try {
 
-            const subjectRooms = await this.getAllSR.execute();
+            const subjectRooms = await this.getAllUseCase.execute();
 
             return res.status(200).json(subjectRooms);
 
@@ -97,11 +97,11 @@ export class SubjectRoomController {
 
     }
 
-    getByRoomID = async (req: Request, res: Response) => {
+    async handleGetByRoomID(req: Request, res: Response) {
 
         try {
 
-            const subjectRooms = await this.getSRtByRoom.execute(
+            const subjectRooms = await this.getByRoomUseCase.execute(
                 Number(req.params.roomId)
             );
 
@@ -123,11 +123,11 @@ export class SubjectRoomController {
 
     }
 
-    getBySubject = async (req: Request, res: Response) => {
+    async handleGetBySubject(req: Request, res: Response) {
 
         try {
 
-            const subjectRoom = await this.getSRBySubject.execute(
+            const subjectRoom = await this.getBySubjectUseCase.execute(
                 Number(req.params.id)
             );
 
@@ -149,11 +149,11 @@ export class SubjectRoomController {
 
     }
 
-    update = async (req: Request, res: Response) => {
+    async handleUpdate(req: Request, res: Response) {
 
         try {
 
-            const subjectRoom = await this.updateSR.execute(
+            const subjectRoom = await this.updateUseCase.execute(
                 Number(req.params.id),
                 req.body
             );
