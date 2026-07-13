@@ -12,7 +12,7 @@ export class ActivateSubjectUseCase {
             throw new Error("Matéria não encontrada.");
         }
 
-        if (subject.isActive) {
+        if (subject.is_active) {
             throw new Error("Matéria já está ativa.");
         }
 
