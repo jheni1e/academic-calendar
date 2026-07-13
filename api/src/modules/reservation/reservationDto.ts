@@ -3,7 +3,7 @@ export interface CreateReservationDTO {
     eventId: number
     scheduleStart: Date
     scheduleEnd: Date
-    isBocked: boolean
+    isBlocked: boolean
     isConfirmed?: boolean
     description?: string
 }

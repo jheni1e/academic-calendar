@@ -2,24 +2,24 @@ import { Request, Response } from "express";
 
 import { AppError } from "../../../shared/errors/AppError.ts";
 
-import { PrismaAssignmentRepository } from "../repositories/PrismaAssignmentRepository.ts";
-import { FindAssignmentByIdUseCase } from "../usecases/FindAssignmentByIdUseCase.ts";
+import { PrismaEventTypeRepository } from "../repositories/PrismaEventTypeRepository.ts";
+import { FindEventTypeByIdUseCase } from "../usecases/FindEventTypeByIdUseCase.ts";
 
-export class FindAssignmentByIdController {
+export class FindEventTypeByIdController {
 
-    private readonly repository = new PrismaAssignmentRepository();
+    private readonly repository = new PrismaEventTypeRepository();
 
-    private readonly useCase = new FindAssignmentByIdUseCase(this.repository);
+    private readonly useCase = new FindEventTypeByIdUseCase(this.repository);
 
     async handle(req: Request, res: Response) {
 
         try {
 
-            const assignment = await this.useCase.execute(
+            const eventType = await this.useCase.execute(
                 Number(req.params.id)
             );
 
-            return res.status(200).json(assignment);
+            return res.status(200).json(eventType);
 
         } catch (error) {
 

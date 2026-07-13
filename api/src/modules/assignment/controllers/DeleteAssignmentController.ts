@@ -1,28 +1,34 @@
 import { Request, Response } from "express";
 
+import { AppError } from "../../../shared/errors/AppError.ts";
+
 import { PrismaAssignmentRepository } from "../repositories/PrismaAssignmentRepository.ts";
-import { DeleteAssignmentUseCase } from "../useCases/DeleteAssignmentUseCase.ts";
+import { DeleteAssignmentUseCase } from "../usecases/DeleteAssignmentUseCase.ts";
 
 export class DeleteAssignmentController {
+
+    private readonly repository = new PrismaAssignmentRepository();
+
+    private readonly useCase = new DeleteAssignmentUseCase(this.repository);
 
     async handle(req: Request, res: Response) {
 
         try {
 
-            const repository = new PrismaAssignmentRepository();
+            await this.useCase.execute(Number(req.params.id));
 
-            const useCase = new DeleteAssignmentUseCase(repository);
-
-            await useCase.execute(Number(req.params.id));
-
-            return res.status(204).send();
+            return res.sendStatus(204);
 
         } catch (error) {
 
-            return res.status(400).json({
-                message: error instanceof Error
-                    ? error.message
-                    : "Internal error."
+            if (error instanceof AppError) {
+                return res.status(error.statusCode).json({
+                    message: error.message
+                });
+            }
+
+            return res.status(500).json({
+                message: "Internal server error."
             });
 
         }

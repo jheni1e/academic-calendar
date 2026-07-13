@@ -2,22 +2,22 @@ import { Request, Response } from "express";
 
 import { AppError } from "../../../shared/errors/AppError.ts";
 
-import { PrismaAssignmentRepository } from "../repositories/PrismaAssignmentRepository.ts";
-import { GetAssignmentsUseCase } from "../usecases/GetAssignmentsUseCase.ts";
+import { PrismaClassUserRepository } from "../repositories/PrismaClassUserRepository.ts";
+import { DeleteClassUserUseCase } from "../usecases/DeleteClassUserUseCase.ts";
 
-export class GetAssignmentsController {
+export class DeleteClassUserController {
 
-    private readonly repository = new PrismaAssignmentRepository();
+    private readonly repository = new PrismaClassUserRepository();
 
-    private readonly useCase = new GetAssignmentsUseCase(this.repository);
+    private readonly useCase = new DeleteClassUserUseCase(this.repository);
 
     async handle(req: Request, res: Response) {
 
         try {
 
-            const assignments = await this.useCase.execute();
+            await this.useCase.execute(Number(req.params.id));
 
-            return res.status(200).json(assignments);
+            return res.sendStatus(204);
 
         } catch (error) {
 

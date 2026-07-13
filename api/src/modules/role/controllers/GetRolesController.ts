@@ -2,22 +2,22 @@ import { Request, Response } from "express";
 
 import { AppError } from "../../../shared/errors/AppError.ts";
 
-import { PrismaAssignmentRepository } from "../repositories/PrismaAssignmentRepository.ts";
-import { GetAssignmentsUseCase } from "../usecases/GetAssignmentsUseCase.ts";
+import { PrismaRoleRepository } from "../repositories/PrismaRoleRepository.ts";
+import { GetRolesUseCase } from "../usecases/GetRolesUseCase.ts";
 
-export class GetAssignmentsController {
+export class GetRolesController {
 
-    private readonly repository = new PrismaAssignmentRepository();
+    private readonly repository = new PrismaRoleRepository();
 
-    private readonly useCase = new GetAssignmentsUseCase(this.repository);
+    private readonly useCase = new GetRolesUseCase(this.repository);
 
     async handle(req: Request, res: Response) {
 
         try {
 
-            const assignments = await this.useCase.execute();
+            const roles = await this.useCase.execute();
 
-            return res.status(200).json(assignments);
+            return res.status(200).json(roles);
 
         } catch (error) {
 

@@ -2,24 +2,24 @@ import { Request, Response } from "express";
 
 import { AppError } from "../../../shared/errors/AppError.ts";
 
-import { PrismaAssignmentRepository } from "../repositories/PrismaAssignmentRepository.ts";
-import { FindAssignmentByIdUseCase } from "../usecases/FindAssignmentByIdUseCase.ts";
+import { PrismaReservationRepository } from "../repositories/PrismaReservationRepository.ts";
+import { DeleteReservationUseCase } from "../usecases/DeleteReservationUseCase.ts";
 
-export class FindAssignmentByIdController {
+export class DeleteReservationController {
 
-    private readonly repository = new PrismaAssignmentRepository();
+    private readonly repository = new PrismaReservationRepository();
 
-    private readonly useCase = new FindAssignmentByIdUseCase(this.repository);
+    private readonly useCase = new DeleteReservationUseCase(this.repository);
 
     async handle(req: Request, res: Response) {
 
         try {
 
-            const assignment = await this.useCase.execute(
+            await this.useCase.execute(
                 Number(req.params.id)
             );
 
-            return res.status(200).json(assignment);
+            return res.sendStatus(204);
 
         } catch (error) {
 

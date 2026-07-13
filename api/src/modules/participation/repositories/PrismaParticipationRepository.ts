@@ -58,26 +58,25 @@ export class PrismaParticipationRepository
         });
     }
 
-    async findByUser(
-        userId: number
-    ): Promise<ParticipationResponseDTO[]> {
-        return await prisma.participation.findMany({
+    async findByUser(userId: number): Promise<ParticipationResponseDTO[]> {
+
+        return prisma.participation.findMany({
             where: {
                 user_id: userId
             }
         });
+    
     }
-
-    async findByEvent(
-        eventId: number
-    ): Promise<ParticipationResponseDTO[]> {
-        return await prisma.participation.findMany({
+    
+    async findByEvent(eventId: number): Promise<ParticipationResponseDTO[]> {
+    
+        return prisma.participation.findMany({
             where: {
                 event_id: eventId
             }
         });
+    
     }
-
     async delete(
         participationId: number
     ): Promise<void> {

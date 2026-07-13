@@ -13,6 +13,14 @@ export interface IParticipationRepository {
         participationId: number
     ): Promise<ParticipationResponseDTO | null>;
 
+    findByUser(
+        userId: number
+    ): Promise<ParticipationResponseDTO[]>;
+    
+    findByEvent(
+        eventId: number
+    ): Promise<ParticipationResponseDTO[]>;
+
     findByUserAndEvent(
         userId: number,
         eventId: number
