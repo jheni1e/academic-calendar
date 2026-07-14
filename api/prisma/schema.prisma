@@ -20,6 +20,12 @@ enum ReservationStatus {
   CANCELLED
 }
 
+enum RecurrenceFrequency {
+  DAILY
+  WEEKLY
+  MONTHLY
+}
+
 enum ParticipationStatus {
   PENDING
   CONFIRMED
@@ -44,6 +50,7 @@ model User {
   subjects       SubjectInstructor[]
   classes        ClassUser[]
   createdEvents  Event[]             @relation("CreatedEvents")
+  recurrences    Recurrence[]
 }
 
 model Assignment {
@@ -70,6 +77,8 @@ model Class {
   class_users ClassUser[]
   subjects    Subject[]
   events      Event[]
+
+  @@index([is_active])
 }
 
 model ClassUser {
@@ -93,7 +102,7 @@ model Subject {
   end_date   DateTime
   class_id   Int
   events     Event[]
-  is_active Boolean @default(true)
+  is_active  Boolean  @default(true)
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
@@ -104,6 +113,7 @@ model Subject {
   subjectRooms SubjectRoom[]
 
   @@index([class_id])
+  @@index([is_active])
 }
 
 model SubjectInstructor {
@@ -120,10 +130,9 @@ model SubjectInstructor {
 }
 
 model SubjectRoom {
-  
   subject_room_id Int @id @default(autoincrement())
-  room_id    Int
-  subject_id Int
+  room_id         Int
+  subject_id      Int
   priority        Int
 
   created_at DateTime @default(now())
@@ -132,9 +141,9 @@ model SubjectRoom {
   subject Subject @relation(fields: [subject_id], references: [subject_id])
   room    Room    @relation(fields: [room_id], references: [room_id])
 
+  @@unique([subject_id, room_id])
   @@index([room_id])
   @@index([subject_id])
-  @@unique([subject_id, room_id])
 }
 
 model Role {
@@ -145,6 +154,7 @@ model Role {
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 }
+
 model Event {
   event_id      Int     @id @default(autoincrement())
   title         String
@@ -154,12 +164,19 @@ model Event {
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
-  subject_id Int?
-  class_id   Int?
-  created_by Int
+  subject_id    Int?
+  class_id      Int?
+  recurrence_id Int?
+  created_by    Int
+
+  start_date DateTime
+  end_date   DateTime
+
+  is_blocked Boolean @default(false)
 
   participations Participation[]
   reservation    Reservation?
+  recurrence     Recurrence?     @relation(fields: [recurrence_id], references: [recurrence_id])
 
   event_type EventType @relation(fields: [event_type_id], references: [event_type_id])
   subject    Subject?  @relation(fields: [subject_id], references: [subject_id])
@@ -169,6 +186,35 @@ model Event {
   @@index([subject_id])
   @@index([class_id])
   @@index([event_type_id])
+  @@index([created_by])
+  @@index([is_blocked])
+  @@index([recurrence_id])
+  @@index([start_date, end_date])
+}
+
+model Recurrence {
+  recurrence_id Int                 @id @default(autoincrement())
+  series_name   String              @unique
+  frequency     RecurrenceFrequency
+
+  repeat_until DateTime?
+  occurrences  Int?
+  created_by   Int
+
+  monday    Boolean @default(false)
+  tuesday   Boolean @default(false)
+  wednesday Boolean @default(false)
+  thursday  Boolean @default(false)
+  friday    Boolean @default(false)
+  saturday  Boolean @default(false)
+  sunday    Boolean @default(false)
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  creator User    @relation(fields: [created_by], references: [user_id])
+  events  Event[]
+
   @@index([created_by])
 }
 
@@ -203,15 +249,14 @@ model Room {
 
   reservations Reservation[]
   subjectRooms SubjectRoom[]
+
+  @@index([is_active])
 }
 
 model Reservation {
   reservation_id Int               @id @default(autoincrement())
   description    String?
-  schedule_start DateTime
-  schedule_end   DateTime
   status         ReservationStatus
-  is_blocked     Boolean           @default(false)
   room_id        Int
   event_id       Int               @unique
 
@@ -223,7 +268,7 @@ model Reservation {
 
   @@index([room_id])
   @@index([event_id])
-  @@index([room_id, schedule_start, schedule_end])
+  @@index([room_id, status])
 }
 
 model Participation {
