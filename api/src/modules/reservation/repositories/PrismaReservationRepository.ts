@@ -55,6 +55,18 @@ export class PrismaReservationRepository
             })
         }
 
+        async findByEvent(
+            eventId: number
+        ): Promise<Reservation | null> {
+        
+            return prisma.reservation.findUnique({
+                where: {
+                    event_id: eventId
+                }
+            });
+        
+        }
+
         async delete(reservationId: number): Promise<void> {
             await prisma.reservation.delete({
                 where: {

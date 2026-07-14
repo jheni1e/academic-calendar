@@ -15,7 +15,7 @@ export class CreateClassUserUseCase {
             );
 
         if (classUser) {
-            throw new Error("O usuário já pertence a essa turma.");
+            throw new Error("The user already belongs to this class..");
         }
 
         return await this.classUserRepository.create(data);

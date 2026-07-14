@@ -11,7 +11,7 @@ export class DeleteClassUserUseCase {
             await this.classUserRepository.findById(classUserId);
 
         if (!classUser) {
-            throw new Error("Vínculo não encontrado.");
+            throw new Error("Assignment not found.");
         }
 
         // TODO: Need User Type Verification before delete!

@@ -11,7 +11,7 @@ export class FindClassUserByIdUseCase {
             await this.classUserRepository.findById(classUserId);
 
         if (!classUser) {
-            throw new Error("Vínculo não encontrado.");
+            throw new Error("Assignment not found.");
         }
 
         return classUser;

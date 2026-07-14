@@ -17,7 +17,7 @@ export class FindClassUserByClassAndUserUseCase {
             );
 
         if (!classUser) {
-            throw new Error("Vínculo não encontrado.");
+            throw new Error("Assignment not found.");
         }
 
         return classUser;

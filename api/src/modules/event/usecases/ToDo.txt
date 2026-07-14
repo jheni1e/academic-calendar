@@ -3,7 +3,7 @@ Validar se eventTypeId existe.
 Validar se classId existe.
 Validar se subjectId existe.
 Não permitir informar classId e subjectId inválidos.
-Impedir edição quando a Reservation estiver com is_blocked = true.
+DEV - Impedir edição quando a Reservation estiver com is_blocked = true.
 Não permitir excluir um evento que possua uma reserva bloqueada ou confirmada.
 Validar permissões (somente o criador ou um administrador pode editar/excluir).
 Validar que um evento pertença ou a uma turma ou a uma matéria, caso essa seja a regra do sistema.

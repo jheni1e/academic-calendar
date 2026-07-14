@@ -4,6 +4,10 @@ export interface IReservationRepository {
     create(data: CreateReservationDTO) : Promise<Reservation>;
 
     findById(reservationId: number) : Promise<Reservation | null>;
+    
+    findByEvent(
+        eventId: number
+    ): Promise<Reservation | null>;
 
     findAll() : Promise<Reservation[]>;
 

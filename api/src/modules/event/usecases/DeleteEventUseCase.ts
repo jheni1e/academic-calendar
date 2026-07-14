@@ -1,20 +1,31 @@
+import { ForbiddenError } from "../../../shared/errors/ForbiddenError.ts";
+import { NotFoundError } from "../../../shared/errors/NotFoundError.ts";
+import { IReservationRepository } from "../../reservation/repositories/IReservationRepository.ts";
 import { IEventRepository } from "../repositories/IEventRepository.ts";
 
 export class DeleteEventUseCase {
     constructor(
-        private readonly eventRepository: IEventRepository
+        private readonly eventRepository: IEventRepository,
+        private readonly reservationRepository: IReservationRepository,
     ) {}
 
     async execute(eventId: number) {
-
+        
         const event = await this.eventRepository.findById(eventId);
 
         if (!event) {
-            throw new Error("Evento não encontrado.");
+            throw new NotFoundError("Event not found.");
         }
-
-        // TODO: Não permitir excluir eventos com reservas confirmadas
-
+        
+        const reservation =
+            await this.reservationRepository.findByEvent(eventId);
+        
+        if (reservation) {
+            throw new ForbiddenError(
+                "Cannot delete an event with a reservation."
+            );
+        }
+        
         await this.eventRepository.delete(eventId);
     }
 }
