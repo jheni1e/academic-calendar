@@ -10,7 +10,7 @@ export class FindClassByIdUseCase {
         const classItem = await this.classRepository.findById(classId);
 
         if (!classItem) {
-            throw new Error("Turma não encontrada.");
+            throw new Error("Class not found.");
         }
 
         return classItem;

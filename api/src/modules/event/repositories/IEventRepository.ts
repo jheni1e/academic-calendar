@@ -9,6 +9,10 @@ export interface IEventRepository {
         eventId: number
     ): Promise<Event | null>;
 
+    findByClass(
+        classId:number
+    ): Promise<Event[]>
+
     findAll(): Promise<Event[]>;
 
     update(

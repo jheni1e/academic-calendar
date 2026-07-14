@@ -30,6 +30,16 @@ export class PrismaEventRepository implements IEventRepository {
         });
 
     }
+    
+    async findByClass(classId: number): Promise<Event[]> {
+
+        return prisma.event.findMany({
+            where: {
+                class_id: classId
+            }
+        });
+
+    }
 
     async findAll(): Promise<Event[]> {
 

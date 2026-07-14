@@ -11,11 +11,11 @@ export class DeactivateClassUseCase {
         const classItem = await this.classRepository.findById(classId);
 
         if (!classItem) {
-            throw new Error("Turma não encontrada.");
+            throw new Error("Class not found.");
         }
 
         if (!classItem.is_active) {
-            throw new Error("A turma já está inativa.");
+            throw new Error("Class already inactive.");
         }
 
         const data: UpdateClassDTO = {

@@ -10,7 +10,7 @@ export class CreateClassUseCase {
 
         // Verifica se o nome foi informado
         if (!data.name.trim()) {
-            throw new Error("Nome da turma é obrigatório.");
+            throw new Error("Class name is required.");
         }
 
         return await this.classRepository.create(data);

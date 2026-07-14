@@ -14,12 +14,12 @@ export class UpdateClassUseCase {
         const classItem = await this.classRepository.findById(classId);
 
         if (!classItem) {
-            throw new Error("Turma não encontrada.");
+            throw new Error("Class not found.");
         }
 
         // Caso o nome seja informado, ele não pode ser vazio
         if (data.name !== undefined && !data.name.trim()) {
-            throw new Error("Nome da turma é obrigatório.");
+            throw new Error("Class name is required.");
         }
 
         return await this.classRepository.update(
