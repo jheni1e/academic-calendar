@@ -19,8 +19,7 @@ export class SubjectController {
     private readonly getUseCase = new GetSubjectsUseCase(this.repository);
     private readonly updateUseCase = new UpdateSubjectUseCase(this.repository);
 
-    async handleCreate(req: Request, res: Response) {
-
+    create = async (req: Request, res: Response) => {
         try {
 
             const subject = await this.createUseCase.execute(req.body);
@@ -43,7 +42,7 @@ export class SubjectController {
 
     }
 
-    async handleDelete(req: Request, res: Response) {
+    delete = async (req: Request, res: Response) => {
 
         try {
 
@@ -69,7 +68,7 @@ export class SubjectController {
 
     }
 
-    async handleFind(req: Request, res: Response) {
+    getById = async (req: Request, res: Response) => {
 
         try {
 
@@ -95,7 +94,7 @@ export class SubjectController {
 
     }
 
-    async handleGet(req: Request, res: Response) {
+    getAll= async (req: Request, res: Response) => {
 
         try {
 
@@ -119,7 +118,7 @@ export class SubjectController {
 
     }
 
-    async handleUpdate(req: Request, res: Response) {
+    update = async (req: Request, res: Response) => {
 
         try {
 

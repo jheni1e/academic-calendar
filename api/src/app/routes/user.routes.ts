@@ -28,8 +28,9 @@ route
     .get('/edv/:edv', authMiddleware, userController.getByEdv) // get user by edv
     .get('/id/:id', authMiddleware, userController.getById) // get user by id
     .get('/classes', authMiddleware, classUserController.getByUser) // get classes of the authenticated user
-    .get('/classes/:classId', authMiddleware, classUserController.getByClassAndUser) // get class by id
-    
+    .get('/classes/:classId', authMiddleware, classUserController.getByClassAndUser) // get class by id 
+    .get('/events/', authMiddleware, participationController.getByUser) // get events by user
+
     .put('/:id', authMiddleware, userController.update) // update class by id
     .put('/disable/:id', authMiddleware, authorize(Role.ADMIN, Role.INSTRUCTOR), userController.disable) // disable a user instead of deleting them
     .put('/event/confirm/', authMiddleware, participationController.update) // confirm event participation

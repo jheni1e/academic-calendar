@@ -3,8 +3,9 @@ import express from 'express'
 import auth from "./auth.routes.ts"
 import user from "./user.routes.ts"
 import role from "./role.routes.ts"
-import event from "./role.routes.ts"
+import event from "./event.routes.ts"
 import room from "./room.routes.ts"
+import subject from "./subject.routes.ts"
 
 export default function (app: Express) {
 app
@@ -14,4 +15,5 @@ app
     .use('/api/role', role) 
     .use('/api/event', event)
     .use('/api/room', room)
+    .use('/api/subject', subject)
 }
