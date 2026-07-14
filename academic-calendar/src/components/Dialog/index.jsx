@@ -5,9 +5,12 @@ import TextBox from "../TextBox";
 import DropdownList from "../DropdownList";
 import ColorPicker from "../ColorPicker";
 import FrequencySelector from "../FrequencySelector";
+import { toastError } from "../BoschToast";
 
-function Dialog({ isOpen, onClose, type, title }) {
+function Dialog({ isOpen, onClose, type, title, onSave }) {
     const dialogRef = useRef(null);
+    const [errors, setErrors] = useState({});
+
     const [responsible, setResponsible] = useState(null);
     const [classs, setClasss] = useState(null);
 
@@ -17,6 +20,15 @@ function Dialog({ isOpen, onClose, type, title }) {
     const [typeEvent, setTypeEvent] = useState(null);
     const [selectedParticipant, setSelectedParticipant] = useState("");
     const [participants, setParticipants] = useState([]);
+
+    const [subjectName, setSubjectName] = useState("");
+    const [workload, setWorkload] = useState("");
+    const [studentName, setStudentName] = useState("");
+    const [birthDate, setBirthDate] = useState("");
+    const [edv, setEdv] = useState("");
+    const [eventTitle, setEventTitle] = useState("");
+    const [startDate, setStartDate] = useState("");
+    const [endDate, setEndDate] = useState("");
 
     useEffect(() => {
         const dialog = dialogRef.current;
@@ -64,11 +76,11 @@ function Dialog({ isOpen, onClose, type, title }) {
 
     const removeRoom = (id) => {
         const newRooms = rooms.filter(r => r.value !== id);
-    
+
         if (!newRooms.some(r => r.isMain) && newRooms.length > 0) {
             newRooms[0].isMain = true;
         }
-    
+
         setRooms([...newRooms]);
     };
 
@@ -89,6 +101,100 @@ function Dialog({ isOpen, onClose, type, title }) {
 
     const removeParticipant = (id) => {
         setParticipants(participants.filter(p => p.value !== id));
+    };
+
+    const validateForm = () => {
+        const newErrors = {};
+
+        if (type === "subject") {
+            if (!subjectName.trim()) {
+                onClose();
+                toastError("Nome da matéria é obrigatório");
+            }
+            if (!responsible) {
+                onClose();
+                toastError("Responsável é obrigatório");
+            }
+            if (!workload.trim()) {
+                onClose();
+                toastError("Carga horária é obrigatória");
+            }
+            if (rooms.length === 0) {
+                onClose();
+                toastError("Selecione pelo menos uma sala");
+            }
+        }
+
+        if (type === "student") {
+            if (!studentName.trim()) {
+                onClose();
+                toastError("Nome do aluno é obrigatório");
+            }
+            if (!classs) {
+                onClose();
+                toastError("Turma é obrigatória");
+            }
+            if (!birthDate.trim()) {
+                onClose();
+                toastError("Data de nascimento é obrigatória");
+            }
+            if (!edv.trim()) {
+                onClose();
+                toastError("EDV é obrigatório");
+            }
+        }
+
+
+        if (type === "event") {
+            if (!typeEvent) {
+                onClose();
+                toastError("Tipo de evento é obrigatório.");
+            }
+            if (!eventTitle.trim()) {
+                onClose();
+                toastError("Título do evento é obrigatório.");
+            }
+
+
+            if (typeEvent === 1) {
+                if (participants.length === 0) {
+                    onClose();
+                    toastError("Adicione pelo menos um participante");
+                }
+                if (!startDate.trim()) {
+                    onClose();
+                    toastError("Data de início obrigatória");
+                }
+                if (!endDate.trim()) {
+                    onClose();
+                    toastError("Data de encerramento obrigatória");
+                }
+            }
+
+
+            if (typeEvent === 2) {
+                if (!responsible) {
+                    onClose();
+                    toastError("Professor obrigatório");
+                }
+                if (!startDate.trim()) {
+                    onClose();
+                    toastError("Data de início obrigatória");
+                }
+                if (!endDate.trim()) {
+                    onClose();
+                    toastError("Data de encerramento obrigatória");
+                }
+                if (!selectedRoom) {
+                    onClose();
+                    toastError("Sala obrigatória");
+                }
+            }
+        }
+
+        setErrors(newErrors);
+
+        return Object.keys(newErrors).length === 0;
     };
 
     const usersMock = [
@@ -139,7 +245,11 @@ function Dialog({ isOpen, onClose, type, title }) {
                 <div className="dialogContent">
                     <div className="dialogInput">
                         <h4>Nome da matéria:</h4>
-                        <TextBox placeholder="e.g.: Internet das Coisas" />
+                        <TextBox
+                            value={subjectName}
+                            onChange={(e) => setSubjectName(e.target.value)}
+                            placeholder="e.g.: Internet das Coisas"
+                        />
                     </div>
                     <div className="dialogInput">
                         <h4>Responsável:</h4>
@@ -147,7 +257,11 @@ function Dialog({ isOpen, onClose, type, title }) {
                     </div>
                     <div className="dialogInput">
                         <h4>Carga horária:</h4>
-                        <TextBox placeholder="e.g.: 16h" />
+                        <TextBox
+                            value={workload}
+                            onChange={(e) => setWorkload(e.target.value)}
+                            placeholder="e.g.: 16h"
+                        />
                     </div>
                     <div className="dialogInput">
                         <h4>Salas:</h4>
@@ -183,7 +297,7 @@ function Dialog({ isOpen, onClose, type, title }) {
                     </div>
                     <div className="dialogInput">
                         <h4>Título:</h4>
-                        <TextBox placeholder="e.g.: Aula IoT/Setor/Prova Python" />
+                        <TextBox value={eventTitle} placeholder="e.g.: Aula IoT/Setor/Prova Python" onChange={(e) => setEventTitle(e.target.value)} />
                     </div>
                     {typeEvent === 1 &&
                         <>
@@ -225,7 +339,7 @@ function Dialog({ isOpen, onClose, type, title }) {
                         <>
                             <div className="dialogInput">
                                 <h4>Professor:</h4>
-                                <DropdownList options={usersMock} selectedValue={responsible} onChange={(e) => setResponsible(e.target.value)} />
+                                <DropdownList options={usersMock} selectedValue={responsible} onChange={(e) => setResponsible(Number(e.target.value))} />
                             </div>
                             <div className="dialogInput">
                                 <h4>Início:</h4>
@@ -247,7 +361,11 @@ function Dialog({ isOpen, onClose, type, title }) {
                 <div className="dialogContent">
                     <div className="dialogInput">
                         <h4>Nome do aluno:</h4>
-                        <TextBox placeholder="e.g.: João Silveira" />
+                        <TextBox
+                            value={studentName}
+                            onChange={(e) => setStudentName(e.target.value)}
+                            placeholder="e.g.: João Silveira"
+                        />
                     </div>
                     <div className="dialogInput">
                         <h4>Turma:</h4>
@@ -255,11 +373,19 @@ function Dialog({ isOpen, onClose, type, title }) {
                     </div>
                     <div className="dialogInput">
                         <h4>Data de nascimento:</h4>
-                        <TextBox placeholder="XX/XX/XXXX" />
+                        <TextBox
+                            value={birthDate}
+                            onChange={(e) => setBirthDate(e.target.value)}
+                            placeholder="XX/XX/XXXX"
+                        />
                     </div>
                     <div className="dialogInput">
                         <h4>EDV:</h4>
-                        <TextBox placeholder="e.g.: 9290XXXX" />
+                        <TextBox
+                            value={edv}
+                            onChange={(e) => setEdv(e.target.value)}
+                            placeholder="e.g.: 9290XXXX"
+                        />
                     </div>
                 </div>
             }
@@ -276,7 +402,11 @@ function Dialog({ isOpen, onClose, type, title }) {
                 </div>
             }
             <div className="dialogButtons">
-                <BoschButton text="Confirmar" type="primary" />
+                <BoschButton text="Confirmar" type="primary" onClick={() => {
+                    if (validateForm()) {
+                        onSave();
+                    }
+                }} />
                 <BoschButton text="Cancelar" type="secondary" onClick={onClose} />
             </div>
         </dialog>
