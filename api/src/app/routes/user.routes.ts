@@ -3,6 +3,7 @@ import { AuthController } from "../../modules/auth/Controllers/authController.ts
 import { ClassUserController } from "../../modules/classUser/controllers/ClassUserControllers.ts";
 import { UserController } from "../../modules/user/controllers/UserController.ts";
 import { PrismaUserRepository } from "../../modules/user/repositories/PrismaUserRepository.ts";
+import { Role } from "../../shared/enums/role.ts";
 import { authMiddleware } from "../../shared/middlewares/auth.middleware.ts";
 import { authorize } from "../../shared/middlewares/authorization.middleware.ts";
 
@@ -19,13 +20,13 @@ const classUserController = new ClassUserController();
 const route = express.Router();
 
 route 
-    .post('/', userController.create)
-    .get('/all', userController.getAll)
-    .get('/edv/:edv', userController.getByEdv)
-    .get('/id/:id', userController.getById)
-    .get('/classes', classUserController.getByUser)
-    .get('/classes/:classId', classUserController.getByClassAndUser)
+    .post('/', authMiddleware, authorize(Role.ADMIN, Role.INSTRUCTOR), userController.create)
+    .get('/all', authMiddleware, authorize(Role.ADMIN, Role.INSTRUCTOR),userController.getAll)
+    .get('/edv/:edv', authMiddleware, userController.getByEdv)
+    .get('/id/:id', authMiddleware, userController.getById)
+    .get('/classes', authMiddleware, classUserController.getByUser) 
+    .get('/classes/:classId', authMiddleware, classUserController.getByClassAndUser)
     .put('/:id', authMiddleware, userController.update)
-    .put('/disable/:id', authMiddleware, authorize("ADMIN", "INSTRUCTOR"), userController.disable)
+    .put('/disable/:id', authMiddleware, authorize(Role.ADMIN, Role.INSTRUCTOR), userController.disable)
 
 export default route
