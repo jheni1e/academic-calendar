@@ -5,3 +5,13 @@
   font-size: 10px;
   margin-bottom: 6px;
 }
+
+.event-card.compact {
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  padding: 0;
+  margin: 0 auto 2px;
+  overflow: hidden;
+  flex-shrink: 0;
+}

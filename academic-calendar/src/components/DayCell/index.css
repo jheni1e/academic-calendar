@@ -1,4 +1,15 @@
+.day-cell.month {
+  min-height: 100px;
+}
+
+.day-cell.week {
+  min-height: 380px;
+  height: 66.3vh;
+}
+
 .day-cell {
+  display: flex;
+  flex-direction: column;
   background-color: #fff;
   border: 1px solid #cfcfcf;
   min-height: 100px;
@@ -6,19 +17,52 @@
 }
 
 .day-number {
+  margin-bottom: 2px;
   font-size: 1.5rem;
   font-weight: 500;
 }
 
-.events {
-  margin-top: 8px;
+.period {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
+  gap: 2px;
+  overflow: hidden;
 }
 
-.day-cell.month {
+.morning {
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 4px;
+  margin-bottom: 4px;
+}
+
+.afternoon {
+  padding-top: 4px;
+}
+
+.day-cell.compact {
   min-height: 80px;
+  padding: 6px;
 }
 
-.day-cell.week {
-  min-height: 380px;
-  height: 66.3vh;
+.day-cell.compact .day-number {
+  font-size: 1rem;
+  margin-bottom: 4px;
+}
+
+.day-cell.compact .period {
+  flex: 1;
+  flex-direction: row;
+  justify-content: flex-start;
+  gap: 2px;
+}
+
+.day-cell.compact .morning {
+  padding-bottom: 3px;
+  margin-bottom: 3px;
+}
+
+.day-cell.compact .afternoon {
+  padding-top: 2px;
 }
