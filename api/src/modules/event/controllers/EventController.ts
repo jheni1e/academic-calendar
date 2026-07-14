@@ -19,7 +19,7 @@ export class EventController {
     private readonly getEventsUseCase = new GetEventsUseCase(this.repository);
     private readonly updateUseCase = new UpdateEventUseCase(this.repository);
 
-    async handleCreate(req: Request, res: Response) {
+    create = async (req: Request, res: Response) => {
 
         try {
 
@@ -43,7 +43,7 @@ export class EventController {
 
     }
 
-    async handleDelete(req: Request, res: Response) {
+    delete = async(req: Request, res: Response) => {
 
         try {
 
@@ -69,7 +69,7 @@ export class EventController {
 
     }
 
-    async handleFind(req: Request, res: Response) {
+    getById = async (req: Request, res: Response) => {
 
         try {
 
@@ -95,7 +95,7 @@ export class EventController {
 
     }
 
-    async handleGetEvents(req: Request, res: Response) {
+    getAll = async (req: Request, res: Response) => {
 
         try {
 
@@ -119,7 +119,7 @@ export class EventController {
 
     }
 
-    async handleUpdate(req: Request, res: Response) {
+    update = async (req: Request, res: Response) => {
 
         try {
 

@@ -24,7 +24,7 @@ export class ClassUserController {
     private readonly getClassUsersUseCase = new GetClassUsersUseCase(this.repository);
     
 
-    async handleCreateClassUser(req: Request, res: Response) {
+    create = async (req: Request, res: Response) => {
 
         try {
             const classUser = await this.createClassUserUseCase.execute(req.body);
@@ -40,7 +40,8 @@ export class ClassUserController {
             });
         }
     }
-    async handleDeleteClassUser(req: Request, res: Response) {
+
+    delete = async (req: Request, res: Response) => {
 
         try {
             await this.deleteClassUserUseCase.execute(Number(req.params.id));
@@ -56,12 +57,13 @@ export class ClassUserController {
             });
         }
     }
-    async handleFindClassUserByClassAndUser(req: Request, res: Response) {
+
+    getByClassAndUser = async (req: Request, res: Response) => {
 
         try {
             const classUser = await this.findClassUserByClassAndUserUseCase.execute(
                 Number(req.params.classId),
-                Number(req.params.userId)
+                res.locals.user.id
             );
             return res.status(200).json(classUser);
         } catch (error) {
@@ -75,6 +77,7 @@ export class ClassUserController {
             });
         }
     }
+
     async handleFindClassUserById(req: Request, res: Response) {
 
         try {
@@ -93,11 +96,12 @@ export class ClassUserController {
             });
         }
     }
-    async handleGetClassesByUser(req: Request, res: Response) {
+    
+    getByUser = async (req: Request, res: Response) => {
 
         try {
             const classes = await this.getClassesByUserUseCase.execute(
-                Number(req.params.userId)
+                Number(res.locals.user.id)
             );
             return res.status(200).json(classes);
         } catch (error) {

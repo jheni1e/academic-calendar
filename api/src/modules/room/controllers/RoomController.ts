@@ -19,7 +19,7 @@ export class RoomController {
     private readonly getUseCase = new GetRoomsUseCase(this.repository);
     private readonly updateUseCase = new UpdateRoomUseCase(this.repository);
 
-    async handleCreate(req: Request, res: Response) {
+    create = async(req: Request, res: Response) => {
 
         try {
 
@@ -43,7 +43,7 @@ export class RoomController {
 
     }
 
-    async handleDelete(req: Request, res: Response) {
+    delete = async (req: Request, res: Response) => {
 
         try {
 
@@ -69,7 +69,7 @@ export class RoomController {
 
     }
 
-    async handleFind(req: Request, res: Response) {
+    getById = async (req: Request, res: Response) => {
 
         try {
 
@@ -90,12 +90,10 @@ export class RoomController {
             return res.status(500).json({
                 message: "Internal server error."
             });
-
         }
-
     }
 
-    async handleGet(req: Request, res: Response) {
+    getAll = async (req: Request, res: Response) => {
 
         try {
 
@@ -119,7 +117,7 @@ export class RoomController {
 
     }
 
-    async handleUpdate(req: Request, res: Response) {
+    update = async (req: Request, res: Response) => {
 
         try {
 
