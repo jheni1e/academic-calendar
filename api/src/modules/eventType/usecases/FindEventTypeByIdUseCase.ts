@@ -1,3 +1,4 @@
+import { NotFoundError } from "../../../shared/errors/NotFoundError.ts";
 import { IEventTypeRepository } from "../repositories/IEventTypeRepository.ts";
 
 export class FindEventTypeByIdUseCase {
@@ -11,7 +12,7 @@ export class FindEventTypeByIdUseCase {
             await this.eventTypeRepository.findById(eventTypeId);
 
         if (!eventType) {
-            throw new Error("Tipo de evento não encontrado.");
+            throw new NotFoundError("Event type not found.");
         }
 
         return eventType;

@@ -1,3 +1,4 @@
+import { NotFoundError } from "../../../shared/errors/NotFoundError.ts";
 import { IEventRoleRepository } from "../repositories/IEventRoleRepository.ts";
 
 export class FindEventRoleByIdUseCase {
@@ -11,7 +12,7 @@ export class FindEventRoleByIdUseCase {
             await this.eventRoleRepository.findById(eventRoleId);
 
         if (!eventRole) {
-            throw new Error("Papel do evento não encontrado.");
+            throw new NotFoundError("Event Role not found.");
         }
 
         return eventRole;
