@@ -67,6 +67,13 @@ export class PrismaReservationRepository
         
         }
 
+        async findByRoom(roomId : number) : Promise<Reservation[] | null> {
+            return prisma.reservation.findMany({
+                where: {
+                    room_id : roomId
+                }
+            })
+        }
         async delete(reservationId: number): Promise<void> {
             await prisma.reservation.delete({
                 where: {

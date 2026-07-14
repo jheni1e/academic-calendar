@@ -7,6 +7,9 @@ import { DeleteReservationUseCase } from "../usecases/DeleteReservationUseCase.t
 import { FindReservationByIdUseCase } from "../usecases/FindReservationByIdUseCase.ts";
 import { GetReservationsUseCase } from "../usecases/GetReservationsUseCase.ts";
 import { UpdateReservationUseCase } from "../usecases/UpdateReservationUseCase.ts";
+import { FindReservationByRoomUseCase } from "../usecases/FindReservationByRoom.ts";
+import { NotBeforeError } from "jsonwebtoken";
+import { NotFoundError } from "../../../shared/errors/NotFoundError.ts";
 
 export class ReservationController {
 
@@ -17,8 +20,9 @@ export class ReservationController {
     private readonly findUseCase = new FindReservationByIdUseCase(this.repository);
     private readonly getUseCase = new GetReservationsUseCase(this.repository);
     private readonly updateUseCase = new UpdateReservationUseCase(this.repository);
+    private readonly findByRoomUseCase = new FindReservationByRoomUseCase(this.repository)
 
-    async handleCreate(req: Request, res: Response) {
+    create = async (req: Request, res: Response) => {
 
         try {
 
@@ -42,7 +46,7 @@ export class ReservationController {
 
     }
 
-    async handleDelete(req: Request, res: Response) {
+    delete = async (req: Request, res: Response) => {
 
         try {
 
@@ -68,7 +72,7 @@ export class ReservationController {
 
     }
 
-    async handleFind(req: Request, res: Response) {
+    getById = async (req: Request, res: Response) => {
 
         try {
 
@@ -94,7 +98,19 @@ export class ReservationController {
 
     }
 
-    async handleGet(req: Request, res: Response) {
+    getByRoom = async (req: Request, res: Response) => {
+        const { id } = req.params
+        try {
+            const reservations = await this.findByRoomUseCase.execute(Number(id))
+            return res.status(200).send(reservations)
+        } catch (error) {
+            if (error instanceof NotFoundError)
+                return res.status(error.statusCode).send({ message: error.message})
+            return res.status()
+        }
+    }
+
+    getAll = async (req: Request, res: Response) => {
 
         try {
 
@@ -118,7 +134,7 @@ export class ReservationController {
 
     }
 
-    async handleUpdate(req: Request, res: Response) {
+    update = async (req: Request, res: Response) => {
 
         try {
 
