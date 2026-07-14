@@ -9,8 +9,9 @@ import { FindSubjectInstructorByIdUseCase } from "../usecases/FindSubjectInstruc
 import { GetSubjectInstructorsBySubjectUseCase } from "../usecases/GetSubjectInstructorsBySubjectUseCase.ts";
 import { GetSubjectInstructorsUseCase } from "../usecases/GetSubjectInstructorsUseCase.ts";
 import { GetSubjectsByInstructorUseCase } from "../usecases/GetSubjectsByInstructorUseCase.ts";
+import { UpdateSubjectInstructorController } from "./UpdateSubjectInstructorController.ts";
 
-export class CreateSubjectInstructorController {
+export class SubjectInstructorController {
 
     private readonly repository = new PrismaSubjectInstructorRepository();
 
@@ -20,6 +21,7 @@ export class CreateSubjectInstructorController {
     private readonly getSIBySubject = new GetSubjectInstructorsBySubjectUseCase(this.repository);
     private readonly getAllSI = new GetSubjectInstructorsUseCase(this.repository);
     private readonly getSIByInstructor = new GetSubjectsByInstructorUseCase(this.repository);
+    private readonly updateSI = new UpdateSubjectInstructorUseCase(this.repository);
 
 
     create = async (req: Request, res: Response) => {
@@ -172,32 +174,32 @@ export class CreateSubjectInstructorController {
 
     }
 
-    // update = async (req: Request, res: Response) => {
+    update = async (req: Request, res: Response) => {
 
-    //     try {
+        try {
 
-    //         const subjectInstructor = await this.update.execute(
-    //             Number(req.params.id),
-    //             req.body
-    //         );
+            const subjectInstructor = await this.updateSI.execute(
+                Number(req.params.id),
+                req.body
+            );
 
-    //         return res.status(200).json(subjectInstructor);
+            return res.status(200).json(subjectInstructor);
 
-    //     } catch (error) {
+        } catch (error) {
 
-    //         if (error instanceof AppError) {
-    //             return res.status(error.statusCode).json({
-    //                 message: error.message
-    //             });
-    //         }
+            if (error instanceof AppError) {
+                return res.status(error.statusCode).json({
+                    message: error.message
+                });
+            }
 
-    //         return res.status(500).json({
-    //             message: "Internal server error."
-    //         });
+            return res.status(500).json({
+                message: "Internal server error."
+            });
 
-    //     }
+        }
 
-    // }
+    }
     
 
 }
