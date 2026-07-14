@@ -1,3 +1,4 @@
+import { NotFoundError } from "../../../shared/errors/NotFoundError.ts";
 import { ISubjectRoomRepository } from "../repositories/ISubjectRoomRepository.ts";
 
 export class FindSubjectRoomByIdUseCase {
@@ -11,7 +12,7 @@ export class FindSubjectRoomByIdUseCase {
             await this.subjectRoomRepository.findById(subjectRoomId);
 
         if (!subjectRoom) {
-            throw new Error("Vínculo não encontrado.");
+            throw new NotFoundError("Link between subject and room not found.");
         }
 
         return subjectRoom;
