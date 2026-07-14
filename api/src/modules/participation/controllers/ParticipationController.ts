@@ -11,7 +11,7 @@ import { GetParticipationsByUserUseCase } from "../usecases/GetParticipationsByU
 import { GetParticipationsUseCase } from "../usecases/GetParticipationsUseCase.ts";
 import { UpdateParticipationUseCase } from "../usecases/UpdateParticipationUseCase.ts";
 
-export class CreateParticipationController {
+export class ParticipationController {
 
     private readonly repository = new PrismaParticipationRepository();
 
@@ -23,7 +23,7 @@ export class CreateParticipationController {
     private readonly getByUserUseCase = new GetParticipationsByUserUseCase(this.repository);
     private readonly updateUseCase = new UpdateParticipationUseCase(this.repository);
 
-    async handleCreate(req: Request, res: Response) {
+    create = async (req: Request, res: Response) => {
 
         try {
 
@@ -47,7 +47,7 @@ export class CreateParticipationController {
 
     }
 
-    async handleDelete(req: Request, res: Response) {
+    delete = async (req: Request, res: Response) => {
 
         try {
 
@@ -73,7 +73,7 @@ export class CreateParticipationController {
 
     }
 
-    async handleFind(req: Request, res: Response) {
+    getById = async (req: Request, res: Response) => {
 
         try {
 
@@ -99,7 +99,7 @@ export class CreateParticipationController {
 
     }
 
-    async handleGet(req: Request, res: Response) {
+    getAll = async (req: Request, res: Response) => {
 
         try {
 
@@ -123,7 +123,7 @@ export class CreateParticipationController {
 
     }
 
-    async handleGetByEvent(req: Request, res: Response) {
+    getByEvent = async (req: Request, res: Response) => {
 
         try {
 
@@ -149,7 +149,7 @@ export class CreateParticipationController {
 
     }
 
-    async handleGetByUser(req: Request, res: Response) {
+    getByUser = async (req: Request, res: Response) => {
 
         try {
 
@@ -175,7 +175,7 @@ export class CreateParticipationController {
 
     }
 
-    async handleUpdate(req: Request, res: Response) {
+    update = async (req: Request, res: Response) => {
 
         try {
 
