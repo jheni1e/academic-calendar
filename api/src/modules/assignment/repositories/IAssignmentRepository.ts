@@ -17,6 +17,10 @@ export interface IAssignmentRepository {
         userId: number
     ): Promise<Assignment[]>;
 
+    findByRoleId(
+        roleId: number
+    ): Promise<Assignment[]>;
+
     findByUserAndRole(
         userId: number,
         roleId: number

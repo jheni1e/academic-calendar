@@ -13,7 +13,7 @@ export class FindAssignmentByIdUseCase {
             );
 
         if (!assignment) {
-            throw new Error("Vínculo não encontrado.");
+            throw new Error("Assignment not found.");
         }
 
         return assignment;

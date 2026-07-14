@@ -16,7 +16,7 @@ export class CreateAssignmentUseCase {
             );
 
         if (assignment) {
-            throw new Error("O usuário já possui esse papel.");
+            throw new Error("User already has this role.");
         }
 
         return await this.assignmentRepository.create(data);

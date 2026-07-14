@@ -44,6 +44,18 @@ export class PrismaAssignmentRepository implements IAssignmentRepository {
         });
     }
 
+    async findByRoleId(
+        roleId: number
+    ): Promise<Assignment[]> {
+
+        return prisma.assignment.findMany({
+            where: {
+                role_id: roleId
+            }
+        });
+    }
+
+
     async findByUserAndRole(
         userId: number,
         roleId: number
