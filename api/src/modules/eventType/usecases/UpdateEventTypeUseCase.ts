@@ -1,5 +1,6 @@
 import { IEventTypeRepository } from "../repositories/IEventTypeRepository.ts";
 import { UpdateEventTypeDTO } from "../EventTypeDTO.ts";
+import { NotFoundError } from "../../../shared/errors/NotFoundError.ts";
 
 export class UpdateEventTypeUseCase {
     constructor(
@@ -16,7 +17,7 @@ export class UpdateEventTypeUseCase {
             await this.eventTypeRepository.findById(eventTypeId);
 
         if (!eventType) {
-            throw new Error("Tipo de evento não encontrado.");
+            throw new NotFoundError("Event type not found.");
         }
 
         // Caso o nome seja informado, ele não pode ser vazio

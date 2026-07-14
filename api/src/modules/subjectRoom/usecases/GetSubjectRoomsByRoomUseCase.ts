@@ -1,3 +1,4 @@
+import { NotFoundError } from "../../../shared/errors/NotFoundError.ts";
 import { ISubjectRoomRepository } from "../repositories/ISubjectRoomRepository.ts";
 
 export class GetSubjectRoomsByRoomUseCase {
@@ -11,7 +12,7 @@ export class GetSubjectRoomsByRoomUseCase {
             await this.subjectRoomRepository.findByRoom(roomId);
 
         if (subjectRooms.length === 0) {
-            throw new Error("Nenhuma matéria vinculada à sala.");
+            throw new NotFoundError("No classrooms are linked to this subject.");
         }
 
         return subjectRooms;

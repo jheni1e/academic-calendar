@@ -10,14 +10,18 @@ import { DeleteClassUseCase } from "../usecases/DeleteClassUseCase.ts";
 import { FindClassByIdUseCase } from "../usecases/FindClassByIdUseCase.ts";
 import { GetClassesUseCase } from "../usecases/GetClassesUseCase.ts";
 import { UpdateClassUseCase } from "../usecases/UpdateClassUseCase.ts";
+import { PrismaClassUserRepository } from "../../classUser/repositories/PrismaClassUserRepository.ts";
+import { PrismaEventRepository } from "../../event/repositories/PrismaEventRepository.ts";
 
 export class ClassController {
     private readonly repository = new PrismaClassRepository();
+    private readonly classUserRepository = new PrismaClassUserRepository();
+    private readonly eventRepository = new PrismaEventRepository();
 
     private readonly activateClassUseCase = new ActivateClassUseCase(this.repository);
     private readonly createClassUseCase = new CreateClassUseCase(this.repository);
     private readonly deactivateClassUseCase = new DeactivateClassUseCase(this.repository);
-    private readonly deleteClassUseCase = new DeleteClassUseCase(this.repository);
+    private readonly deleteClassUseCase = new DeleteClassUseCase(this.repository, this.classUserRepository, this.eventRepository);
     private readonly findClassByIdUseCase = new FindClassByIdUseCase(this.repository);
     private readonly getClassesUseCase = new GetClassesUseCase(this.repository);
     private readonly updateClassUseCase = new UpdateClassUseCase(this.repository);

@@ -1,3 +1,5 @@
+import { CreateRecurrenceDTO } from "../recurrence/recurrenceDTO.ts";
+
 export interface CreateEventDTO {
     title: string;
     description?: string;
@@ -6,6 +8,7 @@ export interface CreateEventDTO {
 
     subjectId?: number;
     classId?: number;
+    recurrence?: CreateRecurrenceDTO;
 
     createdBy: number;
 }

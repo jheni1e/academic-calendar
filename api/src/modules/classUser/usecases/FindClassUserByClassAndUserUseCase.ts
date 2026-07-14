@@ -1,3 +1,4 @@
+import { NotFoundError } from "../../../shared/errors/NotFoundError.ts";
 import { IClassUserRepository } from "../repositories/IClassUserRepository.ts";
 
 export class FindClassUserByClassAndUserUseCase {
@@ -17,7 +18,7 @@ export class FindClassUserByClassAndUserUseCase {
             );
 
         if (!classUser) {
-            throw new Error("Assignment not found.");
+            throw new NotFoundError("Assignment not found.");
         }
 
         return classUser;

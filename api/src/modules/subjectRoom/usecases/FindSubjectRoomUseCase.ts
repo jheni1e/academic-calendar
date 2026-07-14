@@ -1,3 +1,4 @@
+import { NotFoundError } from "../../../shared/errors/NotFoundError.ts";
 import { ISubjectRoomRepository } from "../repositories/ISubjectRoomRepository.ts";
 
 export class FindSubjectRoomUseCase {
@@ -17,7 +18,7 @@ export class FindSubjectRoomUseCase {
             );
 
         if (!subjectRoom) {
-            throw new Error("Vínculo entre matéria e sala não encontrado.");
+            throw new NotFoundError("Link between subject and classroom not found.");
         }
 
         return subjectRoom;
