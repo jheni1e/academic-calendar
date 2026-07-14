@@ -10,6 +10,7 @@ function Dialog({ isOpen, onClose, type, title }) {
     const dialogRef = useRef(null);
     const [responsible, setResponsible] = useState(null);
     const [classs, setClasss] = useState(null);
+    const [selectedClass, setSelectedClass] = useState(null);
 
     const [selectedRoom, setSelectedRoom] = useState(null);
     const [rooms, setRooms] = useState([]);
@@ -238,6 +239,30 @@ function Dialog({ isOpen, onClose, type, title }) {
                             <div className="dialogInput">
                                 <h4>Sala:</h4>
                                 <DropdownList options={salasMock} selectedValue={selectedRoom} onChange={(e) => setRoom(e.target.value)} />
+                            </div>
+                        </>
+                    }
+                    {typeEvent === 3 &&
+                        <>
+                            <div className="dialogInput">
+                                <h4>Professor:</h4>
+                                <DropdownList options={usersMock} selectedValue={responsible} onChange={(e) => setResponsible(e.target.value)} />
+                            </div>
+                            <div className="dialogInput">
+                                <h4>Sala:</h4>
+                                <DropdownList options={salasMock} selectedValue={selectedRoom} onChange={(e) => setRoom(e.target.value)} />
+                            </div>
+                            <div className="dialogInput">
+                                <h4>Início:</h4>
+                                <TextBox placeholder="XX/XX/XXXX XX:XX" />
+                            </div>
+                            <div className="dialogInput">
+                                <h4>Encerramento:</h4>
+                                <TextBox placeholder="XX/XX/XXXX XX:XX" />
+                            </div>
+                            <div className="dialogInput">
+                                <h4>Turma:</h4>
+                                <DropdownList options={turmasMock} selectedValue={selectedClass} onChange={(e) => setSelectedClass(e.target.value)} />
                             </div>
                         </>
                     }
