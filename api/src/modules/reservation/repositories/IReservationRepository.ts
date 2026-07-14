@@ -7,6 +7,8 @@ export interface IReservationRepository {
 
     findAll() : Promise<Reservation[]>;
 
+    findByRoom(roomId : number) : Promise<Reservation[] | null>;
+
     update(
         reservationId: number,
         data: UpdateReservationDTO
