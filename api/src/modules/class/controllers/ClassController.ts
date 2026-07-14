@@ -26,7 +26,7 @@ export class ClassController {
     private readonly getClassesUseCase = new GetClassesUseCase(this.repository);
     private readonly updateClassUseCase = new UpdateClassUseCase(this.repository);
 
-    async handleActivateClass(req: Request, res: Response) {
+    activate = async (req: Request, res: Response) => {
 
         try {
             const updatedClass = await this.activateClassUseCase.execute(
@@ -46,7 +46,8 @@ export class ClassController {
             });
         }
     }
-    async handleCreateClass(req: Request, res: Response) {
+    
+    create = async (req: Request, res: Response) => {
 
         try {
             const newClass = await this.createClassUseCase.execute(req.body);
@@ -62,7 +63,8 @@ export class ClassController {
             });
         }
     }
-    async handleDeactivateClass(req: Request, res: Response) {
+
+    deactivate = async (req: Request, res: Response) => {
 
         try {
             const updatedClass = await this.deactivateClassUseCase.execute(
@@ -80,7 +82,7 @@ export class ClassController {
             });
         }
     }
-    async handleDeleteClass(req: Request, res: Response) {
+    delete = async (req: Request, res: Response) => {
 
         try {
             await this.deleteClassUseCase.execute(Number(req.params.id));
@@ -96,7 +98,8 @@ export class ClassController {
             });
         }
     }
-    async handleFindClassById(req: Request, res: Response) {
+
+    getById = async (req: Request, res: Response) => {
 
         try {
             const classEntity = await this.findClassByIdUseCase.execute(
@@ -114,7 +117,8 @@ export class ClassController {
             });
         }
     }
-    async handleGetClasses(req: Request, res: Response) {
+
+    getAll = async (req: Request, res: Response) => {
 
         try {
             const classes = await this.getClassesUseCase.execute();
@@ -130,7 +134,8 @@ export class ClassController {
             });
         }
     }
-    async handleUpdateClass(req: Request, res: Response) {
+
+    update = async (req: Request, res: Response) => {
 
         try {
             const updatedClass = await this.updateClassUseCase.execute(

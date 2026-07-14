@@ -1,5 +1,6 @@
 import { PrismaAssignmentRepository } from "../../modules/assignment/repositories/PrismaAssignmentRepository.ts";
 import { AuthController } from "../../modules/auth/Controllers/authController.ts";
+import { ClassUserController } from "../../modules/classUser/controllers/ClassUserControllers.ts";
 import { UserController } from "../../modules/user/controllers/UserController.ts";
 import { PrismaUserRepository } from "../../modules/user/repositories/PrismaUserRepository.ts";
 import { authMiddleware } from "../../shared/middlewares/auth.middleware.ts";
@@ -13,6 +14,7 @@ const assignmentRepository = new PrismaAssignmentRepository();
 const userRepository = new PrismaUserRepository();
 const authService = new AuthService(userRepository, assignmentRepository);
 const userController = new UserController();
+const classUserController = new ClassUserController();
 
 const route = express.Router();
 
@@ -21,6 +23,8 @@ route
     .get('/all', userController.getAll)
     .get('/edv/:edv', userController.getByEdv)
     .get('/id/:id', userController.getById)
+    .get('/classes', classUserController.getByUser)
+    .get('/classes/:classId', classUserController.getByClassAndUser)
     .put('/:id', authMiddleware, userController.update)
     .put('/disable/:id', authMiddleware, authorize("ADMIN", "INSTRUCTOR"), userController.disable)
 

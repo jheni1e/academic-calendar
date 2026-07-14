@@ -1,15 +1,16 @@
 import express from 'express'
-import { CreateEventController } from '../../modules/event/controllers/CreateEventController.ts';
-import { GetEventRolesController } from '../../modules/eventRole/controllers/GetEventRolesController.ts';
+import { EventController } from '../../modules/event/controllers/EventController.ts';
+
 
 const route = express.Router();
 
-const eventController = new 
+const eventController = new EventController();
+
 route 
-    .post('/', createEvent.handle)
-    .get('/all', getRoles.handle)
-    .get('/:id', getById.handle)
-    .put('/:id', updateRole.handle)
-    .delete("/:id", deleteRole.handle)
+    .post('/', eventController.create)
+    .get('/all', eventController.getAll)
+    .get('/:id', eventController.getById)
+    .put('/:id', eventController.update)
+    .delete("/:id", eventController.delete)
 
 export default route
