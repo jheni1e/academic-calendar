@@ -9,8 +9,8 @@ export function authorize(...roles: string[]) {
             return res.status(200).send("User not authenticated")
         }
 
-        const hasPermission = user.roles.some((role: Role) =>
-            roles.includes(role.name)
+        const hasPermission = user.role.some((role: string) =>
+            roles.includes(role)
         );
 
         if(!hasPermission) {

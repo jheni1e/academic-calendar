@@ -22,7 +22,7 @@ const participationController = new ParticipationController();
 const route = express.Router();
 
 route 
-    .post('/', authMiddleware, authorize(Role.ADMIN, Role.INSTRUCTOR), userController.create) // create new user
+    .post('/', userController.create) // create new user
 
     .get('/all', authMiddleware, authorize(Role.ADMIN, Role.INSTRUCTOR),userController.getAll) // get all users
     .get('/edv/:edv', authMiddleware, userController.getByEdv) // get user by edv

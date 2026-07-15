@@ -24,7 +24,6 @@ export class SubjectInstructorController {
     private readonly getSIBySubject = new GetSubjectInstructorsBySubjectUseCase(this.repository);
     private readonly getAllSI = new GetSubjectInstructorsUseCase(this.repository);
     private readonly getSIByInstructor = new GetSubjectsByInstructorUseCase(this.repository);
-    private readonly updateSI = new UpdateSubjectInstructorUseCase(this.repository);
 
 
     create = async (req: Request, res: Response) => {
@@ -176,33 +175,4 @@ export class SubjectInstructorController {
         }
 
     }
-
-    update = async (req: Request, res: Response) => {
-
-        try {
-
-            const subjectInstructor = await this.updateSI.execute(
-                Number(req.params.id),
-                req.body
-            );
-
-            return res.status(200).json(subjectInstructor);
-
-        } catch (error) {
-
-            if (error instanceof AppError) {
-                return res.status(error.statusCode).json({
-                    message: error.message
-                });
-            }
-
-            return res.status(500).json({
-                message: "Internal server error."
-            });
-
-        }
-
-    }
-    
-
 }

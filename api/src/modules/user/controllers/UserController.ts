@@ -57,6 +57,11 @@ export class UserController {
 
         try {
             const user = await this.findUserById.execute(Number(id));
+            // console.log(user)
+            // console.log(res.locals.user.role)
+            // console.log(Array.isArray(res.locals.user.role));
+            // console.log(typeof res.locals.user.role);
+            // console.log(JSON.stringify(res.locals.user.role, null, 2));
             return res.status(200).send(user)
 
         } catch (error) {
