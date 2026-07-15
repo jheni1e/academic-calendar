@@ -3,6 +3,7 @@ import { UpdateEventDTO } from "../EventDTO.ts";
 import { NotFoundError } from "../../../shared/errors/NotFoundError.ts";
 import { IReservationRepository } from "../../reservation/repositories/IReservationRepository.ts";
 import { ReservationStatus } from "../../../generated/prisma/enums.ts";
+import { ForbiddenError } from "../../../shared/errors/ForbiddenError.ts";
 
 export class UpdateEventUseCase {
     constructor(
@@ -19,14 +20,13 @@ export class UpdateEventUseCase {
             throw new NotFoundError("Event not found.");
         }
 
+        if (event.is_blocked == true){
+            throw new ForbiddenError("Cannot edit a blocked event.");
+        }
+
         if (data.title !== undefined && !data.title.trim()) {
             throw new Error("Event title is required.");
         }
-
-        // TODO: Impedir edição caso exista reserva bloqueada
-        // if (event.) {
-        //     throw new Error("Event title is required.");
-        // }       
 
         return await this.eventRepository.update(eventId, data);
     }

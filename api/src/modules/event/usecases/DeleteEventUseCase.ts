@@ -16,6 +16,10 @@ export class DeleteEventUseCase {
         if (!event) {
             throw new NotFoundError("Event not found.");
         }
+
+        if (event.is_blocked == true){
+            throw new ForbiddenError("Cannot delete a blocked event.");
+        }
         
         const reservation =
             await this.reservationRepository.findByEvent(eventId);
