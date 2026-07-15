@@ -9,13 +9,16 @@ import { FindSubjectInstructorByIdUseCase } from "../usecases/FindSubjectInstruc
 import { GetSubjectInstructorsBySubjectUseCase } from "../usecases/GetSubjectInstructorsBySubjectUseCase.ts";
 import { GetSubjectInstructorsUseCase } from "../usecases/GetSubjectInstructorsUseCase.ts";
 import { GetSubjectsByInstructorUseCase } from "../usecases/GetSubjectsByInstructorUseCase.ts";
-import { UpdateSubjectInstructorController } from "./UpdateSubjectInstructorController.ts";
+import { PrismaSubjectRepository } from "../../subject/repositories/PrismaSubjectRepository.ts";
+import { PrismaUserRepository } from "../../user/repositories/PrismaUserRepository.ts";
 
 export class SubjectInstructorController {
 
     private readonly repository = new PrismaSubjectInstructorRepository();
+    private readonly subjectRepository = new PrismaSubjectRepository();
+    private readonly userRepository = new PrismaUserRepository();
 
-    private readonly createSI = new CreateSubjectInstructorUseCase(this.repository);
+    private readonly createSI = new CreateSubjectInstructorUseCase(this.repository, this.subjectRepository, this.userRepository);
     private readonly deleteSI = new DeleteSubjectInstructorUseCase(this.repository);
     private readonly findSIById = new FindSubjectInstructorByIdUseCase(this.repository);
     private readonly getSIBySubject = new GetSubjectInstructorsBySubjectUseCase(this.repository);

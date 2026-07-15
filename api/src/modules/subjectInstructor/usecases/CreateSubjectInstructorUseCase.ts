@@ -4,6 +4,7 @@ import { ISubjectInstructorRepository } from "../repositories/ISubjectInstructor
 import { CreateSubjectInstructorDTO } from "../SubjectInstructorDto.ts";
 
 export class CreateSubjectInstructorUseCase {
+    
     constructor(
         private readonly subjectInstructorRepository: ISubjectInstructorRepository,
         private readonly subjectRepository: ISubjectRepository,
