@@ -1,26 +1,23 @@
 import { RecurrenceFrequency } from "../../generated/prisma/enums.ts";
 
-export interface CreateRecurrenceDTO {
+export class CreateRecurrenceDTO {
     frequency: RecurrenceFrequency;
-
-    endDate?: Date;
+    repeat_until?: Date;
     occurrences?: number;
-
-    monday: boolean;
-    tuesday: boolean;
-    wednesday: boolean;
-    thursday: boolean;
-    friday: boolean;
-    saturday: boolean;
-    sunday: boolean;
+    created_by!: number;
+    monday?: boolean;
+    tuesday?: boolean;
+    wednesday?: boolean;
+    thursday?: boolean;
+    friday?: boolean;
+    saturday?: boolean;
+    sunday?: boolean;
 }
 
 export interface UpdateRecurrenceDTO {
     frequency?: RecurrenceFrequency;
-
     endDate?: Date;
     occurrences?: number;
-
     monday?: boolean;
     tuesday?: boolean;
     wednesday?: boolean;
