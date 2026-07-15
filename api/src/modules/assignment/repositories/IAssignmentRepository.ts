@@ -1,4 +1,4 @@
-import { Assignment } from "../../../generated/prisma/client.ts";
+import { Assignment, Role } from "../../../generated/prisma/client.ts";
 import { CreateAssignmentDTO } from "../AssignmentDTO.ts";
 
 export interface IAssignmentRepository {
@@ -15,7 +15,7 @@ export interface IAssignmentRepository {
 
     findByUserId(
         userId: number
-    ): Promise<Assignment[]>;
+    ): Promise<(Assignment & {role: Role})[]>;
 
     findByRoleId(
         roleId: number

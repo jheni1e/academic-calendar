@@ -1,4 +1,5 @@
 export interface authDTO {
     edv: number,
-    password : string
+    password : string,
+    role : string
 }

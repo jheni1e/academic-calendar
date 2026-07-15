@@ -1,4 +1,4 @@
-import { Assignment } from "../../../generated/prisma/client.ts";
+import { Assignment, Role } from "../../../generated/prisma/client.ts";
 import { prisma } from "../../../lib/prisma.ts";
 import { CreateAssignmentDTO } from "../AssignmentDTO.ts";
 import { IAssignmentRepository } from "./IAssignmentRepository.ts";
@@ -35,11 +35,15 @@ export class PrismaAssignmentRepository implements IAssignmentRepository {
 
     async findByUserId(
         userId: number
-    ): Promise<Assignment[]> {
+    ): Promise<(Assignment & {role : Role})[]> {
 
         return prisma.assignment.findMany({
             where: {
                 user_id: userId
+            },
+
+            include: {
+                role: true
             }
         });
     }

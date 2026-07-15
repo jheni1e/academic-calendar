@@ -28,15 +28,14 @@ export class AuthService {
         if (!isCorrect) {
             throw new Error("Invalid password");
         }
-        
-        const role = await this.assignmentRepository.findByUserId(user.user_id)
-
-        
+    
+        const assignments = await this.assignmentRepository.findByUserId(user.user_id);
+        const roles = assignments.map(a => a.role.name);
 
         return generateToken({
             id: user.user_id,
             edv: user.user_edv,
-            role: role
+            role: roles
         });
 
     }
