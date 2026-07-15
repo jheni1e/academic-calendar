@@ -13,8 +13,7 @@ export class PrismaReservationRepository
                 data: {
                     room_id: data.roomId,
                     event_id: data.eventId,
-                    status: data.status,
-                    description: data.description
+                    status: data.status, description: data.description
                 }
             });
         }
