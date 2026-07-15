@@ -13,10 +13,7 @@ export class PrismaReservationRepository
                 data: {
                     room_id: data.roomId,
                     event_id: data.eventId,
-                    schedule_start: data.scheduleStart,
-                    schedule_end: data.scheduleEnd,
                     status: data.status,
-                    is_blocked: data.isBlocked ?? false,
                     description: data.description
                 }
             });
@@ -34,10 +31,7 @@ export class PrismaReservationRepository
                 data: {
                     room_id: data.roomId,
                     event_id: data.eventId,
-                    schedule_start: data.scheduleStart,
-                    schedule_end: data.scheduleEnd,
                     status: data.status,
-                    is_blocked: data.isBlocked,
                     description: data.description
                 }
             })
