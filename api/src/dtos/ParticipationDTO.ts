@@ -1,4 +1,4 @@
-import { ParticipationStatus } from "../../generated/prisma/client.ts";
+import { ParticipationStatus } from "../generated/prisma/client.ts";
 
 export interface CreateParticipationDTO {
     userId: number;

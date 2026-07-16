@@ -2,7 +2,7 @@ import { Role } from "../../../generated/prisma/client.ts";
 import {
     CreateRoleDTO,
     UpdateRoleDTO
-} from "../RoleDTO.ts";
+} from "../../../dtos/RoleDTO.ts";
 
 export interface IRoleRepository {
 

@@ -1,5 +1,5 @@
 import { ISubjectRepository } from "../repositories/ISubjectRepository.ts";
-import { CreateSubjectDTO } from "../SubjectDto.ts";
+import { CreateSubjectDTO } from "../../../dtos/SubjectDto.ts";
 
 export class CreateSubjectUseCase {
     constructor(

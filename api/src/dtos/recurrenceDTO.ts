@@ -1,4 +1,4 @@
-import { RecurrenceFrequency } from "../../generated/prisma/enums.ts";
+import { RecurrenceFrequency } from "../generated/prisma/enums.ts";
 
 export class CreateRecurrenceDTO {
     frequency: RecurrenceFrequency;

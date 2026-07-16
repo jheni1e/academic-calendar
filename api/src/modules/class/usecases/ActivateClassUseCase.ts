@@ -1,4 +1,4 @@
-import { UpdateClassDTO } from "../ClassDTO.ts";
+import { UpdateClassDTO } from "../../../dtos/ClassDto.ts";
 import { IClassRepository } from "../repositories/IClassRepository.ts";
 
 export class ActivateClassUseCase {

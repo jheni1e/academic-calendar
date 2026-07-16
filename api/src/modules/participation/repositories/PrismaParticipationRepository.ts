@@ -7,7 +7,7 @@ import {
 import {
     CreateParticipationDTO,
     UpdateParticipationDTO
-} from "../ParticipationDTO.ts";
+} from "../../../dtos/ParticipationDTO.ts";
 
 import { IParticipationRepository } from "./IParticipationRepository.ts";
 

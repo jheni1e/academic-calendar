@@ -1,7 +1,7 @@
 import { ConflictError } from "../../../shared/errors/ConflictError.ts";
 import { ValidationError } from "../../../shared/errors/ValidationError.ts";
 import { ISubjectRoomRepository } from "../repositories/ISubjectRoomRepository.ts";
-import { CreateSubjectRoomDTO } from "../SubjectRoomDTO.ts";
+import { CreateSubjectRoomDTO } from "../../../dtos/SubjectRoomDTO.ts";
 
 export class CreateSubjectRoomUseCase {
     constructor(

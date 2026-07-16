@@ -1,5 +1,5 @@
 import { IEventTypeRepository } from "../repositories/IEventTypeRepository.ts";
-import { UpdateEventTypeDTO } from "../EventTypeDTO.ts";
+import { UpdateEventTypeDTO } from "../../../dtos/EventTypeDTO.ts";
 import { NotFoundError } from "../../../shared/errors/NotFoundError.ts";
 
 export class UpdateEventTypeUseCase {

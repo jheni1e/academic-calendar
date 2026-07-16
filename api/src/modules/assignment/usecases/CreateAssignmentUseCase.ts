@@ -1,6 +1,6 @@
 import { IAssignmentRepository } from "../repositories/IAssignmentRepository.ts";
 
-import { CreateAssignmentDTO } from "../AssignmentDTO.ts";
+import { CreateAssignmentDTO } from "../../../dtos/AssignmentDto.ts";
 import { ConflictError } from "../../../shared/errors/ConflictError.ts";
 
 export class CreateAssignmentUseCase {

@@ -4,7 +4,7 @@ import { prisma } from "../../../lib/prisma.ts";
 import {
     CreateEventRoleDTO,
     UpdateEventRoleDTO
-} from "../EventRoleDTO.ts";
+} from "../../../dtos/EventRoleDTO.ts";
 
 import { IEventRoleRepository } from "./IEventRoleRepository.ts";
 

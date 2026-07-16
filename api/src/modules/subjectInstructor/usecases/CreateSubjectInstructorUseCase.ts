@@ -1,7 +1,7 @@
 import { ISubjectRepository } from "../../subject/repositories/ISubjectRepository.ts";
 import { IUserRepository } from "../../user/repositories/IUserRepository.ts";
 import { ISubjectInstructorRepository } from "../repositories/ISubjectInstructorRepository.ts";
-import { CreateSubjectInstructorDTO } from "../SubjectInstructorDto.ts";
+import { CreateSubjectInstructorDTO } from "../../../dtos/SubjectInstructorDto.ts";
 
 export class CreateSubjectInstructorUseCase {
     

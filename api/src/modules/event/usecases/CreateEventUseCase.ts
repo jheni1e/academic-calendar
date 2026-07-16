@@ -1,5 +1,5 @@
 import { IEventRepository } from "../repositories/IEventRepository.ts";
-import { CreateEventDTO } from "../EventDTO.ts";
+import { CreateEventDTO } from "../../../dtos/EventDto.ts";
 import { IClassRepository } from "../../class/repositories/IClassRepository.ts";
 import { NotFoundError } from "../../../shared/errors/NotFoundError.ts";
 import { ISubjectRepository } from "../../subject/repositories/ISubjectRepository.ts";

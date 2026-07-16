@@ -1,5 +1,5 @@
 import { Assignment, Role } from "../../../generated/prisma/client.ts";
-import { CreateAssignmentDTO } from "../AssignmentDTO.ts";
+import { CreateAssignmentDTO } from "../../../dtos/AssignmentDto.ts";
 
 export interface IAssignmentRepository {
 

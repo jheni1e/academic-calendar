@@ -1,5 +1,5 @@
 import { IEventRepository } from "../repositories/IEventRepository.ts";
-import { UpdateEventDTO } from "../EventDTO.ts";
+import { UpdateEventDTO } from "../../../dtos/EventDto.ts";
 import { NotFoundError } from "../../../shared/errors/NotFoundError.ts";
 import { IReservationRepository } from "../../reservation/repositories/IReservationRepository.ts";
 import { ReservationStatus } from "../../../generated/prisma/enums.ts";

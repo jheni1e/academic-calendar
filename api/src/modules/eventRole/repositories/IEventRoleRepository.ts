@@ -2,7 +2,7 @@ import { EventRole } from "../../../generated/prisma/client.ts";
 import {
     CreateEventRoleDTO,
     UpdateEventRoleDTO
-} from "../EventRoleDTO.ts";
+} from "../../../dtos/EventRoleDTO.ts";
 
 export interface IEventRoleRepository {
 

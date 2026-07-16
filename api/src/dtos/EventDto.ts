@@ -1,4 +1,4 @@
-import { CreateRecurrenceDTO } from "../recurrence/recurrenceDTO.ts";
+import { CreateRecurrenceDTO } from "./recurrenceDTO.ts";
 
 export interface CreateEventDTO {
     title: string;

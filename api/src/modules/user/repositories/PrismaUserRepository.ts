@@ -1,6 +1,6 @@
 import { User } from "../../../generated/prisma/client.ts";
 import { prisma } from "../../../lib/prisma.ts";
-import { CreateUserDTO, UpdateUserDTO } from "../UserDto.ts";
+import { CreateUserDTO, UpdateUserDTO } from "../../../dtos/UserDto.ts";
 import { IUserRepository } from "./IUserRepository.ts";
 
 export class PrismaUserRepository implements IUserRepository {

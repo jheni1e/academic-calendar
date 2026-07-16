@@ -1,5 +1,5 @@
 import { Room } from "../../../generated/prisma/client.ts";
-import { CreateRoomDTO, UpdateRoomDTO } from "../RoomDto.ts";
+import { CreateRoomDTO, UpdateRoomDTO } from "../../../dtos/RoomDto.ts";
 
 export interface IRoomRepository {
     create(data: CreateRoomDTO): Promise<Room>;

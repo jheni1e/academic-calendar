@@ -1,5 +1,5 @@
 import { NotFoundError } from "../../../shared/errors/NotFoundError.ts";
-import { UpdateParticipationDTO } from "../ParticipationDTO.ts";
+import { UpdateParticipationDTO } from "../../../dtos/ParticipationDTO.ts";
 import { IParticipationRepository } from "../repositories/IParticipationRepository.ts";
 
 export class UpdateParticipationUseCase {

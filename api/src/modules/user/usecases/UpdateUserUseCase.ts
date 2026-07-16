@@ -2,7 +2,7 @@ import { PrismaAssignmentRepository } from "../../assignment/repositories/Prisma
 import { PrismaRoleRepository } from "../../role/repositories/PrismaRoleRepository.ts";
 import { IUserRepository } from "../repositories/IUserRepository.ts";
 import { IRoleRepository } from "../../role/repositories/IRoleRepository.ts";
-import { UpdateUserDTO } from "../UserDto.ts";
+import { UpdateUserDTO } from "../../../dtos/UserDto.ts";
 import { IAssignmentRepository } from "../../assignment/repositories/IAssignmentRepository.ts";
 
 export class UpdateUserUseCase {

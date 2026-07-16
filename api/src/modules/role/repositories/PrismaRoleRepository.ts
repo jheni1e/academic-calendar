@@ -4,7 +4,7 @@ import { prisma } from "../../../lib/prisma.ts";
 import {
     CreateRoleDTO,
     UpdateRoleDTO
-} from "../RoleDTO.ts";
+} from "../../../dtos/RoleDTO.ts";
 
 import { IRoleRepository } from "./IRoleRepository.ts";
 

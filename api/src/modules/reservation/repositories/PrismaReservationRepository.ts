@@ -1,6 +1,6 @@
 import { Reservation } from "../../../generated/prisma/client.ts";
 import { prisma } from "../../../lib/prisma.ts";
-import { CreateReservationDTO, UpdateReservationDTO } from "../reservationDto.ts";
+import { CreateReservationDTO, UpdateReservationDTO } from "../../../dtos/reservationDto.ts";
 import { IReservationRepository } from "./IReservationRepository.ts";
 
 export class PrismaReservationRepository

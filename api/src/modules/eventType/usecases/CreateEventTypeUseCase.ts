@@ -1,5 +1,5 @@
 import { IEventTypeRepository } from "../repositories/IEventTypeRepository.ts";
-import { CreateEventTypeDTO } from "../EventTypeDTO.ts";
+import { CreateEventTypeDTO } from "../../../dtos/EventTypeDTO.ts";
 
 export class CreateEventTypeUseCase {
     constructor(

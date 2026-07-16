@@ -4,7 +4,7 @@ import { prisma } from "../../../lib/prisma.ts";
 import {
     CreateSubjectRoomDTO,
     UpdateSubjectRoomDTO
-} from "../SubjectRoomDTO.ts";
+} from "../../../dtos/SubjectRoomDTO.ts";
 
 import { ISubjectRoomRepository } from "./ISubjectRoomRepository.ts";
 

@@ -2,7 +2,7 @@ import { EventType } from "../../../generated/prisma/client.ts";
 import {
     CreateEventTypeDTO,
     UpdateEventTypeDTO
-} from "../EventTypeDTO.ts";
+} from "../../../dtos/EventTypeDTO.ts";
 
 export interface IEventTypeRepository {
 

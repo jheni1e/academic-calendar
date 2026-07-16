@@ -2,7 +2,7 @@ import { SubjectRoom } from "../../../generated/prisma/client.ts";
 import {
     CreateSubjectRoomDTO,
     UpdateSubjectRoomDTO
-} from "../SubjectRoomDTO.ts";
+} from "../../../dtos/SubjectRoomDTO.ts";
 
 export interface ISubjectRoomRepository {
 

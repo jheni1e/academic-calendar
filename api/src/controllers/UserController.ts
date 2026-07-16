@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { CreateUserDTO, UpdateUserDTO } from "../modules/user/UserDto.ts";
+import { CreateUserDTO, UpdateUserDTO } from "../dtos/UserDto.ts";
 import { PrismaUserRepository } from "../modules/user/repositories/PrismaUserRepository.ts";
 import { CreateUserUseCase } from "../modules/user/usecases/CreateUserUseCase.ts";
 import { FindUserByIdUseCase } from "../modules/user/usecases/FindUserByIdUseCase.ts";

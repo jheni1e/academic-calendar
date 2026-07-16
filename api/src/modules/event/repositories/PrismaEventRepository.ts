@@ -1,7 +1,7 @@
 import { Event } from "../../../generated/prisma/client.ts";
 import { prisma } from "../../../lib/prisma.ts";
 
-import { CreateEventDTO, UpdateEventDTO } from "../EventDTO.ts";
+import { CreateEventDTO, UpdateEventDTO } from "../../../dtos/EventDto.ts";
 import { IEventRepository } from "./IEventRepository.ts";
 
 export class PrismaEventRepository implements IEventRepository {

@@ -1,4 +1,4 @@
-import { CreateParticipationDTO } from "../ParticipationDTO.ts";
+import { CreateParticipationDTO } from "../../../dtos/ParticipationDTO.ts";
 import { IParticipationRepository } from "../repositories/IParticipationRepository.ts";
 
 export class CreateParticipationUseCase {

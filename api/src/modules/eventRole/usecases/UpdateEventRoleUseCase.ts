@@ -1,5 +1,5 @@
 import { IEventRoleRepository } from "../repositories/IEventRoleRepository.ts";
-import { UpdateEventRoleDTO } from "../EventRoleDTO.ts";
+import { UpdateEventRoleDTO } from "../../../dtos/EventRoleDTO.ts";
 
 export class UpdateEventRoleUseCase {
     constructor(

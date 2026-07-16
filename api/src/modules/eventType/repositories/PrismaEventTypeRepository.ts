@@ -4,7 +4,7 @@ import { prisma } from "../../../lib/prisma.ts";
 import {
     CreateEventTypeDTO,
     UpdateEventTypeDTO
-} from "../EventTypeDTO.ts";
+} from "../../../dtos/EventTypeDTO.ts";
 
 import { IEventTypeRepository } from "./IEventTypeRepository.ts";
 

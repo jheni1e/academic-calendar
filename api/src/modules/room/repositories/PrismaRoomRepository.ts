@@ -1,6 +1,6 @@
 import { prisma } from "../../../lib/prisma.ts";
 import { IRoomRepository } from "./IRoomRepository.ts";
-import { CreateRoomDTO, UpdateRoomDTO } from "../RoomDto.ts";
+import { CreateRoomDTO, UpdateRoomDTO } from "../../../dtos/RoomDto.ts";
 import { Room } from "../../../generated/prisma/client.ts";
 
 export class PrismaRoomRepository implements IRoomRepository {

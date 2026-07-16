@@ -1,4 +1,4 @@
-import { CreateRecurrenceDTO, UpdateRecurrenceDTO } from "../../modules/recurrence/RecurrenceDTO.ts";
+import { CreateRecurrenceDTO, UpdateRecurrenceDTO } from "../../dtos/recurrenceDTO.ts";
 import { prisma } from "../../lib/prisma.ts";
 
 export const createRecurrence = async (data: CreateRecurrenceDTO) => {

@@ -1,7 +1,7 @@
 import { NotFoundError } from "../../../shared/errors/NotFoundError.ts";
 import { ValidationError } from "../../../shared/errors/ValidationError.ts";
 import { ISubjectRoomRepository } from "../repositories/ISubjectRoomRepository.ts";
-import { UpdateSubjectRoomDTO } from "../SubjectRoomDTO.ts";
+import { UpdateSubjectRoomDTO } from "../../../dtos/SubjectRoomDTO.ts";
 
 export class UpdateSubjectRoomUseCase {
     constructor(

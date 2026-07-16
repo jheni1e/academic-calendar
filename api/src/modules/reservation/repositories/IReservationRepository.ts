@@ -1,4 +1,4 @@
-import { CreateReservationDTO, UpdateReservationDTO } from "../reservationDto.ts";
+import { CreateReservationDTO, UpdateReservationDTO } from "../../../dtos/reservationDto.ts";
 import { Reservation } from "../../../generated/prisma/client.ts";
 export interface IReservationRepository {
     create(data: CreateReservationDTO) : Promise<Reservation>;

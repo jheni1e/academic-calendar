@@ -2,7 +2,7 @@ import { hashPassword } from "../../../app/utils/password.ts";
 import { IAssignmentRepository } from "../../assignment/repositories/IAssignmentRepository.ts";
 import { IRoleRepository } from "../../role/repositories/IRoleRepository.ts";
 import { IUserRepository } from "../repositories/IUserRepository.ts";
-import { CreateUserDTO } from "../UserDto.ts";
+import { CreateUserDTO } from "../../../dtos/UserDto.ts";
 
 export class CreateUserUseCase {
     constructor(

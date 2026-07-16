@@ -1,4 +1,4 @@
-import { ReservationStatus } from "../../generated/prisma/client.ts";
+import { ReservationStatus } from "../generated/prisma/client.ts";
 
 export interface CreateReservationDTO {
     roomId: number;

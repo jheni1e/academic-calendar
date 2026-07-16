@@ -1,7 +1,7 @@
 import { BadRequestError } from "../../../shared/errors/BadRequestError.ts";
 import { NotFoundError } from "../../../shared/errors/NotFoundError.ts";
 import { IRoleRepository } from "../repositories/IRoleRepository.ts";
-import { UpdateRoleDTO } from "../RoleDTO.ts";
+import { UpdateRoleDTO } from "../../../dtos/RoleDTO.ts";
 
 export class UpdateRoleUseCase {
     constructor(

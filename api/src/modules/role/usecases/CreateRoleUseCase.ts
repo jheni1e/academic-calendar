@@ -1,6 +1,6 @@
 import { BadRequestError } from "../../../shared/errors/BadRequestError.ts";
 import { IRoleRepository } from "../repositories/IRoleRepository.ts";
-import { CreateRoleDTO } from "../RoleDTO.ts";
+import { CreateRoleDTO } from "../../../dtos/RoleDTO.ts";
 
 export class CreateRoleUseCase {
     constructor(
