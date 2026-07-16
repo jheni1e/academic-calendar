@@ -44,7 +44,7 @@ export const validateDelete = async (req: Request, res: Response, next: NextFunc
         });
 
         if (!relation) {
-            throw new Error("Instructor already connected to the subject.");
+            throw new Error("Instructor is not connected to the subject.");
         }
 
         next();
