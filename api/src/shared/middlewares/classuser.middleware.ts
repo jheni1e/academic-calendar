@@ -8,7 +8,7 @@ export const validateCreate = async (req: Request, res: Response, next: NextFunc
         const classId: number = parseInt(req.params.id[0].toString());
         const userId: number = parseInt(req.params.id[1].toString());
 
-        const classUser = await prisma.class.findFirst({
+        const classUser = await prisma.classUser.findFirst({
             where: { classId: classId, userId: userId },
         });
 
@@ -24,9 +24,9 @@ export const validateCreate = async (req: Request, res: Response, next: NextFunc
 
 export const validateDelete = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const classUserId: number = parseInt(req.params.id[1].toString());
+        const classUserId: number = parseInt(req.params.id.toString());
 
-        const classUser = await prisma.class.findFirst({
+        const classUser = await prisma.classUser.findFirst({
             where: { id: classUserId },
         });
 
@@ -47,7 +47,7 @@ export const validateClassUserExistsByClassAndUser = async (req: Request, res: R
         const classId: number = parseInt(req.params.id[0].toString());
         const userId: number = parseInt(req.params.id[1].toString());
 
-        const classUser = await prisma.class.findFirst({
+        const classUser = await prisma.classUser.findFirst({
             where: { classId: classId, userId: userId },
         });
 
@@ -63,9 +63,9 @@ export const validateClassUserExistsByClassAndUser = async (req: Request, res: R
 
 export const validateClassUserExistsByClassUserId = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const classUserId: number = parseInt(req.params.id[0].toString());
+        const classUserId: number = parseInt(req.params.id.toString());
 
-        const classUser = await prisma.class.findFirst({
+        const classUser = await prisma.classUser.findFirst({
             where: { classUserId: classUserId },
         });
 
