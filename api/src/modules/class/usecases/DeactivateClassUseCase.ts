@@ -1,5 +1,5 @@
 import { IClassRepository } from "../repositories/IClassRepository.ts";
-import { UpdateClassDTO } from "../../../dtos/ClassDto.ts";
+import { UpdateClassDTO } from "../../../dtos/ClassDTO.ts";
 
 export class DeactivateClassUseCase {
     constructor(

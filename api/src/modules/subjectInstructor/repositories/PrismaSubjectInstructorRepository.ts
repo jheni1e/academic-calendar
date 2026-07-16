@@ -1,5 +1,5 @@
 import { prisma } from "../../../lib/prisma.ts";
-import { CreateSubjectInstructorDTO, UpdateSubjectInstructorDTO } from "../../../dtos/SubjectInstructorDto.ts";
+import { CreateSubjectInstructorDTO, UpdateSubjectInstructorDTO } from "../../../dtos/SubjectInstructorDTO.ts";
 import { ISubjectInstructorRepository } from "./ISubjectInstructorRepository.ts";
 import { SubjectInstructor } from "../../../generated/prisma/client.ts";
 

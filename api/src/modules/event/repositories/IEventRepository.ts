@@ -1,4 +1,4 @@
-import { CreateEventDTO, UpdateEventDTO } from "../../../dtos/EventDto.ts";
+import { CreateEventDTO, UpdateEventDTO } from "../../../dtos/EventDTO.ts";
 import { Event } from "../../../generated/prisma/client.ts";
 
 export interface IEventRepository {

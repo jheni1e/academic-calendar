@@ -1,6 +1,6 @@
 import { prisma } from "../../../lib/prisma.ts";
 import { ClassUser } from "../../../generated/prisma/client.ts";
-import { CreateClassUserDTO } from "../../../dtos/ClassUserDto.ts";
+import { CreateClassUserDTO } from "../../../dtos/ClassUserDTO.ts";
 import { IClassUserRepository } from "./IClassUserRepository.ts";
 
 export class PrismaClassUserRepository implements IClassUserRepository {

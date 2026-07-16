@@ -1,5 +1,5 @@
 import { Class } from "../../../generated/prisma/client.ts";
-import { CreateClassDTO, UpdateClassDTO } from "../../../dtos/ClassDto.ts";
+import { CreateClassDTO, UpdateClassDTO } from "../../../dtos/ClassDTO.ts";
 
 export interface IClassRepository {
 

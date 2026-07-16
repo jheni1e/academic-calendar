@@ -1,5 +1,5 @@
 import { IRoomRepository } from "../repositories/IRoomRepository.ts";
-import { CreateRoomDTO } from "../../../dtos/RoomDto.ts";
+import { CreateRoomDTO } from "../../../dtos/RoomDTO.ts";
 
 export class CreateRoomUseCase {
     constructor(

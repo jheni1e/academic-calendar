@@ -1,5 +1,5 @@
 import { IReservationRepository } from "../repositories/IReservationRepository.ts";
-import { CreateReservationDTO } from "../../../dtos/reservationDto.ts";
+import { CreateReservationDTO } from "../../../dtos/ReservationDTO.ts";
 
 export class CreateReservationUseCase {
     constructor(
