@@ -1,3 +1,0 @@
-GetAssignmentsByUserUseCase - OK
-GetAssignmentsByRoleUseCase - OK
-FindAssignmentByUserAndRoleUseCase - OK
