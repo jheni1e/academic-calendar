@@ -1,14 +1,14 @@
-import { PrismaAssignmentRepository } from "../../modules/assignment/repositories/PrismaAssignmentRepository.ts";
-import { AuthController } from "../../controllers/AuthController.ts";
-import { ClassUserController } from "../../controllers/ClassUserControllers.ts";
-import { ParticipationController } from "../../controllers/ParticipationController.ts";
-import { UserController } from "../../controllers/UserController.ts";
-import { PrismaUserRepository } from "../../modules/user/repositories/PrismaUserRepository.ts";
-import { Role } from "../../shared/enums/role.ts";
-import { authMiddleware } from "../../shared/middlewares/auth.middleware.ts";
-import { authorize } from "../../shared/middlewares/authorization.middleware.ts";
+import { PrismaAssignmentRepository } from "../modules/assignment/repositories/PrismaAssignmentRepository.ts";
+import { AuthController } from "../controllers/AuthController.ts";
+import { ClassUserController } from "../controllers/ClassUserControllers.ts";
+import { ParticipationController } from "../controllers/ParticipationController.ts";
+import { UserController } from "../controllers/UserController.ts";
+import { PrismaUserRepository } from "../modules/user/repositories/PrismaUserRepository.ts";
+import { Role } from "../shared/enums/role.ts";
+import { authMiddleware } from "../shared/middlewares/auth.middleware.ts";
+import { authorize } from "../shared/middlewares/authorization.middleware.ts";
 
-import { AuthService } from "../../shared/services/auth.service.ts";
+import { AuthService } from "../shared/services/auth.service.ts";
 import express from 'express'
 
 //dependencias

@@ -1,7 +1,7 @@
 import express from 'express'
-import { PrismaRoleRepository } from '../../modules/role/repositories/PrismaRoleRepository.ts';
-import { RoleController } from '../../controllers/RoleControllers.ts';
-import { authMiddleware } from '../../shared/middlewares/auth.middleware.ts';
+import { PrismaRoleRepository } from '../modules/role/repositories/PrismaRoleRepository.ts';
+import { RoleController } from '../controllers/RoleControllers.ts';
+import { authMiddleware } from '../shared/middlewares/auth.middleware.ts';
 
 const route = express.Router();
 
