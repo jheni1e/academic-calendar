@@ -1,15 +1,15 @@
 import { Request, Response } from "express";
-import { AppError } from "../../../shared/errors/AppError.ts";
+import { AppError } from "../shared/errors/AppError.ts";
 
-import { PrismaReservationRepository } from "../repositories/PrismaReservationRepository.ts";
-import { CreateReservationUseCase } from "../usecases/CreateReservationUseCase.ts";
-import { DeleteReservationUseCase } from "../usecases/DeleteReservationUseCase.ts";
-import { FindReservationByIdUseCase } from "../usecases/FindReservationByIdUseCase.ts";
-import { GetReservationsUseCase } from "../usecases/GetReservationsUseCase.ts";
-import { UpdateReservationUseCase } from "../usecases/UpdateReservationUseCase.ts";
-import { FindReservationByRoomUseCase } from "../usecases/FindReservationByRoom.ts";
+import { PrismaReservationRepository } from "../modules/reservation/repositories/PrismaReservationRepository.ts";
+import { CreateReservationUseCase } from "../modules/reservation/usecases/CreateReservationUseCase.ts";
+import { DeleteReservationUseCase } from "../modules/reservation/usecases/DeleteReservationUseCase.ts";
+import { FindReservationByIdUseCase } from "../modules/reservation/usecases/FindReservationByIdUseCase.ts";
+import { GetReservationsUseCase } from "../modules/reservation/usecases/GetReservationsUseCase.ts";
+import { UpdateReservationUseCase } from "../modules/reservation/usecases/UpdateReservationUseCase.ts";
+import { FindReservationByRoomUseCase } from "../modules/reservation/usecases/FindReservationByRoom.ts";
 import { NotBeforeError } from "jsonwebtoken";
-import { NotFoundError } from "../../../shared/errors/NotFoundError.ts";
+import { NotFoundError } from "../shared/errors/NotFoundError.ts";
 
 export class ReservationController {
 

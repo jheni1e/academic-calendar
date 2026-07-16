@@ -1,16 +1,16 @@
 import { Request, Response } from "express";
 
-import { AppError } from "../../../shared/errors/AppError.ts";
+import { AppError } from "../shared/errors/AppError.ts";
 
-import { PrismaSubjectInstructorRepository } from "../repositories/PrismaSubjectInstructorRepository.ts";
-import { CreateSubjectInstructorUseCase } from "../usecases/CreateSubjectInstructorUseCase.ts";
-import { DeleteSubjectInstructorUseCase } from "../usecases/DeleteSubjectInstructorUseCase.ts";
-import { FindSubjectInstructorByIdUseCase } from "../usecases/FindSubjectInstructorByIdUseCase.ts";
-import { GetSubjectInstructorsBySubjectUseCase } from "../usecases/GetSubjectInstructorsBySubjectUseCase.ts";
-import { GetSubjectInstructorsUseCase } from "../usecases/GetSubjectInstructorsUseCase.ts";
-import { GetSubjectsByInstructorUseCase } from "../usecases/GetSubjectsByInstructorUseCase.ts";
-import { PrismaSubjectRepository } from "../../subject/repositories/PrismaSubjectRepository.ts";
-import { PrismaUserRepository } from "../../user/repositories/PrismaUserRepository.ts";
+import { PrismaSubjectInstructorRepository } from "../modules/subjectInstructor/repositories/PrismaSubjectInstructorRepository.ts";
+import { CreateSubjectInstructorUseCase } from "../modules/subjectInstructor/usecases/CreateSubjectInstructorUseCase.ts";
+import { DeleteSubjectInstructorUseCase } from "../modules/subjectInstructor/usecases/DeleteSubjectInstructorUseCase.ts";
+import { FindSubjectInstructorByIdUseCase } from "../modules/subjectInstructor/usecases/FindSubjectInstructorByIdUseCase.ts";
+import { GetSubjectInstructorsBySubjectUseCase } from "../modules/subjectInstructor/usecases/GetSubjectInstructorsBySubjectUseCase.ts";
+import { GetSubjectInstructorsUseCase } from "../modules/subjectInstructor/usecases/GetSubjectInstructorsUseCase.ts";
+import { GetSubjectsByInstructorUseCase } from "../modules/subjectInstructor/usecases/GetSubjectsByInstructorUseCase.ts";
+import { PrismaSubjectRepository } from "../modules/subject/repositories/PrismaSubjectRepository.ts";
+import { PrismaUserRepository } from "../modules/user/repositories/PrismaUserRepository.ts";
 
 export class SubjectInstructorController {
 

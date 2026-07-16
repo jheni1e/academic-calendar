@@ -1,13 +1,13 @@
 import { Request, Response } from "express";
 
-import { AppError } from "../../../shared/errors/AppError.ts";
+import { AppError } from "../shared/errors/AppError.ts";
 
-import { PrismaRoleRepository } from "../repositories/PrismaRoleRepository.ts";
-import { CreateRoleUseCase } from "../usecases/CreateRoleUseCase.ts";
-import { DeleteRoleUseCase } from "../usecases/DeleteRoleUseCase.ts";
-import { FindRoleByIdUseCase } from "../usecases/FindRoleByIdUseCase.ts";
-import { GetRolesUseCase } from "../usecases/GetRolesUseCase.ts";
-import { UpdateRoleUseCase } from "../usecases/UpdateRoleUseCase.ts";
+import { PrismaRoleRepository } from "../modules/role/repositories/PrismaRoleRepository.ts";
+import { CreateRoleUseCase } from "../modules/role/usecases/CreateRoleUseCase.ts";
+import { DeleteRoleUseCase } from "../modules/role/usecases/DeleteRoleUseCase.ts";
+import { FindRoleByIdUseCase } from "../modules/role/usecases/FindRoleByIdUseCase.ts";
+import { GetRolesUseCase } from "../modules/role/usecases/GetRolesUseCase.ts";
+import { UpdateRoleUseCase } from "../modules/role/usecases/UpdateRoleUseCase.ts";
 
 export class RoleController {
 

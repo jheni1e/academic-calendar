@@ -1,37 +1,31 @@
 import { Request, Response } from "express";
 
-import { AppError } from "../../../shared/errors/AppError.ts";
+import { AppError } from "../shared/errors/AppError.ts";
 
-import { PrismaEventRepository } from "../repositories/PrismaEventRepository.ts";
-import { CreateEventUseCase } from "../usecases/CreateEventUseCase.ts";
-import { DeleteEventUseCase } from "../usecases/DeleteEventUseCase.ts";
-import { FindEventByIdUseCase } from "../usecases/FindEventByIdUseCase.ts";
-import { GetEventsUseCase } from "../usecases/GetEventsUseCase.ts";
-import { UpdateEventUseCase } from "../usecases/UpdateEventUseCase.ts";
-import { PrismaClassRepository } from "../../class/repositories/PrismaClassRepository.ts";
-import { PrismaSubjectRepository } from "../../subject/repositories/PrismaSubjectRepository.ts";
-import { PrismaReservationRepository } from "../../reservation/repositories/PrismaReservationRepository.ts";
+import { PrismaRoomRepository } from "../modules/room/repositories/PrismaRoomRepository.ts";
+import { CreateRoomUseCase } from "../modules/room/usecases/CreateRoomUseCase.ts";
+import { DeleteRoomUseCase } from "../modules/room/usecases/DeleteRoomUseCase.ts";
+import { FindRoomByIdUseCase } from "../modules/room/usecases/FindRoomByIdUseCase.ts";
+import { GetRoomsUseCase } from "../modules/room/usecases/GetRoomsUseCase.ts";
+import { UpdateRoomUseCase } from "../modules/room/usecases/UpdateRoomUseCase.ts";
 
-export class EventController {
+export class RoomController {
 
-    private readonly repository = new PrismaEventRepository();
-    private readonly classRepository = new PrismaClassRepository();
-    private readonly subjectRepository = new PrismaSubjectRepository();
-    private readonly reservationRepository = new PrismaReservationRepository();
+    private readonly repository = new PrismaRoomRepository();
 
-    private readonly createUseCase = new CreateEventUseCase(this.repository, this.classRepository, this.subjectRepository);
-    private readonly deleteUseCase = new DeleteEventUseCase(this.repository, this.reservationRepository);
-    private readonly findUseCase = new FindEventByIdUseCase(this.repository);
-    private readonly getEventsUseCase = new GetEventsUseCase(this.repository);
-    private readonly updateUseCase = new UpdateEventUseCase(this.repository, this.reservationRepository);
+    private readonly createUseCase = new CreateRoomUseCase(this.repository);
+    private readonly deleteUseCase = new DeleteRoomUseCase(this.repository);
+    private readonly findUseCase = new FindRoomByIdUseCase(this.repository);
+    private readonly getUseCase = new GetRoomsUseCase(this.repository);
+    private readonly updateUseCase = new UpdateRoomUseCase(this.repository);
 
-    create = async (req: Request, res: Response) => {
+    create = async(req: Request, res: Response) => {
 
         try {
 
-            const event = await this.createUseCase.execute(req.body);
+            const room = await this.createUseCase.execute(req.body);
 
-            return res.status(201).json(event);
+            return res.status(201).json(room);
 
         } catch (error) {
 
@@ -49,7 +43,7 @@ export class EventController {
 
     }
 
-    delete = async(req: Request, res: Response) => {
+    delete = async (req: Request, res: Response) => {
 
         try {
 
@@ -79,11 +73,11 @@ export class EventController {
 
         try {
 
-            const event = await this.findUseCase.execute(
+            const room = await this.findUseCase.execute(
                 Number(req.params.id)
             );
 
-            return res.status(200).json(event);
+            return res.status(200).json(room);
 
         } catch (error) {
 
@@ -96,18 +90,16 @@ export class EventController {
             return res.status(500).json({
                 message: "Internal server error."
             });
-
         }
-
     }
 
     getAll = async (req: Request, res: Response) => {
 
         try {
 
-            const events = await this.getEventsUseCase.execute();
+            const rooms = await this.getUseCase.execute();
 
-            return res.status(200).json(events);
+            return res.status(200).json(rooms);
 
         } catch (error) {
 
@@ -129,12 +121,12 @@ export class EventController {
 
         try {
 
-            const event = await this.updateUseCase.execute(
+            const room = await this.updateUseCase.execute(
                 Number(req.params.id),
                 req.body
             );
 
-            return res.status(200).json(event);
+            return res.status(200).json(room);
 
         } catch (error) {
 

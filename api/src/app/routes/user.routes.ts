@@ -1,8 +1,8 @@
 import { PrismaAssignmentRepository } from "../../modules/assignment/repositories/PrismaAssignmentRepository.ts";
-import { AuthController } from "../../modules/auth/Controllers/authController.ts";
-import { ClassUserController } from "../../modules/classUser/controllers/ClassUserControllers.ts";
-import { ParticipationController } from "../../modules/participation/controllers/ParticipationController.ts";
-import { UserController } from "../../modules/user/controllers/UserController.ts";
+import { AuthController } from "../../controllers/AuthController.ts";
+import { ClassUserController } from "../../controllers/ClassUserControllers.ts";
+import { ParticipationController } from "../../controllers/ParticipationController.ts";
+import { UserController } from "../../controllers/UserController.ts";
 import { PrismaUserRepository } from "../../modules/user/repositories/PrismaUserRepository.ts";
 import { Role } from "../../shared/enums/role.ts";
 import { authMiddleware } from "../../shared/middlewares/auth.middleware.ts";

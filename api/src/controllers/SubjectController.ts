@@ -1,31 +1,30 @@
 import { Request, Response } from "express";
 
-import { AppError } from "../../../shared/errors/AppError.ts";
+import { AppError } from "../shared/errors/AppError.ts";
 
-import { PrismaRoomRepository } from "../repositories/PrismaRoomRepository.ts";
-import { CreateRoomUseCase } from "../usecases/CreateRoomUseCase.ts";
-import { DeleteRoomUseCase } from "../usecases/DeleteRoomUseCase.ts";
-import { FindRoomByIdUseCase } from "../usecases/FindRoomByIdUseCase.ts";
-import { GetRoomsUseCase } from "../usecases/GetRoomsUseCase.ts";
-import { UpdateRoomUseCase } from "../usecases/UpdateRoomUseCase.ts";
+import { PrismaSubjectRepository } from "../modules/subject/repositories/PrismaSubjectRepository.ts";
+import { CreateSubjectUseCase } from "../modules/subject/usecases/CreateSubjectUseCase.ts";
+import { DeleteSubjectUseCase } from "../modules/subject/usecases/DeleteSubjectUseCase.ts";
+import { FindSubjectByIdUseCase } from "../modules/subject/usecases/FindSubjectByIdUseCase.ts";
+import { GetSubjectsUseCase } from "../modules/subject/usecases/GetSubjectsUseCase.ts";
+import { UpdateSubjectUseCase } from "../modules/subject/usecases/UpdateSubjectUseCase.ts";
 
-export class RoomController {
+export class SubjectController {
 
-    private readonly repository = new PrismaRoomRepository();
+    private readonly repository = new PrismaSubjectRepository();
 
-    private readonly createUseCase = new CreateRoomUseCase(this.repository);
-    private readonly deleteUseCase = new DeleteRoomUseCase(this.repository);
-    private readonly findUseCase = new FindRoomByIdUseCase(this.repository);
-    private readonly getUseCase = new GetRoomsUseCase(this.repository);
-    private readonly updateUseCase = new UpdateRoomUseCase(this.repository);
+    private readonly createUseCase = new CreateSubjectUseCase(this.repository);
+    private readonly deleteUseCase = new DeleteSubjectUseCase(this.repository);
+    private readonly findUseCase = new FindSubjectByIdUseCase(this.repository);
+    private readonly getUseCase = new GetSubjectsUseCase(this.repository);
+    private readonly updateUseCase = new UpdateSubjectUseCase(this.repository);
 
-    create = async(req: Request, res: Response) => {
-
+    create = async (req: Request, res: Response) => {
         try {
 
-            const room = await this.createUseCase.execute(req.body);
+            const subject = await this.createUseCase.execute(req.body);
 
-            return res.status(201).json(room);
+            return res.status(201).json(subject);
 
         } catch (error) {
 
@@ -73,11 +72,11 @@ export class RoomController {
 
         try {
 
-            const room = await this.findUseCase.execute(
+            const subject = await this.findUseCase.execute(
                 Number(req.params.id)
             );
 
-            return res.status(200).json(room);
+            return res.status(200).json(subject);
 
         } catch (error) {
 
@@ -90,16 +89,18 @@ export class RoomController {
             return res.status(500).json({
                 message: "Internal server error."
             });
+
         }
+
     }
 
-    getAll = async (req: Request, res: Response) => {
+    getAll= async (req: Request, res: Response) => {
 
         try {
 
-            const rooms = await this.getUseCase.execute();
+            const subjects = await this.getUseCase.execute();
 
-            return res.status(200).json(rooms);
+            return res.status(200).json(subjects);
 
         } catch (error) {
 
@@ -121,12 +122,12 @@ export class RoomController {
 
         try {
 
-            const room = await this.updateUseCase.execute(
+            const subject = await this.updateUseCase.execute(
                 Number(req.params.id),
                 req.body
             );
 
-            return res.status(200).json(room);
+            return res.status(200).json(subject);
 
         } catch (error) {
 

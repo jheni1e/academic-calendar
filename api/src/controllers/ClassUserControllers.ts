@@ -1,15 +1,15 @@
 import { Request, Response } from "express";
 
-import { AppError } from "../../../shared/errors/AppError.ts";
+import { AppError } from "../shared/errors/AppError.ts";
 
-import { PrismaClassUserRepository } from "../repositories/PrismaClassUserRepository.ts";
-import { CreateClassUserUseCase } from "../usecases/CreateClassUserUseCase.ts";
-import { DeleteClassUserUseCase } from "../usecases/DeleteClassUserUseCase.ts";
-import { FindClassUserByClassAndUserUseCase } from "../usecases/FindClassUserByClassAndUserUseCase.ts";
-import { FindClassUserByIdUseCase } from "../usecases/FindClassUserByIdUseCase.ts";
-import { GetClassesByUserUseCase } from "../usecases/GetClassesByUserUseCase.ts";
-import { GetClassUsersByClassUseCase } from "../usecases/GetClassUsersByClassUseCase.ts";
-import { GetClassUsersUseCase } from "../usecases/GetClassUsersUseCase.ts";
+import { PrismaClassUserRepository } from "../modules/classUser/repositories/PrismaClassUserRepository.ts";
+import { CreateClassUserUseCase } from "../modules/classUser/usecases/CreateClassUserUseCase.ts";
+import { DeleteClassUserUseCase } from "../modules/classUser/usecases/DeleteClassUserUseCase.ts";
+import { FindClassUserByClassAndUserUseCase } from "../modules/classUser/usecases/FindClassUserByClassAndUserUseCase.ts";
+import { FindClassUserByIdUseCase } from "../modules/classUser/usecases/FindClassUserByIdUseCase.ts";
+import { GetClassesByUserUseCase } from "../modules/classUser/usecases/GetClassesByUserUseCase.ts";
+import { GetClassUsersByClassUseCase } from "../modules/classUser/usecases/GetClassUsersByClassUseCase.ts";
+import { GetClassUsersUseCase } from "../modules/classUser/usecases/GetClassUsersUseCase.ts";
 
 export class ClassUserController {
 

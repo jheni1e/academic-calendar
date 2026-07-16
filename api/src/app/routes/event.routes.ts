@@ -1,6 +1,6 @@
 import express from 'express'
-import { EventController } from '../../modules/event/controllers/EventController.ts';
-import { ParticipationController } from '../../modules/participation/controllers/ParticipationController.ts';
+import { EventController } from '../../controllers/EventController.ts';
+import { ParticipationController } from '../../controllers/ParticipationController.ts';
 import { authMiddleware } from '../../shared/middlewares/auth.middleware.ts';
 import { authorize } from '../../shared/middlewares/authorization.middleware.ts';
 import { Role } from '../../shared/enums/role.ts';

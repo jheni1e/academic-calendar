@@ -1,6 +1,6 @@
 import express from 'express'
-import { ClassController } from '../../modules/class/controllers/ClassController.ts';
-import { ClassUserController } from '../../modules/classUser/controllers/ClassUserControllers.ts';
+import { ClassController } from '../../controllers/ClassController.ts';
+import { ClassUserController } from '../../controllers/ClassUserControllers.ts';
 import { authMiddleware } from '../../shared/middlewares/auth.middleware.ts';
 import { Role } from '../../shared/enums/role.ts';
 import { authorize } from '../../shared/middlewares/authorization.middleware.ts';

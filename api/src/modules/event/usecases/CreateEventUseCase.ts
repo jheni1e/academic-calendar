@@ -41,7 +41,6 @@ export class CreateEventUseCase {
         }
 
         // TODO: Validar se o usuário criador existe
-
         return await this.eventRepository.create(data);
     }
 }

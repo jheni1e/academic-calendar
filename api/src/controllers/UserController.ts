@@ -1,14 +1,14 @@
 import { Request, Response } from "express";
-import { CreateUserDTO, UpdateUserDTO } from "../UserDto.ts";
-import { PrismaUserRepository } from "../repositories/PrismaUserRepository.ts";
-import { CreateUserUseCase } from "../usecases/CreateUserUseCase.ts";
-import { FindUserByIdUseCase } from "../usecases/FindUserByIdUseCase.ts";
-import { FindAllUsersUseCase } from "../usecases/FindAllUseCase.ts";
-import { UpdateUserUseCase } from "../usecases/UpdateUserUseCase.ts";
-import { FindUserByEdvUseCase } from "../usecases/FindUserByEdvUseCase.ts";
-import { DisableUserUseCase } from "../usecases/DisableUserUseCase.ts";
-import { PrismaAssignmentRepository } from "../../assignment/repositories/PrismaAssignmentRepository.ts";
-import { PrismaRoleRepository } from "../../role/repositories/PrismaRoleRepository.ts";
+import { CreateUserDTO, UpdateUserDTO } from "../modules/user/UserDto.ts";
+import { PrismaUserRepository } from "../modules/user/repositories/PrismaUserRepository.ts";
+import { CreateUserUseCase } from "../modules/user/usecases/CreateUserUseCase.ts";
+import { FindUserByIdUseCase } from "../modules/user/usecases/FindUserByIdUseCase.ts";
+import { FindAllUsersUseCase } from "../modules/user/usecases/FindAllUseCase.ts";
+import { UpdateUserUseCase } from "../modules/user/usecases/UpdateUserUseCase.ts";
+import { FindUserByEdvUseCase } from "../modules/user/usecases/FindUserByEdvUseCase.ts";
+import { DisableUserUseCase } from "../modules/user/usecases/DisableUserUseCase.ts";
+import { PrismaAssignmentRepository } from "../modules/assignment/repositories/PrismaAssignmentRepository.ts";
+import { PrismaRoleRepository } from "../modules/role/repositories/PrismaRoleRepository.ts";
 
 export class UserController {
     private readonly userRepository = new PrismaUserRepository();

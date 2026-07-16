@@ -2,8 +2,8 @@ import express from 'express'
 import { authMiddleware } from '../../shared/middlewares/auth.middleware.ts';
 import { authorize } from '../../shared/middlewares/authorization.middleware.ts';
 import { Role } from '../../shared/enums/role.ts';
-import { SubjectController } from '../../modules/subject/controllers/SubjectController.ts';
-import { SubjectInstructorController } from '../../modules/subjectInstructor/controllers/subjectInstructorControllers.ts';
+import { SubjectController } from '../../controllers/SubjectController.ts';
+import { SubjectInstructorController } from '../../controllers/subjectInstructorControllers.ts';
 
 
 const subjectController = new SubjectController();

@@ -1,17 +1,17 @@
 import { Request, Response } from "express";
 
-import { AppError } from "../../../shared/errors/AppError.ts";
+import { AppError } from "../shared/errors/AppError.ts";
 
-import { PrismaClassRepository } from "../repositories/PrismaClassRepository.ts";
-import { ActivateClassUseCase } from "../usecases/ActivateClassUseCase.ts";
-import { CreateClassUseCase } from "../usecases/CreateClassUseCase.ts";
-import { DeactivateClassUseCase } from "../usecases/DeactivateClassUseCase.ts";
-import { DeleteClassUseCase } from "../usecases/DeleteClassUseCase.ts";
-import { FindClassByIdUseCase } from "../usecases/FindClassByIdUseCase.ts";
-import { GetClassesUseCase } from "../usecases/GetClassesUseCase.ts";
-import { UpdateClassUseCase } from "../usecases/UpdateClassUseCase.ts";
-import { PrismaClassUserRepository } from "../../classUser/repositories/PrismaClassUserRepository.ts";
-import { PrismaEventRepository } from "../../event/repositories/PrismaEventRepository.ts";
+import { PrismaClassRepository } from "../modules/class/repositories/PrismaClassRepository.ts";
+import { ActivateClassUseCase } from "../modules/class/usecases/ActivateClassUseCase.ts";
+import { CreateClassUseCase } from "../modules/class/usecases/CreateClassUseCase.ts";
+import { DeactivateClassUseCase } from "../modules/class/usecases/DeactivateClassUseCase.ts";
+import { DeleteClassUseCase } from "../modules/class/usecases/DeleteClassUseCase.ts";
+import { FindClassByIdUseCase } from "../modules/class/usecases/FindClassByIdUseCase.ts";
+import { GetClassesUseCase } from "../modules/class/usecases/GetClassesUseCase.ts";
+import { UpdateClassUseCase } from "../modules/class/usecases/UpdateClassUseCase.ts";
+import { PrismaClassUserRepository } from "../modules/classUser/repositories/PrismaClassUserRepository.ts";
+import { PrismaEventRepository } from "../modules/event/repositories/PrismaEventRepository.ts";
 
 export class ClassController {
     private readonly repository = new PrismaClassRepository();

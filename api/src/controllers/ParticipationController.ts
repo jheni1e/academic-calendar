@@ -1,15 +1,15 @@
 import { Request, Response } from "express";
 
-import { AppError } from "../../../shared/errors/AppError.ts";
+import { AppError } from "../shared/errors/AppError.ts";
 
-import { PrismaParticipationRepository } from "../repositories/PrismaParticipationRepository.ts";
-import { CreateParticipationUseCase } from "../usecases/CreateParticipationUseCase.ts";
-import { DeleteParticipationUseCase } from "../usecases/DeleteParticipationUseCase.ts";
-import { FindParticipationByIdUseCase } from "../usecases/FindParticipationByIdUseCase.ts";
-import { GetParticipationsByEventUseCase } from "../usecases/GetParticipationsByEventUseCase.ts";
-import { GetParticipationsByUserUseCase } from "../usecases/GetParticipationsByUserUseCase.ts";
-import { GetParticipationsUseCase } from "../usecases/GetParticipationsUseCase.ts";
-import { UpdateParticipationUseCase } from "../usecases/UpdateParticipationUseCase.ts";
+import { PrismaParticipationRepository } from "../modules/participation/repositories/PrismaParticipationRepository.ts";
+import { CreateParticipationUseCase } from "../modules/participation/usecases/CreateParticipationUseCase.ts";
+import { DeleteParticipationUseCase } from "../modules/participation/usecases/DeleteParticipationUseCase.ts";
+import { FindParticipationByIdUseCase } from "../modules/participation/usecases/FindParticipationByIdUseCase.ts";
+import { GetParticipationsByEventUseCase } from "../modules/participation/usecases/GetParticipationsByEventUseCase.ts";
+import { GetParticipationsByUserUseCase } from "../modules/participation/usecases/GetParticipationsByUserUseCase.ts";
+import { GetParticipationsUseCase } from "../modules/participation/usecases/GetParticipationsUseCase.ts";
+import { UpdateParticipationUseCase } from "../modules/participation/usecases/UpdateParticipationUseCase.ts";
 
 export class ParticipationController {
 

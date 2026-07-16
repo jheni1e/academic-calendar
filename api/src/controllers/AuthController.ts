@@ -1,6 +1,6 @@
-import { AuthService } from "../../../shared/services/auth.service.ts";
+import { AuthService } from "../shared/services/auth.service.ts";
 import { Request, Response } from "express";
-import { authDTO } from "../authDTO.ts";
+import { authDTO } from "../modules/auth/authDTO.ts";
 
 export class AuthController {
 
