@@ -80,24 +80,28 @@ dist/
 
 ## Scripts disponíveis
 
-| Comando | Descrição |
-|----------|-----------|
-| `npm run dev` | Inicia o servidor de desenvolvimento |
-| `npm run build` | Gera a versão de produção |
-| `npm run preview` | Executa a build localmente |
-| `npm run lint` | Executa o linter do projeto |
+| Comando | Descrição | Presença |
+|----------|-----------|-----------|
+| `npm run dev` | Inicia o servidor de desenvolvimento | Front/Back |
+| `npm run build` | Gera a versão de produção | Front/Back |
+| `npm run preview` | Executa a build localmente | Front |
+| `npm run lint` | Executa o linter do projeto | Front |
+| `npm run generate` | Gera o prisma client conforme schema | Back |
+| `npm run migrate` | Cria migration e aplica no banco | Back |
+| `npm run push` | Atualiza o banco sem gerar migration | Back |
+| `npm run studio` | Abre interface web para ver o banco | Back |
 
 ---
 
 ## Tecnologias utilizadas
 
-- React.js
-- Vite
-- JavaScript
-- React Router
-- Axios
-- ESLint
-- React Toastify
-- Recharts
-
+- **React.js**: Construção da interface.
+- **Vite**: Build e servidor de desenvolvimento.
+- **JavaScript**: Linguagem utilizada.
+- **Prisma**: ORM para acesso ao banco de dados.
+- **React Router**: Gerenciamento de rotas.
+- **Axios**: Requisições HTTP para a API.
+- **ESLint**: Padronização e análise de código.
+- **React Toastify**: Exibição de notificações.
+- **Recharts**: Criação de gráficos.
 ---
