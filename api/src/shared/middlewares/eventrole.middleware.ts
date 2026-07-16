@@ -1,8 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { prisma } from "../../lib/prisma.ts";
-import { ConflictError } from "../errors/ConflictError.ts";
 import { NotFoundError } from "../errors/NotFoundError.ts";
-import { ForbiddenError } from "../errors/ForbiddenError.ts";
 
 export const validateCreate = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -22,7 +20,7 @@ export const validateDelete = async (req: Request, res: Response, next: NextFunc
     try {
         const eventRoleId: number = parseInt(req.params.id.toString());
 
-        const eventRole =await prisma.eventrole.findFirst({
+        const eventRole = await prisma.eventrole.findFirst({
             where: { id: eventRoleId },
         });
 
@@ -41,7 +39,7 @@ export const validateUpdate = async (req: Request, res: Response, next: NextFunc
         const { name } = req.body;
         const eventRoleId: number = parseInt(req.params.id.toString());
 
-        const eventRole =await prisma.eventrole.findFirst({
+        const eventRole = await prisma.eventrole.findFirst({
             where: { id: eventRoleId },
         });
 
@@ -59,7 +57,7 @@ export const validateUpdate = async (req: Request, res: Response, next: NextFunc
     }
 }
 
-export const validateEventRoleExistsById = async (req: Request, res: Response, next: NextFunction) => {
+export const validateEventTypeExistsById = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const eventRoleId: number = parseInt(req.params.id[0].toString());
 
