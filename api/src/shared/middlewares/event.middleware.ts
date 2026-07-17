@@ -105,7 +105,7 @@ export const validateUpdate = async (req: Request, res: Response, next: NextFunc
             throw new Error("Event title is required.");
         }
 
-        if (event.isBlocked) {
+        if (event.is_blocked) {
             throw new ForbiddenError("Cannot update a blocked event.");
         }
 

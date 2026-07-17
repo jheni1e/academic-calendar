@@ -1,5 +1,7 @@
 import { prisma } from "../lib/prisma.ts";
 import { CreateEventDTO, UpdateEventDTO } from "../dtos/EventDto.ts";
+import { findSubjectById } from "./subject.service.ts";
+import { findClassById } from "./class.service.ts";
 
 export const createEvent = async (data: CreateEventDTO): Promise<Event> => {
     const start = new Date(data.startDate);
@@ -35,6 +37,24 @@ export const createEvent = async (data: CreateEventDTO): Promise<Event> => {
 
             await deleteEvent(id);
         }
+    }
+
+    if (data.eventTypeId === "lesson") {
+        const classHasEvent = await prisma.event.findMany({
+            where: {
+                start_date: {
+                    lte: end,
+                },
+                end_date: {
+                    gte: start,
+                },
+                class_id: {
+                    equals: data.classId
+                }
+            },
+        });
+
+        
     }
 
     return prisma.event.create({
