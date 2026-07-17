@@ -1,9 +1,9 @@
 import express from 'express'
 import { authorize } from '../shared/middlewares/authorization.middleware.ts';
 import { ClassController } from '../controllers/ClassController.ts';
-import { ClassUserController } from '../controllers/classUserControllers.ts';
 import { authMiddleware } from '../shared/middlewares/auth.middleware.ts';
 import { Role } from '../shared/enums/role.ts';
+import { ClassUserController } from '../controllers/ClassUserControllers.ts';
 
 const route = express.Router();
 
