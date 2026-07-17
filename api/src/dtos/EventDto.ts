@@ -4,7 +4,7 @@ export interface CreateEventDTO {
     title: string;
     description?: string;
 
-    eventTypeId: number;
+    eventTypeId: string;
 
     subjectId?: number;
     classId?: number;
@@ -19,7 +19,7 @@ export interface UpdateEventDTO {
     title?: string;
     description?: string;
 
-    eventTypeId?: number;
+    eventTypeId?: string;
 
     subjectId?: number;
     classId?: number;
