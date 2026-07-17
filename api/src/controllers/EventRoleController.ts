@@ -1,149 +1,95 @@
 import { Request, Response } from "express";
 
-import { AppError } from "../../../shared/errors/AppError.ts";
-
-import { PrismaEventRoleRepository } from "../repositories/PrismaEventRoleRepository.ts";
-import { CreateEventRoleUseCase } from "../usecases/CreateEventRoleUseCase.ts";
-import { DeleteEventRoleUseCase } from "../usecases/DeleteEventRoleUseCase.ts";
-import { FindEventRoleByIdUseCase } from "../usecases/FindEventRoleByIdUseCase.ts";
-import { GetEventRolesUseCase } from "../usecases/GetEventRolesUseCase.ts";
-import { UpdateEventRoleUseCase } from "../usecases/UpdateEventRoleUseCase.ts";
+import { AppError } from "../shared/errors/AppError.ts";
+import { CreateEventRoleDTO, UpdateEventRoleDTO } from "../dtos/EventRoleDTO.ts";
+import { createEventRole, deleteEventRole, findAllEventRoles, findEventRoleById, updateEventRole } from "../services/eventrole.service.ts";
 
 export class EventRoleController {
-
-    private readonly repository = new PrismaEventRoleRepository();
-
-    private readonly createUseCase = new CreateEventRoleUseCase(this.repository);
-    private readonly deleteUseCase = new DeleteEventRoleUseCase(this.repository);
-    private readonly findUseCase = new FindEventRoleByIdUseCase(this.repository);
-    private readonly getUseCase = new GetEventRolesUseCase(this.repository);
-    private readonly updateUseCase = new UpdateEventRoleUseCase(this.repository);
-
-    async handleCreate(req: Request, res: Response) {
-
+    static async create(req: Request, res: Response) {
+        const data: CreateEventRoleDTO = req.body
         try {
-
-            const eventRole = await this.createUseCase.execute(req.body);
+            const eventRole = await createEventRole(data);
 
             return res.status(201).json(eventRole);
-
         } catch (error) {
-
             if (error instanceof AppError) {
                 return res.status(error.statusCode).json({
                     message: error.message
                 });
             }
 
-            return res.status(500).json({
-                message: "Internal server error."
-            });
-
+            return res.status(500).json({ message: "Internal server error." });
         }
-
     }
 
-    async handleDelete(req: Request, res: Response) {
+    static async delete(req: Request, res: Response) {
+        const id: number = parseInt(req.params.id.toString());
 
         try {
+            await deleteEventRole(id);
 
-            await this.deleteUseCase.execute(
-                Number(req.params.id)
-            );
-
-            return res.sendStatus(204);
-
+            return res.status(204).send({ message: "Event role deleted successfully." });
         } catch (error) {
-
             if (error instanceof AppError) {
                 return res.status(error.statusCode).json({
                     message: error.message
                 });
             }
 
-            return res.status(500).json({
-                message: "Internal server error."
-            });
-
+            return res.status(500).json({ message: "Internal server error." });
         }
-
     }
 
-    async handleFind(req: Request, res: Response) {
+    static async findEventRoleById(req: Request, res: Response) {
+        const id: number = parseInt(req.params.id.toString());
 
         try {
-
-            const eventRole = await this.findUseCase.execute(
-                Number(req.params.id)
-            );
+            const eventRole = await findEventRoleById(id);
 
             return res.status(200).json(eventRole);
-
         } catch (error) {
-
             if (error instanceof AppError) {
                 return res.status(error.statusCode).json({
                     message: error.message
                 });
             }
 
-            return res.status(500).json({
-                message: "Internal server error."
-            });
-
+            return res.status(500).json({ message: "Internal server error." });
         }
-
     }
 
-    async handleGet(req: Request, res: Response) {
-
+    static async findAllEventRoles(req: Request, res: Response) {
         try {
-
-            const eventRoles = await this.getUseCase.execute();
+            const eventRoles = await findAllEventRoles();
 
             return res.status(200).json(eventRoles);
-
         } catch (error) {
-
             if (error instanceof AppError) {
                 return res.status(error.statusCode).json({
                     message: error.message
                 });
             }
 
-            return res.status(500).json({
-                message: "Internal server error."
-            });
-
+            return res.status(500).json({ message: "Internal server error." });
         }
-
     }
 
-    async handleUpdate(req: Request, res: Response) {
+    static async updateEventRole(req: Request, res: Response) {
+        const id: number = parseInt(req.params.id.toString());
+        const data: UpdateEventRoleDTO = req.body;
 
         try {
-
-            const eventRole = await this.updateUseCase.execute(
-                Number(req.params.id),
-                req.body
-            );
+            const eventRole = await updateEventRole(id, data);
 
             return res.status(200).json(eventRole);
-
         } catch (error) {
-
             if (error instanceof AppError) {
                 return res.status(error.statusCode).json({
                     message: error.message
                 });
             }
 
-            return res.status(500).json({
-                message: "Internal server error."
-            });
-
+            return res.status(500).json({ message: "Internal server error." });
         }
-
     }
-
 }
