@@ -1,6 +1,6 @@
 import { Role } from "../../generated/prisma/client.ts";
-import { prisma } from "../../lib/prisma.ts";
-import { CreateRoleDTO, UpdateRoleDTO } from "../../modules/role/RoleDTO.ts";
+import { prisma } from "../lib/prisma.ts";
+import { CreateRoleDTO, UpdateRoleDTO } from "../dtos/RoleDTO.ts";
 
 export const createRole = async (
     data: CreateRoleDTO
