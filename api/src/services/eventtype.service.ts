@@ -24,6 +24,26 @@ export const findEventTypeById = async (
     });
 }
 
+export const findEventTypeByUser = async(userId: number): Promise<EventType[]> => {
+    const user = await prisma.user.findUnique({
+        where: {
+            user_id: userId
+        }
+    });
+
+    if (user.role === "apprentice") {
+        return prisma.eventType.findMany({
+            where: {
+                name: {
+                    in: ["personal", "external"],
+                },
+            },
+        });
+    }
+
+    return prisma.eventType.findMany();
+}
+
 export const findAllEventTypes = async (): Promise<EventType[]> {
 
     return prisma.eventType.findMany();
