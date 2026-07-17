@@ -1,5 +1,5 @@
 import express from 'express'
-import { RoomController } from '../controllers/RoomController.ts';
+import { RoomController } from '../controllers/roomController.ts';
 import { authMiddleware } from '../shared/middlewares/auth.middleware.ts';
 import { authorize } from '../shared/middlewares/authorization.middleware.ts';
 import { Role } from '../shared/enums/role.ts';
@@ -14,7 +14,7 @@ route
     .post('/', authMiddleware, authorize(Role.ADMIN, Role.INSTRUCTOR), roomController.create)
     .post('/reservation/:roomId', authMiddleware, authorize(Role.ADMIN, Role.INSTRUCTOR), reservationController.create)
     
-    .get('/all', authMiddleware, roomController.getAll)
+    .get('/all', authMiddleware, roomController.findAllRooms)
     .get('/:id', authMiddleware, roomController.getById)
     .get('/reservations', authMiddleware, reservationController.getById)
     
