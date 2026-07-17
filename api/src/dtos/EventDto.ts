@@ -9,6 +9,8 @@ export interface CreateEventDTO {
     subjectId?: number;
     classId?: number;
     recurrence?: CreateRecurrenceDTO;
+    startDate: Date;
+    endDate: Date;
 
     createdBy: number;
 }
