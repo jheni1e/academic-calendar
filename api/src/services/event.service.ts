@@ -1,52 +1,52 @@
 import { prisma } from "../lib/prisma.ts";
 import { CreateEventDTO, UpdateEventDTO } from "../dtos/EventDto.ts";
-
-export const createEvent = async (data: CreateEventDTO): Promise<Event> => {
+import { Event } from "../generated/prisma/client.ts";
+export const createEvent = async (data: CreateEventDTO): Promise<void> => {
     const start = new Date(data.startDate);
     const end = new Date(data.endDate);
 
-    const conflictingEvents = await prisma.event.findMany({
-        where: {
-            start_date: {
-                lte: end,
-            },
-            end_date: {
-                gte: start,
-            }
-        },
-    });
+    // const conflictingEvents = await prisma.event.findMany({
+    //     where: {
+    //         start_date: {
+    //             lte: end,
+    //         },
+    //         end_date: {
+    //             gte: start,
+    //         }
+    //     },
+    // });
 
-    if (conflictingEvents.length > 0) {
-        for (const event of conflictingEvents) {
-            if (event.event_type_id === "lesson" && event.subject_id) {
-                await prisma.subject.update({
-                    where: {
-                        subject_id: event.subject_id,
-                    },
-                    data: {
-                        workload: {
-                            increment: 4,
-                        },
-                    },
-                });
-            }
+    // if (conflictingEvents.length > 0) {
+    //     for (const event of conflictingEvents) {
+    //         // if (event.event_type_id === "lesson" && event.subject_id) {
+    //         //     await prisma.subject.update({
+    //         //         where: {
+    //         //             subject_id: event.subject_id,
+    //         //         },
+    //         //         data: {
+    //         //             workload: {
+    //         //                 increment: 4,
+    //         //             },
+    //         //         },
+    //         //     });
+    //         }
 
-            const id = event.event_id;
+    //         // const id = event.event_id;
 
-            await deleteEvent(id);
-        }
-    }
+    //         await deleteEvent(id);
+    //     }
+    // }
 
-    return prisma.event.create({
-        data: {
-            title: data.title,
-            description: data.description,
-            event_type_id: data.eventTypeId,
-            subject_id: data.subjectId,
-            class_id: data.classId,
-            created_by: data.createdBy
-        }
-    });
+    // return prisma.event.create({
+    //     data: {
+    //         title: data.title,
+    //         description: data.description,
+    //         event_type_id: data.eventTypeId,
+    //         subject_id: data.subjectId,
+    //         class_id: data.classId,
+    //         created_by: data.createdBy
+    //     }
+    // });
 }
 
 export const findEventById = async (eventId: number): Promise<Event | null> => {
@@ -95,7 +95,7 @@ export const updateEvent = async (
 
 }
 
-export const deleteEvent = async (eventId: number): Promise<void> {
+export const deleteEvent = async (eventId: number): Promise<void> => {
 
     await prisma.event.delete({
         where: {
