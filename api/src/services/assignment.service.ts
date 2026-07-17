@@ -1,6 +1,6 @@
-import { Assignment } from "../../generated/prisma/client.ts";
 import { prisma } from "../lib/prisma.ts";
 import { CreateAssignmentDTO } from "../dtos/AssignmentDto.ts";
+import { Assignment } from "../generated/prisma/client.ts";
 
 export const createAssignment = async (
     data: CreateAssignmentDTO

@@ -2,7 +2,8 @@ import { Request, Response } from "express";
 import { CreateUserDTO, UpdateUserDTO } from "../dtos/UserDto.ts";
 import { createUser, disableUser, findAllUsers, findUserByEdv, findUserById, updateUser } from "../services/user.service.ts";
 import { hashPassword } from "../app/utils/password.ts";
-import { findAssignmentsByUserId } from "../services/assignment.service.ts";
+import { createAssignment, deleteAssignment, findAssignmentsByUserAndRole, findAssignmentsByUserId } from "../services/assignment.service.ts";
+import { findRoleByName } from "../services/role.service.ts";
 
 export class UserController {
     static async create(req: Request, res: Response) {
@@ -31,12 +32,7 @@ export class UserController {
         try {
             const users = await findAllUsers();
 
-            const response = users.map(user => ({
-            ...user,
-            roles: user.assignments.map(a => a.role.name)
-            }));
-
-        return res.status(200).send(response);
+        return res.status(200).send(users);
 
 
         } catch (error) {
@@ -53,11 +49,6 @@ export class UserController {
 
         try {
             const user = await findUserById(Number(id));
-            // console.log(user)
-            // console.log(res.locals.user.role)
-            // console.log(Array.isArray(res.locals.user.role));
-            // console.log(typeof res.locals.user.role);
-            // console.log(JSON.stringify(res.locals.user.role, null, 2));
             return res.status(200).send(user)
 
         } catch (error) {
@@ -91,7 +82,39 @@ export class UserController {
 
         try {
             const user = await updateUser(Number(id), data)
+
+            if(data.roleToAdd) {
+                const role = await findRoleByName(data.roleToAdd)
+
+                if(!role)
+                    return res.status(404).send({ message: "Role not found"})
+
+                const assignment = findAssignmentsByUserAndRole(user.user_id, role.role_id)
+
+                if(!assignment){
+                    await createAssignment({
+                    userId : user.user_id,
+                    roleId : role.role_id
+                    })
+                }
+                
+                return res.status(200).send({ message: "Role added"})
+            }
             
+            if(data.roleToRemove){
+                const role = await findRoleByName(data.roleToRemove)
+
+                if(!role)
+                    return res.status(404).send({ message: "Role not found"})
+
+                const assignment = await findAssignmentsByUserAndRole(user.user_id, role.role_id)
+
+                if(assignment) {
+                    await deleteAssignment( assignment.assignment_id)
+                    return res.status(200).send({ message: "Role removed"})
+                }
+
+            }
             if(res.locals.user.edv == user.user_edv)
                 return res.status(200).send({ message: "User succesfully updated!", user})
             return res.status(401).send({ message : "Access denied"})

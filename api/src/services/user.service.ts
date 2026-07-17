@@ -95,17 +95,29 @@ export const findUserById = async (
     };
 }
 
-export const findAllUsers = async() => {
+export const findAllUsers = async() : Promise<UserResponseDTO[] | null> => {
 
-    return await prisma.user.findMany({
+    const users = await prisma.user.findMany({
         include: {
             assignments: {
                 include: {
-                    role: true
+                    role: {
+                        select: {
+                            name: true
+                        }
+                    }
                 }
             }
+        
         }
     });
+
+    return users.map(({ password, assignments, ...user }) => ({
+        edv: user.user_edv,
+        name: user.name,
+        isActive: user.is_active,
+        roles: assignments.map(a => a.role.name)
+    }));
 }
 
 export const updateUser = async (
@@ -122,6 +134,7 @@ export const updateUser = async (
             birthday: data.birthdate
         }
     });
+
 }
 
 export const disableUser = async (
