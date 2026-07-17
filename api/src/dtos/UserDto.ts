@@ -17,10 +17,12 @@ export type UserResponseDTO = {
     edv: number;
     name: string;
     isActive: boolean;
+    roles: string[]
 }
 
 export type LoginDTO = {
     edv: number
     password: string
 }
+
 

@@ -5,8 +5,8 @@ import { findSubjectById } from "./subject.service.ts";
 import { findClassById } from "./class.service.ts";
 
 export const createEvent = async (data: CreateEventDTO): Promise<void> => {
-    const start = new Date(data.startDate);
-    const end = new Date(data.endDate);
+    // const start = new Date(data.startDate);
+    // const end = new Date(data.endDate);
 
     // const conflictingEvents = await prisma.event.findMany({
     //     where: {
@@ -36,9 +36,9 @@ export const createEvent = async (data: CreateEventDTO): Promise<void> => {
 
     //         // const id = event.event_id;
 
-            await deleteEvent(id);
-        }
-    }
+            // await deleteEvent(id);
+    //     }
+    // }
 
     // return prisma.event.create({
     //     data: {

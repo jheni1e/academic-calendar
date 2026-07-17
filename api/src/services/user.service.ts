@@ -1,4 +1,4 @@
-import { CreateUserDTO, UpdateUserDTO } from "../dtos/UserDto.ts";
+import { CreateUserDTO, UpdateUserDTO, UserResponseDTO } from "../dtos/UserDto.ts";
 import { User } from "../generated/prisma/client.ts";
 import { prisma } from "../lib/prisma.ts";
 
@@ -64,20 +64,35 @@ export const findUserByName = async (
 
 export const findUserById = async (
     userId: number
-): Promise<User | null> => {
+): Promise<UserResponseDTO | null> => {
 
-    return await prisma.user.findUnique({ 
+    const user = await prisma.user.findUnique({
         where: {
             user_id: userId
         },
         include: {
             assignments: {
                 include: {
-                    role: true
+                    role: {
+                        select: {
+                            name: true
+                        }
+                    }
                 }
             }
         }
     });
+
+    if (!user) {
+        return null;
+    }
+
+    return {
+        edv: user.user_edv,
+        name: user.name,
+        isActive: user.is_active,
+        roles: user.assignments.map(a => a.role.name)
+    };
 }
 
 export const findAllUsers = async() => {
