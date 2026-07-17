@@ -1,4 +1,4 @@
-import { Participation } from "../../generated/prisma/client.ts";
+import { Participation } from "../generated/prisma/client.ts";
 import { prisma } from "../lib/prisma.ts";
 import { CreateParticipationDTO, UpdateParticipationDTO } from "../dtos/ParticipationDTO.ts";
 
@@ -38,7 +38,7 @@ export const updateParticipation = async (
 
 }
 
-export const findAllParticipations = async (): Promise<Participation[]> {
+export const findAllParticipations = async (): Promise<Participation[]> => {
 
     return prisma.participation.findMany();
 
