@@ -1,6 +1,6 @@
 import { Class } from "../../generated/prisma/client.ts";
-import { prisma } from "../../lib/prisma.ts";
-import { CreateClassDTO, UpdateClassDTO } from "../../modules/class/ClassDTO.ts";
+import { prisma } from "../lib/prisma.ts";
+import { CreateClassDTO, UpdateClassDTO } from "../dtos/ClassDto.ts";
 
 export const createClass = async (
     data: CreateClassDTO
@@ -25,7 +25,7 @@ export const findClassById = async (
     });
 }
 
-export const findAllClassesById = async (): Promise<Class[]> => {
+export const findAllClasses = async (): Promise<Class[]> => {
 
     return prisma.class.findMany();
 }

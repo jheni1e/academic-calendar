@@ -1,5 +1,5 @@
 import express from 'express'
-import { ClassController } from '../controllers/ClassController.ts';
+import { ClassController } from '../controllers/classController.ts";
 import { ClassUserController } from '../controllers/ClassUserControllers.ts';
 import { authMiddleware } from '../shared/middlewares/auth.middleware.ts';
 import { Role } from '../shared/enums/role.ts';
