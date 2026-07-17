@@ -1,5 +1,5 @@
 import express from 'express'
-import { EventController } from '../controllers/EventController.ts';
+import { EventController } from '../controllers/eventController.ts';
 import { ParticipationController } from '../controllers/ParticipationController.ts';
 import { authMiddleware } from '../shared/middlewares/auth.middleware.ts';
 import { authorize } from '../shared/middlewares/authorization.middleware.ts';
