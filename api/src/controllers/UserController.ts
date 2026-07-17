@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
 import { CreateUserDTO, UpdateUserDTO } from "../dtos/UserDto.ts";
 import { createUser, disableUser, findAllUsers, findUserByEdv, findUserById, updateUser } from "../services/user.service.ts";
+import { hashPassword } from "../app/utils/password.ts";
+import { findAssignmentsByUserId } from "../services/assignment.service.ts";
 
 export class UserController {
     static async create(req: Request, res: Response) {
@@ -8,8 +10,14 @@ export class UserController {
         const data : CreateUserDTO = req.body
 
         try {
-            const user = await createUser(data);
-            return res.status(200).send({ message : "User created!" })
+            const password = await hashPassword(data.password);
+        
+            const user = await createUser({
+                ...data,
+                password
+            });
+
+            return res.status(200).send({ message : "User created!", user })
 
         } catch (error) {
             if (error instanceof Error)
@@ -22,7 +30,14 @@ export class UserController {
     static async getAll(req: Request, res: Response) {
         try {
             const users = await findAllUsers();
-            return res.status(200).send({ users })
+
+            const response = users.map(user => ({
+            ...user,
+            roles: user.assignments.map(a => a.role.name)
+            }));
+
+        return res.status(200).send(response);
+
 
         } catch (error) {
 
@@ -58,7 +73,10 @@ export class UserController {
 
         try {
             const user = await findUserByEdv(Number(edv))
-            return res.status(200).send(user)
+            if(!user)
+                return res.status(404).send({ message: "User not found"})
+            const roles = await findAssignmentsByUserId(user.user_id)
+            return res.status(200).send({user, roles})
         } catch (error) {
             if (error instanceof Error) 
                 return res.status(401).send({ message: error.message })

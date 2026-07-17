@@ -1,3 +1,4 @@
+
 import { generateToken } from "../app/utils/jwt.ts";
 import { comparePassword } from "../app/utils/password.ts";
 import { prisma } from "../lib/prisma.ts";
@@ -5,7 +6,7 @@ import { prisma } from "../lib/prisma.ts";
 
 export const login = async (edv: number, password: string) => {
     const user = await prisma.user.findUnique({
-        where: { edv: edv }
+        where: { user_edv: edv }
     });
 
     if (!user) {
@@ -24,7 +25,10 @@ export const login = async (edv: number, password: string) => {
     const assignments = await prisma.assignment.findMany({
         where: {
             user_id: user.user_id
-        }
+        },
+        include: {
+            role: true
+    }
     });
 
     const roles = assignments.map(a => a.role.name);

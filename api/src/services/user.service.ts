@@ -1,4 +1,4 @@
-import { CreateUserDTO, UpdateUserDTO } from "../dtos/UserDto.ts";
+import { CreateUserDTO, UpdateUserDTO, UserResponseDTO } from "../dtos/UserDto.ts";
 import { User } from "../generated/prisma/client.ts";
 import { prisma } from "../lib/prisma.ts";
 
@@ -6,7 +6,7 @@ export const createUser = async (
     data: CreateUserDTO
 ): Promise<User> => {
 
-    return await prisma.user.create({
+    const user = await prisma.user.create({
         data: {
             user_edv: data.edv,
             name: data.name,
@@ -14,7 +14,30 @@ export const createUser = async (
             is_active: true,
             password : data.password
         }
-    });
+    })
+
+    for (const roleName of data.role) {
+        const role = await prisma.role.findUnique({
+            where: {
+                name: roleName
+            }
+        });
+
+        if (!role) {
+            throw new Error(`Role '${roleName}' not found`);
+        }
+
+        await prisma.assignment.create({
+            data: {
+                user_id: user.user_id,
+                role_id: role.role_id
+            }
+        });
+    }
+    
+    return user
+
+
 }
 
 export const findUserByEdv =  async (
@@ -41,18 +64,48 @@ export const findUserByName = async (
 
 export const findUserById = async (
     userId: number
-): Promise<User | null> => {
+): Promise<UserResponseDTO | null> => {
 
-    return await prisma.user.findUnique({
+    const user = await prisma.user.findUnique({
         where: {
             user_id: userId
+        },
+        include: {
+            assignments: {
+                include: {
+                    role: {
+                        select: {
+                            name: true
+                        }
+                    }
+                }
+            }
         }
     });
+
+    if (!user) {
+        return null;
+    }
+
+    return {
+        edv: user.user_edv,
+        name: user.name,
+        isActive: user.is_active,
+        roles: user.assignments.map(a => a.role.name)
+    };
 }
 
-export const findAllUsers = async() : Promise<User[]> => {
+export const findAllUsers = async() => {
 
-    return await prisma.user.findMany();
+    return await prisma.user.findMany({
+        include: {
+            assignments: {
+                include: {
+                    role: true
+                }
+            }
+        }
+    });
 }
 
 export const updateUser = async (
