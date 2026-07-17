@@ -18,6 +18,7 @@ route
     .get('/reservations', authMiddleware, ReservationController.findReservationById)
     
     .put('/:id', authMiddleware, authorize(Role.ADMIN, Role.INSTRUCTOR), RoomController.update)
+    .put('/disable/:id', authMiddleware, authorize(Role.ADMIN, Role.INSTRUCTOR), RoomController.disable)
 
     .delete('/reservation/:roomId', authMiddleware, authorize(Role.ADMIN, Role.INSTRUCTOR), ReservationController.delete)
     .delete("/:id", authMiddleware, authorize(Role.ADMIN, Role.INSTRUCTOR), RoomController.delete)

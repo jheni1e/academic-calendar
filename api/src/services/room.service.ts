@@ -47,3 +47,15 @@ export const deleteRoom = async (roomId: number): Promise<void> => {
         }
     });
 }
+
+export const disableRoom = async (roomId : number) : Promise<void> => {
+    await prisma.room.update({
+        where: {
+            room_id: roomId
+        },
+
+        data: {
+            is_active : false
+        }
+    })
+}

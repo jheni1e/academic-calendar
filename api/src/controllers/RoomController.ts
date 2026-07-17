@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 
 import { AppError } from "../shared/errors/AppError.ts";
 import { CreateRoomDTO, UpdateRoomDTO } from "../dtos/RoomDto.ts";
-import { createRoom, deleteRoom, findAllRooms, findRoomById, updateRoom } from "../services/room.service.ts";
+import { createRoom, deleteRoom, disableRoom, findAllRooms, findRoomById, updateRoom } from "../services/room.service.ts";
 
 export class RoomController {
     static async create(req: Request, res: Response) {
@@ -27,9 +27,24 @@ export class RoomController {
         const id: number = parseInt(req.params.id.toString());
 
         try {
+            const room = await findRoomById(id);
+
+            if (!room) {
+                return res.status(404).send({
+                    message: "Room not found"
+                });
+            }
+
+            if (room.is_active) {
+                return res.status(400).send({
+                    message: "Room still active, cannot delete"
+                });
+            }
+
             await deleteRoom(id);
 
-            return res.status(204).send({ message: "Room deleted successfully." });
+            return res.sendStatus(204);
+
         } catch (error) {
             if (error instanceof AppError) {
                 return res.status(error.statusCode).json({
@@ -92,5 +107,23 @@ export class RoomController {
 
             return res.status(500).json({ message: "Internal server error." });
         }
+    }
+
+    static async disable(req: Request, res: Response) {
+        const id = req.params
+        
+        try {
+            const room = await disableRoom(Number(id))
+            return res.status(200).send({ message: "Room disabled"})
+            
+        } catch (error) {
+            if (error instanceof AppError) {
+                return res.status(error.statusCode).json({
+                    message: error.message
+                });
+            }
+            return res.status(500).json({ message: "Internal server error." });
+        }
+
     }
 }
