@@ -1,205 +1,150 @@
 import { Request, Response } from "express";
 
 import { AppError } from "../shared/errors/AppError.ts";
-
-import { PrismaParticipationRepository } from "../modules/participation/repositories/PrismaParticipationRepository.ts";
-import { CreateParticipationUseCase } from "../modules/participation/usecases/CreateParticipationUseCase.ts";
-import { DeleteParticipationUseCase } from "../modules/participation/usecases/DeleteParticipationUseCase.ts";
-import { FindParticipationByIdUseCase } from "../modules/participation/usecases/FindParticipationByIdUseCase.ts";
-import { GetParticipationsByEventUseCase } from "../modules/participation/usecases/GetParticipationsByEventUseCase.ts";
-import { GetParticipationsByUserUseCase } from "../modules/participation/usecases/GetParticipationsByUserUseCase.ts";
-import { GetParticipationsUseCase } from "../modules/participation/usecases/GetParticipationsUseCase.ts";
-import { UpdateParticipationUseCase } from "../modules/participation/usecases/UpdateParticipationUseCase.ts";
+import { CreateParticipationDTO, UpdateParticipationDTO } from "../dtos/ParticipationDTO.ts";
+import { createParticipation, deleteParticipation, findAllParticipations, findParticipationByEvent, findParticipationById, findParticipationByUser, findParticipationByUserAndEvent, updateParticipation } from "../services/participation.service.ts";
 
 export class ParticipationController {
-
-    private readonly repository = new PrismaParticipationRepository();
-
-    private readonly createUseCase = new CreateParticipationUseCase(this.repository);
-    private readonly deleteUseCase = new DeleteParticipationUseCase(this.repository);
-    private readonly findUseCase = new FindParticipationByIdUseCase(this.repository);
-    private readonly getUseCase = new GetParticipationsUseCase(this.repository);
-    private readonly getByEventUseCase = new GetParticipationsByEventUseCase(this.repository);
-    private readonly getByUserUseCase = new GetParticipationsByUserUseCase(this.repository);
-    private readonly updateUseCase = new UpdateParticipationUseCase(this.repository);
-
-    create = async (req: Request, res: Response) => {
-
+    static async create(req: Request, res: Response) {
+        const data: CreateParticipationDTO = req.body;
         try {
-
-            const participation = await this.createUseCase.execute(req.body);
+            const participation = await createParticipation(data);
 
             return res.status(201).json(participation);
-
         } catch (error) {
-
             if (error instanceof AppError) {
                 return res.status(error.statusCode).json({
                     message: error.message
                 });
             }
 
-            return res.status(500).json({
-                message: "Internal server error."
-            });
-
+            return res.status(500).json({ message: "Internal server error." });
         }
-
     }
 
-    delete = async (req: Request, res: Response) => {
+    static async delete(req: Request, res: Response) {
+        const id: number = parseInt(req.params.id.toString());
 
         try {
+            await deleteParticipation(id);
 
-            await this.deleteUseCase.execute(
-                Number(req.params.id)
-            );
-
-            return res.sendStatus(204);
-
+            return res.status(204).send({ message: "Participation deleted successfully." });
         } catch (error) {
-
             if (error instanceof AppError) {
                 return res.status(error.statusCode).json({
                     message: error.message
                 });
             }
 
-            return res.status(500).json({
-                message: "Internal server error."
-            });
-
+            return res.status(500).json({ message: "Internal server error." });
         }
-
     }
 
-    getById = async (req: Request, res: Response) => {
+    static async findParticipationById(req: Request, res: Response) {
+        const id: number = parseInt(req.params.id.toString());
 
         try {
-
-            const participation = await this.findUseCase.execute(
-                Number(req.params.id)
-            );
+            const participation = await findParticipationById(id);
 
             return res.status(200).json(participation);
-
         } catch (error) {
-
             if (error instanceof AppError) {
                 return res.status(error.statusCode).json({
                     message: error.message
                 });
             }
 
-            return res.status(500).json({
-                message: "Internal server error."
-            });
-
+            return res.status(500).json({ message: "Internal server error." });
         }
-
     }
 
-    getAll = async (req: Request, res: Response) => {
-
+    static async findAllParticipations(req: Request, res: Response) {
         try {
-
-            const participations = await this.getUseCase.execute();
+            const participations = await findAllParticipations();
 
             return res.status(200).json(participations);
-
         } catch (error) {
-
             if (error instanceof AppError) {
                 return res.status(error.statusCode).json({
                     message: error.message
                 });
             }
 
-            return res.status(500).json({
-                message: "Internal server error."
-            });
-
+            return res.status(500).json({ message: "Internal server error." });
         }
-
     }
 
-    getByEvent = async (req: Request, res: Response) => {
+    static async findParticipationByEvent(req: Request, res: Response) {
+        const id: number = parseInt(req.params.id.toString());
 
         try {
-
-            const participations = await this.getByEventUseCase.execute(
-                Number(req.params.eventId)
-            );
+            const participations = await findParticipationByEvent(id);
 
             return res.status(200).json(participations);
-
         } catch (error) {
-
             if (error instanceof AppError) {
                 return res.status(error.statusCode).json({
                     message: error.message
                 });
             }
 
-            return res.status(500).json({
-                message: "Internal server error."
-            });
-
+            return res.status(500).json({ message: "Internal server error." });
         }
-
     }
 
-    getByUser = async (req: Request, res: Response) => {
+    static async findParticipationByUser(req: Request, res: Response) {
+        const id: number = parseInt(req.params.id.toString());
 
         try {
-
-            const participations = await this.getByUserUseCase.execute(
-                Number(req.params.userId)
-            );
+            const participations = await findParticipationByUser(id);
 
             return res.status(200).json(participations);
-
         } catch (error) {
-
             if (error instanceof AppError) {
                 return res.status(error.statusCode).json({
                     message: error.message
                 });
             }
 
-            return res.status(500).json({
-                message: "Internal server error."
-            });
-
+            return res.status(500).json({ message: "Internal server error." });
         }
-
     }
 
-    update = async (req: Request, res: Response) => {
+    static async findParticipationByUserAndEvent(req: Request, res: Response) {
+        const userId: number = parseInt(req.params.id[0].toString());
+        const eventId: number = parseInt(req.params.id[1].toString());
 
         try {
+            const participations = await findParticipationByUserAndEvent(userId, eventId);
 
-            const participation = await this.updateUseCase.execute(
-                Number(req.params.id),
-                req.body
-            );
+            return res.status(200).json(participations);
+        } catch (error) {
+            if (error instanceof AppError) {
+                return res.status(error.statusCode).json({
+                    message: error.message
+                });
+            }
+
+            return res.status(500).json({ message: "Internal server error." });
+        }
+    }
+
+    static async updateParticipation(req: Request, res: Response) {
+        const id: number = parseInt(req.params.id.toString());
+        const data: UpdateParticipationDTO = req.body;
+
+        try {
+            const participation = await updateParticipation(id, data);
 
             return res.status(200).json(participation);
-
         } catch (error) {
-
             if (error instanceof AppError) {
                 return res.status(error.statusCode).json({
                     message: error.message
                 });
             }
 
-            return res.status(500).json({
-                message: "Internal server error."
-            });
-
+            return res.status(500).json({ message: "Internal server error." });
         }
-
     }
-
 }

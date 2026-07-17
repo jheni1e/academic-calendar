@@ -1,6 +1,6 @@
 import { Participation } from "../../generated/prisma/client.ts";
-import { prisma } from "../../lib/prisma.ts";
-import { CreateParticipationDTO, UpdateParticipationDTO } from "../../modules/participation/ParticipationDTO.ts";
+import { prisma } from "../lib/prisma.ts";
+import { CreateParticipationDTO, UpdateParticipationDTO } from "../dtos/ParticipationDTO.ts";
 
 export const createParticipation = async (
     data: CreateParticipationDTO
