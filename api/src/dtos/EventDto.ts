@@ -7,6 +7,7 @@ export interface CreateEventDTO {
     eventTypeId: string;
 
     subjectId?: number;
+    instructorId?: number;
     classId?: number;
     recurrence?: CreateRecurrenceDTO;
     startDate: Date;
