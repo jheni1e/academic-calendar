@@ -69,6 +69,16 @@ export const validateDectivate = async (req: Request, res: Response, next: NextF
             throw new Error("Room already deactivated.");
         }
 
+        const subjectRoomConnection = await prisma.subjectroom.findFirst({
+            where: {
+                room_id: roomId
+            }
+        });
+
+        if (subjectRoomConnection) {
+            throw new Error("The room is linked to a subject.");
+        }
+
         next();
     } catch (error) {
         next(error);
