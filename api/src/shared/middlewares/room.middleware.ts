@@ -27,10 +27,24 @@ export const validateActivate = async (req: Request, res: Response, next: NextFu
 
 export const validateCreate = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { name } = req.body;
+        const { title, capacity, description } = req.body;
 
-        if (!name.trim()) {
-            throw new Error("Role name is required.");
+        if (title !== undefined && !title.trim()) {
+            throw new BadRequestError("Room title is mandatory.");
+        }
+
+        const isTitleUnique = await prisma.room.findFirst({
+            where: {
+                title: title
+            }
+        });
+
+        if (isTitleUnique.length > 0) {
+            throw new Error("A room is already using that title.");
+        }
+
+        if (capacity <= 0) {
+            throw new Error("Capacity must be greater than one.");
         }
 
         next();
@@ -86,7 +100,7 @@ export const validateDelete = async (req: Request, res: Response, next: NextFunc
 export const validateUpdate = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const roomId: number = parseInt(req.params.id.toString());
-        const { title } = req.body;
+        const { title, capacity, description, is_active } = req.body;
 
         const room = await prisma.room.findFirst({
             where: { id: roomId },
@@ -98,6 +112,20 @@ export const validateUpdate = async (req: Request, res: Response, next: NextFunc
 
         if (title !== undefined && !title.trim()) {
             throw new BadRequestError("Room title is mandatory.");
+        }
+
+        const isTitleUnique = await prisma.room.findFirst({
+            where: {
+                title: title
+            }
+        });
+
+        if (isTitleUnique.length > 0) {
+            throw new Error("A room is already using that title.");
+        }
+
+        if (capacity <= 0) {
+            throw new Error("Capacity must be greater than one.");
         }
 
         next();

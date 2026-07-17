@@ -1,14 +1,13 @@
 import { NextFunction, Request, Response } from "express";
 import { prisma } from "../../lib/prisma.ts";
-import { ConflictError } from "../errors/ConflictError.ts";
 import { NotFoundError } from "../errors/NotFoundError.ts";
 import { ForbiddenError } from "../errors/ForbiddenError.ts";
 
 export const validateCreate = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { title, description, eventTypeId, subjectId, classId, recurrence, createdBy } = req.body;
+        const { title, description, eventTypeId, subjectId, classId, recurrence, createdBy, startDate, endDate } = req.body;
 
-        if (!title.trim()) {
+        if (!title?.trim()) {
             throw new Error("Event title is required.");
         }
 
@@ -16,8 +15,19 @@ export const validateCreate = async (req: Request, res: Response, next: NextFunc
             throw new Error("Event type is required.");
         }
 
+        const start = new Date(startDate);
+        const end = new Date(endDate);
+
+        if (isNaN(start.getTime()) || isNaN(end.getTime())) {
+            throw new Error("Invalid dates.");
+        }
+        
+        if (start >= end) {
+            throw new Error("Start date must be before end date.");
+        }
+
         if (classId) {
-            const classItem = await prisma.class.findFirst({
+            const classItem = await prisma.class.findUnique({
                 where: { id: classId },
             });
 
@@ -27,7 +37,7 @@ export const validateCreate = async (req: Request, res: Response, next: NextFunc
         }
 
         if (subjectId) {
-            const subject = await prisma.subject.findFirst({
+            const subject = await prisma.subject.findUnique({
                 where: { id: subjectId },
             });
 
@@ -37,7 +47,7 @@ export const validateCreate = async (req: Request, res: Response, next: NextFunc
         }
 
         if (createdBy) {
-            const creator = await prisma.user.findFirst({
+            const creator = await prisma.user.findUnique({
                 where: { id: createdBy },
             });
 
@@ -59,6 +69,10 @@ export const validateDelete = async (req: Request, res: Response, next: NextFunc
         const event = await prisma.events.findFirst({
             where: { id: eventId },
         });
+
+        if (!event) {
+            throw new NotFoundError("Event not found");
+        }
 
         const reservation = await prisma.reservation.findFirst({
             where: { eventId: eventId },
@@ -91,12 +105,8 @@ export const validateUpdate = async (req: Request, res: Response, next: NextFunc
             throw new Error("Event title is required.");
         }
 
-        const reservation = await prisma.reservation.findFirst({
-            where: { eventId: eventId },
-        });
-
-        if (reservation.isBlocked) {
-            throw new ForbiddenError("Cannot update an event with a blocked reservation.");
+        if (event.is_blocked) {
+            throw new ForbiddenError("Cannot update a blocked event.");
         }
 
         next();

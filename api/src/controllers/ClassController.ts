@@ -1,127 +1,49 @@
 import { Request, Response } from "express";
 
 import { AppError } from "../shared/errors/AppError.ts";
-
-import { PrismaClassRepository } from "../modules/class/repositories/PrismaClassRepository.ts";
-import { ActivateClassUseCase } from "../modules/class/usecases/ActivateClassUseCase.ts";
-import { CreateClassUseCase } from "../modules/class/usecases/CreateClassUseCase.ts";
-import { DeactivateClassUseCase } from "../modules/class/usecases/DeactivateClassUseCase.ts";
-import { DeleteClassUseCase } from "../modules/class/usecases/DeleteClassUseCase.ts";
-import { FindClassByIdUseCase } from "../modules/class/usecases/FindClassByIdUseCase.ts";
-import { GetClassesUseCase } from "../modules/class/usecases/GetClassesUseCase.ts";
-import { UpdateClassUseCase } from "../modules/class/usecases/UpdateClassUseCase.ts";
-import { PrismaClassUserRepository } from "../modules/classUser/repositories/PrismaClassUserRepository.ts";
-import { PrismaEventRepository } from "../modules/event/repositories/PrismaEventRepository.ts";
+import { CreateClassDTO, UpdateClassDTO } from "../dtos/ClassDto.ts";
+import { createClass, deleteClass, findAllClasses, findClassById, updateClass } from "../services/class.service.ts";
 
 export class ClassController {
-    private readonly repository = new PrismaClassRepository();
-    private readonly classUserRepository = new PrismaClassUserRepository();
-    private readonly eventRepository = new PrismaEventRepository();
-
-    private readonly activateClassUseCase = new ActivateClassUseCase(this.repository);
-    private readonly createClassUseCase = new CreateClassUseCase(this.repository);
-    private readonly deactivateClassUseCase = new DeactivateClassUseCase(this.repository);
-    private readonly deleteClassUseCase = new DeleteClassUseCase(this.repository, this.classUserRepository, this.eventRepository);
-    private readonly findClassByIdUseCase = new FindClassByIdUseCase(this.repository);
-    private readonly getClassesUseCase = new GetClassesUseCase(this.repository);
-    private readonly updateClassUseCase = new UpdateClassUseCase(this.repository);
-
-    activate = async (req: Request, res: Response) => {
-
+    static async create(req: Request, res: Response) {
+        const data: CreateClassDTO = req.body;
         try {
-            const updatedClass = await this.activateClassUseCase.execute(
-                Number(req.params.id)
-            );
-            return res.status(200).json(updatedClass);
+            const classItem = await createClass(data);
 
-        } catch (error) {
-
-            if (error instanceof AppError) {
-                return res.status(error.statusCode).json({
-                    message: error.message
-                });
-            }
-            return res.status(500).json({
-                message: "Internal server error."
-            });
-        }
-    }
-    
-    create = async (req: Request, res: Response) => {
-
-        try {
-            const newClass = await this.createClassUseCase.execute(req.body);
-            return res.status(201).json(newClass);
+            return res.status(201).json(classItem);
         } catch (error) {
             if (error instanceof AppError) {
                 return res.status(error.statusCode).json({
                     message: error.message
                 });
             }
-            return res.status(500).json({
-                message: "Internal server error."
-            });
+
+            return res.status(500).json({ message: "Internal server error." });
         }
     }
 
-    deactivate = async (req: Request, res: Response) => {
+    static async delete(req: Request, res: Response) {
+        const id: number = parseInt(req.params.id.toString());
 
         try {
-            const updatedClass = await this.deactivateClassUseCase.execute(
-                Number(req.params.id)
-            );
-            return res.status(200).json(updatedClass);
+            await deleteClass(id);
+
+            return res.status(204).send({ message: "Class deleted successfully." });
         } catch (error) {
             if (error instanceof AppError) {
                 return res.status(error.statusCode).json({
                     message: error.message
                 });
             }
-            return res.status(500).json({
-                message: "Internal server error."
-            });
-        }
-    }
-    delete = async (req: Request, res: Response) => {
 
-        try {
-            await this.deleteClassUseCase.execute(Number(req.params.id));
-            return res.sendStatus(204);
-        } catch (error) {
-            if (error instanceof AppError) {
-                return res.status(error.statusCode).json({
-                    message: error.message
-                });
-            }
-            return res.status(500).json({
-                message: "Internal server error."
-            });
+            return res.status(500).json({ message: "Internal server error." });
         }
     }
 
-    getById = async (req: Request, res: Response) => {
-
+    static async findAll(req: Request, res: Response) {
         try {
-            const classEntity = await this.findClassByIdUseCase.execute(
-                Number(req.params.id)
-            );
-            return res.status(200).json(classEntity);
-        } catch (error) {
-            if (error instanceof AppError) {
-                return res.status(error.statusCode).json({
-                    message: error.message
-                });
-            }
-            return res.status(500).json({
-                message: "Internal server error."
-            });
-        }
-    }
+            const classes = await findAllClasses();
 
-    getAll = async (req: Request, res: Response) => {
-
-        try {
-            const classes = await this.getClassesUseCase.execute();
             return res.status(200).json(classes);
         } catch (error) {
             if (error instanceof AppError) {
@@ -129,19 +51,36 @@ export class ClassController {
                     message: error.message
                 });
             }
-            return res.status(500).json({
-                message: "Internal server error."
-            });
+
+            return res.status(500).json({ message: "Internal server error." });
         }
     }
 
-    update = async (req: Request, res: Response) => {
+    static async findClassById(req: Request, res: Response) {
+        const id: number = parseInt(req.params.id.toString());
 
         try {
-            const updatedClass = await this.updateClassUseCase.execute(
-                Number(req.params.id),
-                req.body
-            );
+            const classItem = await findClassById(id);
+
+            return res.status(200).json(classItem);
+        } catch (error) {
+            if (error instanceof AppError) {
+                return res.status(error.statusCode).json({
+                    message: error.message
+                });
+            }
+
+            return res.status(500).json({ message: "Internal server error." });
+        }
+    }
+
+    static async update(req: Request, res: Response) {
+        const data: UpdateClassDTO = req.body;
+        const id: number = parseInt(req.params.id.toString());
+
+        try {
+            const updatedClass = await updateClass(id, data);
+
             return res.status(200).json(updatedClass);
         } catch (error) {
             if (error instanceof AppError) {
@@ -149,9 +88,8 @@ export class ClassController {
                     message: error.message
                 });
             }
-            return res.status(500).json({
-                message: "Internal server error."
-            });
+
+            return res.status(500).json({ message: "Internal server error." });
         }
     }
 }

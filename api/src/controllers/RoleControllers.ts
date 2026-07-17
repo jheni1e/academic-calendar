@@ -1,151 +1,114 @@
 import { Request, Response } from "express";
 
 import { AppError } from "../shared/errors/AppError.ts";
-
-import { PrismaRoleRepository } from "../modules/role/repositories/PrismaRoleRepository.ts";
-import { CreateRoleUseCase } from "../modules/role/usecases/CreateRoleUseCase.ts";
-import { DeleteRoleUseCase } from "../modules/role/usecases/DeleteRoleUseCase.ts";
-import { FindRoleByIdUseCase } from "../modules/role/usecases/FindRoleByIdUseCase.ts";
-import { GetRolesUseCase } from "../modules/role/usecases/GetRolesUseCase.ts";
-import { UpdateRoleUseCase } from "../modules/role/usecases/UpdateRoleUseCase.ts";
+import { CreateRoleDTO, UpdateRoleDTO } from "../dtos/RoleDTO.ts";
+import { createRole, deleteRole, findAllRoles, findRoleById, findRoleByName, updateRole } from "../services/role.service.ts";
 
 export class RoleController {
-
-    private readonly repository = new PrismaRoleRepository();
-    private readonly createRole = new CreateRoleUseCase(this.repository);
-    private readonly deleteRole = new DeleteRoleUseCase(this.repository);
-    private readonly getRoleById = new FindRoleByIdUseCase(this.repository);
-    private readonly getRoles = new GetRolesUseCase(this.repository);
-    private readonly updateRoles = new UpdateRoleUseCase(this.repository);
-
-    create = async(req: Request, res: Response) => {
-
+    static async create(req: Request, res: Response) {
+        const data: CreateRoleDTO = req.body;
         try {
-
-            const role = await this.createRole.execute(req.body);
+            const role = await createRole(data);
 
             return res.status(201).json(role);
-
         } catch (error) {
-
             if (error instanceof AppError) {
                 return res.status(error.statusCode).json({
                     message: error.message
                 });
             }
 
-            return res.status(500).json({
-                message: "Internal server error."
-            });
-
+            return res.status(500).json({ message: "Internal server error." });
         }
-
     }
 
-    getAll = async (req: Request, res: Response) => {
-
+    static async findAllRoles(req: Request, res: Response) {
         try {
-
-            const roles = await this.getRoles.execute();
+            const roles = await findAllRoles();
 
             return res.status(200).json(roles);
-
         } catch (error) {
-
             if (error instanceof AppError) {
                 return res.status(error.statusCode).json({
                     message: error.message
                 });
             }
 
-            console.error(error)
-            return res.status(500).json({
-                message: "Internal server error."
-            });
-
+            return res.status(500).json({ message: "Internal server error." });
         }
-
     }
 
 
-    delete = async (req: Request, res: Response) => {
+    static async deleteRole(req: Request, res: Response) {
+        const id: number = parseInt(req.params.id.toString());
 
         try {
+            await deleteRole(id);
 
-            await this.deleteRole.execute(
-                Number(req.params.id)
-            );
-
-            return res.status(200).send({ message: "Role deleted"});
-
+            return res.status(200).send({ message: "Role deleted successfully." });
         } catch (error) {
-
             if (error instanceof AppError) {
                 return res.status(error.statusCode).json({
                     message: error.message
                 });
             }
 
-            return res.status(500).json({
-                message: "Internal server error."
-            });
-
+            return res.status(500).json({ message: "Internal server error." });
         }
-
     }
 
-    getById = async (req: Request, res: Response) => {
+    static async findRoleById(req: Request, res: Response) {
+        const id: number = parseInt(req.params.id.toString());
 
         try {
-
-            const role = await this.getRoleById.execute(
-                Number(req.params.id)
-            );
+            const role = await findRoleById(id);
 
             return res.status(200).json(role);
-
         } catch (error) {
-
             if (error instanceof AppError) {
                 return res.status(error.statusCode).json({
                     message: error.message
                 });
             }
 
-            return res.status(500).json({
-                message: "Internal server error."
-            });
-
+            return res.status(500).json({ message: "Internal server error." });
         }
-
     }
 
-    update = async (req: Request, res: Response) => {
+    static async findRoleByName(req: Request, res: Response) {
+        const roleName: string = req.body;
 
         try {
-
-            const role = await this.updateRoles.execute(
-                Number(req.params.id),
-                req.body
-            );
+            const role = await findRoleByName(roleName);
 
             return res.status(200).json(role);
-
         } catch (error) {
-
             if (error instanceof AppError) {
                 return res.status(error.statusCode).json({
                     message: error.message
                 });
             }
 
-            return res.status(500).json({
-                message: "Internal server error."
-            });
-
+            return res.status(500).json({ message: "Internal server error." });
         }
-
     }
 
+    static async update(req: Request, res: Response) {
+        const id: number = parseInt(req.params.id.toString());
+        const data: UpdateRoleDTO = req.body;
 
+        try {
+            const role = await updateRole(id, data);
+
+            return res.status(200).json(role);
+        } catch (error) {
+            if (error instanceof AppError) {
+                return res.status(error.statusCode).json({
+                    message: error.message
+                });
+            }
+
+            return res.status(500).json({ message: "Internal server error." });
+        }
+    }
 }

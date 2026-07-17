@@ -1,148 +1,96 @@
 import { Request, Response } from "express";
 
 import { AppError } from "../shared/errors/AppError.ts";
-
-import { PrismaSubjectRepository } from "../modules/subject/repositories/PrismaSubjectRepository.ts";
-import { CreateSubjectUseCase } from "../modules/subject/usecases/CreateSubjectUseCase.ts";
-import { DeleteSubjectUseCase } from "../modules/subject/usecases/DeleteSubjectUseCase.ts";
-import { FindSubjectByIdUseCase } from "../modules/subject/usecases/FindSubjectByIdUseCase.ts";
-import { GetSubjectsUseCase } from "../modules/subject/usecases/GetSubjectsUseCase.ts";
-import { UpdateSubjectUseCase } from "../modules/subject/usecases/UpdateSubjectUseCase.ts";
+import { CreateSubjectDTO, UpdateSubjectDTO } from "../dtos/SubjectDto.ts";
+import { createSubject, deleteSubject, findAllSubjects, findSubjectById, updateSubject, } from "../services/subject.service.ts";
 
 export class SubjectController {
+    static async create(req: Request, res: Response) {
+        const data: CreateSubjectDTO = req.body;
 
-    private readonly repository = new PrismaSubjectRepository();
-
-    private readonly createUseCase = new CreateSubjectUseCase(this.repository);
-    private readonly deleteUseCase = new DeleteSubjectUseCase(this.repository);
-    private readonly findUseCase = new FindSubjectByIdUseCase(this.repository);
-    private readonly getUseCase = new GetSubjectsUseCase(this.repository);
-    private readonly updateUseCase = new UpdateSubjectUseCase(this.repository);
-
-    create = async (req: Request, res: Response) => {
         try {
-
-            const subject = await this.createUseCase.execute(req.body);
+            const subject = await createSubject(data);
 
             return res.status(201).json(subject);
-
         } catch (error) {
-
             if (error instanceof AppError) {
                 return res.status(error.statusCode).json({
                     message: error.message
                 });
             }
 
-            return res.status(500).json({
-                message: "Internal server error."
-            });
-
+            return res.status(500).json({ message: "Internal server error." });
         }
-
     }
 
-    delete = async (req: Request, res: Response) => {
+    static async delete(req: Request, res: Response) {
+        const id: number = parseInt(req.params.id.toString());
 
         try {
+            await deleteSubject(id);
 
-            await this.deleteUseCase.execute(
-                Number(req.params.id)
-            );
-
-            return res.sendStatus(204);
-
+            return res.status(204).send({ message: "Subject deleted successfully." });
         } catch (error) {
-
             if (error instanceof AppError) {
                 return res.status(error.statusCode).json({
                     message: error.message
                 });
             }
 
-            return res.status(500).json({
-                message: "Internal server error."
-            });
-
+            return res.status(500).json({ message: "Internal server error." });
         }
-
     }
 
-    getById = async (req: Request, res: Response) => {
+    static async findSubjectById(req: Request, res: Response) {
+        const id: number = parseInt(req.params.id.toString());
 
         try {
-
-            const subject = await this.findUseCase.execute(
-                Number(req.params.id)
-            );
+            const subject = await findSubjectById(id);
 
             return res.status(200).json(subject);
-
         } catch (error) {
-
             if (error instanceof AppError) {
                 return res.status(error.statusCode).json({
                     message: error.message
                 });
             }
 
-            return res.status(500).json({
-                message: "Internal server error."
-            });
-
+            return res.status(500).json({ message: "Internal server error." });
         }
-
     }
 
-    getAll= async (req: Request, res: Response) => {
-
+    static async findAllSubjects(req: Request, res: Response) {
         try {
-
-            const subjects = await this.getUseCase.execute();
+            const subjects = await findAllSubjects();
 
             return res.status(200).json(subjects);
-
         } catch (error) {
-
             if (error instanceof AppError) {
                 return res.status(error.statusCode).json({
                     message: error.message
                 });
             }
 
-            return res.status(500).json({
-                message: "Internal server error."
-            });
-
+            return res.status(500).json({ message: "Internal server error." });
         }
-
     }
 
-    update = async (req: Request, res: Response) => {
+    static async update(req: Request, res: Response) {
+        const id: number = parseInt(req.params.id.toString());
+        const data: UpdateSubjectDTO = req.body;
 
         try {
-
-            const subject = await this.updateUseCase.execute(
-                Number(req.params.id),
-                req.body
-            );
+            const subject = await updateSubject(id, data);
 
             return res.status(200).json(subject);
-
         } catch (error) {
-
             if (error instanceof AppError) {
                 return res.status(error.statusCode).json({
                     message: error.message
                 });
             }
 
-            return res.status(500).json({
-                message: "Internal server error."
-            });
-
+            return res.status(500).json({ message: "Internal server error." });
         }
-
     }
-
 }

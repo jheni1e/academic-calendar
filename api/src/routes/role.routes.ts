@@ -1,15 +1,13 @@
 import express from 'express'
-import { PrismaRoleRepository } from '../modules/role/repositories/PrismaRoleRepository.ts';
 import { RoleController } from '../controllers/RoleControllers.ts';
 import { authMiddleware } from '../shared/middlewares/auth.middleware.ts';
 
 const route = express.Router();
 
-const roleController = new RoleController();
 route 
-    .post('/', roleController.create)
-    .get('/all', roleController.getAll)
-    .get('/:id', roleController.getById)
-    .put('/:id', roleController.update)
-    .delete("/:id", roleController.delete)
+    .post('/', RoleController.create)
+    .get('/all', RoleController.findAllRoles)
+    .get('/:id', RoleController.findRoleById)
+    .put('/:id', RoleController.update)
+    .delete("/:id", RoleController.deleteRole)
 export default route

@@ -1,147 +1,96 @@
 import { Request, Response } from "express";
 
 import { AppError } from "../shared/errors/AppError.ts";
-
-import { PrismaRoomRepository } from "../modules/room/repositories/PrismaRoomRepository.ts";
-import { CreateRoomUseCase } from "../modules/room/usecases/CreateRoomUseCase.ts";
-import { DeleteRoomUseCase } from "../modules/room/usecases/DeleteRoomUseCase.ts";
-import { FindRoomByIdUseCase } from "../modules/room/usecases/FindRoomByIdUseCase.ts";
-import { GetRoomsUseCase } from "../modules/room/usecases/GetRoomsUseCase.ts";
-import { UpdateRoomUseCase } from "../modules/room/usecases/UpdateRoomUseCase.ts";
+import { CreateRoomDTO, UpdateRoomDTO } from "../dtos/RoomDto.ts";
+import { createRoom, deleteRoom, findAllRooms, findRoomById, updateRoom } from "../services/room.service.ts";
 
 export class RoomController {
-
-    private readonly repository = new PrismaRoomRepository();
-
-    private readonly createUseCase = new CreateRoomUseCase(this.repository);
-    private readonly deleteUseCase = new DeleteRoomUseCase(this.repository);
-    private readonly findUseCase = new FindRoomByIdUseCase(this.repository);
-    private readonly getUseCase = new GetRoomsUseCase(this.repository);
-    private readonly updateUseCase = new UpdateRoomUseCase(this.repository);
-
-    create = async(req: Request, res: Response) => {
+    static async create(req: Request, res: Response) {
+        const data: CreateRoomDTO = req.body;
 
         try {
-
-            const room = await this.createUseCase.execute(req.body);
+            const room = await createRoom(data);
 
             return res.status(201).json(room);
-
         } catch (error) {
-
             if (error instanceof AppError) {
                 return res.status(error.statusCode).json({
                     message: error.message
                 });
             }
 
-            return res.status(500).json({
-                message: "Internal server error."
-            });
-
+            return res.status(500).json({ message: "Internal server error." });
         }
-
     }
 
-    delete = async (req: Request, res: Response) => {
+    static async delete(req: Request, res: Response) {
+        const id: number = parseInt(req.params.id.toString());
 
         try {
+            await deleteRoom(id);
 
-            await this.deleteUseCase.execute(
-                Number(req.params.id)
-            );
-
-            return res.sendStatus(204);
-
+            return res.status(204).send({ message: "Room deleted successfully." });
         } catch (error) {
-
             if (error instanceof AppError) {
                 return res.status(error.statusCode).json({
                     message: error.message
                 });
             }
 
-            return res.status(500).json({
-                message: "Internal server error."
-            });
-
+            return res.status(500).json({ message: "Internal server error." });
         }
-
     }
 
-    getById = async (req: Request, res: Response) => {
+    static async findRoomById(req: Request, res: Response) {
+        const id: number = parseInt(req.params.id.toString());
 
         try {
-
-            const room = await this.findUseCase.execute(
-                Number(req.params.id)
-            );
+            const room = findRoomById(id);
 
             return res.status(200).json(room);
-
         } catch (error) {
-
             if (error instanceof AppError) {
                 return res.status(error.statusCode).json({
                     message: error.message
                 });
             }
 
-            return res.status(500).json({
-                message: "Internal server error."
-            });
+            return res.status(500).json({ message: "Internal server error." });
         }
     }
 
-    getAll = async (req: Request, res: Response) => {
-
+    static async findAllRooms(req: Request, res: Response) {
         try {
-
-            const rooms = await this.getUseCase.execute();
+            const rooms = await findAllRooms();
 
             return res.status(200).json(rooms);
-
         } catch (error) {
-
             if (error instanceof AppError) {
                 return res.status(error.statusCode).json({
                     message: error.message
                 });
             }
 
-            return res.status(500).json({
-                message: "Internal server error."
-            });
-
+            return res.status(500).json({ message: "Internal server error." });
         }
-
     }
 
-    update = async (req: Request, res: Response) => {
+    static async update(req: Request, res: Response) {
+        const id: number = parseInt(req.params.id.toString());
+        const data: UpdateRoomDTO = req.body;
 
         try {
-
-            const room = await this.updateUseCase.execute(
-                Number(req.params.id),
-                req.body
-            );
+            const room = await updateRoom(id, data);
 
             return res.status(200).json(room);
-
         } catch (error) {
-
             if (error instanceof AppError) {
                 return res.status(error.statusCode).json({
                     message: error.message
                 });
             }
 
-            return res.status(500).json({
-                message: "Internal server error."
-            });
-
+            return res.status(500).json({ message: "Internal server error." });
         }
-
     }
-
 }
