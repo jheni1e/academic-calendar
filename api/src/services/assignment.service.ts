@@ -1,6 +1,6 @@
 import { Assignment } from "../../generated/prisma/client.ts";
-import { prisma } from "../../lib/prisma.ts";
-import { CreateAssignmentDTO } from "../../modules/assignment/AssignmentDTO.ts";
+import { prisma } from "../lib/prisma.ts";
+import { CreateAssignmentDTO } from "../dtos/AssignmentDto.ts";
 
 export const createAssignment = async (
     data: CreateAssignmentDTO
@@ -25,7 +25,7 @@ export const findAssignmentById = async (
     });
 }
 
-export const findAllAssignmentsById = async (): Promise<Assignment[]> => {
+export const findAllAssignments = async (): Promise<Assignment[]> => {
 
     return prisma.assignment.findMany();
 }
