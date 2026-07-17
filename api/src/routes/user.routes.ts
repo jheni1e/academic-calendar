@@ -1,5 +1,5 @@
 import { PrismaAssignmentRepository } from "../modules/assignment/repositories/PrismaAssignmentRepository.ts";
-import { AuthController } from "../controllers/AuthController.ts";
+import { AuthController } from "../controllers/authController.ts";
 import { ClassUserController } from "../controllers/ClassUserControllers.ts";
 import { ParticipationController } from "../controllers/ParticipationController.ts";
 import { UserController } from "../controllers/UserController.ts";

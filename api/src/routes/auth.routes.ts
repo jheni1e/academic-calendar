@@ -1,5 +1,5 @@
 import express from 'express'
-import { AuthController } from '../controllers/AuthController.ts';
+import { AuthController } from '../controllers/authController.ts';
 import { AuthService } from '../shared/services/auth.service.ts';
 import { PrismaUserRepository } from '../modules/user/repositories/PrismaUserRepository.ts';
 import { PrismaAssignmentRepository } from '../modules/assignment/repositories/PrismaAssignmentRepository.ts';
