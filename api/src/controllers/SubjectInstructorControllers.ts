@@ -1,178 +1,151 @@
 import { Request, Response } from "express";
 
 import { AppError } from "../shared/errors/AppError.ts";
-
-import { PrismaSubjectInstructorRepository } from "../modules/subjectInstructor/repositories/PrismaSubjectInstructorRepository.ts";
-import { CreateSubjectInstructorUseCase } from "../modules/subjectInstructor/usecases/CreateSubjectInstructorUseCase.ts";
-import { DeleteSubjectInstructorUseCase } from "../modules/subjectInstructor/usecases/DeleteSubjectInstructorUseCase.ts";
-import { FindSubjectInstructorByIdUseCase } from "../modules/subjectInstructor/usecases/FindSubjectInstructorByIdUseCase.ts";
-import { GetSubjectInstructorsBySubjectUseCase } from "../modules/subjectInstructor/usecases/GetSubjectInstructorsBySubjectUseCase.ts";
-import { GetSubjectInstructorsUseCase } from "../modules/subjectInstructor/usecases/GetSubjectInstructorsUseCase.ts";
-import { GetSubjectsByInstructorUseCase } from "../modules/subjectInstructor/usecases/GetSubjectsByInstructorUseCase.ts";
-import { PrismaSubjectRepository } from "../modules/subject/repositories/PrismaSubjectRepository.ts";
-import { PrismaUserRepository } from "../modules/user/repositories/PrismaUserRepository.ts";
+import { CreateSubjectInstructorDTO, UpdateSubjectInstructorDTO } from "../dtos/SubjectInstructorDto.ts";
+import { createSubjectInstructor, deleteSubjectInstructor, findAllSubjectInstructors, findSubjectInstructorById, findSubjectInstructorBySubjectAndInstructor, findSubjectInstructorsByInstructor, findSubjectInstructorsBySubject, updateSubjectInstructor } from "../services/subjectinstructor.service.ts";
 
 export class SubjectInstructorController {
-
-    private readonly repository = new PrismaSubjectInstructorRepository();
-    private readonly subjectRepository = new PrismaSubjectRepository();
-    private readonly userRepository = new PrismaUserRepository();
-
-    private readonly createSI = new CreateSubjectInstructorUseCase(this.repository, this.subjectRepository, this.userRepository);
-    private readonly deleteSI = new DeleteSubjectInstructorUseCase(this.repository);
-    private readonly findSIById = new FindSubjectInstructorByIdUseCase(this.repository);
-    private readonly getSIBySubject = new GetSubjectInstructorsBySubjectUseCase(this.repository);
-    private readonly getAllSI = new GetSubjectInstructorsUseCase(this.repository);
-    private readonly getSIByInstructor = new GetSubjectsByInstructorUseCase(this.repository);
-
-
-    create = async (req: Request, res: Response) => {
+    static async create(req: Request, res: Response) {
+        const data: CreateSubjectInstructorDTO = req.body;
 
         try {
-            const subjectInstructor = await this.createSI.execute(req.body);
+            const subjectInstructor = await createSubjectInstructor(data);
 
             return res.status(201).json(subjectInstructor);
-
         } catch (error) {
+            if (error instanceof AppError) {
+                return res.status(error.statusCode).json({ 
+                    message: error.message
+                });
+            }
 
+            return res.status(500).json({ message: "Internal server error." });
+        }
+    }
+
+    static async delete(req: Request, res: Response) {
+        const id: number = parseInt(req.params.id.toString());
+
+        try {
+            await deleteSubjectInstructor(id);
+
+            return res.status(204).send({ message: "Subject deleted successfully." });
+        } catch (error) {
             if (error instanceof AppError) {
                 return res.status(error.statusCode).json({
                     message: error.message
                 });
             }
 
-            return res.status(500).json({
-                message: "Internal server error."
-            });
-
+            return res.status(500).json({ message: "Internal server error." });
         }
     }
 
-    delete = async (req: Request, res: Response) => {
+    static async update(req: Request, res: Response) {
+        const id: number = parseInt(req.params.id.toString());
+        const data: UpdateSubjectInstructorDTO = req.body;
 
         try {
+            const subjectInstructor = await updateSubjectInstructor(id, data);
 
-            await this.deleteSI.execute(
-                Number(req.params.id)
-            );
-
-            return res.sendStatus(204);
-
+            return res.status(201).json(subjectInstructor);
         } catch (error) {
-
             if (error instanceof AppError) {
-                return res.status(error.statusCode).json({
+                return res.status(error.statusCode).json({ 
                     message: error.message
                 });
             }
 
-            return res.status(500).json({
-                message: "Internal server error."
-            });
-
+            return res.status(500).json({ message: "Internal server error." });
         }
-
     }
 
-    getAll = async (req: Request, res: Response) => {
-
+    static async findAllSubjectInstructors(req: Request, res: Response) {
         try {
-
-            const subjectInstructors = await this.getAllSI.execute();
+            const subjectInstructors = await findAllSubjectInstructors();
 
             return res.status(200).json(subjectInstructors);
-
         } catch (error) {
-
             if (error instanceof AppError) {
                 return res.status(error.statusCode).json({
                     message: error.message
                 });
             }
 
-            return res.status(500).json({
-                message: "Internal server error."
-            });
-
+            return res.status(500).json({ message: "Internal server error." });
         }
-
     }
 
-    getById = async (req: Request, res: Response) => {
+    static async findSubjectInstructorById(req: Request, res: Response) {
+        const id: number = parseInt(req.params.id.toString());
 
         try {
-
-            const subjectInstructor = await this.findSIById.execute(
-                Number(req.params.id)
-            );
+            const subjectInstructor = await findSubjectInstructorById(id);
 
             return res.status(200).json(subjectInstructor);
-
         } catch (error) {
-
             if (error instanceof AppError) {
                 return res.status(error.statusCode).json({
                     message: error.message
                 });
             }
 
-            return res.status(500).json({
-                message: "Internal server error."
-            });
-
+            return res.status(500).json({ message: "Internal server error." });
         }
-
     }
 
-    getBySubject = async (req: Request, res: Response) => {
+    static async findSubjectInstructorsBySubject(req: Request, res: Response) {
+        const id: number = parseInt(req.params.id.toString());
 
         try {
-
-            const subjectInstructors = await this.getSIBySubject.execute(
-                Number(req.params.subjectId)
-            );
+            const subjectInstructors = await findSubjectInstructorsBySubject(id);
 
             return res.status(200).json(subjectInstructors);
-
         } catch (error) {
-
             if (error instanceof AppError) {
                 return res.status(error.statusCode).json({
                     message: error.message
                 });
             }
 
-            return res.status(500).json({
-                message: "Internal server error."
-            });
-
+            return res.status(500).json({ message: "Internal server error." });
         }
+    }
 
-    } 
-
-    getByInstructor = async (req: Request, res: Response) => {
+    static async findSubjectInstructorsByInstructor(req: Request, res: Response) {
+        const id: number = parseInt(req.params.id.toString());
 
         try {
-
-            const subjects = await this.getSIByInstructor.execute(
-                Number(req.params.instructorId)
-            );
+            const subjects = await findSubjectInstructorsByInstructor(id);
 
             return res.status(200).json(subjects);
-
         } catch (error) {
-
             if (error instanceof AppError) {
                 return res.status(error.statusCode).json({
                     message: error.message
                 });
             }
 
-            return res.status(500).json({
-                message: "Internal server error."
-            });
-
+            return res.status(500).json({ message: "Internal server error." });
         }
+    }
 
+    static async findSubjectInstructorBySubjectAndInstructor(req: Request, res: Response) {
+        const subjectId: number = parseInt(req.params.id[0].toString());
+        const instructorId: number = parseInt(req.params.id[1].toString());
+
+        try {
+            const subjectInstructor = await findSubjectInstructorBySubjectAndInstructor(subjectId, instructorId);
+
+            return res.status(200).json(subjectInstructor);
+        } catch (error) {
+            if (error instanceof AppError) {
+                return res.status(error.statusCode).json({
+                    message: error.message
+                });
+            }
+
+            return res.status(500).json({ message: "Internal server error." });
+        }
     }
 }
