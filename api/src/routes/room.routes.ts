@@ -3,7 +3,7 @@ import { RoomController } from '../controllers/RoomController.ts';
 import { authMiddleware } from '../shared/middlewares/auth.middleware.ts';
 import { authorize } from '../shared/middlewares/authorization.middleware.ts';
 import { Role } from '../shared/enums/role.ts';
-import { ReservationController } from '../controllers/ReservationController.ts';
+import { ReservationController } from '../controllers/reservationController.ts';
 
 const route = express.Router();
 

@@ -1,7 +1,7 @@
 import { PrismaAssignmentRepository } from "../modules/assignment/repositories/PrismaAssignmentRepository.ts";
 import { AuthController } from "../controllers/authController.ts";
 import { ClassUserController } from "../controllers/classUserControllers.ts";
-import { ParticipationController } from "../controllers/ParticipationController.ts";
+import { ParticipationController } from "../controllers/participationController.ts";
 import { UserController } from "../controllers/UserController.ts";
 import { PrismaUserRepository } from "../modules/user/repositories/PrismaUserRepository.ts";
 import { Role } from "../shared/enums/role.ts";
