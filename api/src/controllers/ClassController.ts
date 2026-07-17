@@ -40,7 +40,7 @@ export class ClassController {
         }
     }
 
-    static async findAllClasses(req: Request, res: Response) {
+    static async findAll(req: Request, res: Response) {
         try {
             const classes = await findAllClasses();
 
