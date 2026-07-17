@@ -13,7 +13,7 @@ const route = express.Router();
 route 
     .post('/', UserController.create) // create new user
 
-    .get('/all', authMiddleware, authorize(Role.ADMIN, Role.INSTRUCTOR), UserController.getAll) // get all users
+    .get('/all', UserController.getAll) // get all users
     .get('/edv/:edv', authMiddleware, UserController.getByEdv) // get user by edv
     .get('/id/:id', authMiddleware, UserController.getById) // get user by id
     .get('/classes', authMiddleware, ClassUserController.findClassUsersByUser) // get classes of the authenticated user
