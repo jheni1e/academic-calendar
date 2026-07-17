@@ -11,8 +11,7 @@ export const createSubject = async (
             class_id: data.classId,
             name: data.name,
             workload: data.workload,
-            start_date: data.startDate,
-            end_date: data.endDate
+            start_date: data.startDate
         }
     });
 }
@@ -46,8 +45,7 @@ export const updateSubject = async (
             class_id: data.classId,
             name: data.name,
             workload: data.workload,
-            start_date: data.startDate,
-            end_date: data.endDate
+            start_date: data.startDate
         }
     });
 }

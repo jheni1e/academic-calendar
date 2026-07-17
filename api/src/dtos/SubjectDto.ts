@@ -3,7 +3,6 @@ export interface CreateSubjectDTO {
     name: string;
     workload: number;
     startDate: Date;
-    endDate: Date;
 }
 
 export interface UpdateSubjectDTO {
@@ -11,7 +10,6 @@ export interface UpdateSubjectDTO {
     name?: string;
     workload?: number;
     startDate?: Date;
-    endDate?: Date;
     isActive?: boolean;
 }
 

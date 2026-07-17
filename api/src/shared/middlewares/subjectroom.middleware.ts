@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { prisma } from "../../lib/prisma.ts";
 import { ValidationError } from "../errors/ValidationError.ts";
+import { NotFoundError } from "../errors/NotFoundError.ts";
 
 export const validateCreate = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -10,12 +11,36 @@ export const validateCreate = async (req: Request, res: Response, next: NextFunc
             where: { subjectId: subjectId, roomId: roomId },
         });
 
-        if (!relation) {
+        if (relation) {
             throw new Error("Room already connected to the subject.");
         }
 
         if (priority !== undefined && priority < 1) {
             throw new ValidationError("The priority must be greater than zero.");
+        }
+
+        const priorityConflict = await prisma.subjectroom.priority.findFirst({
+            where : {
+                priority: priority
+            }
+        });
+
+        if (priorityConflict) {
+            throw new Error("Another room already has this priority.");
+        }
+
+        const room = await prisma.room.findUnique({
+            where: {
+                room_id: roomId
+            }
+        });
+
+        if (!room) {
+            throw new NotFoundError("Room not found.");
+        }
+
+        if (!room.is_active) {
+            throw new Error("Room is not active.");
         }
 
         next();

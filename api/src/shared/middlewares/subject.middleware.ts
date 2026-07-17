@@ -36,6 +36,10 @@ export const validateCreate = async (req: Request, res: Response, next: NextFunc
             throw new Error("Workload must be greater than zero.");
         }
 
+        if (workload % 4 !== 0) {
+            throw new Error("Workload must be a multiple of four.");
+        }
+
         const start = new Date(startDate);
         const end = new Date(endDate);
 
