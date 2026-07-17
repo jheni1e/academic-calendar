@@ -1,149 +1,94 @@
 import { Request, Response } from "express";
 
-import { AppError } from "../../../shared/errors/AppError.ts";
-
-import { PrismaEventTypeRepository } from "../repositories/PrismaEventTypeRepository.ts";
-import { CreateEventTypeUseCase } from "../usecases/CreateEventTypeUseCase.ts";
-import { DeleteEventTypeUseCase } from "../usecases/DeleteEventTypeUseCase.ts";
-import { FindEventTypeByIdUseCase } from "../usecases/FindEventTypeByIdUseCase.ts";
-import { GetEventTypesUseCase } from "../usecases/GetEventTypesUseCase.ts";
-import { UpdateEventTypeUseCase } from "../usecases/UpdateEventTypeUseCase.ts";
-
+import { AppError } from "../shared/errors/AppError.ts";
+import { CreateEventTypeDTO, UpdateEventTypeDTO } from "../dtos/EventTypeDTO.ts";
+import { createEventType, deleteEventType, findAllEventTypes, findEventTypeById, updateEventType } from "../services/eventtype.service.ts";
 export class CreateEventTypeController {
-
-    private readonly repository = new PrismaEventTypeRepository();
-
-    private readonly createUseCase = new CreateEventTypeUseCase(this.repository);
-    private readonly deleteUseCase = new DeleteEventTypeUseCase(this.repository);
-    private readonly findUseCase = new FindEventTypeByIdUseCase(this.repository);
-    private readonly getEventTypeUseCase = new GetEventTypesUseCase(this.repository);
-    private readonly updateUseCase = new UpdateEventTypeUseCase(this.repository);
-
-    async handleCreate(req: Request, res: Response) {
-
+    static async create(req: Request, res: Response) {
+        const data: CreateEventTypeDTO = req.body;
         try {
-
-            const eventType = await this.createUseCase.execute(req.body);
+            const eventType = await createEventType(req.body);
 
             return res.status(201).json(eventType);
-
         } catch (error) {
-
             if (error instanceof AppError) {
                 return res.status(error.statusCode).json({
                     message: error.message
                 });
             }
 
-            return res.status(500).json({
-                message: "Internal server error."
-            });
-
+            return res.status(500).json({ message: "Internal server error." });
         }
-
     }
 
-    async handleDelete(req: Request, res: Response) {
+    static async delete(req: Request, res: Response) {
+        const id: number = parseInt(req.params.id.toString());
 
         try {
+            await deleteEventType(id);
 
-            await this.deleteUseCase.execute(
-                Number(req.params.id)
-            );
-
-            return res.sendStatus(204);
-
+            return res.status(204).send({ message: "Event type deleted successfully." });
         } catch (error) {
-
             if (error instanceof AppError) {
                 return res.status(error.statusCode).json({
                     message: error.message
                 });
             }
 
-            return res.status(500).json({
-                message: "Internal server error."
-            });
-
+            return res.status(500).json({ message: "Internal server error." });
         }
-
     }
 
     async handleFind(req: Request, res: Response) {
+        const id: number = parseInt(req.params.id.toString());
 
         try {
-
-            const eventType = await this.findUseCase.execute(
-                Number(req.params.id)
-            );
+            const eventType = await findEventTypeById(id);
 
             return res.status(200).json(eventType);
-
         } catch (error) {
-
             if (error instanceof AppError) {
                 return res.status(error.statusCode).json({
                     message: error.message
                 });
             }
 
-            return res.status(500).json({
-                message: "Internal server error."
-            });
-
+            return res.status(500).json({ message: "Internal server error." });
         }
-
     }
 
-    async handleGetEventType(req: Request, res: Response) {
-
+    static async findAllEventTypes(req: Request, res: Response) {
         try {
-
-            const eventTypes = await this.getEventTypeUseCase.execute();
+            const eventTypes = await findAllEventTypes();
 
             return res.status(200).json(eventTypes);
-
         } catch (error) {
-
             if (error instanceof AppError) {
                 return res.status(error.statusCode).json({
                     message: error.message
                 });
             }
 
-            return res.status(500).json({
-                message: "Internal server error."
-            });
-
+            return res.status(500).json({ message: "Internal server error." });
         }
-
     }
 
     async handleUpdate(req: Request, res: Response) {
+        const id: number = parseInt(req.params.id.toString());
+        const data: UpdateEventTypeDTO = req.body;
 
         try {
-
-            const eventType = await this.updateUseCase.execute(
-                Number(req.params.id),
-                req.body
-            );
+            const eventType = await updateEventType(id, data);
 
             return res.status(200).json(eventType);
-
         } catch (error) {
-
             if (error instanceof AppError) {
                 return res.status(error.statusCode).json({
                     message: error.message
                 });
             }
 
-            return res.status(500).json({
-                message: "Internal server error."
-            });
-
+            return res.status(500).json({ message: "Internal server error." });
         }
-
     }
-
 }
