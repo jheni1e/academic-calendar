@@ -12,6 +12,7 @@ function Dialog({ isOpen, onClose, type, title }) {
     const [responsible, setResponsible] = useState(null);
     const [classs, setClasss] = useState(null);
     const [selectedClass, setSelectedClass] = useState(null);
+    const [allClasses, setAllClasses] = useState([]);
 
     const [selectedRoom, setSelectedRoom] = useState(null);
     const [rooms, setRooms] = useState([]);
@@ -47,6 +48,7 @@ function Dialog({ isOpen, onClose, type, title }) {
 
     useEffect(() => {
         getAllRooms();
+        getAllClasses();
     }, []);
 
     const getAllRooms = async () => {
@@ -65,10 +67,26 @@ function Dialog({ isOpen, onClose, type, title }) {
         }
     };
 
+    const getAllClasses = async () => {
+        try {
+            const classes = await getData("/class/all");
+
+            const formatedClasses = classes.map((c) => ({
+                value: c.class_id,
+                label: c.name
+            }));
+
+            setAllClasses(formatedClasses);
+        } catch (error) {
+            console.error(error);
+            alert(error.message);
+        }
+    };
+
     const addRoom = () => {
         if (!selectedRoom) return;
 
-        const room = salasMock.find(room => room.value === selectedRoom);
+        const room = allRooms.find(room => room.value === selectedRoom);
 
         if (!room) return;
 
@@ -284,7 +302,7 @@ function Dialog({ isOpen, onClose, type, title }) {
                             </div>
                             <div className="dialogInput">
                                 <h4>Turma:</h4>
-                                <DropdownList options={turmasMock} selectedValue={selectedClass} onChange={(e) => setSelectedClass(e.target.value)} />
+                                <DropdownList options={allClasses} selectedValue={selectedClass} onChange={(e) => setSelectedClass(e.target.value)} />
                             </div>
                         </>
                     }
@@ -298,7 +316,7 @@ function Dialog({ isOpen, onClose, type, title }) {
                     </div>
                     <div className="dialogInput">
                         <h4>Turma:</h4>
-                        <DropdownList options={turmasMock} selectedValue={classs} onChange={(e) => setClasss(e.target.value)} />
+                        <DropdownList options={allClasses} selectedValue={classs} onChange={(e) => setClasss(e.target.value)} />
                     </div>
                     <div className="dialogInput">
                         <h4>Data de nascimento:</h4>
