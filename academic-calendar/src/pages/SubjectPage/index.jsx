@@ -8,12 +8,14 @@ import Dialog from "../../components/Dialog";
 function Subject() {
   const [selectedValue, setSelectedValue] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalSubjectOpen, setIsModalSubjectOpen] = useState(false);
+  const [subjectSelected, setSubjectSelected] = useState({})
 
   const subjects = [
-    { name: "IOT", reponsible: "Patrick", class: "dta", percentage: 78 },
-    { name: "Projeto FullStack", reponsible: "Cristian", class: "dta", percentage: 98 },
-    { name: "Excell", reponsible: "Queila", class: "analise", percentage: 68 },
-    { name: "Python", reponsible: "Queila", class: "analise", percentage: 47 },
+    { name: "IOT", responsible: "Patrick", class: "dta", percentage: 78, initial: "12-02-2026", end: "30-03-2026", workload: 80 },
+    { name: "Projeto FullStack", responsible: "Cristian", class: "dta", percentage: 98, initial: "12-02-2026", end: "30-03-2026", workload: 80},
+    { name: "Excell", responsible: "Queila", class: "analise", percentage: 68, initial: "12-02-2026", end: "30-03-2026", workload: 80 },
+    { name: "Python", responsible: "Queila", class: "analise", percentage: 47, initial: "12-02-2026", end: "30-03-2026", workload: 80 },
   ]
 
   const listMenu = [
@@ -21,6 +23,10 @@ function Subject() {
     { value: "dta", label: "DTA" },
     { value: "manufatura", label: "Manufatura" }
   ];
+  const SubjectClicked = (subject) => {
+    setIsModalSubjectOpen(!isModalSubjectOpen)
+    setSubjectSelected(subject)
+  }
 
   console.log(selectedValue);
   return (
@@ -56,15 +62,19 @@ function Subject() {
                 <ViewSubjectComponent
                   key={subject.name}
                   SubjectName={subject.name}
-                  Responsible={subject.reponsible}
+                  Responsible={subject.responsible}
                   Percentage={subject.percentage}
                   Class={subject.class}
+                  onClick={() => SubjectClicked(subject)}
                 />
               ))}
           </div>
         </div>
         {isModalOpen &&
           <Dialog isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title="Registrar matéria" type="subject" />
+        }
+        {isModalSubjectOpen && 
+          <Dialog isOpen={isModalSubjectOpen} onClose={() => setIsModalSubjectOpen(false)} title={subjectSelected.name} subjectDetails={subjectSelected} type="details-subject"></Dialog>
         }
       </div>
     </>

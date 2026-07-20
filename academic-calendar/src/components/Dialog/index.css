@@ -141,3 +141,23 @@
 .itemSelector > div:first-child {
     flex: 1;
 }
+
+.contentDetails{
+    grid-column: 1;
+    display: flex;
+    align-items: start;
+    justify-content: center;
+    flex-direction: column;
+    gap: 1rem;
+}
+.diajlogDetails{
+    width: 100%;
+    display: flex;
+    gap: .5rem;
+    flex-direction: row;
+    align-items: start;
+    justify-content: start;
+}
+.chartDialog{
+    grid-column: 2;
+}

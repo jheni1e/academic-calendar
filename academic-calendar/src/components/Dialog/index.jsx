@@ -5,8 +5,10 @@ import TextBox from "../TextBox";
 import DropdownList from "../DropdownList";
 import ColorPicker from "../ColorPicker";
 import FrequencySelector from "../FrequencySelector";
+import BarChartItem from "../BarChart";
+import CircleChartItem from "../CircleChartItem";
 
-function Dialog({ isOpen, onClose, type, title }) {
+function Dialog({ isOpen, onClose, type, title, subjectDetails }) {
     const dialogRef = useRef(null);
     const [responsible, setResponsible] = useState(null);
     const [classs, setClasss] = useState(null);
@@ -173,6 +175,31 @@ function Dialog({ isOpen, onClose, type, title }) {
                     <div style={{ display: "flex", flexDirection: "column", width: "500px" }}>
                         <h4>Frequência:</h4>
                         <FrequencySelector />
+                    </div>
+                </div>
+            }
+            {type === "details-subject" &&
+                <div className="dialogContent">
+                    <div className="contentDetails">
+                        <div className="diajlogDetails">
+                            <h4>Inicio:</h4>
+                            {subjectDetails.initial}
+                        </div>
+                        <div className="diajlogDetails">
+                            <h4>Final:</h4>
+                            {subjectDetails.end}
+                        </div>
+                        <div className="diajlogDetails">
+                            <h4>Carga horária:</h4>
+                            {subjectDetails.workload}
+                        </div>
+                        <div className="diajlogDetails">
+                            <h4>Responsável:</h4>
+                            {subjectDetails.responsible}
+                        </div>
+                    </div>
+                    <div className="chartDialog">
+                        <CircleChartItem percentage={subjectDetails.percentage} color1={"gray"} color2={"#007bc0"}></CircleChartItem>
                     </div>
                 </div>
             }
