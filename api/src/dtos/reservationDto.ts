@@ -5,7 +5,6 @@ export interface CreateReservationDTO {
     eventId: number;
     scheduleStart: Date;
     scheduleEnd: Date;
-    status: ReservationStatus;
     isBlocked?: boolean;
     description?: string;
 }

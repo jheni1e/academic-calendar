@@ -10,7 +10,7 @@ export const createReservation = async (
         data: {
             room_id: data.roomId,
             event_id: data.eventId,
-            status: data.status, description: data.description
+            description: data.description
         }
     });
 }
@@ -27,7 +27,6 @@ export const updateReservation = async (
         data: {
             room_id: data.roomId,
             event_id: data.eventId,
-            status: data.status,
             description: data.description
         }
     })

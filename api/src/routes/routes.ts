@@ -5,15 +5,15 @@ import user from "./user.routes.ts"
 import event from "./event.routes.ts"
 import room from "./room.routes.ts"
 import subject from "./subject.routes.ts"
-import classR from "./class.routes.ts"
+import classs from "./class.routes.ts"
 
 export default function (app: Express) {
 app
     .use(express.json())
     .use('/api/auth', auth)
     .use('/api/user', user) 
-    .use('/api/class', classR) 
     .use('/api/event', event)
     .use('/api/room', room)
     .use('/api/subject', subject)
+    .use('/api/class', classs)
 }
