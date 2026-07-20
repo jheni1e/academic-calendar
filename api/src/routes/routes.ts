@@ -5,6 +5,7 @@ import user from "./user.routes.ts"
 import event from "./event.routes.ts"
 import room from "./room.routes.ts"
 import subject from "./subject.routes.ts"
+import classs from "./class.routes.ts"
 
 export default function (app: Express) {
 app
@@ -14,4 +15,5 @@ app
     .use('/api/event', event)
     .use('/api/room', room)
     .use('/api/subject', subject)
+    .use('/api/class', classs)
 }

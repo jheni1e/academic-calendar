@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import { authDTO } from "../dtos/AuthDTO.ts";
 import { login } from "../services/auth.service.ts";
+import { authDTO } from "../dtos/authDTO.ts";
 
 export class AuthController {
     static async login(req: Request, res: Response) {

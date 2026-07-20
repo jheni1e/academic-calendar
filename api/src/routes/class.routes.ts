@@ -12,7 +12,9 @@ route
     .post('/', ClassController.create)
     .get('/all', authMiddleware, authorize(Role.ADMIN, Role.INSTRUCTOR), ClassController.findAll)
     .get('/:id', authMiddleware, authorize(Role.ADMIN, Role.INSTRUCTOR), ClassController.findClassById)
+
     .put('/:id', authMiddleware, authorize(Role.ADMIN, Role.INSTRUCTOR), ClassController.update)
+    
     .post('/participants', authMiddleware, authorize(Role.ADMIN, Role.INSTRUCTOR), ClassUserController.create)
     .delete('/participants/:id', authMiddleware, authorize(Role.ADMIN, Role.INSTRUCTOR), ClassUserController.delete)
     .delete("/:id", authMiddleware, authorize(Role.ADMIN, Role.INSTRUCTOR), ClassController.delete)

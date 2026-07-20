@@ -1,3 +1,4 @@
+import { ClassController } from "../controllers/ClassController.ts";
 import { ClassUserController } from "../controllers/ClassUserControllers.ts";
 import { ParticipationController } from "../controllers/ParticipationController.ts";
 import { UserController } from "../controllers/UserController.ts";
@@ -20,7 +21,7 @@ route
     .get('/classes/:classId', authMiddleware, ClassUserController.findClassUsersByClassAndUser) // get class by id 
     .get('/events/', authMiddleware, ParticipationController.findParticipationByUser) // get events by user
 
-    .put('/:id', authMiddleware, UserController.update) // update class by id
+    .put('/:id', authMiddleware, UserController.update) // update user by id
     .put('/disable/:id', authMiddleware, authorize(Role.ADMIN, Role.INSTRUCTOR), UserController.disable) // disable a user instead of deleting them
     // .put('/enable/:id', ) // waiting implementation
     .put('/event/confirm/', authMiddleware, ParticipationController.updateParticipation) // confirm event participation

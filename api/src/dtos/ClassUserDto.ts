@@ -4,7 +4,6 @@ export interface CreateClassUserDTO {
 }
 
 export interface ClassUserResponseDTO {
-    classUserId: number;
-    classId: number;
-    userId: number;
+    className: string
 }
+
