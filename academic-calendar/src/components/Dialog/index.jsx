@@ -5,6 +5,7 @@ import TextBox from "../TextBox";
 import DropdownList from "../DropdownList";
 import ColorPicker from "../ColorPicker";
 import FrequencySelector from "../FrequencySelector";
+import { getData } from "../../utils/apiBack";
 
 function Dialog({ isOpen, onClose, type, title }) {
     const dialogRef = useRef(null);
@@ -14,6 +15,7 @@ function Dialog({ isOpen, onClose, type, title }) {
 
     const [selectedRoom, setSelectedRoom] = useState(null);
     const [rooms, setRooms] = useState([]);
+    const [allRooms, setAllRooms] = useState([]);
 
     const [typeEvent, setTypeEvent] = useState(null);
     const [selectedParticipant, setSelectedParticipant] = useState("");
@@ -43,6 +45,26 @@ function Dialog({ isOpen, onClose, type, title }) {
         return () => dialog.removeEventListener("cancel", handleCancel);
     }, [onClose]);
 
+    useEffect(() => {
+        getAllRooms();
+    }, []);
+
+    const getAllRooms = async () => {
+        try {
+            const rooms = await getData("/room/all");
+
+            const formattedRooms = rooms.map((room) => ({
+                value: room.room_id,
+                label: room.title
+            }));
+
+            setAllRooms(formattedRooms);
+        } catch (error) {
+            console.error(error);
+            alert(error.message);
+        }
+    };
+
     const addRoom = () => {
         if (!selectedRoom) return;
 
@@ -65,11 +87,11 @@ function Dialog({ isOpen, onClose, type, title }) {
 
     const removeRoom = (id) => {
         const newRooms = rooms.filter(r => r.value !== id);
-    
+
         if (!newRooms.some(r => r.isMain) && newRooms.length > 0) {
             newRooms[0].isMain = true;
         }
-    
+
         setRooms([...newRooms]);
     };
 
@@ -153,7 +175,7 @@ function Dialog({ isOpen, onClose, type, title }) {
                     <div className="dialogInput">
                         <h4>Salas:</h4>
                         <div className="itemSelector">
-                            <DropdownList options={salasMock} selectedValue={selectedRoom} onChange={(e) => setSelectedRoom(Number(e.target.value))} />
+                            <DropdownList options={allRooms} selectedValue={selectedRoom} onChange={(e) => setSelectedRoom(Number(e.target.value))} />
                             <button onClick={addRoom} className="addItem">+</button>
                         </div>
                     </div>
@@ -238,7 +260,7 @@ function Dialog({ isOpen, onClose, type, title }) {
                             </div>
                             <div className="dialogInput">
                                 <h4>Sala:</h4>
-                                <DropdownList options={salasMock} selectedValue={selectedRoom} onChange={(e) => setRoom(e.target.value)} />
+                                <DropdownList options={allRooms} selectedValue={selectedRoom} onChange={(e) => setSelectedRoom(e.target.value)} />
                             </div>
                         </>
                     }
@@ -250,7 +272,7 @@ function Dialog({ isOpen, onClose, type, title }) {
                             </div>
                             <div className="dialogInput">
                                 <h4>Sala:</h4>
-                                <DropdownList options={salasMock} selectedValue={selectedRoom} onChange={(e) => setRoom(e.target.value)} />
+                                <DropdownList options={allRooms} selectedValue={selectedRoom} onChange={(e) => setSelectedRoom(e.target.value)} />
                             </div>
                             <div className="dialogInput">
                                 <h4>Início:</h4>
