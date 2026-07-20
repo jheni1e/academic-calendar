@@ -14,7 +14,7 @@ export const validateCreate = async (req: Request, res: Response, next: NextFunc
 
         const exists = await prisma.user.findUnique({
             where: {
-                edv: edv
+                user_edv: edv
             }
         });
 
@@ -34,7 +34,7 @@ export const validateDisable = async (req: Request, res: Response, next: NextFun
 
         const exists = await prisma.user.findUnique({
             where: {
-                edv: edv
+                user_edv: edv
             }
         });
 
@@ -58,7 +58,7 @@ export const validateUpdate = async (req: Request, res: Response, next: NextFunc
 
         const user = await prisma.user.findUnique({
             where: {
-                id: userId
+                user_id: userId
             }
         });
 

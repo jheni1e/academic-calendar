@@ -26,13 +26,26 @@ export const createUser = async (
 
 export const findUserByEdv =  async (
     userEdv: number
-): Promise<User | null> => {
+): Promise<UserResponseDTO | null> => {
 
-    return await prisma.user.findUnique({
+    const user = await prisma.user.findUnique({
         where: {
             user_edv: userEdv
         }
     });
+
+    if (!user) {
+        return null;
+    }
+
+    return {
+        edv: user.user_edv,
+        id: user.user_id,
+        name: user.name,
+        isActive: user.is_active,
+        role: user.role,
+        birthdate : user.birthday
+    };
 }
 
 export const findUserByName = async (
@@ -65,7 +78,8 @@ export const findUserById = async (
         id: user.user_id,
         name: user.name,
         isActive: user.is_active,
-        role: user.role
+        role: user.role,
+        birthdate : user.birthday
     };
 }
 
@@ -78,24 +92,35 @@ export const findAllUsers = async() : Promise<UserResponseDTO[] | null> => {
         name: user.name,
         isActive: user.is_active,
         id: user.user_id,
-        role: user.role
+        role: user.role,
+        birthdate: user.birthday
     }));
 }
 
 export const updateUser = async (
     userId: number,
     data: UpdateUserDTO
-): Promise<User> => {
+): Promise<UserResponseDTO> => {
 
-    return await prisma.user.update({
+    const user = await prisma.user.update({
         where: {
             user_id: userId
         },
         data: {
             name: data.name,
-            birthday: data.birthdate
+            birthday: data.birthdate,
+            role: data.role as UserRole
         }
     });
+
+    return {
+        edv : user.user_edv,
+        id : user.user_id,
+        name: user.name,
+        role : user.role,
+        isActive: user.is_active,
+        birthdate : user.birthday
+    }
 
 }
 

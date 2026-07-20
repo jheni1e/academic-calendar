@@ -85,16 +85,20 @@ export class UserController {
             }
             
             const user = await findUserById(Number(id))
+
             if(!user)
                 return res.status(404).send({ message: "User not found"})
 
-            if(res.locals.user.edv == user.edv)
-                return res.status(200).send({ message: "User succesfully updated!", user})
+            if(res.locals.user.edv == user.edv) {
+                const newUser = await updateUser(Number(id), data)
+                return res.status(200).send({ message: "User succesfully updated!", newUser})
+            }
             return res.status(401).send({ message : "Access denied"})
 
         } catch(error) {
             if (error instanceof Error)
                 return res.status(401).send({ message : error.message})
+
 
             return res.status(500).send({ message: "Internal server error" })
         }}

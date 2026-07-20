@@ -1,5 +1,5 @@
 import { prisma } from "../lib/prisma.ts";
-import { CreateEventRoleDTO, UpdateEventRoleDTO } from "../dtos/EventRoleDTO.ts";
+import { CreateEventRoleDTO, UpdateEventRoleDTO } from "../dtos/EventRoleDto.ts";
 import { EventRole } from "../generated/prisma/client.ts";
 
 export const createEventRole = async (
