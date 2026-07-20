@@ -8,7 +8,7 @@ export interface CreateParticipationDTO {
 }
 
 export interface UpdateParticipationDTO {
-    eventRoleId?: number;
+    eventId?: number;
     status?: ParticipationStatus;
 }
 
