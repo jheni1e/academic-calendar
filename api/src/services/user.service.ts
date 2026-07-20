@@ -1,10 +1,14 @@
 import { CreateUserDTO, UpdateUserDTO, UserResponseDTO } from "../dtos/UserDto.ts";
-import { User } from "../generated/prisma/client.ts";
+import { User, UserRole } from "../generated/prisma/client.ts";
 import { prisma } from "../lib/prisma.ts";
 
 export const createUser = async (
     data: CreateUserDTO
 ): Promise<User> => {
+
+    if (!Object.values(UserRole).includes(data.role as UserRole)) {
+            throw new Error(`Role '${data.role}' not found`);
+    }
 
     const user = await prisma.user.create({
         data: {
@@ -12,31 +16,11 @@ export const createUser = async (
             name: data.name,
             birthday: data.birthdate,
             is_active: true,
-            password : data.password
+            password : data.password,
+            role: data.role as UserRole
         }
     })
-
-    for (const roleName of data.role) {
-        const role = await prisma.role.findUnique({
-            where: {
-                name: roleName
-            }
-        });
-
-        if (!role) {
-            throw new Error(`Role '${roleName}' not found`);
-        }
-
-        await prisma.assignment.create({
-            data: {
-                user_id: user.user_id,
-                role_id: role.role_id
-            }
-        });
-    }
-    
     return user
-
 
 }
 
@@ -69,17 +53,6 @@ export const findUserById = async (
     const user = await prisma.user.findUnique({
         where: {
             user_id: userId
-        },
-        include: {
-            assignments: {
-                include: {
-                    role: {
-                        select: {
-                            name: true
-                        }
-                    }
-                }
-            }
         }
     });
 
@@ -90,33 +63,18 @@ export const findUserById = async (
     return {
         edv: user.user_edv,
         name: user.name,
-        isActive: user.is_active,
-        roles: user.assignments.map(a => a.role.name)
+        isActive: user.is_active
     };
 }
 
 export const findAllUsers = async() : Promise<UserResponseDTO[] | null> => {
 
-    const users = await prisma.user.findMany({
-        include: {
-            assignments: {
-                include: {
-                    role: {
-                        select: {
-                            name: true
-                        }
-                    }
-                }
-            }
-        
-        }
-    });
+    const users = await prisma.user.findMany({});
 
-    return users.map(({ password, assignments, ...user }) => ({
+    return users.map(({ password, ...user }) => ({
         edv: user.user_edv,
         name: user.name,
-        isActive: user.is_active,
-        roles: assignments.map(a => a.role.name)
+        isActive: user.is_active
     }));
 }
 

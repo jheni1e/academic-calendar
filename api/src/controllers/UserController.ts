@@ -2,13 +2,13 @@ import { Request, Response } from "express";
 import { CreateUserDTO, UpdateUserDTO } from "../dtos/UserDto.ts";
 import { createUser, disableUser, findAllUsers, findUserByEdv, findUserById, updateUser } from "../services/user.service.ts";
 import { hashPassword } from "../app/utils/password.ts";
-import { createAssignment, deleteAssignment, findAssignmentsByUserAndRole, findAssignmentsByUserId } from "../services/assignment.service.ts";
+import { UserRole } from "../generated/prisma/enums.ts";
 
 export class UserController {
     static async create(req: Request, res: Response) {
         
         const data : CreateUserDTO = req.body
-        
+
         try {
             const password = await hashPassword(data.password);
         
@@ -65,8 +65,7 @@ export class UserController {
             const user = await findUserByEdv(Number(edv))
             if(!user)
                 return res.status(404).send({ message: "User not found"})
-            const roles = await findAssignmentsByUserId(user.user_id)
-            return res.status(200).send({user, roles})
+            return res.status(200).send({user})
         } catch (error) {
             if (error instanceof Error) 
                 return res.status(401).send({ message: error.message })
@@ -80,18 +79,16 @@ export class UserController {
         const data : UpdateUserDTO = req.body
 
         try {
-            const user = await updateUser(Number(id), data)
-
-            if(data.roleToAdd) {
-                
-                return res.status(200).send({ message: "Role added"})
+            if(data.role) {
+                if(!Object.values(UserRole).includes(data.role as UserRole))
+                    return res.status(400).send({ message: "Invalid role" });
             }
             
-            if(data.roleToRemove){
+            const user = await findUserById(Number(id))
+            if(!user)
+                return res.status(404).send({ message: "User not found"})
 
-
-            }
-            if(res.locals.user.edv == user.user_edv)
+            if(res.locals.user.edv == user.edv)
                 return res.status(200).send({ message: "User succesfully updated!", user})
             return res.status(401).send({ message : "Access denied"})
 
