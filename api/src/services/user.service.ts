@@ -64,7 +64,8 @@ export const findUserById = async (
         edv: user.user_edv,
         id: user.user_id,
         name: user.name,
-        isActive: user.is_active
+        isActive: user.is_active,
+        role: user.role
     };
 }
 
@@ -76,7 +77,8 @@ export const findAllUsers = async() : Promise<UserResponseDTO[] | null> => {
         edv: user.user_edv,
         name: user.name,
         isActive: user.is_active,
-        id: user.user_id
+        id: user.user_id,
+        role: user.role
     }));
 }
 
