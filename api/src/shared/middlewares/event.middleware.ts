@@ -5,7 +5,7 @@ import { ForbiddenError } from "../errors/ForbiddenError.ts";
 
 export const validateCreate = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { title, description, eventTypeId, subjectId, classId, recurrence, createdBy, startDate, endDate } = req.body;
+        const { title, description, eventTypeId, subjectId, instructorId, classId, recurrence, createdBy, startDate, endDate } = req.body;
 
         if (!title?.trim()) {
             throw new Error("Event title is required.");
@@ -43,6 +43,17 @@ export const validateCreate = async (req: Request, res: Response, next: NextFunc
 
             if (!subject) {
                 throw new NotFoundError("Subject not found.");
+            }
+
+            const subjectInstructor = await prisma.subjectinstructor.findUnique({
+                where: {
+                    subject_id: subjectId,
+                    instructor_id: instructorId
+                }
+            });
+
+            if (!subjectInstructor) {
+                throw new Error("The instructor is not linked to the subject.");
             }
         }
 
