@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { Role } from "../../generated/prisma/client.ts";
+import { UserRole } from "../../generated/prisma/client.ts";
 
 export function authorize(...roles: string[]) {
     return(req: Request, res: Response, next: NextFunction) => {
@@ -9,9 +9,7 @@ export function authorize(...roles: string[]) {
             return res.status(200).send("User not authenticated")
         }
 
-        const hasPermission = user.role.some((role: string) =>
-            roles.includes(role)
-        );
+        const hasPermission = Object.values(UserRole).includes(user.role as UserRole)
 
         if(!hasPermission) {
             return res.status(403).send("Access denied")
