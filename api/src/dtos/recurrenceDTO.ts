@@ -10,8 +10,6 @@ export class CreateRecurrenceDTO {
     wednesday?: boolean;
     thursday?: boolean;
     friday?: boolean;
-    saturday?: boolean;
-    sunday?: boolean;
 }
 
 export interface UpdateRecurrenceDTO {
@@ -23,6 +21,4 @@ export interface UpdateRecurrenceDTO {
     wednesday?: boolean;
     thursday?: boolean;
     friday?: boolean;
-    saturday?: boolean;
-    sunday?: boolean;
 }
