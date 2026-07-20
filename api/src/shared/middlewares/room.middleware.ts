@@ -79,6 +79,16 @@ export const validateDectivate = async (req: Request, res: Response, next: NextF
             throw new Error("The room is linked to a subject.");
         }
 
+        const reservationsConfirmed = await prisma.reservation.findFirst({
+            where: {
+                roomId: roomId
+            }
+        });
+
+        if (reservationsConfirmed) {
+            throw new Error("There is one or more reservations confirmed linked to this room.");
+        }
+
         next();
     } catch (error) {
         next(error);
@@ -99,6 +109,26 @@ export const validateDelete = async (req: Request, res: Response, next: NextFunc
 
         if (room.is_active) {
             throw new Error("Active rooms can't be deleted.");
+        }
+
+        const subjectRoomConnection = await prisma.subjectroom.findFirst({
+            where: {
+                room_id: roomId
+            }
+        });
+
+        if (subjectRoomConnection) {
+            throw new Error("The room is linked to a subject.");
+        }
+
+        const reservationsConfirmed = await prisma.reservation.findFirst({
+            where: {
+                roomId: roomId
+            }
+        });
+
+        if (reservationsConfirmed) {
+            throw new Error("There is one or more reservations confirmed linked to this room.");
         }
 
         next();
