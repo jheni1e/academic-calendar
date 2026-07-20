@@ -65,6 +65,7 @@ export const validateDelete = async (req: Request, res: Response, next: NextFunc
 export const validateUpdate = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const participationId: number = parseInt(req.params.id.toString());
+        const { eventId, status } = req.body;
 
         const participation = await prisma.participation.findFirst({
             where: { id: participationId },
@@ -72,6 +73,27 @@ export const validateUpdate = async (req: Request, res: Response, next: NextFunc
 
         if (participation) {
             throw new NotFoundError("Participation not found.");
+        }
+
+        const event = await prisma.event.findUnique({
+            where: {
+                event_id: eventId
+            }
+        });
+
+        const conflictingEvents = await prisma.event.findMany({
+            where: {
+                start_date: {
+                    lte: event.end_date,
+                },
+                end_date: {
+                    gte: event.start_date,
+                },
+            },
+        });
+
+        if (conflictingEvents.length > 0) {
+            throw new Error("There is a schedule conflict with another confirmed event.");
         }
 
         next();
