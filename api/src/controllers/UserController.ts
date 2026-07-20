@@ -3,13 +3,12 @@ import { CreateUserDTO, UpdateUserDTO } from "../dtos/UserDto.ts";
 import { createUser, disableUser, findAllUsers, findUserByEdv, findUserById, updateUser } from "../services/user.service.ts";
 import { hashPassword } from "../app/utils/password.ts";
 import { createAssignment, deleteAssignment, findAssignmentsByUserAndRole, findAssignmentsByUserId } from "../services/assignment.service.ts";
-import { findRoleByName } from "../services/role.service.ts";
 
 export class UserController {
     static async create(req: Request, res: Response) {
         
         const data : CreateUserDTO = req.body
-
+        
         try {
             const password = await hashPassword(data.password);
         
@@ -84,35 +83,12 @@ export class UserController {
             const user = await updateUser(Number(id), data)
 
             if(data.roleToAdd) {
-                const role = await findRoleByName(data.roleToAdd)
-
-                if(!role)
-                    return res.status(404).send({ message: "Role not found"})
-
-                const assignment = findAssignmentsByUserAndRole(user.user_id, role.role_id)
-
-                if(!assignment){
-                    await createAssignment({
-                    userId : user.user_id,
-                    roleId : role.role_id
-                    })
-                }
                 
                 return res.status(200).send({ message: "Role added"})
             }
             
             if(data.roleToRemove){
-                const role = await findRoleByName(data.roleToRemove)
 
-                if(!role)
-                    return res.status(404).send({ message: "Role not found"})
-
-                const assignment = await findAssignmentsByUserAndRole(user.user_id, role.role_id)
-
-                if(assignment) {
-                    await deleteAssignment( assignment.assignment_id)
-                    return res.status(200).send({ message: "Role removed"})
-                }
 
             }
             if(res.locals.user.edv == user.user_edv)
