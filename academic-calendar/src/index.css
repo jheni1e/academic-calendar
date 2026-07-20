@@ -1,0 +1,86 @@
+@font-face {
+  font-family: 'Bosch Sans';
+  src: url('./fonts/BoschSans/BoschSans-Regular-v5_003.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Bosch Sans';
+  src: url('./fonts/BoschSans/BoschSans-Light-v5_003.woff') format('woff');
+  font-weight: 300;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Bosch Sans';
+  src: url('./fonts/BoschSans/BoschSans-Medium-v5_003.woff') format('woff');
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Bosch Sans';
+  src: url('./fonts/BoschSans/BoschSans-Bold-v5_003.woff') format('woff');
+  font-weight: 700;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Bosch Sans';
+  src: url('./fonts/BoschSans/BoschSans-Black-v5_003.woff') format('woff');
+  font-weight: 900;
+  font-style: normal;
+}
+
+/* Italic variants */
+@font-face {
+  font-family: 'Bosch Sans';
+  src: url('./fonts/BoschSans/BoschSans-Italic-v5_003.woff') format('woff');
+  font-weight: 400;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'Bosch Sans';
+  src: url('./fonts/BoschSans/BoschSans-LightItalic-v5_003.woff') format('woff');
+  font-weight: 300;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'Bosch Sans';
+  src: url('./fonts/BoschSans/BoschSans-MediumItalic-v5_003.woff') format('woff');
+  font-weight: 500;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'Bosch Sans';
+  src: url('./fonts/BoschSans/BoschSans-BoldItalic-v5_003.woff') format('woff');
+  font-weight: 700;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'Bosch Sans';
+  src: url('./fonts/BoschSans/BoschSans-BlackItalic-v5_003.woff') format('woff');
+  font-weight: 900;
+  font-style: italic;
+}
+
+html, body {
+  height: 100%;
+  font-family: 'Bosch Sans', fallback, sans-serif;
+  margin: 0px;
+  padding: 0px;
+  overflow-x: hidden;
+}
+
+button, input, textarea, dialog {
+  border: none;
+}
+
+#root, .App {
+  height: 100%;
+}

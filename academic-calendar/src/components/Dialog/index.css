@@ -1,0 +1,143 @@
+.customDialog {
+    border: none;
+    border-radius: 0;
+    box-shadow: 0 4px 12px rgba(207, 207, 207, 0.15);
+    max-width: 600px;
+    width: 100%;
+    padding: 0;
+}
+
+.customDialog::backdrop {
+    background-color: rgba(207, 207, 207, 0.6);
+    backdrop-filter: blur(4px);
+}
+
+.closeButton {
+    background-color: transparent;
+    font-size: 1.5rem;
+    cursor: pointer;
+    margin-right: 1rem;
+}
+
+.dialogHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #000;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.dialogHeader h2 {
+    margin-left: 1.5rem;
+}
+
+.dialogContent {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+    padding: 24px 3rem 24px 24px;
+    column-gap: 3rem;
+}
+
+.dialogInput {
+    min-width: 0;
+}
+
+.dialogInput > * {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.dialogInput h4 {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.dialogInput.fullWidth {
+    grid-column: 1 / -1;
+}
+
+.dialogButtons {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 12px;
+    padding: 0 1rem 1rem 1rem;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+.dialogButtons > div {
+    width: auto !important;
+    flex: 0 0 auto;
+}
+
+.participantsList {
+    display: flex;
+    flex-flow: row wrap;
+    gap: 8px;
+    width: 280px;
+}
+
+.roomsList {
+    display: flex;
+    flex-flow: row wrap;
+    gap: 8px;
+    width: 280px;
+}
+
+.mainRoom {
+    background: #eaf5ff;
+    border: 1px solid #007bc0;
+}
+
+.mainRoom .itemName {
+    color: #007bc0;
+}
+
+.listItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 14px;
+    width: 100px;
+    height: 20px;
+    border: 1px solid #d9d9d9;
+    border-radius: 1rem;
+    background: #f5f5f5;
+}
+
+.removeItem {
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+.addItem {
+    border: none;
+    background: #e0e2e5;
+    height: 3rem;
+    width: 3rem;
+    cursor: pointer;
+}
+
+.itemName {
+    font-size: 12px;
+    color: #000;
+}
+
+.removeItem:hover {
+    color: #d50000;
+}
+
+.itemSelector {
+    display: flex;
+    align-items: flex-end;
+}
+
+.itemSelector > div:first-child {
+    flex: 1;
+}

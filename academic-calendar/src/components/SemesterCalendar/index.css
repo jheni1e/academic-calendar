@@ -1,0 +1,26 @@
+.semester-calendar {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.semester-header {
+    display: grid;
+    grid-template-columns: 100px 1fr 100px;
+    align-items: center;
+    margin: 1rem 2rem 0 2rem;
+}
+
+.semester-header h1 {
+    text-align: center;
+    font-size: 2rem;
+    font-weight: normal;
+}
+
+.semester-header button:first-child {
+    justify-self: start;
+}
+
+.semester-header button:last-child {
+    justify-self: end;
+}

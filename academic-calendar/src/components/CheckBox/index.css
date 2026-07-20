@@ -1,0 +1,39 @@
+.checkBoxContainer {
+    position: relative;
+    height: auto;
+}
+
+.checkboxLabel {
+    display: inline-flex;
+    align-items: center;
+}
+
+.hiddenCheckbox {
+    display: none;
+}
+
+.fakeCheckbox {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 1.5rem;
+    width: 1.5rem;
+    background-color: #8a9097;
+}
+
+    .fakeCheckbox:hover {
+        background-color: #7d8389;
+    }
+
+.checkboxLabel.checked .fakeCheckbox {
+    background-color: #007bc0;
+}
+
+.checkboxLabel.checked .fakeCheckbox:hover {
+    background-color: #006ead;
+}
+
+.imgCheckMark {
+    height: 1.5rem;
+    width: 1.5rem;
+}

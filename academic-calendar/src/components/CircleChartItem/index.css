@@ -1,0 +1,28 @@
+.chart-container {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.svg-circle {
+    transform: rotate(-90deg);
+}
+
+.bg-circle {
+    fill: none;
+}
+
+.fg-circle {
+    fill: none;
+    transition: stroke-dashoffset 0.5s ease-out;
+}
+
+.chart-label {
+    position: absolute;
+    font-size: 1rem;
+    font-weight: bold;
+    color: #1f2937;
+}

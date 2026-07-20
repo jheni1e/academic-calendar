@@ -1,0 +1,102 @@
+.a-dropdown {
+    position: relative;
+    height: 48px;
+    width: 100%;
+}
+
+.a-dropdown select {
+    background-color: #e0e2e5;
+    color: #000;
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    appearance: none;
+    border: 0;
+    height: 48px;
+    padding: 0.5rem 2.75rem 0.5rem 1rem;
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    outline: 0;
+}
+
+.a-dropdown label {
+    color: #000;
+    position: absolute;
+    top: 0;
+    left: 0;
+    margin: 4px 16px auto 16px;
+    font-size: 12px;
+    max-width: calc(100% - 3.5rem);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    z-index: 2;
+}
+
+.a-dropdown select:hover {
+    background-color: #c1c7cc;
+}
+
+.a-dropdown select:active {
+    background-color: #b0bec5;
+    outline: none;
+}
+
+.a-dropdown::after {
+    display: none;
+}
+
+.a-dropdown option {
+    background-color: #c1c7cc;
+}
+
+.dropdown-container {
+    position: relative;
+    display: flex;
+    align-items: center; 
+}
+
+.a-dropdown label + select {
+    padding-top: 18px;
+    padding-bottom: 5px;
+}
+
+.a-dropdown--dynamic-width {
+    display: inline-block;
+    margin-right: 2rem;
+}
+
+.a-dropdown--dynamic-width select {
+    width: calc(100% + 2rem);
+}
+
+.a-dropdown--dynamic-width::after {
+    right: -18px;
+}
+
+.a-dropdown--disabled {
+    pointer-events: none;
+}
+
+.a-dropdown--disabled label,
+.a-dropdown--disabled select,
+.a-dropdown--disabled::after {
+    color: #c0c0c0;
+}
+
+.dropdown-arrow {
+    position: absolute;
+    top: 50%;
+    right: -1.1rem;
+    width: 16px;
+    height: 16px;
+    transform: translateY(-50%);
+    pointer-events: none;
+}
+
+.a-dropdown select:disabled {
+    background-color: transparent; /* Same as disabled TextBox */
+    color: #000; /* Same as disabled TextBox */
+    border-bottom: 1px solid #000; /* Same as disabled TextBox */
+}

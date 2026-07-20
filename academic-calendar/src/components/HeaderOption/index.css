@@ -1,0 +1,42 @@
+.menu-option {
+  position: relative;
+  padding: 10px;
+  cursor: pointer;
+  color: #000;
+  transition: color 0.2s ease;
+  margin: 0rem 0.5rem;
+}
+
+.menu-option:hover {
+  color: #007bc0;
+}
+
+.sub-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin: 0;
+  padding: 6px 0px;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  border-radius: 12px;
+  z-index: 3;
+  background-color: #eff1f2;
+  margin-bottom: 4px;
+}
+
+.divCurrentMenu::after {
+  content: '';
+  display: block;
+  width: 100%;
+  height: 0.35rem;
+  background-color: #007bc0;
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.optionText {
+  font-size: 1.5rem;
+  font-weight: 500;
+}

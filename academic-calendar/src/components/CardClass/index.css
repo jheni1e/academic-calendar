@@ -1,0 +1,22 @@
+.container-card{
+    width: 14rem;
+    height: 8rem;
+    background-color: white;
+    border: 1px solid black;
+    border-radius: 10px;
+    display: flex;
+    align-items: start;
+    justify-content: space-around;
+    padding-left: 1rem;
+    flex-direction: column;
+
+}
+.text-gray{
+    color: rgb(80, 80, 80);
+    font-family: 'Bosch Sans';
+}
+.text-black{
+    color: rgb(0, 0, 0);
+    font-family: 'Bosch Sans';
+
+}
