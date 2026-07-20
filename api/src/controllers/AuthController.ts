@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { authDTO } from "../dtos/authDTO.ts";
+import { authDTO } from "../dtos/AuthDTO.ts";
 import { login } from "../services/auth.service.ts";
 
 export class AuthController {

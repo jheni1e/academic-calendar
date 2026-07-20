@@ -1,6 +1,6 @@
 import { EventType } from "../../generated/prisma/client.ts";
 import { prisma } from "../lib/prisma.ts";
-import { CreateEventTypeDTO, UpdateEventTypeDTO } from "../dtos/EventTypeDTO.ts";
+import { CreateEventTypeDTO, UpdateEventTypeDTO } from "../dtos/EventTypeDto.ts";
 
 export const createEventType = async (
     data: CreateEventTypeDTO

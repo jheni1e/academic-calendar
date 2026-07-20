@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 
 import { AppError } from "../shared/errors/AppError.ts";
-import { CreateEventRoleDTO, UpdateEventRoleDTO } from "../dtos/EventRoleDTO.ts";
+import { CreateEventRoleDTO, UpdateEventRoleDTO } from "../dtos/EventRoleDto.ts";
 import { createEventRole, deleteEventRole, findAllEventRoles, findEventRoleById, updateEventRole } from "../services/eventrole.service.ts";
 
 export class EventRoleController {
