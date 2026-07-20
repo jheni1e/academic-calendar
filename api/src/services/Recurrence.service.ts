@@ -2,11 +2,10 @@ import { CreateRecurrenceDTO, UpdateRecurrenceDTO } from "../../dtos/recurrenceD
 import { prisma } from "../../lib/prisma.ts";
 
 export const createRecurrence = async (data: CreateRecurrenceDTO) => {
-    const { frequency, repeat_until, occurrences, created_by, monday, tuesday, wednesday, thursday, friday } = data;
+    const { repeat_until, occurrences, created_by, monday, tuesday, wednesday, thursday, friday } = data;
 
     return await prisma.recurrence.create({
         data: {
-            frequency: frequency,
             repeat_until: repeat_until,
             occurrences: occurrences,
             created_by: created_by,
@@ -20,11 +19,10 @@ export const createRecurrence = async (data: CreateRecurrenceDTO) => {
 }
 
 export const updateRecurrence = async (data: UpdateRecurrenceDTO) => {
-    const { frequency, endDate, occurrences, monday, tuesday, wednesday, thursday, friday } = data;
+    const { endDate, occurrences, monday, tuesday, wednesday, thursday, friday } = data;
 
     return await prisma.recurrence.update({
         data: {
-            frequency: frequency,
             endDate: endDate,
             occurrences: occurrences,
             monday: monday,
