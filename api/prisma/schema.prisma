@@ -20,12 +20,6 @@ enum ReservationStatus {
   CANCELLED
 }
 
-// enum RecurrenceFrequency {
-//   DAILY
-//   WEEKLY
-//   MONTHLY
-// }
-
 enum UserRole {
   ADMIN
   INSTRUCTOR
@@ -67,26 +61,12 @@ model User {
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
-  // assignments    Assignment[]
   participations Participation[]
   subjectAssignments       SubjectInstructor[]
   classes        ClassUser[]
   createdEvents  Event[]             @relation("CreatedEvents")
   recurrences    Recurrence[]
 }
-
-// model Assignment {
-//   assignment_id Int @id @default(autoincrement())
-//   role_id       Int
-//   user_id       Int
-
-//   role Role @relation(fields: [role_id], references: [role_id])
-//   user User @relation(fields: [user_id], references: [user_id])
-
-//   @@unique([role_id, user_id])
-//   @@index([user_id])
-//   @@index([role_id])
-// }
 
 model Class {
   class_id  Int     @id @default(autoincrement())
@@ -126,7 +106,6 @@ model Subject {
   start_date DateTime
   end_date   DateTime?
   class_id   Int
-  // events     Event[]
   is_active  Boolean  @default(true)
 
   created_at DateTime @default(now())
@@ -173,25 +152,14 @@ model SubjectRoom {
   @@index([subject_id])
 }
 
-// model Role {
-//   role_id     Int          @id @default(autoincrement())
-//   name        String       @unique
-//   assignments Assignment[]
-
-//   created_at DateTime @default(now())
-//   updated_at DateTime @updatedAt
-// }
-
 model Event {
   event_id      Int     @id @default(autoincrement())
   title         String
   description   String?
-  // event_type_id Int
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
-  // subject_id    Int?
   subject_instructor_id Int?
   class_id      Int?
   recurrence_id Int?
@@ -209,12 +177,9 @@ model Event {
   recurrence     Recurrence?     @relation(fields: [recurrence_id], references: [recurrence_id])
   subject_instructor SubjectInstructor?  @relation(fields: [subject_instructor_id], references: [subject_instructor_id])
 
-  // subject    Subject?  @relation(fields: [subject_id], references: [subject_id])
   class      Class?    @relation(fields: [class_id], references: [class_id])
   creator    User      @relation("CreatedEvents", fields: [created_by], references: [user_id])
 
-  // @@index([subject_id])
-  // @@index([event_type_id])
   @@index([subject_instructor_id])
   @@index([class_id])
   @@index([created_by])
@@ -238,8 +203,6 @@ model Recurrence {
   wednesday Boolean @default(false)
   thursday  Boolean @default(false)
   friday    Boolean @default(false)
-  // saturday  Boolean @default(false)
-  // sunday    Boolean @default(false)
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
@@ -249,25 +212,6 @@ model Recurrence {
 
   @@index([created_by])
 }
-
-// model EventType {
-//   event_type_id Int    @id @default(autoincrement())
-//   name          String @unique
-
-//   created_at DateTime @default(now())
-//   updated_at DateTime @updatedAt
-
-//   events Event[]
-// }
-
-// model EventRole {
-//   event_role_id  Int             @id @default(autoincrement())
-//   name           String          @unique
-//   participations Participation[]
-
-//   created_at DateTime @default(now())
-//   updated_at DateTime @updatedAt
-// }
 
 model Room {
   room_id     Int     @id @default(autoincrement())
@@ -288,7 +232,6 @@ model Room {
 model Reservation {
   reservation_id Int               @id @default(autoincrement())
   description    String?
-  // status         ReservationStatus
   room_id        Int
   event_id       Int               @unique
 
@@ -300,22 +243,18 @@ model Reservation {
 
   @@index([room_id])
   @@index([event_id])
-  // @@index([room_id, status])
 }
 
 model Participation {
   participation_id Int                 @id @default(autoincrement())
   user_id          Int
-  // event_role_id    Int
   event_id         Int
   status           ParticipationStatus
 
   user       User      @relation(fields: [user_id], references: [user_id])
-  // event_role EventRole @relation(fields: [event_role_id], references: [event_role_id])
   event      Event     @relation(fields: [event_id], references: [event_id])
 
   @@unique([user_id, event_id], name: "user_event_unique")
   @@index([user_id])
   @@index([event_id])
-  // @@index([event_role_id])
 }
