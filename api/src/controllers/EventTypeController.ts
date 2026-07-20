@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 
 import { AppError } from "../shared/errors/AppError.ts";
-import { CreateEventTypeDTO, UpdateEventTypeDTO } from "../dtos/EventTypeDTO.ts";
+import { CreateEventTypeDTO, UpdateEventTypeDTO } from "../dtos/EventTypeDto.ts";
 import { createEventType, deleteEventType, findAllEventTypes, findEventTypeById, updateEventType } from "../services/eventtype.service.ts";
 export class CreateEventTypeController {
     static async create(req: Request, res: Response) {

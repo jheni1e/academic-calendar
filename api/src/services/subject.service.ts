@@ -1,6 +1,6 @@
 import { Subject } from "../../generated/prisma/client.ts";
 import { prisma } from "../lib/prisma.ts";
-import { CreateSubjectDTO, UpdateSubjectDTO } from "../dtos/SubjectDTO.ts";
+import { CreateSubjectDTO, UpdateSubjectDTO } from "../dtos/SubjectDto.ts";
 
 export const createSubject = async (
     data: CreateSubjectDTO

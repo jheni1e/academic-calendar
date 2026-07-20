@@ -1,4 +1,4 @@
-import { CreateReservationDTO, UpdateReservationDTO } from "../dtos/ReservationDTO.ts";
+import { CreateReservationDTO, UpdateReservationDTO } from "../dtos/ReservationDto.ts";
 import { Reservation } from "../generated/prisma/client.ts";
 import { prisma } from "../lib/prisma.ts";
 

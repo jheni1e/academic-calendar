@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 
 import { AppError } from "../shared/errors/AppError.ts";
-import { CreateClassDTO, UpdateClassDTO } from "../dtos/ClassDTO.ts";
+import { CreateClassDTO, UpdateClassDTO } from "../dtos/ClassDto.ts";
 import { createClass, deleteClass, findAllClasses, findClassById, updateClass } from "../services/class.service.ts";
 
 export class ClassController {

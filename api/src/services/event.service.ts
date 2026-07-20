@@ -1,5 +1,5 @@
 import { prisma } from "../lib/prisma.ts";
-import { CreateEventDTO, UpdateEventDTO } from "../dtos/EventDTO.ts";
+import { CreateEventDTO, UpdateEventDTO } from "../dtos/EventDto.ts";
 import { Event } from "../generated/prisma/client.ts";
 import { findSubjectById } from "./subject.service.ts";
 
