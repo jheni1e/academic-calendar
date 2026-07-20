@@ -18,6 +18,7 @@ export interface UserResponseDTO {
     name: string;
     isActive: boolean;
     role: string
+    birthdate: Date
 }
 
 export type LoginDTO = {

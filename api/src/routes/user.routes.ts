@@ -22,6 +22,7 @@ route
 
     .put('/:id', authMiddleware, UserController.update) // update class by id
     .put('/disable/:id', authMiddleware, authorize(Role.ADMIN, Role.INSTRUCTOR), UserController.disable) // disable a user instead of deleting them
+    // .put('/enable/:id', ) // waiting implementation
     .put('/event/confirm/', authMiddleware, ParticipationController.updateParticipation) // confirm event participation
 
 export default route

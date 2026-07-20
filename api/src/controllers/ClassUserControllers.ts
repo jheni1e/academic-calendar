@@ -77,7 +77,7 @@ export class ClassUserController {
     }
     
     static async findClassUsersByUser(req: Request, res: Response) {
-        const id: number = parseInt(req.params.id.toString());
+        const id = res.locals.id
 
         try {
             const classes = await findClassUsersByUser(id);
