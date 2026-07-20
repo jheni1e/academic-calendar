@@ -11,10 +11,10 @@ route
     .post('/', authMiddleware, authorize(Role.ADMIN, Role.INSTRUCTOR), SubjectController.create)
     .get('/all', authMiddleware, SubjectController.findAllSubjects)
     .get('/:id', authMiddleware, SubjectController.findSubjectById)
-    .get('/instructors', authMiddleware, SubjectInstructorController.findSubjectInstructorsByInstructor) // get all instructors by subject
+    .get('/instructors/:id', authMiddleware, SubjectInstructorController.findSubjectInstructorsBySubject) // get all instructors by subject
 
     .put('/:id', authMiddleware, authorize(Role.ADMIN, Role.INSTRUCTOR), SubjectController.update)
-    .put('/instructor/add/:id', authMiddleware, authorize(Role.ADMIN, Role.INSTRUCTOR), SubjectInstructorController.create)
+    .put('/instructor/add', authMiddleware, authorize(Role.ADMIN, Role.INSTRUCTOR), SubjectInstructorController.create)
     
     .delete('/instructor/remove/:id', authMiddleware, authorize(Role.ADMIN, Role.INSTRUCTOR), SubjectInstructorController.delete)
     .delete("/:id", authMiddleware, authorize(Role.ADMIN, Role.INSTRUCTOR), SubjectController.delete)

@@ -7,7 +7,7 @@ export const validateActivate = async (req: Request, res: Response, next: NextFu
         const subjectId: number = parseInt(req.params.id.toString());
 
         const subject = await prisma.subject.findFirst({
-            where: { id: subjectId },
+            where: { subject_id: subjectId },
         });
 
         if (!subject) {
@@ -58,7 +58,7 @@ export const validateDectivate = async (req: Request, res: Response, next: NextF
         const subjectId: number = parseInt(req.params.id.toString());
 
         const subject = await prisma.subject.findFirst({
-            where: { id: subjectId },
+            where: { subject_id: subjectId },
         });
 
         if (!subject) {
@@ -80,7 +80,7 @@ export const validateDelete = async (req: Request, res: Response, next: NextFunc
         const subjectId: number = parseInt(req.params.id.toString());
 
         const subject = await prisma.subject.findFirst({
-            where: { id: subjectId },
+            where: { subject_id: subjectId },
         });
 
         if (!subject) {
@@ -93,24 +93,24 @@ export const validateDelete = async (req: Request, res: Response, next: NextFunc
 
         // TODO: Need User Type Verification before delete!
 
-        const events = await prisma.events.findMany({
-            where: { subjectId: subjectId },
+        const subjectInstructors = await prisma.subjectInstructor.findFirst({
+            where: { subject_id: subjectId },
+        });
+
+        if (subjectInstructors) {
+            throw new Error("There are instructors linked to this subject.");
+        }
+
+        const events = await prisma.event.findMany({
+            where: { subject_instructor_id: subjectInstructors!.subject_id },
         });
 
         if (events.length > 0) {
             throw new Error("There are events linked to this subject.");
         }
 
-        const subjectInstructors = await prisma.subjectinstructor.findMany({
-            where: { subjectId: subjectId },
-        });
-
-        if (subjectInstructors.length > 0) {
-            throw new Error("There are instructors linked to this subject.");
-        }
-
-       const subjectRooms = await prisma.subjectroom.findMany({
-            where: { subjectId: subjectId },
+       const subjectRooms = await prisma.subjectRoom.findMany({
+            where: { subject_id: subjectId },
         });
 
         if (subjectRooms.length > 0) {
