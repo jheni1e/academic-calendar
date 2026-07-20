@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 
 import { AppError } from "../shared/errors/AppError.ts";
 import { NotFoundError } from "../shared/errors/NotFoundError.ts";
-import { CreateReservationDTO, UpdateReservationDTO } from "../dtos/reservationDto.ts";
+import { CreateReservationDTO, UpdateReservationDTO } from "../dtos/ReservationDTO.ts";
 import { createReservation, deleteReservation, findAllReservations, findReservationByEvent, findReservationById, findReservationsByRoom, updateReservation } from "../services/reservation.service.ts";
 
 export class ReservationController {

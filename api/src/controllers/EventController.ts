@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 
 import { AppError } from "../shared/errors/AppError.ts";
-import { CreateEventDTO, UpdateEventDTO } from "../dtos/EventDto.ts";
+import { CreateEventDTO, UpdateEventDTO } from "../dtos/EventDTO.ts";
 import { createEvent, deleteEvent, findAllEvents, findEventByClass, findEventById, updateEvent } from "../services/event.service.ts";
 
 export class EventController {

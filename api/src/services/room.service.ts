@@ -1,4 +1,4 @@
-import { CreateRoomDTO, UpdateRoomDTO } from "../dtos/RoomDto.ts";
+import { CreateRoomDTO, UpdateRoomDTO } from "../dtos/RoomDTO.ts";
 import { Room } from "../generated/prisma/client.ts";
 import { prisma } from "../lib/prisma.ts";
 

@@ -1,4 +1,4 @@
-import { CreateUserDTO, UpdateUserDTO, UserResponseDTO } from "../dtos/UserDto.ts";
+import { CreateUserDTO, UpdateUserDTO, UserResponseDTO } from "../dtos/UserDTO.ts";
 import { User, UserRole } from "../generated/prisma/client.ts";
 import { prisma } from "../lib/prisma.ts";
 

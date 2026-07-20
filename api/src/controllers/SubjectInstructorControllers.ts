@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 
 import { AppError } from "../shared/errors/AppError.ts";
-import { CreateSubjectInstructorDTO, UpdateSubjectInstructorDTO } from "../dtos/SubjectInstructorDto.ts";
+import { CreateSubjectInstructorDTO, UpdateSubjectInstructorDTO } from "../dtos/SubjectInstructorDTO.ts";
 import { createSubjectInstructor, deleteSubjectInstructor, findAllSubjectInstructors, findSubjectInstructorById, findSubjectInstructorBySubjectAndInstructor, findSubjectInstructorsByInstructor, findSubjectInstructorsBySubject, updateSubjectInstructor } from "../services/subjectinstructor.service.ts";
 
 export class SubjectInstructorController {

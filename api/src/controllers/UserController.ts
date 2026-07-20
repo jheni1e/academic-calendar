@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { CreateUserDTO, UpdateUserDTO } from "../dtos/UserDto.ts";
+import { CreateUserDTO, UpdateUserDTO } from "../dtos/UserDTO.ts";
 import { createUser, disableUser, findAllUsers, findUserByEdv, findUserById, updateUser } from "../services/user.service.ts";
 import { hashPassword } from "../app/utils/password.ts";
 import { UserRole } from "../generated/prisma/enums.ts";
