@@ -60,7 +60,7 @@ export class RoomController {
         const id: number = parseInt(req.params.id.toString());
 
         try {
-            const room = findRoomById(id);
+            const room = await findRoomById(id);
 
             return res.status(200).json(room);
         } catch (error) {
@@ -110,12 +110,12 @@ export class RoomController {
     }
 
     static async disable(req: Request, res: Response) {
-        const id = req.params
+        const id: number = parseInt(req.params.id.toString());
         
         try {
-            const room = await disableRoom(Number(id))
+            await disableRoom(Number(id))
+
             return res.status(200).send({ message: "Room disabled"})
-            
         } catch (error) {
             if (error instanceof AppError) {
                 return res.status(error.statusCode).json({
