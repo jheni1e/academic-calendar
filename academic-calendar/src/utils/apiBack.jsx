@@ -1,10 +1,13 @@
-const BASE_URL = process.env.BASE_ROUTE_API;
-const API_KEY = process.env.BASE_ROUTE_API_KEY;
+const BASE_URL = import.meta.env.VITE_BASE_ROUTE_API;
 
 const apiClient = async (url, options = {}) => {
+    const token = localStorage.getItem("token");
+
     const headers = {
         'Content-Type': 'application/json',
-        'ApiKey': API_KEY,
+        ...(token && {
+            Authorization: `Bearer ${token}`
+        }),
         ...options.headers
     };
 

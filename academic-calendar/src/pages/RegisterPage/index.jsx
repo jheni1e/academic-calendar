@@ -3,25 +3,37 @@ import { useNavigate } from "react-router";
 import './index.css';
 import TextBox from '../../components/TextBox';
 import BoschButton from '../../components/BoschButton';
+import { postData } from '../../utils/apiBack';
+import { toastSuccess } from '../../components/BoschToast';
 
 function Register() {
-    const [firstName, setFirstName] = useState("");
-    const [lastName, setLastName] = useState("");
+    const [edv, setEDV] = useState("");
+    const [name, setName] = useState("");
+    const [birthdate, setBirthdate] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
-    const [email, setEmail] = useState("");
 
     const navigate = useNavigate();
 
-    const handleSave = () => {
-        var payload = {
-            firstName: firstName,
-            lastName: lastName,
-            email: email,
-            password: password
-        };
+    const handleSave = async () => {
+        try {
+            const payload = {
+                edv: parseInt(edv),
+                name: name,
+                birthdate: new Date(birthdate).toISOString(),
+                password: password,
+                role: "APPRENTICE"
+            };
 
-        //chamada de api para registrar
+            const created = await postData("/user", payload);
+
+            console.log(created)
+
+            toastSuccess("Registrado com sucesso!");
+        } catch (error) {
+            console.error(error);
+            alert(error.message);
+        }
     };
 
     return (
@@ -32,15 +44,15 @@ function Register() {
             </div>
             <div className="divInput">
                 <h3 className="inputTitle">Nome:</h3>
-                <TextBox placeholder="e.g.: João" text={firstName} onChange={(e) => setFirstName(e.target.value)} />
+                <TextBox placeholder="e.g.: João Silva" text={name} onChange={(e) => setName(e.target.value)} />
             </div>
             <div className="divInput">
-                <h3 className="inputTitle">Sobrenome:</h3>
-                <TextBox placeholder="e.g.: Silva" text={lastName} onChange={(e) => setLastName(e.target.value)} />
+                <h3 className="inputTitle">EDV:</h3>
+                <TextBox placeholder="e.g.: 9290XXXX" text={edv} onChange={(e) => setEDV(e.target.value)} />
             </div>
             <div className="divInput">
-                <h3 className="inputTitle">Email:</h3>
-                <TextBox placeholder="e.g.: joao.silva@br.bosch.com" text={email} onChange={(e) => setEmail(e.target.value)} />
+                <h3 className="inputTitle">Data de nascimento:</h3>
+                <TextBox placeholder="e.g.: XX/XX/XXXX" type="date" text={birthdate} onChange={(e) => setBirthdate(e.target.value)} />
             </div>
             <div className="divInput">
                 <h3 className="inputTitle">Senha:</h3>

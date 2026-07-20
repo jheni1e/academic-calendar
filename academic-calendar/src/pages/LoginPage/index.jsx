@@ -4,20 +4,34 @@ import { useNavigate } from "react-router";
 import TextBox from '../../components/TextBox';
 import BoschButton from '../../components/BoschButton';
 import boschImage from "../../images/bosch-renningen.jpg";
+import { postData } from '../../utils/apiBack';
 
 function Login() {
-    const [email, setEmail] = useState("");
+    const [edv, setEdv] = useState("");
     const [password, setPassword] = useState("");
 
     const navigate = useNavigate();
 
-    const handleLogin = () => {
-        var payload = {
-            email: email,
-            password: password
-        };
+    const handleLogin = async () => {
+        try {
+            const payload = {
+                edv: Number(edv),
+                password
+            };
 
-        //chamada de api para logar
+            const logged = await postData("/auth/login", payload);
+
+            console.log(logged)
+
+            if (logged?.token) {
+                localStorage.setItem("token", logged.token);
+                navigate("/home");
+            }
+
+        } catch (error) {
+            console.error(error);
+            alert(error.message);
+        }
     };
 
     return (
@@ -35,8 +49,8 @@ function Login() {
                     </div>
 
                     <div className="divInput">
-                        <h3 className="inputTitle">Email</h3>
-                        <TextBox placeholder="Insira seu email" text={email} onChange={(e) => setEmail(e.target.value)} />
+                        <h3 className="inputTitle">EDV</h3>
+                        <TextBox placeholder="Insira seu edv" text={edv} onChange={(e) => setEdv(e.target.value)} />
                     </div>
 
                     <div className="divInput">
