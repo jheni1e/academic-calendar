@@ -2,19 +2,35 @@ import ViewSubjectComponent from "../../components/ViewSubjectComponent";
 import BoschButton from "../../components/BoschButton";
 import "./index.css";
 import MenuSideBar from "../../components/MenuSideBar";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Dialog from "../../components/Dialog";
 
 function Subject() {
   const [selectedValue, setSelectedValue] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [subjects, setSubjects] = useState([])
 
-  const subjects = [
-    { name: "IOT", reponsible: "Patrick", class: "dta", percentage: 78 },
-    { name: "Projeto FullStack", reponsible: "Cristian", class: "dta", percentage: 98 },
-    { name: "Excell", reponsible: "Queila", class: "analise", percentage: 68 },
-    { name: "Python", reponsible: "Queila", class: "analise", percentage: 47 },
-  ]
+  useEffect(() => {
+    loadSubjects();
+  }, []);
+  
+  const loadSubjects = async () => {
+    try {
+        const response = await getData("subject/all");
+        const data = await response.json();
+        setSubjects(data);
+        console.log(data)
+    } catch (error) {
+        console.error(error);
+    }
+  };
+
+  // const subjects = [
+  //   { name: "IOT", reponsible: "Patrick", class: "dta", percentage: 78 },
+  //   { name: "Projeto FullStack", reponsible: "Cristian", class: "dta", percentage: 98 },
+  //   { name: "Excell", reponsible: "Queila", class: "analise", percentage: 68 },
+  //   { name: "Python", reponsible: "Queila", class: "analise", percentage: 47 },
+  // ]
 
   const listMenu = [
     { value: "analise", label: "Análise" },
