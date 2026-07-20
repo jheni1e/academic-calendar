@@ -1,0 +1,260 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum ReservationStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+}
+
+enum UserRole {
+  ADMIN
+  INSTRUCTOR
+  APPRENTICE
+}
+
+enum EventType {
+  LESSON
+  ASSESSMENT
+  FEEDBACK
+  EXTERNAL
+  PERSONAL
+  OTHER
+}
+
+enum EventStatus {
+  SCHEDULED
+  COMPLETED
+  CANCELLED
+}
+
+enum ParticipationStatus {
+  PENDING
+  CONFIRMED
+  DECLINED
+  ATTENDED // Optional
+  CANCELLED
+}
+
+model User {
+  user_id  Int      @id @default(autoincrement())
+  user_edv Int      @unique
+  name     String
+  birthday DateTime
+  password String
+  role UserRole
+
+  is_active  Boolean  @default(true)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  participations Participation[]
+  subjectAssignments       SubjectInstructor[]
+  classes        ClassUser[]
+  createdEvents  Event[]             @relation("CreatedEvents")
+  recurrences    Recurrence[]
+}
+
+model Class {
+  class_id  Int     @id @default(autoincrement())
+  name      String
+  is_active Boolean @default(true)
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  class_users ClassUser[]
+  subjects    Subject[]
+  events      Event[]
+
+  @@index([is_active])
+}
+
+model ClassUser {
+  class_user_id Int @id @default(autoincrement())
+  class_id      Int
+  user_id       Int
+
+  class Class @relation(fields: [class_id], references: [class_id])
+  user  User  @relation(fields: [user_id], references: [user_id])
+
+  @@unique([class_id, user_id], name: "class_user_unique")
+  @@index([user_id])
+  @@index([class_id])
+}
+
+model Subject {
+  subject_id Int      @id @default(autoincrement())
+  name       String
+
+  workload   Int
+  completed_workload Int
+
+  start_date DateTime
+  end_date   DateTime?
+  class_id   Int
+  is_active  Boolean  @default(true)
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  responsables SubjectInstructor[]
+
+  class        Class         @relation(fields: [class_id], references: [class_id])
+  subjectRooms SubjectRoom[]
+
+  @@index([class_id])
+  @@index([is_active])
+}
+
+model SubjectInstructor {
+  subject_instructor_id Int @id @default(autoincrement())
+  subject_id            Int
+  instructor_id         Int
+  events Event[]
+
+  subject    Subject @relation(fields: [subject_id], references: [subject_id])
+  instructor User    @relation(fields: [instructor_id], references: [user_id])
+
+  @@unique([subject_id, instructor_id], name: "subject_instructor_unique")
+  @@index([subject_id])
+  @@index([instructor_id])
+}
+
+model SubjectRoom {
+  subject_room_id Int @id @default(autoincrement())
+  room_id         Int
+  subject_id      Int
+  priority        Int
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  subject Subject @relation(fields: [subject_id], references: [subject_id])
+  room    Room    @relation(fields: [room_id], references: [room_id])
+
+  @@unique([subject_id, priority])
+  @@unique([subject_id, room_id])
+  @@index([room_id])
+  @@index([subject_id])
+}
+
+model Event {
+  event_id      Int     @id @default(autoincrement())
+  title         String
+  description   String?
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  subject_instructor_id Int?
+  class_id      Int?
+  recurrence_id Int?
+  created_by    Int
+
+  start_date DateTime
+  end_date   DateTime
+  event_type EventType
+
+  is_blocked Boolean @default(false)
+
+  status EventStatus @default(SCHEDULED)
+  participations Participation[]
+  reservation    Reservation?
+  recurrence     Recurrence?     @relation(fields: [recurrence_id], references: [recurrence_id])
+  subject_instructor SubjectInstructor?  @relation(fields: [subject_instructor_id], references: [subject_instructor_id])
+
+  class      Class?    @relation(fields: [class_id], references: [class_id])
+  creator    User      @relation("CreatedEvents", fields: [created_by], references: [user_id])
+
+  @@index([subject_instructor_id])
+  @@index([class_id])
+  @@index([created_by])
+  @@index([is_blocked])
+  @@index([recurrence_id])
+  @@index([start_date, end_date])
+  @@index([status])
+  @@index([class_id, start_date])
+}
+
+model Recurrence {
+  recurrence_id Int                 @id @default(autoincrement())
+  series_name   String              
+
+  repeat_until DateTime?
+  occurrences  Int?
+  created_by   Int
+
+  monday    Boolean @default(false)
+  tuesday   Boolean @default(false)
+  wednesday Boolean @default(false)
+  thursday  Boolean @default(false)
+  friday    Boolean @default(false)
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  creator User    @relation(fields: [created_by], references: [user_id])
+  events  Event[]
+
+  @@index([created_by])
+}
+
+model Room {
+  room_id     Int     @id @default(autoincrement())
+  title String @unique
+  capacity    Int
+  description String?
+  is_active   Boolean @default(true)
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  reservations Reservation[]
+  subjectRooms SubjectRoom[]
+
+  @@index([is_active])
+}
+
+model Reservation {
+  reservation_id Int               @id @default(autoincrement())
+  description    String?
+  room_id        Int
+  event_id       Int               @unique
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  room  Room  @relation(fields: [room_id], references: [room_id])
+  event Event @relation(fields: [event_id], references: [event_id])
+
+  @@index([room_id])
+  @@index([event_id])
+}
+
+model Participation {
+  participation_id Int                 @id @default(autoincrement())
+  user_id          Int
+  event_id         Int
+  status           ParticipationStatus
+
+  user       User      @relation(fields: [user_id], references: [user_id])
+  event      Event     @relation(fields: [event_id], references: [event_id])
+
+  @@unique([user_id, event_id], name: "user_event_unique")
+  @@index([user_id])
+  @@index([event_id])
+}

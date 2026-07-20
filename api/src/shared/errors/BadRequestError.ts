@@ -1,0 +1,9 @@
+import { AppError } from "./AppError.ts";
+
+export class BadRequestError extends AppError {
+
+    constructor(message: string) {
+        super(message, 400);
+    }
+
+}
