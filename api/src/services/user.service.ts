@@ -62,6 +62,7 @@ export const findUserById = async (
 
     return {
         edv: user.user_edv,
+        id: user.user_id,
         name: user.name,
         isActive: user.is_active
     };
@@ -74,7 +75,8 @@ export const findAllUsers = async() : Promise<UserResponseDTO[] | null> => {
     return users.map(({ password, ...user }) => ({
         edv: user.user_edv,
         name: user.name,
-        isActive: user.is_active
+        isActive: user.is_active,
+        id: user.user_id
     }));
 }
 

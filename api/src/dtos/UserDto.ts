@@ -13,6 +13,7 @@ export interface UpdateUserDTO {
 }
 
 export interface UserResponseDTO {
+    id: number,
     edv: number;
     name: string;
     isActive: boolean;

@@ -22,20 +22,9 @@ export const login = async (edv: number, password: string) => {
         throw new Error("Invalid password");
     }
 
-    const assignments = await prisma.assignment.findMany({
-        where: {
-            user_id: user.user_id
-        },
-        include: {
-            role: true
-    }
-    });
-
-    const roles = assignments.map(a => a.role.name);
-
     return generateToken({
         id: user.user_id,
         edv: user.user_edv,
-        role: roles
+        role: user.role
     });
 }
