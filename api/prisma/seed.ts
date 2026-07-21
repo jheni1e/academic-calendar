@@ -87,31 +87,31 @@ async function main() {
                 class_id: mec25.class_id,
                 name: "IoT",
                 workload: 40,
-                start_date: "2026-07-20T00:00:00Z"
+                start_date: new Date("2026-07-20T00:00:00Z")
             },
             {
                 class_id: add2.class_id,
                 name: "Python",
                 workload: 60,
-                start_date: "2026-07-27T00:00:00Z"
+                start_date: new Date("2026-07-27T00:00:00Z")
             },
             {
                 class_id: dta3.class_id,
                 name: "C# Básico",
                 workload: 80,
-                start_date: "2026-07-20T00:00:00Z"
+                start_date: new Date("2026-07-20T00:00:00Z")
             },
             {
                 class_id: mec26.class_id,
                 name: "Excel",
                 workload: 30,
-                start_date: "2026-08-03T00:00:00Z"
+                start_date: new Date("2026-08-03T00:00:00Z")
             },
             {
                 class_id: man25.class_id,
                 name: "Power BI",
                 workload: 34,
-                start_date: "2026-08-10T00:00:00Z"
+                start_date: new Date("2026-08-10T00:00:00Z")
             },
         ],
         skipDuplicates: true,
