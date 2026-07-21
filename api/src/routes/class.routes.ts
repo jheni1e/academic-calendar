@@ -16,8 +16,8 @@ route
     .post('/participants', authMiddleware, authorize(UserRole.ADMIN, UserRole.INSTRUCTOR), ClassUserController.create) // add a new participant
 
     .get('/all', authMiddleware, authorize(UserRole.ADMIN, UserRole.INSTRUCTOR), ClassController.findAll) // get all classes
-    .get('/:id', authMiddleware, authorize(UserRole.ADMIN, UserRole.INSTRUCTOR), ClassController.findClassById) // get class by id
-    .get('/participants/:id', authMiddleware, ClassUserController.findClassUsersByClass) // get participants by class id
+    .get('/:id', authMiddleware, authorize(UserRole.ADMIN, UserRole.INSTRUCTOR), validateClassExistsById, ClassController.findClassById) // get class by id
+    .get('/participants/:id', authMiddleware, validateClassExistsById, ClassUserController.findClassUsersByClass) // get participants by class id
 
     .put('/:id', authMiddleware, authorize(UserRole.ADMIN, UserRole.INSTRUCTOR), validateClassExistsById, ClassController.update) // get class by id
     .put("/enable/:id", authMiddleware, authorize(UserRole.ADMIN, UserRole.INSTRUCTOR), validateClassExistsById, ClassController.enable) // enable class

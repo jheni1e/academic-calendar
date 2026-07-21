@@ -52,7 +52,7 @@ export const validateCreate = async (req: Request, res: Response, next: NextFunc
     }
 }
 
-export const validateDectivate = async (req: Request, res: Response, next: NextFunction) => {
+export const validateDeactivate = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const roomId: number = parseInt(req.params.id.toString());
 
@@ -170,3 +170,20 @@ export const validateUpdate = async (req: Request, res: Response, next: NextFunc
         next(error);
     }
 }
+
+export const validateRoomExistsById = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const roomId: number = parseInt(req.params.id.toString());
+
+        const room = await findRoomById(roomId);
+
+        if (!room) {
+            throw new NotFoundError("Room not found.");
+        }
+
+        next();
+    } catch (error) {
+        next(error);
+    }
+}
+        
