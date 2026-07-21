@@ -20,6 +20,7 @@ route
     .get('/classes', authMiddleware, ClassUserController.findClassUsersByUser) // get classes of the authenticated user
     .get('/classes/:classId', authMiddleware, ClassUserController.findClassUsersByClassAndUser) // get class by id 
     .get('/events/', authMiddleware, ParticipationController.findParticipationByUser) // get events by user
+    .get('/instructors', authMiddleware, UserController.getInstructors)
 
     .put('/:id', authMiddleware, UserController.update) // update user by id
     .put('/disable/:id', authMiddleware, authorize(Role.ADMIN, Role.INSTRUCTOR), UserController.disable) // disable a user instead of deleting them

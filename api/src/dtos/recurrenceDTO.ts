@@ -10,8 +10,11 @@ export class CreateRecurrenceDTO {
 }
 
 export interface UpdateRecurrenceDTO {
-    endDate?: Date;
+    recurrence_id: number;
+
+    repeat_until?: Date;
     occurrences?: number;
+
     monday?: boolean;
     tuesday?: boolean;
     wednesday?: boolean;

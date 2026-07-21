@@ -19,23 +19,27 @@ export const createRecurrence = async (data: CreateRecurrenceDTO) => {
 }
 
 export const updateRecurrence = async (data: UpdateRecurrenceDTO) => {
-    const { endDate, occurrences, monday, tuesday, wednesday, thursday, friday } = data;
 
-    return await prisma.recurrence.update({
+    const { recurrence_id, repeat_until, occurrences, monday, tuesday, wednesday, thursday, friday } = data;
+
+    return prisma.recurrence.update({
+        where: {
+            recurrence_id
+        },
         data: {
-            endDate: endDate,
-            occurrences: occurrences,
-            monday: monday,
-            tuesday: tuesday,
-            wednesday: wednesday,
-            thursday: thursday,
-            friday: friday
+            repeat_until,
+            occurrences,
+            monday,
+            tuesday,
+            wednesday,
+            thursday,
+            friday
         }
     });
-}
+};
 
 export const deleteRecurrence = async (data: number) => {
-    return await prisma.recurrence.update({
+    return prisma.recurrence.delete({
         where: {
             recurrence_id: data
         }

@@ -60,6 +60,9 @@ export const findClassUsersByClass =  async (
     return await prisma.classUser.findMany({
         where: {
             class_id: classId
+        },
+        include: {
+            user: true
         }
     });
 }

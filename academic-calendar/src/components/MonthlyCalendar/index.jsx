@@ -165,7 +165,7 @@ function MonthlyCalendar({ initialDate, compact = false, type }) {
                 ))}
 
                 {days.map((day) => (
-                  <DayCell key={day} day={day} events={[]} viewMode={viewMode} />
+                  <DayCell key={day} day={day} events={[]} viewMode={viewMode} compact={compact} />
                 ))}
               </>
             )}
