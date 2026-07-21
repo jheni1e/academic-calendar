@@ -137,3 +137,22 @@ export const disableUser = async (
         }
     });
 }
+
+export const getInstructors = async () : Promise<UserResponseDTO[]> => {
+    const users =  await prisma.user.findMany({
+        where: {
+            role: {
+                in: ["ADMIN", "INSTRUCTOR"]
+            }
+        }
+    })
+
+    return users.map(({ password, ...user }) => ({
+        edv: user.user_edv,
+        name: user.name,
+        isActive: user.is_active,
+        id: user.user_id,
+        role: user.role,
+        birthdate: user.birthday
+    }));
+}
