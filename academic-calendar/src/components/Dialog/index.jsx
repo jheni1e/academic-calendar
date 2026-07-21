@@ -10,6 +10,8 @@ import { getData } from "../../utils/apiBack";
 function Dialog({ isOpen, onClose, type, title }) {
     const dialogRef = useRef(null);
     const [responsible, setResponsible] = useState(null);
+    const [allPeople, setAllPeople] = useState([]);
+
     const [classs, setClasss] = useState(null);
     const [selectedClass, setSelectedClass] = useState(null);
     const [allClasses, setAllClasses] = useState([]);
@@ -49,6 +51,7 @@ function Dialog({ isOpen, onClose, type, title }) {
     useEffect(() => {
         getAllRooms();
         getAllClasses();
+        getAllPeople();
     }, []);
 
     const getAllRooms = async () => {
@@ -77,6 +80,22 @@ function Dialog({ isOpen, onClose, type, title }) {
             }));
 
             setAllClasses(formatedClasses);
+        } catch (error) {
+            console.error(error);
+            alert(error.message);
+        }
+    };
+
+    const getAllPeople = async () => {
+        try {
+            const people = await getData("/user/all");
+
+            const formatedPeople = people.map((p) => ({
+                value: p.id,
+                label: p.name
+            }));
+
+            setAllPeople(formatedPeople);
         } catch (error) {
             console.error(error);
             alert(error.message);
@@ -231,7 +250,7 @@ function Dialog({ isOpen, onClose, type, title }) {
                             <div className="dialogInput">
                                 <h4>Participantes:</h4>
                                 <div className="itemSelector">
-                                    <DropdownList options={usersMock} selectedValue={selectedParticipant} onChange={(e) => setSelectedParticipant(Number(e.target.value))} />
+                                    <DropdownList options={allPeople} selectedValue={selectedParticipant} onChange={(e) => setSelectedParticipant(Number(e.target.value))} />
                                     <button onClick={addParticipant} className="addItem">+</button>
                                 </div>
                             </div>
