@@ -32,26 +32,13 @@ function Subject() {
 const loadSubjects = async () => {
     console.log("materias")
   try {
-    const data = await getData("/subject/all");
+    const data = await getData("/ subject/all");
     setSubjects(data);
     console.log(data);
   } catch (error) {
     console.error(error);
   }
 }
-
-  // const subjects = [
-  //   { name: "IOT", reponsible: "Patrick", class: "dta", percentage: 78 },
-  //   { name: "Projeto FullStack", reponsible: "Cristian", class: "dta", percentage: 98 },
-  //   { name: "Excell", reponsible: "Queila", class: "analise", percentage: 68 },
-  //   { name: "Python", reponsible: "Queila", class: "analise", percentage: 47 },
-  // ]
-
-  // const listMenu = [
-  //   { value: "analise", label: "Análise" },
-  //   { value: "dta", label: "DTA" },
-  //   { value: "manufatura", label: "Manufatura" }
-  // ];
 
   console.log(selectedValue);
   return (
