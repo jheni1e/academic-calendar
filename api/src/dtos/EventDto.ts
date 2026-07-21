@@ -9,8 +9,12 @@ export interface CreateEventDTO {
     eventType: EventType;
 
     subjectInstructorId: number;
+
     classId?: number;
-    recurrence?: CreateRecurrenceDTO;
+    roomId?: number;
+
+    recurrenceId?: number;
+
     startDate: Date;
     endDate: Date;
 
@@ -18,6 +22,7 @@ export interface CreateEventDTO {
 }
 
 export interface UpdateEventDTO {
+
     title?: string;
     description?: string;
 
