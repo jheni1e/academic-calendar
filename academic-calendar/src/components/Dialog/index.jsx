@@ -10,6 +10,7 @@ import { getData } from "../../utils/apiBack";
 function Dialog({ isOpen, onClose, type, title }) {
     const dialogRef = useRef(null);
     const [responsible, setResponsible] = useState(null);
+    const [allInstructors, setAllInstructors] = useState([]);
     const [allPeople, setAllPeople] = useState([]);
 
     const [classs, setClasss] = useState(null);
@@ -52,6 +53,7 @@ function Dialog({ isOpen, onClose, type, title }) {
         getAllRooms();
         getAllClasses();
         getAllPeople();
+        getAllInstructors();
     }, []);
 
     const getAllRooms = async () => {
@@ -102,6 +104,22 @@ function Dialog({ isOpen, onClose, type, title }) {
         }
     };
 
+    const getAllInstructors = async () => {
+        try {
+            const people = await getData("/user/instructors");
+
+            const formatedInstructors = people.map((p) => ({
+                value: p.id,
+                label: p.name
+            }));
+
+            setAllInstructors(formatedInstructors);
+        } catch (error) {
+            console.error(error);
+            alert(error.message);
+        }
+    };
+
     const addRoom = () => {
         if (!selectedRoom) return;
 
@@ -135,7 +153,7 @@ function Dialog({ isOpen, onClose, type, title }) {
     const addParticipant = () => {
         if (!selectedParticipant) return;
 
-        const participant = usersMock.find(
+        const participant = allPeople.find(
             user => user.value === selectedParticipant
         );
 
@@ -150,30 +168,6 @@ function Dialog({ isOpen, onClose, type, title }) {
     const removeParticipant = (id) => {
         setParticipants(participants.filter(p => p.value !== id));
     };
-
-    const usersMock = [
-        { value: 1, label: "Fabio Silveira" },
-        { value: 2, label: "Queila Lima" },
-        { value: 3, label: "Rebeca Ianz" },
-        { value: 4, label: "Patrick Pereira" },
-        { value: 5, label: "Gabriel Bernadelli" },
-    ];
-
-    const salasMock = [
-        { value: 1, label: "Sala Digital" },
-        { value: 2, label: "Fábrica" },
-        { value: 3, label: "Sala Fábio" },
-        { value: 4, label: "Sala Fedida" },
-        { value: 5, label: "War Room" },
-    ];
-
-    const turmasMock = [
-        { value: 1, label: "MEC25" },
-        { value: 2, label: "DTA3" },
-        { value: 3, label: "MEC26" },
-        { value: 4, label: "ADD2" },
-        { value: 5, label: "MAN25" },
-    ];
 
     const typeEvents = [
         { value: 1, label: "Evento" },
@@ -203,7 +197,7 @@ function Dialog({ isOpen, onClose, type, title }) {
                     </div>
                     <div className="dialogInput">
                         <h4>Responsável:</h4>
-                        <DropdownList options={usersMock} selectedValue={responsible} onChange={(e) => setResponsible(e.target.value)} />
+                        <DropdownList options={allInstructors} selectedValue={responsible} onChange={(e) => setResponsible(e.target.value)} />
                     </div>
                     <div className="dialogInput">
                         <h4>Carga horária:</h4>
@@ -285,7 +279,7 @@ function Dialog({ isOpen, onClose, type, title }) {
                         <>
                             <div className="dialogInput">
                                 <h4>Professor:</h4>
-                                <DropdownList options={usersMock} selectedValue={responsible} onChange={(e) => setResponsible(e.target.value)} />
+                                <DropdownList options={allInstructors} selectedValue={responsible} onChange={(e) => setResponsible(e.target.value)} />
                             </div>
                             <div className="dialogInput">
                                 <h4>Início:</h4>
@@ -305,7 +299,7 @@ function Dialog({ isOpen, onClose, type, title }) {
                         <>
                             <div className="dialogInput">
                                 <h4>Professor:</h4>
-                                <DropdownList options={usersMock} selectedValue={responsible} onChange={(e) => setResponsible(e.target.value)} />
+                                <DropdownList options={allInstructors} selectedValue={responsible} onChange={(e) => setResponsible(e.target.value)} />
                             </div>
                             <div className="dialogInput">
                                 <h4>Sala:</h4>
