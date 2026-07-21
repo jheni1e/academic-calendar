@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { CreateUserDTO, UpdateUserDTO } from "../dtos/UserDto.ts";
-import { createUser, disableUser, findAllUsers, findUserByEdv, findUserById, updateUser } from "../services/user.service.ts";
+import { createUser, disableUser, findAllUsers, findUserByEdv, findUserById, getInstructors, updateUser } from "../services/user.service.ts";
 import { hashPassword } from "../app/utils/password.ts";
 import { UserRole } from "../generated/prisma/enums.ts";
 
@@ -115,6 +115,15 @@ export class UserController {
             if (error instanceof Error)
                 return res.status(401).send({ message: error.message})
             return res.status(500).send({ message: "Internal server error"})
+        }
+    }
+
+    static async getInstructors(req: Request, res: Response) {
+        try {
+            const users = await getInstructors();
+            return res.status(200).send(users)
+        } catch(error) {
+            return res.status(401).send({ message: error})
         }
     }
 
