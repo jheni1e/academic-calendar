@@ -2,6 +2,9 @@ import { NextFunction, Request, Response } from "express";
 import { prisma } from "../../lib/prisma.ts";
 import { NotFoundError } from "../errors/NotFoundError.ts";
 import { ConflictError } from "../errors/ConflictError.ts";
+import { findRoomById } from "../../services/room.service.ts";
+import { findEventById } from "../../services/event.service.ts";
+import { findReservationById } from "../../services/reservation.service.ts";
 
 export const validateCreate = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -22,7 +25,7 @@ export const validateCreate = async (req: Request, res: Response, next: NextFunc
 
         const hasConflict = await prisma.reservation.findFirst({
             where: {
-                roomId,
+                room_id,
                 scheduleStart: {
                     lt: end,
                 },
@@ -36,9 +39,7 @@ export const validateCreate = async (req: Request, res: Response, next: NextFunc
             throw new ConflictError("This room is already being used.");
         }
 
-        const room = await prisma.room.findFirst({
-            where: { id: roomId },
-        });
+        const room = await findRoomById(roomId)
 
         if (!room) {
             throw new NotFoundError("Room not found.");
@@ -48,9 +49,7 @@ export const validateCreate = async (req: Request, res: Response, next: NextFunc
             throw new Error("Room is not active.");
         }
 
-        const event = await prisma.events.findFirst({
-            where: { id: eventId },
-        });
+        const event = await findEventById(eventId)
 
         if (!event) {
             throw new NotFoundError("Event not found.");
@@ -66,20 +65,10 @@ export const validateDelete = async (req: Request, res: Response, next: NextFunc
     try {
         const reservationId: number = parseInt(req.params.id.toString());
 
-        const reservation = await prisma.reservation.findFirst({
-            where: { id: reservationId },
-        });
+        const reservation = await findReservationById(reservationId)
 
         if (!reservation) {
             throw new NotFoundError("Reservation not found.");
-        }
-
-        if (reservation.isBlocked) {
-            throw new Error("The reservation is blocked.");
-        }
-
-        if (reservation.status === "CONFIRMED") {
-            throw new Error("Cannot delete confirmed reservation.");
         }
 
         next();
@@ -93,47 +82,30 @@ export const validateUpdate = async (req: Request, res: Response, next: NextFunc
         const reservationId: number = parseInt(req.params.id.toString());
         const { roomId, eventId, scheduleStart, scheduleEnd, status, isBlocked, description } = req.body;
 
-        const reservation = await prisma.reservation.findFirst({
-            where: { id: reservationId },
-        });
+        const reservation = await findReservationById(reservationId)
 
         if (!reservation) {
             throw new NotFoundError("Reservation not found.");
         }
 
-        if (reservation.isBlocked) {
-            throw new Error("The reservation is blocked.");
-        }
+        // const hasConflict = await prisma.reservation.findFirst({
+        //     where: {
+        //         room_id: roomId ?? reservation.room_id,
+        //         id: {
+        //             not: reservationId,
+        //         },
+        //         scheduleStart: {
+        //             lt: end,
+        //         },
+        //         scheduleEnd: {
+        //             gt: start,
+        //         },
+        //     },
+        // });
 
-        const start = new Date(scheduleStart ?? reservation.scheduleStart);
-        const end = new Date(scheduleEnd ?? reservation.scheduleEnd);
-
-        if (start >= end) {
-            throw new Error("Start date must be scheduled before finish date.");
-        }
-
-        if (start < new Date()) {
-            throw new Error("Cannot update reservation to a past date.");
-        }
-
-        const hasConflict = await prisma.reservation.findFirst({
-            where: {
-                roomId: roomId ?? reservation.roomId,
-                id: {
-                    not: reservationId,
-                },
-                scheduleStart: {
-                    lt: end,
-                },
-                scheduleEnd: {
-                    gt: start,
-                },
-            },
-        });
-
-        if (hasConflict) {
-            throw new ConflictError("This room is already being used.");
-        }
+        // if (hasConflict) {
+        //     throw new ConflictError("This room is already being used.");
+        // }
 
         next();
     } catch (error) {

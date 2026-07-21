@@ -3,6 +3,8 @@ import { Request, Response } from "express";
 import { AppError } from "../shared/errors/AppError.ts";
 import { CreateSubjectInstructorDTO, UpdateSubjectInstructorDTO } from "../dtos/SubjectInstructorDto.ts";
 import { createSubjectInstructor, deleteSubjectInstructor, findAllSubjectInstructors, findSubjectInstructorById, findSubjectInstructorBySubjectAndInstructor, findSubjectInstructorsByInstructor, findSubjectInstructorsBySubject, updateSubjectInstructor } from "../services/subjectinstructor.service.ts";
+import { findUserById } from "../services/user.service.ts";
+import { UserRole } from "../generated/prisma/enums.ts";
 
 export class SubjectInstructorController {
     static async create(req: Request, res: Response) {
@@ -10,8 +12,8 @@ export class SubjectInstructorController {
 
         try {
             const subjectInstructor = await createSubjectInstructor(data);
-
             return res.status(201).json(subjectInstructor);
+
         } catch (error) {
             if (error instanceof AppError) {
                 return res.status(error.statusCode).json({ 
@@ -28,15 +30,14 @@ export class SubjectInstructorController {
 
         try {
             await deleteSubjectInstructor(id);
-
             return res.status(204).send({ message: "Subject deleted successfully." });
+
         } catch (error) {
             if (error instanceof AppError) {
                 return res.status(error.statusCode).json({
                     message: error.message
                 });
             }
-
             return res.status(500).json({ message: "Internal server error." });
         }
     }
@@ -47,8 +48,8 @@ export class SubjectInstructorController {
 
         try {
             const subjectInstructor = await updateSubjectInstructor(id, data);
-
             return res.status(201).json(subjectInstructor);
+
         } catch (error) {
             if (error instanceof AppError) {
                 return res.status(error.statusCode).json({ 
@@ -63,8 +64,8 @@ export class SubjectInstructorController {
     static async findAllSubjectInstructors(req: Request, res: Response) {
         try {
             const subjectInstructors = await findAllSubjectInstructors();
-
             return res.status(200).json(subjectInstructors);
+
         } catch (error) {
             if (error instanceof AppError) {
                 return res.status(error.statusCode).json({
@@ -81,8 +82,8 @@ export class SubjectInstructorController {
 
         try {
             const subjectInstructor = await findSubjectInstructorById(id);
-
             return res.status(200).json(subjectInstructor);
+            
         } catch (error) {
             if (error instanceof AppError) {
                 return res.status(error.statusCode).json({

@@ -2,6 +2,12 @@ import { NextFunction, Request, Response } from "express";
 import { prisma } from "../../lib/prisma.ts";
 import { NotFoundError } from "../errors/NotFoundError.ts";
 import { ForbiddenError } from "../errors/ForbiddenError.ts";
+import { findClassById } from "../../services/class.service.ts";
+import { findSubjectById } from "../../services/subject.service.ts";
+import { findSubjectInstructorBySubjectAndInstructor } from "../../services/subjectinstructor.service.ts";
+import { findUserById } from "../../services/user.service.ts";
+import { findEventById } from "../../services/event.service.ts";
+import { findReservationByEvent } from "../../services/reservation.service.ts";
 
 export const validateCreate = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -27,9 +33,7 @@ export const validateCreate = async (req: Request, res: Response, next: NextFunc
         }
 
         if (classId) {
-            const classItem = await prisma.class.findUnique({
-                where: { id: classId },
-            });
+            const classItem = await findClassById(classId)
 
             if (!classItem) {
                 throw new Error("Class not found.");
@@ -37,20 +41,13 @@ export const validateCreate = async (req: Request, res: Response, next: NextFunc
         }
 
         if (subjectId) {
-            const subject = await prisma.subject.findUnique({
-                where: { id: subjectId },
-            });
+            const subject = await findSubjectById(subjectId)
 
             if (!subject) {
                 throw new NotFoundError("Subject not found.");
             }
 
-            const subjectInstructor = await prisma.subjectinstructor.findUnique({
-                where: {
-                    subject_id: subjectId,
-                    instructor_id: instructorId
-                }
-            });
+            const subjectInstructor = await findSubjectInstructorBySubjectAndInstructor(subjectId, instructorId)
 
             if (!subjectInstructor) {
                 throw new Error("The instructor is not linked to the subject.");
@@ -58,9 +55,7 @@ export const validateCreate = async (req: Request, res: Response, next: NextFunc
         }
 
         if (createdBy) {
-            const creator = await prisma.user.findUnique({
-                where: { id: createdBy },
-            });
+            const creator = await findUserById(createdBy)
 
             if (!creator) {
                 throw new NotFoundError("Creator doesn't exists.");
@@ -77,17 +72,13 @@ export const validateDelete = async (req: Request, res: Response, next: NextFunc
     try {
         const eventId: number = parseInt(req.params.id[0].toString());
 
-        const event = await prisma.events.findFirst({
-            where: { id: eventId },
-        });
+        const event = await findEventById(eventId)
 
         if (!event) {
             throw new NotFoundError("Event not found");
         }
 
-        const reservation = await prisma.reservation.findFirst({
-            where: { eventId: eventId },
-        });
+        const reservation = await findReservationByEvent(eventId)
 
         if (reservation) {
             throw new ForbiddenError("Cannot delete an event with a reservation.");
@@ -104,9 +95,7 @@ export const validateUpdate = async (req: Request, res: Response, next: NextFunc
         const { title, description, eventTypeId, subjectId, classId, recurrence, createdBy } = req.body;
         const eventId: number = parseInt(req.params.id.toString());
 
-        const event = await prisma.events.findFirst({
-            where: { id: eventId },
-        });
+        const event = await findEventById(eventId)
 
         if (!event) {
             throw new NotFoundError("Event not found.");
@@ -130,9 +119,7 @@ export const validateEventExistsById = async (req: Request, res: Response, next:
     try {
         const eventId: number = parseInt(req.params.id[0].toString());
 
-        const event = await prisma.events.findFirst({
-            where: { id: eventId },
-        });
+        const event = await findEventById(eventId)
 
         if (!event) {
             throw new NotFoundError("Event not found.");

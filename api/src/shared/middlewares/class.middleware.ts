@@ -2,14 +2,13 @@ import { NextFunction, Request, Response } from "express";
 import { prisma } from "../../lib/prisma.ts";
 import { ConflictError } from "../errors/ConflictError.ts";
 import { NotFoundError } from "../errors/NotFoundError.ts";
+import { findClassById } from "../../services/class.service.ts";
 
 export const validateActivate = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const classId: number = parseInt(req.params.id.toString());
 
-        const classItem = await prisma.class.findFirst({
-            where: { id: classId },
-        });
+        const classItem = await findClassById(classId)
 
         if (!classItem) {
             throw new Error("Class not found.");
@@ -32,7 +31,6 @@ export const validateCreate = async (req: Request, res: Response, next: NextFunc
         if (!name.trim()) {
             throw new Error("Class name is required.");
         }
-
         next();
     } catch (error) {
         next(error);
@@ -43,9 +41,7 @@ export const validateDectivate = async (req: Request, res: Response, next: NextF
     try {
         const classId: number = parseInt(req.params.id.toString());
 
-        const classItem = await prisma.class.findFirst({
-            where: { id: classId },
-        });
+        const classItem = await findClassById(classId)
 
         if (!classItem) {
             throw new Error("Class not found.");
@@ -65,16 +61,15 @@ export const validateDelete = async (req: Request, res: Response, next: NextFunc
     try {
         const classId: number = parseInt(req.params.id.toString());
 
-        const classItem = await prisma.class.findFirst({
-            where: { id: classId },
-        });
+        const classItem = await findClassById(classId)
 
-        const users = await prisma.users.findMany({
-            where: { classId: classId },
-        });
+        if(classItem) {
+            if (classItem.is_active)
+                return res.status(400).send({ message: "Class is still active"})
+        }
 
-        const events = await prisma.events.findMany({
-            where: { classId: classId },
+        const events = await prisma.event.findMany({
+            where: { class_id: classId },
         });
 
         if (!classItem) {
@@ -85,20 +80,11 @@ export const validateDelete = async (req: Request, res: Response, next: NextFunc
             throw new Error("Only inactive classes can be deleted.");
         }
 
-        if (users.length > 0)
-            throw new ConflictError(
-                "Cannot delete a class with enrolled users."
-            );
-
         if (events.length > 0) {
             throw new ConflictError(
                 "Cannot delete a class with events."
             );
         }
-
-        // TODO: Need User Type Verification before delete!
-
-        // TODO: Verify if the class has subjects before deleting.
 
         next();
     } catch (error) {
@@ -110,15 +96,13 @@ export const validateClassExistsById = async (req: Request, res: Response, next:
     try {
         const classId: number = parseInt(req.params.id.toString());
 
-        const classItem = await prisma.class.findFirst({
-            where: { id: classId },
-        });
+        const classItem = await findClassById(classId)
 
         if (!classItem) {
             throw new NotFoundError("Class not found.");
         }
 
-        req.class = classItem;
+        res.locals.class = classItem
 
         next();
     } catch (err) {
@@ -131,10 +115,7 @@ export const validateUpdate = async (req: Request, res: Response, next: NextFunc
         const classId: number = parseInt(req.params.id.toString());
         const { name, isActive } = req.body;
 
-        const classItem = await prisma.class.findFirst({
-            where: { id: classId },
-        });
-
+        const classItem = await findClassById(classId)
         if (!classItem) {
             throw new Error("Class not found.");
         }

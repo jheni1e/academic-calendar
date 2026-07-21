@@ -3,6 +3,7 @@ import { prisma } from "../../lib/prisma.ts";
 import { ConflictError } from "../errors/ConflictError.ts";
 import { NotFoundError } from "../errors/NotFoundError.ts";
 import { ForbiddenError } from "../errors/ForbiddenError.ts";
+import { findEventTypeById } from "../../services/eventtype.service.ts";
 
 export const validateCreate = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -22,9 +23,7 @@ export const validateDelete = async (req: Request, res: Response, next: NextFunc
     try {
         const eventTypeId: number = parseInt(req.params.id.toString());
 
-        const eventType =await prisma.eventtype.findFirst({
-            where: { id: eventTypeId },
-        });
+        const eventType = await findEventTypeById(eventTypeId)
 
         if (!eventType) {
             throw new NotFoundError("Event type not found.");
@@ -41,9 +40,7 @@ export const validateUpdate = async (req: Request, res: Response, next: NextFunc
         const { name } = req.body;
         const eventTypeId: number = parseInt(req.params.id.toString());
 
-        const eventType =await prisma.eventtype.findFirst({
-            where: { id: eventTypeId },
-        });
+        const eventType = await findEventTypeById(eventTypeId)
 
         if (!eventType) {
             throw new NotFoundError("Event type not found.");
@@ -63,9 +60,7 @@ export const validateEventRoleExistsById = async (req: Request, res: Response, n
     try {
         const eventTypeId: number = parseInt(req.params.id[0].toString());
 
-        const eventType = await prisma.eventtype.findFirst({
-            where: { id: eventTypeId },
-        });
+        const eventType = await findEventTypeById(eventTypeId)
 
         if (!eventType) {
             throw new NotFoundError("Event type not found.");

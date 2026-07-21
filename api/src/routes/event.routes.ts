@@ -20,6 +20,6 @@ route
     .put('/:id', EventController.update) 
 
     .delete("/:id", EventController.delete)
-    .delete("/participants/remove/:id", ParticipationController.delete)
+    .delete("/participants/remove/:id", ParticipationController.delete) // remove a user from an event
 
 export default route
