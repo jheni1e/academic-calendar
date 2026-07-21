@@ -4,26 +4,41 @@ import "./index.css";
 import MenuSideBar from "../../components/MenuSideBar";
 import { useState, useEffect } from "react";
 import Dialog from "../../components/Dialog";
+import { getData } from '../../utils/apiBack';
 
 function Subject() {
   const [selectedValue, setSelectedValue] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [subjects, setSubjects] = useState([])
+  const [listMenu, setListMenu] = useState([])
 
   useEffect(() => {
     loadSubjects();
+    loadClasses();
   }, []);
   
-  const loadSubjects = async () => {
+  const loadClasses = async () => {
+    console.log("classes")
     try {
-        const response = await getData("subject/all");
-        const data = await response.json();
-        setSubjects(data);
-        console.log(data)
+      const data = await getData("/class/all");
+      setListMenu(data);
+      console.log("Turmas")
+      console.log(data);
     } catch (error) {
-        console.error(error);
+      console.error(error);
     }
   };
+
+const loadSubjects = async () => {
+    console.log("materias")
+  try {
+    const data = await getData("/subject/all");
+    setSubjects(data);
+    console.log(data);
+  } catch (error) {
+    console.error(error);
+  }
+}
 
   // const subjects = [
   //   { name: "IOT", reponsible: "Patrick", class: "dta", percentage: 78 },
@@ -32,11 +47,11 @@ function Subject() {
   //   { name: "Python", reponsible: "Queila", class: "analise", percentage: 47 },
   // ]
 
-  const listMenu = [
-    { value: "analise", label: "Análise" },
-    { value: "dta", label: "DTA" },
-    { value: "manufatura", label: "Manufatura" }
-  ];
+  // const listMenu = [
+  //   { value: "analise", label: "Análise" },
+  //   { value: "dta", label: "DTA" },
+  //   { value: "manufatura", label: "Manufatura" }
+  // ];
 
   console.log(selectedValue);
   return (

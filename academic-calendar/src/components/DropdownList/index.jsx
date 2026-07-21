@@ -4,7 +4,7 @@ import downArrow from '../../images/DownArrow.svg';
 
 function DropdownList({ label, options, selectedValue, onChange, disabled }, ref) {
     const isDisabled = selectedValue === "";
-
+    console.log(options)
     return (
         <div className="a-dropdown a-dropdown--dynamic-width">
             <label>{label}</label>
@@ -12,7 +12,7 @@ function DropdownList({ label, options, selectedValue, onChange, disabled }, ref
                 <select id="dropdown" value={selectedValue} onChange={onChange} ref={ref} disabled={disabled}>
                     <option value="" disabled selected={!selectedValue}>Select an option</option>
                     {options.map((option, index) => (
-                        <option key={index} value={option.value}>{option.label}</option>
+                        <option key={index} value={option.name}>{option.name}</option>
                     ))}
                 </select>
                 {!disabled && <img src={downArrow} className="dropdown-arrow" alt="dropdown arrow" />}
