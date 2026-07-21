@@ -1,156 +1,265 @@
-import { CreateLessonSeriesDTO, ScheduleLessonsDTO } from "../dtos/SchedulerDto.ts";
+import { ScheduleLessonsDTO } from "../dtos/SchedulerDto.ts";
+import { EventType, Recurrence } from "../generated/prisma/client.ts";
 import { prisma } from "../lib/prisma.ts";
-import { createEvent } from "./event.service.ts";
+import { ConflictError } from "../shared/errors/ConflictError.ts";
+import { NotFoundError } from "../shared/errors/NotFoundError.ts";
+import { createEvent, LoadedAssignment } from "./event.service.ts";
+import { createRecurrence } from "./Recurrence.service.ts";
 
 const LESSON_DURATION = 4;
-export const scheduleLessons = async (
+
+const loadAssignment = async (
+    subjectInstructorId: number
+): Promise<LoadedAssignment> => {
+
+    const assignment = await prisma.subjectInstructor.findUnique({
+        where: {
+            subject_instructor_id: subjectInstructorId
+        },
+        include: {
+            instructor: true,
+            subject: {
+                include: {
+                    class: true
+                }
+            }
+        }
+    });
+
+    if (!assignment) {
+        throw new NotFoundError(
+            "Instructor assignment not found."
+        );
+    }
+
+    return assignment;
+};
+
+const createLessonRecurrence = async (
     data: ScheduleLessonsDTO
 ) => {
 
-    const recurrence = await prisma.recurrence.findUnique({
-        where: {
-            recurrence_id: data.recurrenceId
-        }
+    return createRecurrence({
+        ...data.recurrence,
+        created_by: data.createdBy
     });
 
-    if (!recurrence) {
-        throw new Error("Recurrence not found.");
+};
+
+const hasReachedLimit = (
+    recurrence: Recurrence,
+    currentDate: Date,
+    createdLessons: number
+): boolean => {
+
+    if (
+        recurrence.occurrences &&
+        createdLessons >= recurrence.occurrences
+    )
+        return true;
+    
+    if (
+        recurrence.repeat_until &&
+        currentDate > recurrence.repeat_until
+    )
+        return true;
+
+    return false;
+};
+
+const isValidDay = (
+    date: Date,
+    recurrence: Recurrence
+): boolean => {
+
+    switch (date.getDay()) {
+
+        case 1:
+            return recurrence.monday;
+
+        case 2:
+            return recurrence.tuesday;
+
+        case 3:
+            return recurrence.wednesday;
+
+        case 4:
+            return recurrence.thursday;
+
+        case 5:
+            return recurrence.friday;
+
+        default:
+            return false;
     }
+};
 
-    const subjectInstructor =
-        await prisma.subjectInstructor.findUnique({
-            where: {
-                subject_instructor_id: data.subjectInstructorId
-            },
-            include: {
-                subject: true
-            }
-        });
+const buildLessonDates = (
+    date: Date,
+    startHour: string,
+    endHour: string
+): {
+    startDate: Date;
+    endDate: Date;
+} => {
 
-    if (!subjectInstructor) {
-        throw new Error("Subject assignment not found.");
-    }
+    const startDate = new Date(date);
+    const endDate = new Date(date);
 
-    // Implement choice between workload and repeat_until
-    let remainingHours =
-        subjectInstructor.subject.workload -
-        subjectInstructor.subject.completed_workload;
+    const [startH, startM] =
+        startHour.split(":").map(Number);
 
-    let lessonNumber =
-        subjectInstructor.subject.completed_workload /
-        LESSON_DURATION + 1;
+    const [endH, endM] =
+        endHour.split(":").map(Number);
 
-    let currentDate = new Date(data.startDate);
-    let createdLessons = 0;
+    startDate.setHours(startH, startM, 0, 0);
+    endDate.setHours(endH, endM, 0, 0);
 
-    while (remainingHours >= LESSON_DURATION) {
+    return {
+        startDate,
+        endDate
+    };
+};
 
-        if (recurrence.repeat_until &&
-            currentDate > recurrence.repeat_until) {
-            break;
-        }
-
-        if (
-            recurrence.occurrences &&
-            createdLessons >= recurrence.occurrences
-        ) {
-            break;
-        }
-
-        const weekDay = currentDate.getDay();
-
-        const validDay =
-            (weekDay === 1 && recurrence.monday) ||
-            (weekDay === 2 && recurrence.tuesday) ||
-            (weekDay === 3 && recurrence.wednesday) ||
-            (weekDay === 4 && recurrence.thursday) ||
-            (weekDay === 5 && recurrence.friday);
-
-        if (!validDay) {
-            currentDate = addDays(currentDate, 1);
-            continue;
-        }
-
-        const startDate = buildDate(
-            currentDate,
-            data.startHour
-        );
-
-        const endDate = buildDate(
-            currentDate,
-            data.endHour
-        );
-
-        const conflict = await prisma.event.findFirst({
-            where: {
-                class_id: data.classId,
-
-                start_date: {
-                    lt: endDate
-                },
-
-                end_date: {
-                    gt: startDate
-                }
-            }
-        });
-
-        if (conflict) {
-            currentDate = addDays(currentDate, 1);
-            continue;
-        }
-
-        await createEvent({
-            title: `${data.title} - Aula ${lessonNumber}`,
-            description: data.description,
-
-            classId: data.classId,
-            createdBy: data.createdBy,
-
-            subjectInstructorId:
-                data.subjectInstructorId,
-
-            recurrenceId: data.recurrenceId,
-
-            starDate: startDate,
-            endDate: endDate,
-
-            eventType: "LESSON"
-        });
-
-        createdLessons++;
-        lessonNumber++;
-        remainingHours -= LESSON_DURATION;
-
-        currentDate = addDays(currentDate, 1);
-    }
+const updateWorkload = async (
+    subjectId: number,
+    completedHours: number
+): Promise<void> => {
 
     await prisma.subject.update({
         where: {
-            subject_id: subjectInstructor.subject.subject_id
+            subject_id: subjectId
         },
         data: {
             completed_workload: {
-                increment:
-                    createdLessons * LESSON_DURATION
+                increment: completedHours
             }
         }
     });
+
 };
 
-function buildDate(
+const addDays = (
     date: Date,
-    hour: string
-): Date {
+    days: number
+): Date => {
 
-    const [h, m] = hour.split(":").map(Number);
+    const next = new Date(date);
 
-    const newDate = new Date(date);
+    next.setDate(next.getDate() + days);
 
-    newDate.setHours(h);
-    newDate.setMinutes(m);
-    newDate.setSeconds(0);
-    newDate.setMilliseconds(0);
+    return next;
+};
 
-    return newDate;
-}
+const createLesson = async (
+    data: ScheduleLessonsDTO,
+    assignment: LoadedAssignment,
+    recurrence: Recurrence,
+    lessonNumber: number,
+    startDate: Date,
+    endDate: Date
+):  Promise<void> => {
+
+    await createEvent({
+        title: `${assignment.subject.name} - Aula ${lessonNumber}`,
+        description: data.description,
+
+        eventType: EventType.LESSON,
+
+        createdBy: data.createdBy,
+
+        subjectInstructorId:
+            assignment.subject_instructor_id,
+
+        recurrenceId:
+            recurrence.recurrence_id,
+
+        roomId: data.roomId,
+
+        startDate,
+        endDate
+    });
+
+};
+
+export const scheduleLessonSeries = async (
+    data: ScheduleLessonsDTO
+): Promise<void> => {
+
+    // await prisma.$transaction(async (tx) => { 
+    // }
+
+    const assignment = await loadAssignment(
+        data.subjectInstructorId
+    );
+
+    const recurrence = await createLessonRecurrence(data);
+
+    const subject = assignment.subject;
+
+    let remainingHours =
+        subject.workload -
+        subject.completed_workload;
+
+    let lessonNumber =
+        (subject.completed_workload / LESSON_DURATION) + 1;
+
+    let currentDate = new Date(data.startDate);
+
+    let createdLessons = 0;
+
+    if (subject.workload <= subject.completed_workload) {
+        return;
+    }
+
+    while (remainingHours >= LESSON_DURATION) {
+
+        if (hasReachedLimit(recurrence, currentDate, createdLessons))
+            break;
+    
+        if (!isValidDay(currentDate, recurrence)) {
+            currentDate = addDays(currentDate, 1);
+            continue;
+        }
+    
+        const { startDate, endDate } =
+            buildLessonDates(
+                currentDate,
+                data.startHour,
+                data.endHour
+            );
+    
+        try {
+    
+            await createLesson(
+                data,
+                assignment,
+                recurrence,
+                lessonNumber,
+                startDate,
+                endDate
+            );
+    
+            createdLessons++;
+            lessonNumber++;
+            remainingHours -= LESSON_DURATION;
+    
+        }
+        catch (error) {
+    
+            if (error instanceof ConflictError) {
+                currentDate = addDays(currentDate, 1);
+                continue;
+            }
+    
+            throw error;
+        }
+    
+        currentDate = addDays(currentDate, 1);
+    }
+
+    await updateWorkload(
+        subject.subject_id,
+        createdLessons * LESSON_DURATION
+    );
+};
