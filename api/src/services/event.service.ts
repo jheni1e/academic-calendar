@@ -3,6 +3,47 @@ import { CreateEventDTO, UpdateEventDTO } from "../dtos/EventDto.ts";
 import { Event, EventType } from "../generated/prisma/client.ts";
 import { findSubjectById } from "./subject.service.ts";
 import { NotFoundError } from "../shared/errors/NotFoundError.ts";
+}
+
+const validateLesson = async (
+    data: CreateEventDTO
+) => {
+
+    if (data.eventType !== EventType.LESSON)
+        return;
+
+    if (!data.subjectInstructorId)
+        throw new ValidationError(
+            "Lesson requires an instructor assignment."
+        );
+
+    const assignment = await prisma.subjectInstructor.findUnique({
+        where: {
+            subject_instructor_id: data.subjectInstructorId
+        },
+        include: {
+            subject: true,
+            instructor: true
+        }
+    });
+
+    if (!assignment)
+        throw new NotFoundError(
+            "Instructor assignment not found."
+        );
+
+    const remaining =
+        assignment.subject.workload -
+        assignment.subject.completed_workload;
+    
+    if (remaining < 4) { // TODO: VARIABLE
+        throw new ConflictError(
+            "Subject workload has already been completed."
+        );
+    }
+
+    return assignment;
+};
 
 export const createEvent = async (data: CreateEventDTO): Promise<void> => {
     
