@@ -21,9 +21,14 @@ function Subject() {
     console.log("classes")
     try {
       const data = await getData("/class/all");
-      setListMenu(data);
-      console.log("Turmas")
-      console.log(data);
+
+      const formatedClasses = data.map((d) => ({
+          value: d.class_id,
+          label: d.name
+      }));
+
+      setListMenu(formatedClasses);
+
     } catch (error) {
       console.error(error);
     }

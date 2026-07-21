@@ -5,7 +5,7 @@ import TextBox from "../TextBox";
 import DropdownList from "../DropdownList";
 import ColorPicker from "../ColorPicker";
 import FrequencySelector from "../FrequencySelector";
-import { getData } from "../../utils/apiBack";
+import { getData, postData } from "../../utils/apiBack";
 
 function Dialog({ isOpen, onClose, type, title }) {
     const dialogRef = useRef(null);
@@ -24,6 +24,9 @@ function Dialog({ isOpen, onClose, type, title }) {
     const [typeEvent, setTypeEvent] = useState(null);
     const [selectedParticipant, setSelectedParticipant] = useState("");
     const [participants, setParticipants] = useState([]);
+
+    const [newSubjectName, setNewSubjectName] = useState("")
+    const [newSubjectWorkload, setNewSubjectWorkload] = useState("")
 
     useEffect(() => {
         const dialog = dialogRef.current;
@@ -140,6 +143,7 @@ function Dialog({ isOpen, onClose, type, title }) {
         setSelectedRoom("");
     };
 
+
     const removeRoom = (id) => {
         const newRooms = rooms.filter(r => r.value !== id);
 
@@ -169,6 +173,19 @@ function Dialog({ isOpen, onClose, type, title }) {
         setParticipants(participants.filter(p => p.value !== id));
     };
 
+    const addSubject = () => {
+        if (!responsible) return;
+        
+        const newSubject = {
+            name: newSubjectName,
+            workload: newSubjectWorkload,
+            startDate: "2026-02-28T00:00:00Z",
+            endDate: "2026-04-28T00:00:00Z"
+        }
+
+        postData("/subject", newSubject)
+    }
+
     const typeEvents = [
         { value: 1, label: "Evento" },
         { value: 2, label: "Aula" },
@@ -193,7 +210,7 @@ function Dialog({ isOpen, onClose, type, title }) {
                 <div className="dialogContent">
                     <div className="dialogInput">
                         <h4>Nome da matéria:</h4>
-                        <TextBox placeholder="e.g.: Internet das Coisas" />
+                        <TextBox placeholder="e.g.: Internet das Coisas" onChange={(e) => setNewSubjectName(e.target.value)}/>
                     </div>
                     <div className="dialogInput">
                         <h4>Responsável:</h4>
@@ -201,7 +218,7 @@ function Dialog({ isOpen, onClose, type, title }) {
                     </div>
                     <div className="dialogInput">
                         <h4>Carga horária:</h4>
-                        <TextBox placeholder="e.g.: 16h" />
+                        <TextBox placeholder="e.g.: 16h" onChange={(e) => setNewSubjectWorkload(e.target.value)}/>
                     </div>
                     <div className="dialogInput">
                         <h4>Salas:</h4>
