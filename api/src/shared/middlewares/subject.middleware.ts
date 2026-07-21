@@ -1,14 +1,15 @@
 import { NextFunction, Request, Response } from "express";
 import { prisma } from "../../lib/prisma.ts";
 import { BadRequestError } from "../errors/BadRequestError.ts";
+import { NotFoundError } from "../errors/NotFoundError.ts";
+import { findSubjectById } from "../../services/subject.service.ts";
+import { findSubjectInstructorsBySubject } from "../../services/subjectinstructor.service.ts";
 
 export const validateActivate = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const subjectId: number = parseInt(req.params.id.toString());
 
-        const subject = await prisma.subject.findFirst({
-            where: { subject_id: subjectId },
-        });
+        const subject = await findSubjectById(subjectId)
 
         if (!subject) {
             throw new Error("Subject not found.");
@@ -57,9 +58,7 @@ export const validateDectivate = async (req: Request, res: Response, next: NextF
     try {
         const subjectId: number = parseInt(req.params.id.toString());
 
-        const subject = await prisma.subject.findFirst({
-            where: { subject_id: subjectId },
-        });
+        const subject = await findSubjectById(subjectId)
 
         if (!subject) {
             throw new Error("Subject not found.");
@@ -79,9 +78,7 @@ export const validateDelete = async (req: Request, res: Response, next: NextFunc
     try {
         const subjectId: number = parseInt(req.params.id.toString());
 
-        const subject = await prisma.subject.findFirst({
-            where: { subject_id: subjectId },
-        });
+        const subject = await findSubjectById(subjectId)
 
         if (!subject) {
             throw new Error("Subject not found.");
@@ -93,9 +90,7 @@ export const validateDelete = async (req: Request, res: Response, next: NextFunc
 
         // TODO: Need User Type Verification before delete!
 
-        const subjectInstructors = await prisma.subjectInstructor.findFirst({
-            where: { subject_id: subjectId },
-        });
+        const subjectInstructors = await findSubjectInstructorsBySubject(subjectId)
 
         if (subjectInstructors) {
             throw new Error("There are instructors linked to this subject.");
@@ -129,7 +124,7 @@ export const validateUpdate = async (req: Request, res: Response, next: NextFunc
         const { classId, name, workload, startDate, endDate, isActive } = req.body;
 
         const subject = await prisma.subject.findFirst({
-            where: { id: subjectId },
+            where: { subject_id: subjectId },
         });
 
         if (!subject) {
@@ -154,5 +149,25 @@ export const validateUpdate = async (req: Request, res: Response, next: NextFunc
         next();
     } catch (error) {
         next(error);
+    }
+}
+
+export const validateSubjectExistsById = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const classId: number = parseInt(req.params.id.toString());
+
+        const subject = await prisma.subject.findFirst({
+            where: { class_id: classId },
+        });
+
+        if (!subject) {
+            throw new NotFoundError("Class not found.");
+        }
+
+        res.locals.class = subject
+
+        next();
+    } catch (err) {
+        next(err);
     }
 }

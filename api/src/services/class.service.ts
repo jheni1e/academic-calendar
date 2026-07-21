@@ -1,6 +1,7 @@
 import { prisma } from "../lib/prisma.ts";
 import { CreateClassDTO, UpdateClassDTO } from "../dtos/ClassDto.ts";
 import { Class } from "../generated/prisma/client.ts";
+import { NotFoundError } from "../shared/errors/NotFoundError.ts";
 
 export const createClass = async (
     data: CreateClassDTO
@@ -18,7 +19,7 @@ export const findClassById = async (
     classId: number
 ): Promise<Class | null> => {
 
-    return prisma.class.findUnique({
+    return await prisma.class.findUnique({
         where: {
             class_id: classId
         }
@@ -35,7 +36,7 @@ export const updateClass = async (
     data: UpdateClassDTO
 ): Promise<Class> => {
 
-    return prisma.class.update({
+    return await prisma.class.update({
         where: {
             class_id: classId
         },
@@ -44,6 +45,7 @@ export const updateClass = async (
             is_active: data.isActive
         }
     });
+
 }
 
 export const deleteClass = async(

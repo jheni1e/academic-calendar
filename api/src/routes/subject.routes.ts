@@ -4,19 +4,23 @@ import { authorize } from '../shared/middlewares/authorization.middleware.ts';
 import { Role } from '../shared/enums/role.ts';
 import { SubjectController } from '../controllers/SubjectController.ts';
 import { SubjectInstructorController } from '../controllers/SubjectInstructorControllers.ts';
+import { validateCreate } from '../shared/middlewares/subjectinstructor.middleware.ts';
+import { validateDelete, validateSubjectExistsById, validateUpdate } from '../shared/middlewares/subject.middleware.ts';
+import { validateDelete as validateDeleteSI } from '../shared/middlewares/subjectinstructor.middleware.ts'
 
 const route = express.Router();
 
 route 
-    .post('/', authMiddleware, authorize(Role.ADMIN, Role.INSTRUCTOR), SubjectController.create)
-    .get('/all', authMiddleware, SubjectController.findAllSubjects)
-    .get('/:id', authMiddleware, SubjectController.findSubjectById)
-    .get('/instructors/:id', authMiddleware, SubjectInstructorController.findSubjectInstructorsBySubject) // get all instructors by subject
+    .post('/', authMiddleware, authorize(Role.ADMIN, Role.INSTRUCTOR) , SubjectController.create) // create a new subject
+    .post('/instructor/', authMiddleware, authorize(Role.ADMIN, Role.INSTRUCTOR), validateCreate, SubjectInstructorController.create) // add a new subject responsible instructor
 
-    .put('/:id', authMiddleware, authorize(Role.ADMIN, Role.INSTRUCTOR), SubjectController.update)
-    .put('/instructor/add', authMiddleware, authorize(Role.ADMIN, Role.INSTRUCTOR), SubjectInstructorController.create)
+    .get('/all', authMiddleware, SubjectController.findAllSubjects) // get all subjects
+    .get('/:id', authMiddleware, validateSubjectExistsById, SubjectController.findSubjectById) // get a subject by its id
+    .get('/instructors/:id', authMiddleware, validateSubjectExistsById, SubjectInstructorController.findSubjectInstructorsBySubject) // get all instructors by subject
+
+    .put('/:id', authMiddleware, authorize(Role.ADMIN, Role.INSTRUCTOR), validateUpdate, SubjectController.update) // update subject
     
-    .delete('/instructor/remove/:id', authMiddleware, authorize(Role.ADMIN, Role.INSTRUCTOR), SubjectInstructorController.delete)
-    .delete("/:id", authMiddleware, authorize(Role.ADMIN, Role.INSTRUCTOR), SubjectController.delete)
+    .delete('/instructor/remove/:id', authMiddleware, authorize(Role.ADMIN, Role.INSTRUCTOR), validateDeleteSI, SubjectInstructorController.delete)
+    .delete("/:id", authMiddleware, authorize(Role.ADMIN, Role.INSTRUCTOR), validateDelete, SubjectController.delete)
 
 export default route

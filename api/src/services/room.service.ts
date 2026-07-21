@@ -1,6 +1,7 @@
 import { CreateRoomDTO, UpdateRoomDTO } from "../dtos/RoomDto.ts";
 import { Room } from "../generated/prisma/client.ts";
 import { prisma } from "../lib/prisma.ts";
+import { NotFoundError } from "../shared/errors/NotFoundError.ts";
 
  
 export const createRoom = async (data: CreateRoomDTO): Promise<Room> => {
