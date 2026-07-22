@@ -146,7 +146,82 @@ const validateInstructorConflict = async (
     }
 };
 
-// --- TODO: REFACT ----
+const validateClassConflict = async (
+    classId: number,
+    start: Date,
+    end: Date
+): Promise<void> => {
+
+    const conflict = await prisma.event.findFirst({
+        where: {
+            class_id: classId,
+            status: EventStatus.SCHEDULED,
+
+            start_date: {
+                lt: end
+            },
+
+            end_date: {
+                gt: start
+            }
+        }
+    });
+
+    if (conflict) {
+        throw new ConflictError(
+            "Class already has a scheduled event during this period."
+        );
+    }
+};
+
+const validateRoomConflict = async (
+    roomId: number,
+    start: Date,
+    end: Date
+): Promise<void> => {
+
+    const conflict = await prisma.reservation.findFirst({
+        where: {
+            room_id: roomId,
+
+            event: {
+                status: EventStatus.SCHEDULED,
+
+                start_date: {
+                    lt: end
+                },
+
+                end_date: {
+                    gt: start
+                }
+            }
+        }
+    });
+
+    if (conflict) {
+        throw new ConflictError(
+            "Room already has a scheduled reservation during this period."
+        );
+    }
+};
+
+// --- HELPERS ---
+
+const createReservation = async (
+    roomId: number,
+    eventId: number,
+    description?: string
+): Promise<void> => {
+
+    await prisma.reservation.create({
+        data: {
+            room_id: roomId,
+            event_id: eventId,
+            description
+        }
+    });
+
+};
 
 const createEventRecord = async (
     data: CreateEventDTO,
