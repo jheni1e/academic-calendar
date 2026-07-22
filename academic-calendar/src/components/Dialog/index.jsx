@@ -338,6 +338,78 @@ function Dialog({ isOpen, onClose, type, title }) {
                     }
                 </div>
             }
+            {type === "view-event" &&
+                <div className="dialogContent">
+                    <div className="dialogInput">
+                        <h4>Tipo do evento:</h4>
+                    </div>
+                    <div className="dialogInput">
+                        <h4>Título:</h4>
+                    </div>
+                    {typeEvent === 1 &&
+                        <>
+                            <div className="dialogInput">
+                                <h4>Participantes:</h4>
+                            </div>
+                            <div className="participantsList">
+                                {participants.map((participant) => (
+                                    <div key={participant.value} className="listItem">
+                                        <span className="itemName">{participant.label}</span>
+
+                                        <button className="removeItem" onClick={() => removeParticipant(participant.value)}>×</button>
+                                    </div>
+                                ))}
+                            </div>
+                            <div className="dialogInput">
+                                <h4>Início:</h4>
+                            </div>
+                            <div className="dialogInput">
+                                <h4>Encerramento:</h4>
+                            </div>
+                            <div style={{ display: "flex", flexDirection: "column", width: "500px" }}>
+                                <h4>Frequência:</h4>
+                            </div>
+                            <div className="dialogInput" style={{ marginLeft: "3rem" }}>
+                                <h4>Cor:</h4>
+                            </div>
+                        </>
+                    }
+                    {typeEvent === 2 &&
+                        <>
+                            <div className="dialogInput">
+                                <h4>Professor:</h4>
+                            </div>
+                            <div className="dialogInput">
+                                <h4>Início:</h4>
+                            </div>
+                            <div className="dialogInput">
+                                <h4>Encerramento:</h4>
+                            </div>
+                            <div className="dialogInput">
+                                <h4>Sala:</h4>
+                            </div>
+                        </>
+                    }
+                    {typeEvent === 3 &&
+                        <>
+                            <div className="dialogInput">
+                                <h4>Professor:</h4>
+                            </div>
+                            <div className="dialogInput">
+                                <h4>Sala:</h4>
+                            </div>
+                            <div className="dialogInput">
+                                <h4>Início:</h4>
+                            </div>
+                            <div className="dialogInput">
+                                <h4>Encerramento:</h4>
+                            </div>
+                            <div className="dialogInput">
+                                <h4>Turma:</h4> </div>
+                        </>
+                    }
+                </div>
+            }
             {type === "student" &&
                 <div className="dialogContent">
                     <div className="dialogInput">
