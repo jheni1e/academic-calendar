@@ -4,7 +4,7 @@ import { Class, Event, EventStatus, EventType, Subject, SubjectInstructor, User 
 import { NotFoundError } from "../shared/errors/NotFoundError.ts";
 import { ValidationError } from "../shared/errors/ValidationError.ts";
 import { ConflictError } from "../shared/errors/ConflictError.ts";
-import { createReservation } from "./reservation.service.ts";
+import { createReservation, updateReservationByEvent } from "./reservation.service.ts";
 
 const validateDates = (
     start: Date,
@@ -399,30 +399,38 @@ export const updateEvent = async (
         );
     }
 
-    return prisma.event.update({
-        where: {
-            event_id: eventId
-        },
-        data: {
-            title: data.title,
-            description: data.description,
+    return prisma.$transaction(async () => {
+        const updatedEvent = await prisma.event.update({
+            where: {
+                event_id: eventId
+            },
+            data: {
+                title: data.title,
+                description: data.description,
+                event_type: data.eventType,
 
-            event_type: data.eventType,
+                start_date: start,
+                end_date: end,
 
-            start_date: start,
-            end_date: end,
+                class_id: assignment?.subject.class.class_id,
+                subject_instructor_id:
+                    assignment?.subject_instructor_id,
 
-            class_id:
-                assignment?.subject.class.class_id,
+                recurrence_id: data.recurrenceId
+            }
+        });
 
-            subject_instructor_id:
-                assignment?.subject_instructor_id,
-
-            recurrence_id:
-                data.recurrenceId
+        if (data.roomId) {
+            await updateReservationByEvent(eventId, {
+                roomId: data.roomId,
+                startDate: start,
+                endDate: end,
+                description: data.description
+            });
         }
-    });
 
+        return updatedEvent;
+    });
 };
 
 export const deleteEvent = async (
