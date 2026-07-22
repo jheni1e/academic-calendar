@@ -6,7 +6,7 @@ export interface CreateEventDTO {
 
     eventType: EventType;
 
-    subjectInstructorId: number;
+    subjectInstructorId?: number;
     recurrenceId?: number;
     roomId: number;
 

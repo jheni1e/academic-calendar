@@ -38,7 +38,7 @@ export const validateCreate = async (req: Request, res: Response, next: NextFunc
             }
         });
 
-        if (!isTitleUnique) {
+        if (isTitleUnique) {
             throw new Error("A room is already using that title.");
         }
 
