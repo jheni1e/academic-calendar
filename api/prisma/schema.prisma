@@ -153,7 +153,7 @@ model SubjectRoom {
 }
 
 model Event {
-  event_id      Int     @id @default(autoincrement())
+  event_id      Int     @id @default(autoincrement()) @unique
   title         String
   description   String?
 
