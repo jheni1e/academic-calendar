@@ -4,35 +4,7 @@ import { Class, Event, EventStatus, EventType, Subject, SubjectInstructor, User 
 import { NotFoundError } from "../shared/errors/NotFoundError.ts";
 import { ValidationError } from "../shared/errors/ValidationError.ts";
 import { ConflictError } from "../shared/errors/ConflictError.ts";
-
-// validateDates()
-
-// loadAssignment()
-
-// validateSubjectWorkload()
-
-// validateInstructorConflict()
-
-// validateClassConflict()
-
-// validateRoomConflict()
-
-// ----------
-// helpers
-
-// createReservation()
-
-// createEventRecord()
-
-// createEvent()
-
-// ---------
-
-// findEvent...
-
-// updateEvent...
-
-// deleteEvent...
+import { createReservation } from "./reservation.service.ts";
 
 const validateDates = (
     start: Date,
@@ -174,54 +146,7 @@ const validateClassConflict = async (
     }
 };
 
-const validateRoomConflict = async (
-    roomId: number,
-    start: Date,
-    end: Date
-): Promise<void> => {
-
-    const conflict = await prisma.reservation.findFirst({
-        where: {
-            room_id: roomId,
-
-            event: {
-                status: EventStatus.SCHEDULED,
-
-                start_date: {
-                    lt: end
-                },
-
-                end_date: {
-                    gt: start
-                }
-            }
-        }
-    });
-
-    if (conflict) {
-        throw new ConflictError(
-            "Room already has a scheduled reservation during this period."
-        );
-    }
-};
-
 // --- HELPERS ---
-
-const createReservation = async (
-    roomId: number,
-    eventId: number,
-    description?: string
-): Promise<void> => {
-
-    await prisma.reservation.create({
-        data: {
-            room_id: roomId,
-            event_id: eventId,
-            description
-        }
-    });
-
-};
 
 const createEventRecord = async (
     data: CreateEventDTO,
@@ -296,12 +221,6 @@ export const createEvent = async (
         );
     }
 
-    await validateRoomConflict(
-        data.roomId,
-        start,
-        end
-    );
-
     const event = await createEventRecord(
         data,
         assignment,
@@ -309,11 +228,213 @@ export const createEvent = async (
         end
     );
 
-    await createReservation(
-        data.roomId,
-        event.event_id,
-        data.description
-    );
+    await createReservation({
+        roomId: data.roomId,
+        eventId: event.event_id,
+        startDate: start,
+        endDate: end,
+        description: data.description
+    });
 
     return event;
+};
+
+// ---- CRUD ----
+
+export const findEventById = async (
+    eventId: number
+): Promise<Event | null> => {
+
+    return prisma.event.findUnique({
+        where: {
+            event_id: eventId
+        },
+        include: {
+            class: true,
+            creator: true,
+            recurrence: true,
+            reservation: {
+                include: {
+                    room: true
+                }
+            },
+            subject_instructor: {
+                include: {
+                    subject: true,
+                    instructor: true
+                }
+            }
+        }
+    });
+
+};
+
+export const findEvents = async (): Promise<Event[]> => {
+
+    return prisma.event.findMany({
+        orderBy: {
+            start_date: "asc"
+        },
+        include: {
+            class: true,
+            recurrence: true,
+            reservation: {
+                include: {
+                    room: true
+                }
+            },
+            subject_instructor: {
+                include: {
+                    subject: true,
+                    instructor: true
+                }
+            }
+        }
+    });
+
+};
+
+export const findEventsByClass = async (
+    classId: number
+): Promise<Event[]> => {
+
+    return prisma.event.findMany({
+        where: {
+            class_id: classId
+        },
+        orderBy: {
+            start_date: "asc"
+        },
+        include: {
+            reservation: {
+                include: {
+                    room: true
+                }
+            },
+            subject_instructor: {
+                include: {
+                    subject: true,
+                    instructor: true
+                }
+            }
+        }
+    });
+
+};
+
+export const findEventsByInstructor = async (
+    instructorId: number
+): Promise<Event[]> => {
+
+    return prisma.event.findMany({
+        where: {
+            subject_instructor: {
+                instructor_id: instructorId
+            }
+        },
+        orderBy: {
+            start_date: "asc"
+        },
+        include: {
+            class: true,
+            reservation: {
+                include: {
+                    room: true
+                }
+            },
+            subject_instructor: {
+                include: {
+                    subject: true
+                }
+            }
+        }
+    });
+
+};
+
+export const updateEvent = async (
+    eventId: number,
+    data: UpdateEventDTO
+): Promise<Event> => {
+
+    const event = await findEventById(eventId);
+
+    if (!event) {
+        throw new NotFoundError(
+            "Event not found."
+        );
+    }
+
+    const start = new Date(data.startDate);
+    const end = new Date(data.endDate);
+
+    validateDates(start, end);
+
+    let assignment: LoadedAssignment | null = null;
+
+    if (data.eventType === EventType.LESSON) {
+
+        assignment = await loadAssignment(
+            data.subjectInstructorId
+        );
+
+        validateSubjectWorkload(assignment);
+
+        await validateInstructorConflict(
+            assignment,
+            start,
+            end
+        );
+
+        await validateClassConflict(
+            assignment.subject.class.class_id,
+            start,
+            end
+        );
+    }
+
+    return prisma.event.update({
+        where: {
+            event_id: eventId
+        },
+        data: {
+            title: data.title,
+            description: data.description,
+
+            event_type: data.eventType,
+
+            start_date: start,
+            end_date: end,
+
+            class_id:
+                assignment?.subject.class.class_id,
+
+            subject_instructor_id:
+                assignment?.subject_instructor_id,
+
+            recurrence_id:
+                data.recurrenceId
+        }
+    });
+
+};
+
+export const deleteEvent = async (
+    eventId: number
+): Promise<void> => {
+
+    const event = await findEventById(eventId);
+
+    if (!event) {
+        throw new NotFoundError(
+            "Event not found."
+        );
+    }
+
+    await prisma.event.delete({
+        where: {
+            event_id: eventId
+        }
+    });
+
 };
