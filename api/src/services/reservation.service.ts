@@ -3,7 +3,6 @@ import { EventStatus, Reservation } from "../generated/prisma/client.ts";
 import { prisma } from "../lib/prisma.ts";
 import { ConflictError } from "../shared/errors/ConflictError.ts";
 
-
 const validateRoomConflict = async (
     roomId: number,
     start: Date,
@@ -56,20 +55,60 @@ export const createReservation = async (
 
 export const updateReservation = async (
     reservationId: number,
-    data: UpdateReservationDTO): Promise<Reservation> => {
-        
+    data: UpdateReservationDTO
+): Promise<Reservation> => {
+
+    if (
+        data.roomId &&
+        data.startDate &&
+        data.endDate
+    ) {
+        await validateRoomConflict(
+            data.roomId,
+            data.startDate,
+            data.endDate
+        );
+    }
+
     return prisma.reservation.update({
         where: {
-            reservation_id : reservationId
+            reservation_id: reservationId
         },
-
         data: {
             room_id: data.roomId,
             event_id: data.eventId,
             description: data.description
         }
-    })
-}
+    });
+};
+
+export const updateReservationByEvent = async (
+    eventId: number,
+    data: UpdateReservationDTO
+): Promise<Reservation> => {
+
+    if (
+        data.roomId &&
+        data.startDate &&
+        data.endDate
+    ) {
+        await validateRoomConflict(
+            data.roomId,
+            data.startDate,
+            data.endDate
+        );
+    }
+
+    return prisma.reservation.update({
+        where: {
+            event_id: eventId
+        },
+        data: {
+            room_id: data.roomId,
+            description: data.description
+        }
+    });
+};
 
 export const findAllReservations = async (): Promise<Reservation[]> => {
     return prisma.reservation.findMany();
