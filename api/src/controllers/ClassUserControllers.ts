@@ -1,5 +1,4 @@
-import { Request, Response } from "express";
-
+import { Request, Response, NextFunction } from "express";
 import { AppError } from "../shared/errors/AppError.ts";
 import { CreateClassUserDTO, ClassUserResponseDTO } from "../dtos/ClassUserDto.ts";
 import { createClassUser, deleteClassUser, findAllClassUser, findClassUserById, findClassUsersByClass, findClassUsersByClassAndUser, findClassUsersByUser } from "../services/classuser.service.ts";
@@ -27,7 +26,6 @@ export class ClassUserController {
 
         try {
             await deleteClassUser(id);
-
             return res.status(204).send({ message: "Class user deleted successfully." });
         } catch (error) {
             if (error instanceof AppError) {
@@ -45,15 +43,15 @@ export class ClassUserController {
 
         try {
             const classUser = await findClassUsersByClassAndUser(id, res.locals.user.id);
-
             return res.status(200).json(classUser);
+
         } catch (error) {
             if (error instanceof AppError) {
                 return res.status(error.statusCode).json({
                     message: error.message
                 });
             }
-            
+
             return res.status(500).json({ message: "Internal server error." });
         }
     }
@@ -71,7 +69,7 @@ export class ClassUserController {
                     message: error.message
                 });
             }
-            
+
             return res.status(500).json({ message: "Internal server error." });
         }
     }
@@ -81,15 +79,15 @@ export class ClassUserController {
 
         try {
             const classes = await findClassUsersByUser(id);
-
             return res.status(200).json(classes);
+
         } catch (error) {
             if (error instanceof AppError) {
                 return res.status(error.statusCode).json({
                     message: error.message
                 });
             }
-            
+
             return res.status(500).json({ message: "Internal server error." });
         }
     }
@@ -99,8 +97,8 @@ export class ClassUserController {
 
         try {
             const classUsers = await findClassUsersByClass(id);
-
             return res.status(200).json(classUsers);
+
         } catch (error) {
             if (error instanceof AppError) {
                 return res.status(error.statusCode).json({
@@ -115,10 +113,9 @@ export class ClassUserController {
     static async findAllClassUser(req: Request, res: Response) {
         try {
             const classUsers = await findAllClassUser();
-
+            
             return res.status(200).json(classUsers);
         } catch (error) {
-
             if (error instanceof AppError) {
                 return res.status(error.statusCode).json({
                     message: error.message

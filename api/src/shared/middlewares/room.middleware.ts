@@ -2,14 +2,13 @@ import { NextFunction, Request, Response } from "express";
 import { prisma } from "../../lib/prisma.ts";
 import { NotFoundError } from "../errors/NotFoundError.ts";
 import { BadRequestError } from "../errors/BadRequestError.ts";
+import { findRoomById } from "../../services/room.service.ts";
 
 export const validateActivate = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const roomId: number = parseInt(req.params.id.toString());
 
-        const room = await prisma.room.findFirst({
-            where: { id: roomId },
-        });
+        const room = await findRoomById(roomId)
 
         if (!room) {
             throw new Error("Room not found.");
@@ -39,7 +38,7 @@ export const validateCreate = async (req: Request, res: Response, next: NextFunc
             }
         });
 
-        if (isTitleUnique.length > 0) {
+        if (!isTitleUnique) {
             throw new Error("A room is already using that title.");
         }
 
@@ -53,13 +52,11 @@ export const validateCreate = async (req: Request, res: Response, next: NextFunc
     }
 }
 
-export const validateDectivate = async (req: Request, res: Response, next: NextFunction) => {
+export const validateDeactivate = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const roomId: number = parseInt(req.params.id.toString());
 
-        const room = await prisma.room.findFirst({
-            where: { id: roomId },
-        });
+        const room = await findRoomById(roomId)
 
         if (!room) {
             throw new Error("Room not found.");
@@ -173,3 +170,20 @@ export const validateUpdate = async (req: Request, res: Response, next: NextFunc
         next(error);
     }
 }
+
+export const validateRoomExistsById = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const roomId: number = parseInt(req.params.id.toString());
+
+        const room = await findRoomById(roomId);
+
+        if (!room) {
+            throw new NotFoundError("Room not found.");
+        }
+
+        next();
+    } catch (error) {
+        next(error);
+    }
+}
+        

@@ -1,8 +1,7 @@
-import { Request, Response } from "express";
-
+import { NextFunction, Request, Response } from "express";
 import { AppError } from "../shared/errors/AppError.ts";
-import { CreateParticipationDTO, UpdateParticipationDTO } from "../dtos/ParticipationDto.ts";
 import { createParticipation, deleteParticipation, findAllParticipations, findParticipationByEvent, findParticipationById, findParticipationByUser, findParticipationByUserAndEvent, updateParticipation } from "../services/participation.service.ts";
+import { CreateParticipationDTO, UpdateParticipationDTO } from "../dtos/ParticipationDto.ts";
 
 export class ParticipationController {
     static async create(req: Request, res: Response) {
@@ -19,7 +18,7 @@ export class ParticipationController {
             }
 
             return res.status(500).json({ message: "Internal server error." });
-        }
+    }
     }
 
     static async delete(req: Request, res: Response) {
@@ -36,7 +35,7 @@ export class ParticipationController {
                 });
             }
 
-            return res.status(500).json({ message: "Internal server error." });
+            return res.status(500).json({ message: "Internal server error." });;
         }
     }
 
@@ -54,7 +53,7 @@ export class ParticipationController {
                 });
             }
 
-            return res.status(500).json({ message: "Internal server error." });
+            return res.status(500).json({ message: "Internal server error." });;
         }
     }
 
@@ -70,7 +69,7 @@ export class ParticipationController {
                 });
             }
 
-            return res.status(500).json({ message: "Internal server error." });
+            return res.status(500).json({ message: "Internal server error." });;
         }
     }
 
@@ -88,7 +87,7 @@ export class ParticipationController {
                 });
             }
 
-            return res.status(500).json({ message: "Internal server error." });
+            return res.status(500).json({ message: "Internal server error." });;
         }
     }
 
@@ -106,7 +105,7 @@ export class ParticipationController {
                 });
             }
 
-            return res.status(500).json({ message: "Internal server error." });
+            return res.status(500).json({ message: "Internal server error." });;
         }
     }
 
@@ -125,7 +124,7 @@ export class ParticipationController {
                 });
             }
 
-            return res.status(500).json({ message: "Internal server error." });
+            return res.status(500).json({ message: "Internal server error." });;
         }
     }
 
@@ -144,7 +143,8 @@ export class ParticipationController {
                 });
             }
 
-            return res.status(500).json({ message: "Internal server error." });
+            return res.status(500).json({ message: "Internal server error." });;
         }
+
     }
 }

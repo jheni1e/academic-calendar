@@ -11,6 +11,7 @@ export const validateCreate = async (req: Request, res: Response, next: NextFunc
             where: { subjectId: subjectId, roomId: roomId },
         });
 
+
         if (relation) {
             throw new Error("Room already connected to the subject.");
         }

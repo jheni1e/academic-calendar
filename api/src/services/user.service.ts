@@ -126,9 +126,9 @@ export const updateUser = async (
 
 export const disableUser = async (
     id: number
-): Promise<User> => {
+): Promise<UserResponseDTO> => {
 
-    return await prisma.user.update({
+    const user = await prisma.user.update({
         where: {
             user_id: id
         },
@@ -136,6 +136,39 @@ export const disableUser = async (
             is_active: false
         }
     });
+
+    return {
+        edv: user.user_edv,
+        id: user.user_id,
+        name: user.name,
+        birthdate: user.birthday,
+        role: user.role,
+        isActive: user.is_active
+    }
+}
+
+export const activateUser = async (
+    id : number
+) : Promise<UserResponseDTO> => {
+
+    const user = await prisma.user.update({
+        where: {
+            user_id: id
+        }, 
+
+        data: {
+            is_active : true
+        }
+    })
+
+    return {
+        edv: user.user_edv,
+        id: user.user_id,
+        name: user.name,
+        birthdate: user.birthday,
+        role: user.role,
+        isActive: user.is_active
+    }
 }
 
 export const getInstructors = async () : Promise<UserResponseDTO[]> => {

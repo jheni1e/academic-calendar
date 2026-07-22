@@ -4,22 +4,26 @@ import { ClassController } from '../controllers/ClassController.ts';
 import { authMiddleware } from '../shared/middlewares/auth.middleware.ts';
 import { ClassUserController } from '../controllers/ClassUserControllers.ts';
 import { UserRole } from '../generated/prisma/enums.ts';
+import { validateClassExistsById, validateCreate } from '../shared/middlewares/class.middleware.ts';
+import { validateDelete } from '../shared/middlewares/classuser.middleware.ts';
+import { validateDelete as validateDeleteClass } from '../shared/middlewares/class.middleware.ts'
 
 const route = express.Router();
 
 
 route 
-    .post('/', ClassController.create)
-    .get('/all', authMiddleware, authorize(UserRole.ADMIN, UserRole.INSTRUCTOR), ClassController.findAll)
-    .get('/:id', authMiddleware, authorize(UserRole.ADMIN, UserRole.INSTRUCTOR), ClassController.findClassById)
-    .get('/participants/:id', authMiddleware, ClassUserController.findClassUsersByClass)
+    .post('/', validateCreate, ClassController.create) // create a new class
+    .post('/participants', authMiddleware, authorize(UserRole.ADMIN, UserRole.INSTRUCTOR), ClassUserController.create) // add a new participant
 
-    .put('/:id', authMiddleware, authorize(UserRole.ADMIN, UserRole.INSTRUCTOR), ClassController.update)
-    .put("/enable/:id", authMiddleware, authorize(UserRole.ADMIN, UserRole.INSTRUCTOR), ClassController.enable)
-    .put("/disable/:id", authMiddleware, authorize(UserRole.ADMIN, UserRole.INSTRUCTOR), ClassController.disable)
+    .get('/all', authMiddleware, authorize(UserRole.ADMIN, UserRole.INSTRUCTOR), ClassController.findAll) // get all classes
+    .get('/:id', authMiddleware, authorize(UserRole.ADMIN, UserRole.INSTRUCTOR), validateClassExistsById, ClassController.findClassById) // get class by id
+    .get('/participants/:id', authMiddleware, validateClassExistsById, ClassUserController.findClassUsersByClass) // get participants by class id
 
-    .post('/participants', authMiddleware, authorize(UserRole.ADMIN, UserRole.INSTRUCTOR), ClassUserController.create)
-    .delete('/participants/:id', authMiddleware, authorize(UserRole.ADMIN, UserRole.INSTRUCTOR), ClassUserController.delete)
-    .delete("/:id", authMiddleware, authorize(UserRole.ADMIN, UserRole.INSTRUCTOR), ClassController.delete)
+    .put('/:id', authMiddleware, authorize(UserRole.ADMIN, UserRole.INSTRUCTOR), validateClassExistsById, ClassController.update) // get class by id
+    .put("/enable/:id", authMiddleware, authorize(UserRole.ADMIN, UserRole.INSTRUCTOR), validateClassExistsById, ClassController.enable) // enable class
+    .put("/disable/:id", authMiddleware, authorize(UserRole.ADMIN, UserRole.INSTRUCTOR), validateClassExistsById, ClassController.disable) // disable class
+
+    .delete('/participants/remove/:id', authMiddleware, authorize(UserRole.ADMIN, UserRole.INSTRUCTOR), validateDelete, ClassUserController.delete) // remove a participant from a class
+    .delete("/:id", authMiddleware, authorize(UserRole.ADMIN, UserRole.INSTRUCTOR), validateDeleteClass, ClassController.delete) // delete a class
 
 export default route

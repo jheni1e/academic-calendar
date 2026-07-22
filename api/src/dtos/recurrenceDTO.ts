@@ -1,7 +1,8 @@
-export class CreateRecurrenceDTO {
-    repeat_until?: Date;
+export interface CreateRecurrenceDTO {
+
+    repeatUntil?: Date;
     occurrences?: number;
-    created_by!: number;
+
     monday?: boolean;
     tuesday?: boolean;
     wednesday?: boolean;

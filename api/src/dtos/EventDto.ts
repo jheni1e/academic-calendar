@@ -1,16 +1,15 @@
-import { CreateRecurrenceDTO } from "./RecurrenceDto.ts";
-
+import { EventType } from "../generated/prisma/enums.ts";
 export interface CreateEventDTO {
 
     title: string;
     description?: string;
 
-    eventTypeId: string;
+    eventType: EventType;
 
-    subjectId?: number;
-    instructorId?: number;
-    classId?: number;
-    recurrence?: CreateRecurrenceDTO;
+    subjectInstructorId: number;
+    recurrenceId?: number;
+    roomId: number;
+
     startDate: Date;
     endDate: Date;
 
@@ -18,11 +17,17 @@ export interface CreateEventDTO {
 }
 
 export interface UpdateEventDTO {
+
     title?: string;
     description?: string;
 
-    eventTypeId?: string;
+    eventType?: EventType;
 
-    subjectId?: number;
-    classId?: number;
+    subjectInstructorId: number; // Cannot be undefined
+    recurrenceId?: number;
+
+    startDate: Date; // Cannot be undefined
+    endDate: Date; // Cannot be undefined
+
+    roomId?: number;
 }
