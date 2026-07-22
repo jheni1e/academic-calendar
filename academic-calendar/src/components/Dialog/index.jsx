@@ -8,7 +8,7 @@ import FrequencySelector from "../FrequencySelector";
 import { getData, postData } from "../../utils/apiBack";
 import { toastWarning } from '../../components/BoschToast';
 
-function Dialog({ isOpen, onClose, type, title }) {
+function Dialog({ isOpen, onClose, type, title, event }) {
     const dialogRef = useRef(null);
     const [responsible, setResponsible] = useState(null);
     const [allInstructors, setAllInstructors] = useState([]);
@@ -381,6 +381,79 @@ function Dialog({ isOpen, onClose, type, title }) {
                                 <h4>Turma:</h4>
                                 <DropdownList options={allClasses} selectedValue={selectedClass} onChange={(e) => setSelectedClass(e.target.value)} />
                             </div>
+                        </>
+                    }
+                </div>
+            }
+            {type === "view-event" &&
+                <div className="dialogContent">
+                    <div className="dialogInput">
+                        <h4>Tipo do evento:</h4>
+                    </div>
+                    <div className="dialogInput">
+                        <h4>Título:</h4>
+                        <h4>{event.title}</h4>
+                    </div>
+                    {typeEvent === 1 &&
+                        <>
+                            <div className="dialogInput">
+                                <h4>Participantes:</h4>
+                            </div>
+                            <div className="participantsList">
+                                {participants.map((participant) => (
+                                    <div key={participant.value} className="listItem">
+                                        <span className="itemName">{participant.label}</span>
+
+                                        <button className="removeItem" onClick={() => removeParticipant(participant.value)}>×</button>
+                                    </div>
+                                ))}
+                            </div>
+                            <div className="dialogInput">
+                                <h4>Início:</h4>
+                            </div>
+                            <div className="dialogInput">
+                                <h4>Encerramento:</h4>
+                            </div>
+                            <div style={{ display: "flex", flexDirection: "column", width: "500px" }}>
+                                <h4>Frequência:</h4>
+                            </div>
+                            <div className="dialogInput" style={{ marginLeft: "3rem" }}>
+                                <h4>Cor:</h4>
+                            </div>
+                        </>
+                    }
+                    {typeEvent === 2 &&
+                        <>
+                            <div className="dialogInput">
+                                <h4>Professor:</h4>
+                            </div>
+                            <div className="dialogInput">
+                                <h4>Início:</h4>
+                            </div>
+                            <div className="dialogInput">
+                                <h4>Encerramento:</h4>
+                            </div>
+                            <div className="dialogInput">
+                                <h4>Sala:</h4>
+                            </div>
+                        </>
+                    }
+                    {typeEvent === 3 &&
+                        <>
+                            <div className="dialogInput">
+                                <h4>Professor:</h4>
+                            </div>
+                            <div className="dialogInput">
+                                <h4>Sala:</h4>
+                            </div>
+                            <div className="dialogInput">
+                                <h4>Início:</h4>
+                            </div>
+                            <div className="dialogInput">
+                                <h4>Encerramento:</h4>
+                            </div>
+                            <div className="dialogInput">
+                                <h4>Turma:</h4> </div>
                         </>
                     }
                 </div>
