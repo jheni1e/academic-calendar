@@ -1,10 +1,49 @@
 import { CreateReservationDTO, UpdateReservationDTO } from "../dtos/ReservationDto.ts";
-import { Reservation } from "../generated/prisma/client.ts";
+import { EventStatus, Reservation } from "../generated/prisma/client.ts";
 import { prisma } from "../lib/prisma.ts";
+import { ConflictError } from "../shared/errors/ConflictError.ts";
+
+
+const validateRoomConflict = async (
+    roomId: number,
+    start: Date,
+    end: Date
+): Promise<void> => {
+
+    const conflict = await prisma.reservation.findFirst({
+        where: {
+            room_id: roomId,
+
+            event: {
+                status: EventStatus.SCHEDULED,
+
+                start_date: {
+                    lt: end
+                },
+
+                end_date: {
+                    gt: start
+                }
+            }
+        }
+    });
+
+    if (conflict) {
+        throw new ConflictError(
+            "Room already has a scheduled reservation during this period."
+        );
+    }
+};
 
 export const createReservation = async (
-    data : CreateReservationDTO
+    data: CreateReservationDTO
 ): Promise<Reservation> => {
+
+    await validateRoomConflict(
+        data.roomId,
+        data.startDate,
+        data.endDate
+    );
 
     return prisma.reservation.create({
         data: {
@@ -13,7 +52,7 @@ export const createReservation = async (
             description: data.description
         }
     });
-}
+};
 
 export const updateReservation = async (
     reservationId: number,
