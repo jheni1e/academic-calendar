@@ -6,6 +6,7 @@ import DropdownList from "../DropdownList";
 import ColorPicker from "../ColorPicker";
 import FrequencySelector from "../FrequencySelector";
 import { getData, postData } from "../../utils/apiBack";
+import { toastWarning } from '../../components/BoschToast';
 
 function Dialog({ isOpen, onClose, type, title }) {
     const dialogRef = useRef(null);
@@ -27,6 +28,9 @@ function Dialog({ isOpen, onClose, type, title }) {
 
     const [newSubjectName, setNewSubjectName] = useState("")
     const [newSubjectWorkload, setNewSubjectWorkload] = useState("")
+
+    const [startDate, setStartDate] = useState(new Date());
+    const [endDate, setEndDate] = useState(new Date());
 
     useEffect(() => {
         const dialog = dialogRef.current;
@@ -123,6 +127,42 @@ function Dialog({ isOpen, onClose, type, title }) {
         }
     };
 
+    const createEvent = async () => {
+        try {
+            if (!title) {
+                toastWarning("O título é obrigatório.");
+            }
+
+            if (typeEvent === 1) {
+                const eventType = "EVENT";
+                const userEdv = localStorage.getItem("user");
+
+                const payload = {
+                    title: title,
+                    eventType: eventType,
+                    startDate: startDate,
+                    endDate: endDate,
+                    // createdBy: localStorage.getItem("user"),
+                    createdBy: 1,
+                };
+
+                console.log(payload)
+                console.log(userEdv)
+            }
+
+            if (typeEvent === 2) {
+                const eventType = "LESSON";
+            }
+
+            if (typeEvent === 3) {
+                const eventType = "EXAM";
+            }
+        } catch (error) {
+            console.error(error);
+            alert(error.message);
+        }
+    }
+
     const addRoom = () => {
         if (!selectedRoom) return;
 
@@ -175,7 +215,7 @@ function Dialog({ isOpen, onClose, type, title }) {
 
     const addSubject = () => {
         if (!responsible) return;
-        
+
         const newSubject = {
             name: newSubjectName,
             workload: newSubjectWorkload,
@@ -185,6 +225,13 @@ function Dialog({ isOpen, onClose, type, title }) {
 
         postData("/subject", newSubject)
     }
+
+    const formatDateTimeLocal = (date) =>
+        date
+            ? new Date(date.getTime() - date.getTimezoneOffset() * 60000)
+                .toISOString()
+                .slice(0, 16)
+            : "";
 
     const typeEvents = [
         { value: 1, label: "Evento" },
@@ -210,7 +257,7 @@ function Dialog({ isOpen, onClose, type, title }) {
                 <div className="dialogContent">
                     <div className="dialogInput">
                         <h4>Nome da matéria:</h4>
-                        <TextBox placeholder="e.g.: Internet das Coisas" onChange={(e) => setNewSubjectName(e.target.value)}/>
+                        <TextBox placeholder="e.g.: Internet das Coisas" onChange={(e) => setNewSubjectName(e.target.value)} />
                     </div>
                     <div className="dialogInput">
                         <h4>Responsável:</h4>
@@ -218,7 +265,7 @@ function Dialog({ isOpen, onClose, type, title }) {
                     </div>
                     <div className="dialogInput">
                         <h4>Carga horária:</h4>
-                        <TextBox placeholder="e.g.: 16h" onChange={(e) => setNewSubjectWorkload(e.target.value)}/>
+                        <TextBox placeholder="e.g.: 16h" onChange={(e) => setNewSubjectWorkload(e.target.value)} />
                     </div>
                     <div className="dialogInput">
                         <h4>Salas:</h4>
@@ -276,11 +323,11 @@ function Dialog({ isOpen, onClose, type, title }) {
                             </div>
                             <div className="dialogInput">
                                 <h4>Início:</h4>
-                                <TextBox placeholder="XX/XX/XXXX XX:XX" />
+                                <TextBox placeholder="XX/XX/XXXX XX:XX" type="datetime-local" value={formatDateTimeLocal(startDate)} onChange={(e) => setStartDate(new Date(e.target.value))} />
                             </div>
                             <div className="dialogInput">
                                 <h4>Encerramento:</h4>
-                                <TextBox placeholder="XX/XX/XXXX XX:XX" />
+                                <TextBox placeholder="XX/XX/XXXX XX:XX" type="datetime-local" value={formatDateTimeLocal(endDate)} onChange={(e) => setEndDate(new Date(e.target.value))} />
                             </div>
                             <div style={{ display: "flex", flexDirection: "column", width: "500px" }}>
                                 <h4>Frequência:</h4>
@@ -371,7 +418,7 @@ function Dialog({ isOpen, onClose, type, title }) {
                 </div>
             }
             <div className="dialogButtons">
-                <BoschButton text="Confirmar" type="primary" />
+                <BoschButton text="Confirmar" type="primary" onClick={createEvent} />
                 <BoschButton text="Cancelar" type="secondary" onClick={onClose} />
             </div>
         </dialog>
