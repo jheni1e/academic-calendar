@@ -4,7 +4,7 @@ import { scheduleLessonSeries } from "../services/scheduler.service.ts";
 import { AppError } from "../shared/errors/AppError.ts";
 
 export class SchedulerController {
-    static async scheduleLessonSeries(req: Request, res: Response) {
+    static async createLessonSeries(req: Request, res: Response) {
         const data: ScheduleLessonsDTO = req.body;
 
         try {
