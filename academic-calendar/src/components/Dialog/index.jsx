@@ -7,7 +7,7 @@ import ColorPicker from "../ColorPicker";
 import FrequencySelector from "../FrequencySelector";
 import { getData, postData } from "../../utils/apiBack";
 
-function Dialog({ isOpen, onClose, type, title }) {
+function Dialog({ isOpen, onClose, type, title, event }) {
     const dialogRef = useRef(null);
     const [responsible, setResponsible] = useState(null);
     const [allInstructors, setAllInstructors] = useState([]);
@@ -345,6 +345,7 @@ function Dialog({ isOpen, onClose, type, title }) {
                     </div>
                     <div className="dialogInput">
                         <h4>Título:</h4>
+                        <h4>{event.title}</h4>
                     </div>
                     {typeEvent === 1 &&
                         <>
