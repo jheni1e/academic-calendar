@@ -1,26 +1,18 @@
-export interface CreateLessonSeriesDTO {
-    recurrenceId: number;
-
-    subjectInstructorId: number;
-    classId: number;
-
-    startDate: Date;
-    startHour: string;
-    endHour: string;
-
-    workload: number;
-}
+import { CreateRecurrenceDTO } from "./RecurrenceDto.ts";
 
 export interface ScheduleLessonsDTO {
-    subjectInstructorId: number;
-    recurrenceId: number;
-    classId: number;
-    createdBy: number;
 
     title: string;
     description?: string;
 
+    createdBy: number;
+
+    subjectInstructorId: number;
+    roomId: number;
+
     startDate: Date;
     startHour: string;
     endHour: string;
+
+    recurrence: CreateRecurrenceDTO;
 }

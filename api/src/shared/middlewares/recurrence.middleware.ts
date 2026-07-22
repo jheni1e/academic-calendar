@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { prisma } from "../../lib/prisma.ts";
 import { NotFoundError } from "../errors/NotFoundError.ts";
+import { findUserById } from "../../services/user.service.ts";
 
 export const validateCreate = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -10,10 +11,8 @@ export const validateCreate = async (req: Request, res: Response, next: NextFunc
             throw new Error("Frequency and creator are mandatory.");
         }
 
-        const user = await prisma.user.findFirst({
-            where: { id: created_by },
-        });
-
+        const user = await findUserById(created_by)
+        
         if (!user) {
             throw new NotFoundError("Creator not found.");
         }
@@ -29,7 +28,7 @@ export const validateDelete = async (req: Request, res: Response, next: NextFunc
         const recurrenceId: number = parseInt(req.params.id.toString());
 
         const recurrence = await prisma.recurrence.findFirst({
-            where: { id: recurrenceId },
+            where: { recurrence_id: recurrenceId },
         });
 
         if (recurrence) {
@@ -47,7 +46,7 @@ export const validateUpdate = async (req: Request, res: Response, next: NextFunc
         const recurrenceId: number = parseInt(req.params.id.toString());
 
         const recurrence = await prisma.recurrence.findFirst({
-            where: { id: recurrenceId },
+            where: { recurrence_id: recurrenceId },
         });
 
         if (recurrence) {
