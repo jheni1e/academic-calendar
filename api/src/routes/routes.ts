@@ -6,6 +6,7 @@ import event from "./event.routes.ts"
 import room from "./room.routes.ts"
 import subject from "./subject.routes.ts"
 import classs from "./class.routes.ts"
+import scheduler from "./schedule.routes.ts"
 import { errorMiddleware } from '../shared/middlewares/error.middleware.ts';
 
 export default function (app: Express) {
@@ -17,5 +18,6 @@ app
     .use('/api/room', room)
     .use('/api/subject', subject)
     .use('/api/class', classs)
+    .use('/api/scheduler', scheduler)
     .use(errorMiddleware);
 }
