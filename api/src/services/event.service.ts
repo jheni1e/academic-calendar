@@ -225,12 +225,12 @@ const createReservation = async (
 
 const createEventRecord = async (
     data: CreateEventDTO,
-    assignment: LoadedAssignment | undefined,
+    assignment: LoadedAssignment | null,
     start: Date,
     end: Date
 ): Promise<Event> => {
 
-    const event = await prisma.event.create({
+    return prisma.event.create({
         data: {
             title: data.title,
             description: data.description,
@@ -256,16 +256,7 @@ const createEventRecord = async (
         }
     });
 
-    await prisma.reservation.create({
-        data: {
-            room_id: data.roomId,
-            event_id: event.event_id,
-            description: data.description
-        }
-    });
-
-    return event;
-}
+};
 
 export const createEvent = async (
     data: CreateEventDTO
@@ -276,11 +267,13 @@ export const createEvent = async (
 
     validateDates(start, end);
 
-    let assignment: LoadedAssignment | undefined;
+    let assignment: LoadedAssignment | null = null;
 
     if (data.eventType === EventType.LESSON) {
 
-        assignment = await loadAssignment(data);
+        assignment = await loadAssignment(
+            data.subjectInstructorId
+        );
 
         validateSubjectWorkload(assignment);
 
@@ -297,16 +290,30 @@ export const createEvent = async (
         );
     }
 
+    if (!data.roomId) {
+        throw new ValidationError(
+            "Room is required."
+        );
+    }
+
     await validateRoomConflict(
         data.roomId,
         start,
         end
     );
 
-    return createEventRecord(
+    const event = await createEventRecord(
         data,
         assignment,
         start,
         end
     );
-}
+
+    await createReservation(
+        data.roomId,
+        event.event_id,
+        data.description
+    );
+
+    return event;
+};
