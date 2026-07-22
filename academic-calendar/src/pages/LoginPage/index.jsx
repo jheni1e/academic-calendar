@@ -25,9 +25,9 @@ function Login() {
 
             if (logged?.token) {
                 localStorage.setItem("token", logged.token);
+                localStorage.setItem("user", edv);
                 navigate("/home");
             }
-
         } catch (error) {
             console.error(error);
             alert(error.message);
