@@ -38,7 +38,7 @@ export class ReservationController {
         } catch (error) {
             next(error);
         }
-        }
+        
     }
 
     static async findReservationsByRoom(req: Request, res: Response) {

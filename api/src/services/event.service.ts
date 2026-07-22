@@ -285,7 +285,7 @@ export const findEventById = async (
 
 };
 
-export const findEvents = async (): Promise<Event[]> => {
+export const findAllEvents = async (): Promise<Event[]> => {
 
     return prisma.event.findMany({
         orderBy: {
