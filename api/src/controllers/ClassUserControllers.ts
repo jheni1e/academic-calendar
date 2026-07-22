@@ -4,29 +4,41 @@ import { CreateClassUserDTO, ClassUserResponseDTO } from "../dtos/ClassUserDto.t
 import { createClassUser, deleteClassUser, findAllClassUser, findClassUserById, findClassUsersByClass, findClassUsersByClassAndUser, findClassUsersByUser } from "../services/classuser.service.ts";
 
 export class ClassUserController {
-    static async create(req: Request, res: Response, next: NextFunction) {
+    static async create(req: Request, res: Response) {
         const data: CreateClassUserDTO = req.body;
         try {
             const classUser = await createClassUser(data);
 
             return res.status(201).json(classUser);
         } catch (error) {
-           next(error)
+            if (error instanceof AppError) {
+                return res.status(error.statusCode).json({
+                    message: error.message
+                });
+            }
+
+            return res.status(500).json({ message: "Internal server error." });
         }
     }
 
-    static async delete(req: Request, res: Response, next: NextFunction) {
+    static async delete(req: Request, res: Response) {
         const id: number = parseInt(req.params.id.toString());
 
         try {
             await deleteClassUser(id);
             return res.status(204).send({ message: "Class user deleted successfully." });
         } catch (error) {
-            next(error)
+            if (error instanceof AppError) {
+                return res.status(error.statusCode).json({
+                    message: error.message
+                });
+            }
+
+            return res.status(500).json({ message: "Internal server error." });
         }
     }
 
-    static async findClassUsersByClassAndUser(req: Request, res: Response, next: NextFunction) {
+    static async findClassUsersByClassAndUser(req: Request, res: Response) {
         const id: number = parseInt(req.params.id.toString());
 
         try {
@@ -34,11 +46,17 @@ export class ClassUserController {
             return res.status(200).json(classUser);
 
         } catch (error) {
-            next(error)
+            if (error instanceof AppError) {
+                return res.status(error.statusCode).json({
+                    message: error.message
+                });
+            }
+
+            return res.status(500).json({ message: "Internal server error." });
         }
     }
 
-    static async findClassUserById(req: Request, res: Response, next: NextFunction) {
+    static async findClassUserById(req: Request, res: Response) {
         const id: number = parseInt(req.params.id.toString());
 
         try {
@@ -46,11 +64,17 @@ export class ClassUserController {
 
             return res.status(200).json(classUser);
         } catch (error) {
-            next(error);
+            if (error instanceof AppError) {
+                return res.status(error.statusCode).json({
+                    message: error.message
+                });
+            }
+
+            return res.status(500).json({ message: "Internal server error." });
         }
     }
     
-    static async findClassUsersByUser(req: Request, res: Response, next: NextFunction) {
+    static async findClassUsersByUser(req: Request, res: Response) {
         const id = res.locals.id
 
         try {
@@ -58,11 +82,17 @@ export class ClassUserController {
             return res.status(200).json(classes);
 
         } catch (error) {
-            next(error);
+            if (error instanceof AppError) {
+                return res.status(error.statusCode).json({
+                    message: error.message
+                });
+            }
+
+            return res.status(500).json({ message: "Internal server error." });
         }
     }
 
-    static async findClassUsersByClass(req: Request, res: Response, next: NextFunction) {
+    static async findClassUsersByClass(req: Request, res: Response) {
         const id: number = parseInt(req.params.id.toString());
 
         try {
@@ -70,17 +100,29 @@ export class ClassUserController {
             return res.status(200).json(classUsers);
 
         } catch (error) {
-            next(error);
+            if (error instanceof AppError) {
+                return res.status(error.statusCode).json({
+                    message: error.message
+                });
+            }
+
+            return res.status(500).json({ message: "Internal server error." });
         }
     }
 
-    static async findAllClassUser(req: Request, res: Response, next: NextFunction) {
+    static async findAllClassUser(req: Request, res: Response) {
         try {
             const classUsers = await findAllClassUser();
             
             return res.status(200).json(classUsers);
         } catch (error) {
-            next(error);
+            if (error instanceof AppError) {
+                return res.status(error.statusCode).json({
+                    message: error.message
+                });
+            }
+
+            return res.status(500).json({ message: "Internal server error." });
         }
     }
 }
