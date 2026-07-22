@@ -221,22 +221,24 @@ export const createEvent = async (
         );
     }
 
-    const event = await createEventRecord(
-        data,
-        assignment,
-        start,
-        end
-    );
+    return prisma.$transaction(async () => {
+        const event = await createEventRecord(
+            data,
+            assignment,
+            start,
+            end
+        );
 
-    await createReservation({
-        roomId: data.roomId,
-        eventId: event.event_id,
-        startDate: start,
-        endDate: end,
-        description: data.description
+        await createReservation({
+            roomId: data.roomId,
+            eventId: event.event_id,
+            startDate: start,
+            endDate: end,
+            description: data.description
+        });
+
+        return event;
     });
-
-    return event;
 };
 
 // ---- CRUD ----
