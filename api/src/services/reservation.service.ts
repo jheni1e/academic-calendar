@@ -1,25 +1,33 @@
 import { CreateReservationDTO, UpdateReservationDTO } from "../dtos/ReservationDto.ts";
-import { EventStatus, Reservation } from "../generated/prisma/client.ts";
+import { EventStatus, Prisma, Reservation } from "../generated/prisma/client.ts";
 import { prisma } from "../lib/prisma.ts";
 import { ConflictError } from "../shared/errors/ConflictError.ts";
+import { NotFoundError } from "../shared/errors/NotFoundError.ts";
 
 const validateRoomConflict = async (
     roomId: number,
     start: Date,
-    end: Date
+    end: Date,
+    reservationId?: number
 ): Promise<void> => {
 
     const conflict = await prisma.reservation.findFirst({
         where: {
             room_id: roomId,
-
+        
+            ...(reservationId && {
+                reservation_id: {
+                    not: reservationId
+                }
+            }),
+        
             event: {
                 status: EventStatus.SCHEDULED,
-
+        
                 start_date: {
                     lt: end
                 },
-
+        
                 end_date: {
                     gt: start
                 }
@@ -37,6 +45,7 @@ const validateRoomConflict = async (
 export const createReservation = async (
     data: CreateReservationDTO
 ): Promise<Reservation> => {
+   
 
     await validateRoomConflict(
         data.roomId,
@@ -66,7 +75,8 @@ export const updateReservation = async (
         await validateRoomConflict(
             data.roomId,
             data.startDate,
-            data.endDate
+            data.endDate,
+            reservationId
         );
     }
 
@@ -87,6 +97,16 @@ export const updateReservationByEvent = async (
     data: UpdateReservationDTO
 ): Promise<Reservation> => {
 
+    const reservation = await prisma.reservation.findUnique({
+        where: {
+            event_id: eventId
+        }
+    });
+
+    if (!reservation) {
+        throw new NotFoundError("Reservation not found");
+    }
+
     if (
         data.roomId &&
         data.startDate &&
@@ -95,7 +115,8 @@ export const updateReservationByEvent = async (
         await validateRoomConflict(
             data.roomId,
             data.startDate,
-            data.endDate
+            data.endDate,
+            reservation.reservation_id
         );
     }
 
@@ -119,8 +140,8 @@ export const findReservationById = async (reservationId: number): Promise<Reserv
         where: {
             reservation_id : reservationId
         }
-    })
-}
+    });
+};
 
 export const findReservationByEvent = async (
     eventId: number
@@ -132,20 +153,37 @@ export const findReservationByEvent = async (
         }
     });
 
-}
+};
 
-export const findReservationsByRoom = async (roomId : number) : Promise<Reservation[] | null> => {
+export const findReservationsByRoom = async (roomId : number) : Promise<Reservation[] > => {
     return prisma.reservation.findMany({
         where: {
             room_id : roomId
         }
-    })
-}
+    });
+};
 
 export const deleteReservation = async (reservationId: number): Promise<void> => {
-    await prisma.reservation.delete({
-        where: {
-            reservation_id : reservationId
+    try {
+
+        await prisma.reservation.delete({
+            where:{
+                reservation_id: reservationId
+            }
+        });
+        
         }
-    })
-}
+        catch (error) {
+
+            if (
+                error instanceof Prisma.PrismaClientKnownRequestError &&
+                error.code === "P2025"
+            ) {
+                throw new NotFoundError(
+                    "Reservation not found"
+                );
+            }
+        
+            throw error;
+        }
+};
