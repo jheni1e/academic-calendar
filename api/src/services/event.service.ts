@@ -183,6 +183,33 @@ const createEventRecord = async (
 
 };
 
+const validateLesson = async (
+    subjectInstructorId: number,
+    start: Date,
+    end: Date
+): Promise<LoadedAssignment> => {
+
+    const assignment = await loadAssignment(
+        subjectInstructorId
+    );
+
+    validateSubjectWorkload(assignment);
+
+    await validateInstructorConflict(
+        assignment,
+        start,
+        end
+    );
+
+    await validateClassConflict(
+        assignment.subject.class.class_id,
+        start,
+        end
+    );
+
+    return assignment;
+};
+
 export const createEvent = async (
     data: CreateEventDTO
 ): Promise<Event> => {
@@ -195,21 +222,8 @@ export const createEvent = async (
     let assignment: LoadedAssignment | null = null;
 
     if (data.eventType === EventType.LESSON) {
-
-        assignment = await loadAssignment(
-            data.subjectInstructorId
-        );
-
-        validateSubjectWorkload(assignment);
-
-        await validateInstructorConflict(
-            assignment,
-            start,
-            end
-        );
-
-        await validateClassConflict(
-            assignment.subject.class.class_id,
+        assignment = await validateLesson(
+            data.subjectInstructorId,
             start,
             end
         );
@@ -374,22 +388,12 @@ export const updateEvent = async (
 
     let assignment: LoadedAssignment | null = null;
 
-    if (data.eventType === EventType.LESSON) {
-
-        assignment = await loadAssignment(
-            data.subjectInstructorId
-        );
-
-        validateSubjectWorkload(assignment);
-
-        await validateInstructorConflict(
-            assignment,
-            start,
-            end
-        );
-
-        await validateClassConflict(
-            assignment.subject.class.class_id,
+    if (
+        data.eventType === EventType.LESSON &&
+        data.subjectInstructorId
+    ) {
+        assignment = await validateLesson(
+            data.subjectInstructorId,
             start,
             end
         );
