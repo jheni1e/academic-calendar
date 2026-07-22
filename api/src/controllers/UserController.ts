@@ -3,9 +3,10 @@ import { CreateUserDTO, UpdateUserDTO } from "../dtos/UserDto.ts";
 import { activateUser, createUser, disableUser, findAllUsers, findUserByEdv, findUserById, getInstructors, updateUser } from "../services/user.service.ts";
 import { hashPassword } from "../app/utils/password.ts";
 import { UserRole } from "../generated/prisma/enums.ts";
+import { AppError } from "../shared/errors/AppError.ts";
 
 export class UserController {
-    static async create(req: Request, res: Response, next: NextFunction) {
+    static async create(req: Request, res: Response) {
         
         const data : CreateUserDTO = req.body
 
@@ -20,11 +21,17 @@ export class UserController {
             return res.status(200).send({ message : "User created!", user })
 
         } catch (error) {
-            next(error)
+            if (error instanceof AppError) {
+                return res.status(error.statusCode).json({
+                    message: error.message
+                });
+            }
+
+            return res.status(500).json({ message: "Internal server error." });
         }
     }
 
-    static async getAll(req: Request, res: Response, next: NextFunction) {
+    static async getAll(req: Request, res: Response) {
         try {
             const users = await findAllUsers();
 
@@ -32,31 +39,49 @@ export class UserController {
 
 
         } catch (error) {
-            next(error)
+            if (error instanceof AppError) {
+                return res.status(error.statusCode).json({
+                    message: error.message
+                });
+            }
+
+            return res.status(500).json({ message: "Internal server error." });
         }
     }
 
-    static async getById(req: Request, res: Response, next: NextFunction) {
+    static async getById(req: Request, res: Response) {
         try {
             const user = res.locals.foundUser
             return res.status(200).send(user)
 
         } catch (error) {
-            next(error)
+            if (error instanceof AppError) {
+                return res.status(error.statusCode).json({
+                    message: error.message
+                });
+            }
+
+            return res.status(500).json({ message: "Internal server error." });
         }
     }
 
-    static async getByEdv(req: Request, res: Response, next: NextFunction) {
+    static async getByEdv(req: Request, res: Response) {
         try {
             const user = res.locals.foundUser
             return res.status(200).send({user})
 
         } catch (error) {
-            next(error)
+            if (error instanceof AppError) {
+                return res.status(error.statusCode).json({
+                    message: error.message
+                });
+            }
+
+            return res.status(500).json({ message: "Internal server error." });
         }
     }
 
-    static async update(req: Request, res: Response, next: NextFunction) {
+    static async update(req: Request, res: Response) {
         const { id } = req.params
         const data : UpdateUserDTO = req.body
 
@@ -65,11 +90,17 @@ export class UserController {
             return res.status(200).send({ message: "User succesfully updated!", newUser})
 
         } catch(error) {
-           next(error)
+            if (error instanceof AppError) {
+                return res.status(error.statusCode).json({
+                    message: error.message
+                });
+            }
+
+            return res.status(500).json({ message: "Internal server error." });
         }}
     
 
-    static async disable(req: Request, res: Response, next: NextFunction) {
+    static async disable(req: Request, res: Response) {
         const { id } = req.params
 
         try {
@@ -77,11 +108,17 @@ export class UserController {
             return res.status(200).send({ message: "User disabled"})
 
         } catch (error) {
-            next(error)
+            if (error instanceof AppError) {
+                return res.status(error.statusCode).json({
+                    message: error.message
+                });
+            }
+
+            return res.status(500).json({ message: "Internal server error." });
         }
     }
 
-    static async activate(req: Request, res: Response, next: NextFunction) {
+    static async activate(req: Request, res: Response) {
         const { id } = req.params
 
         try {
@@ -89,17 +126,29 @@ export class UserController {
             return res.status(200).send({ message: "User updated"})
 
         } catch (error) {
-            next(error)
+            if (error instanceof AppError) {
+                return res.status(error.statusCode).json({
+                    message: error.message
+                });
+            }
+
+            return res.status(500).json({ message: "Internal server error." });
         }
     }
 
-    static async getInstructors(req: Request, res: Response, next: NextFunction) {
+    static async getInstructors(req: Request, res: Response) {
         try {
             const users = await getInstructors();
             return res.status(200).send(users)
 
         } catch(error) {
-            next(error)
+            if (error instanceof AppError) {
+                return res.status(error.statusCode).json({
+                    message: error.message
+                });
+            }
+
+            return res.status(500).json({ message: "Internal server error." });
         }
     }
 

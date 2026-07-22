@@ -4,18 +4,24 @@ import { createEventRole, deleteEventRole, findAllEventRoles, findEventRoleById,
 import { CreateEventRoleDTO, UpdateEventRoleDTO } from "../dtos/EventRoleDto.ts";
 
 export class EventRoleController {
-    static async create(req: Request, res: Response, next: NextFunction) {
+    static async create(req: Request, res: Response) {
         const data: CreateEventRoleDTO = req.body
         try {
             const eventRole = await createEventRole(data);
             return res.status(201).json(eventRole);
 
         } catch (error) {
-            next(error);
+            if (error instanceof AppError) {
+                return res.status(error.statusCode).json({
+                    message: error.message
+                });
+            }
+
+            return res.status(500).json({ message: "Internal server error." });
         }
     }
 
-    static async delete(req: Request, res: Response, next: NextFunction) {
+    static async delete(req: Request, res: Response) {
         const id: number = parseInt(req.params.id.toString());
 
         try {
@@ -23,11 +29,17 @@ export class EventRoleController {
             return res.status(204).send({ message: "Event role deleted successfully." });
 
         } catch (error) {
-            next(error);
+            if (error instanceof AppError) {
+                return res.status(error.statusCode).json({
+                    message: error.message
+                });
+            }
+
+            return res.status(500).json({ message: "Internal server error." });
         }
     }
 
-    static async findEventRoleById(req: Request, res: Response, next: NextFunction) {
+    static async findEventRoleById(req: Request, res: Response) {
         const id: number = parseInt(req.params.id.toString());
 
         try {
@@ -35,22 +47,34 @@ export class EventRoleController {
             return res.status(200).json(eventRole);
             
         } catch (error) {
-            next(error);
+            if (error instanceof AppError) {
+                return res.status(error.statusCode).json({
+                    message: error.message
+                });
+            }
+
+            return res.status(500).json({ message: "Internal server error." });
         }
         
     }
 
-    static async findAllEventRoles(req: Request, res: Response, next: NextFunction) {
+    static async findAllEventRoles(req: Request, res: Response) {
         try {
             const eventRoles = await findAllEventRoles();
             return res.status(200).json(eventRoles);
 
         } catch (error) {
-            next(error);
+            if (error instanceof AppError) {
+                return res.status(error.statusCode).json({
+                    message: error.message
+                });
+            }
+
+            return res.status(500).json({ message: "Internal server error." });
         }
     }
 
-    static async updateEventRole(req: Request, res: Response, next: NextFunction) {
+    static async updateEventRole(req: Request, res: Response) {
         const id: number = parseInt(req.params.id.toString());
         const data: UpdateEventRoleDTO = req.body;
 
@@ -59,7 +83,13 @@ export class EventRoleController {
             return res.status(200).json(eventRole);
 
         } catch (error) {
-            next(error)
+            if (error instanceof AppError) {
+                return res.status(error.statusCode).json({
+                    message: error.message
+                });
+            }
+
+            return res.status(500).json({ message: "Internal server error." });
         }
     }
 }   
