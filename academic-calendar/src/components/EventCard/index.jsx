@@ -15,13 +15,27 @@ function getEventColor(id) {
 }
 
 function EventCard({ event, compact }) {
-  const [color] = useState(getEventColor());
+  const color = getEventColor(event.event_id);
+
+  const start = new Date(event.start_date);
+
+  const time = start.toLocaleTimeString("pt-BR", {
+    hour: "2-digit",
+    minute: "2-digit"
+  });
 
   return (
     <div
       className={`event-card ${compact ? "compact" : ""}`}
-      style={{ backgroundColor: getEventColor(event.event_id) }}>
-      {!compact && <span>{event.title}</span>}
+      style={{ "--event-color": color }}
+    >
+      {!compact && (
+        <>
+          <span className="event-title">
+            {event.title}
+          </span>
+        </>
+      )}
     </div>
   );
 }
