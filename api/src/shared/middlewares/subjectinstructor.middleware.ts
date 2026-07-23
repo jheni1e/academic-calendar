@@ -26,7 +26,7 @@ export const validateCreate = async (req: Request, res: Response, next: NextFunc
 
         const relation = await findSubjectInstructorBySubjectAndInstructor(subjectId, instructorId)
 
-        if (!relation) {
+        if (relation) {
             throw new Error("Instructor already connected to the subject.");
         }
 
