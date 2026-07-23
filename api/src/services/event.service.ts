@@ -221,19 +221,20 @@ export const createEvent = async (
 
     let assignment: LoadedAssignment | null = null;
 
-    if (data.eventType === EventType.LESSON) {
+    if (data.eventType === EventType.LESSON && data.subjectInstructorId) {
         assignment = await validateLesson(
             data.subjectInstructorId,
             start,
             end
         );
+
+        if (!data.roomId) {
+            throw new ValidationError(
+                "Room is required."
+            );
+        }
     }
 
-    if (!data.roomId) {
-        throw new ValidationError(
-            "Room is required."
-        );
-    }
 
     return prisma.$transaction(async () => {
         const event = await createEventRecord(
@@ -243,13 +244,15 @@ export const createEvent = async (
             end
         );
 
-        await createReservation({
-            roomId: data.roomId,
-            eventId: event.event_id,
-            startDate: start,
-            endDate: end,
-            description: data.description
-        });
+        if (data.roomId) {
+            await createReservation({
+                roomId: data.roomId,
+                eventId: event.event_id,
+                startDate: start,
+                endDate: end,
+                description: data.description
+            });
+        }
 
         return event;
     });

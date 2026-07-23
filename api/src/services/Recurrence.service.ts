@@ -1,14 +1,19 @@
-import { CreateRecurrenceDTO, UpdateRecurrenceDTO } from "../../dtos/recurrenceDTO.ts";
-import { prisma } from "../../lib/prisma.ts";
+import { CreateRecurrenceDTO, UpdateRecurrenceDTO } from "../dtos/recurrenceDTO.ts";
+import { prisma } from "../lib/prisma.ts";
 
 export const createRecurrence = async (data: CreateRecurrenceDTO) => {
-    const { repeat_until, occurrences, created_by, monday, tuesday, wednesday, thursday, friday } = data;
+    const { seriesName, createdBy, repeatUntil, occurrences, monday, tuesday, wednesday, thursday, friday } = data;
+
+    if (createdBy == null) {
+        throw new Error("Criador é obrigatório.");
+    }
 
     return await prisma.recurrence.create({
         data: {
-            repeat_until: repeat_until,
+            series_name: seriesName != undefined ? seriesName : "",
+            created_by: createdBy,
+            repeat_until: repeatUntil,
             occurrences: occurrences,
-            created_by: created_by,
             monday: monday,
             tuesday: tuesday,
             wednesday: wednesday,
