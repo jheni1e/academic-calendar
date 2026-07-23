@@ -1,11 +1,15 @@
 import EventCard from "../EventCard";
 import "./index.css";
 
-function DayCell({ day, events = [], viewMode, compact }) {
+function DayCell({ day, month, year, events = [], viewMode, compact }) {
   const dayEvents = events.filter((event) => {
     const date = new Date(event.start_date);
 
-    return date.getDate() === day;
+    return (
+      date.getDate() === day &&
+      date.getMonth() === month &&
+      date.getFullYear() === year
+    );
   });
 
   const morningEvents = dayEvents.filter((event) => {
