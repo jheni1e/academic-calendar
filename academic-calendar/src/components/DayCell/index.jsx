@@ -1,7 +1,7 @@
 import EventCard from "../EventCard";
 import "./index.css";
 
-function DayCell({ day, events, viewMode, compact }) {
+function DayCell({ day, events = [], viewMode, compact }) {
   const dayEvents = events.filter((event) => {
     const date = new Date(event.start_date);
 

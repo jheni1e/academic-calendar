@@ -27,7 +27,7 @@ const viewOptions = [
   { value: "semester", label: "Semestral" }
 ];
 
-function MonthlyCalendar({ initialDate, compact = false, type, events }) {
+function MonthlyCalendar({ initialDate, compact = false, type, events = [] }) {
   const [currentDate, setCurrentDate] = useState(initialDate || new Date());
   const [viewMode, setViewMode] = useState("month");
 
@@ -198,6 +198,7 @@ function MonthlyCalendar({ initialDate, compact = false, type, events }) {
               key={month}
               initialDate={new Date(year, month, 1)}
               compact
+              events={events}
             />
           ))}
         </div>
