@@ -1,6 +1,6 @@
+import { CreateParticipationDTO, UpdateParticipationDTO } from "../dtos/ParticipationDTO.ts";
 import { Participation } from "../generated/prisma/client.ts";
 import { prisma } from "../lib/prisma.ts";
-import { CreateParticipationDTO, UpdateParticipationDTO } from "../dtos/ParticipationDto.ts";
 
 export const createParticipation = async (
     data: CreateParticipationDTO
@@ -9,7 +9,6 @@ export const createParticipation = async (
     return prisma.participation.create({
         data: {
             user_id: data.userId,
-            event_role_id: data.eventRoleId,
             event_id: data.eventId,
             status: data.status
         }
@@ -27,9 +26,6 @@ export const updateParticipation = async (
             participation_id: participationId
         },
         data: {
-            ...(data.eventRoleId !== undefined && {
-                event_role_id: data.eventRoleId
-            }),
             ...(data.status !== undefined && {
                 status: data.status
             })
