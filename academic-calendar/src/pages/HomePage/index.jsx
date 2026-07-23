@@ -25,17 +25,18 @@ function Home() {
   }, []);
 
   const initUserInfo = async () => {
-    const edv = localStorage.getItem("user");
-    const user = await getData(`/user/edv/${edv}`);
-
-    if (!user) {
+    const edv = sessionStorage.getItem("user");
+    
+    if (!edv) {
       navigate("/login");
       return;
     }
+    
+    const user = await getData(`/user/edv/${edv}`);
   }
 
   const getUserEvents = async () => {
-    const edv = localStorage.getItem("user");
+    const edv = sessionStorage.getItem("user");
 
     const user = await getData(`/user/edv/${edv}`);
     const userId = user.user.id;

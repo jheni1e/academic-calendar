@@ -18,7 +18,7 @@ function Login() {
     }, []);
 
     const initUserInfo = async () => {
-        const edv = localStorage.getItem("user");
+        const edv = sessionStorage.getItem("user");
         const user = await getData(`/user/edv/${edv}`);
 
         if (user) {
@@ -41,8 +41,8 @@ function Login() {
             }
 
             if (logged?.token) {
-                localStorage.setItem("token", logged.token);
-                localStorage.setItem("user", edv);
+                sessionStorage.setItem("token", logged.token);
+                sessionStorage.setItem("user", edv);
                 toastSuccess("Loggado com sucesso!");
                 navigate("/home");
             }
