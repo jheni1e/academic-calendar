@@ -4,7 +4,6 @@ import downArrow from '../../images/DownArrow.svg';
 
 function DropdownList({ label, options, selectedValue, onChange, disabled }, ref) {
     const isDisabled = selectedValue === "";
-    console.log(options)
     return (
         <div className="a-dropdown a-dropdown--dynamic-width">
             <label>{label}</label>

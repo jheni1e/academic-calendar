@@ -5,6 +5,7 @@ import TextBox from '../../components/TextBox';
 import BoschButton from '../../components/BoschButton';
 import boschImage from "../../images/bosch-renningen.jpg";
 import { postData } from '../../utils/apiBack';
+import { toastError } from '../../components/BoschToast';
 
 function Login() {
     const [edv, setEdv] = useState("");
@@ -21,7 +22,9 @@ function Login() {
 
             const logged = await postData("/auth/login", payload);
 
-            console.log(logged)
+            if (!logged) {
+                toastError("Falha ao realizar login");
+            }
 
             if (logged?.token) {
                 localStorage.setItem("token", logged.token);

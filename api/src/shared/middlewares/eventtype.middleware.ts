@@ -4,13 +4,20 @@ import { ConflictError } from "../errors/ConflictError.ts";
 import { NotFoundError } from "../errors/NotFoundError.ts";
 import { ForbiddenError } from "../errors/ForbiddenError.ts";
 import { findEventTypeById } from "../../services/eventtype.service.ts";
+import { EventType } from "../../generated/prisma/enums.ts";
+import { BadRequestError } from "../errors/BadRequestError.ts";
 
 export const validateCreate = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { name } = req.body;
+        const { eventType } = req.body
 
         if (!name.trim()) {
             throw new Error("Event type name is required.");
+        }
+
+        if (!Object.values(EventType).includes(eventType)) {
+            throw new BadRequestError("Invalid event type");
         }
 
         next();

@@ -4,7 +4,7 @@ import './index.css';
 import TextBox from '../../components/TextBox';
 import BoschButton from '../../components/BoschButton';
 import { postData } from '../../utils/apiBack';
-import { toastSuccess } from '../../components/BoschToast';
+import { toastError, toastSuccess } from '../../components/BoschToast';
 
 function Register() {
     const [edv, setEDV] = useState("");
@@ -27,7 +27,10 @@ function Register() {
 
             const created = await postData("/user", payload);
 
-            console.log(created)
+            if (!created) {
+                toastError("Falha ao se registrar.");
+                return;
+            }
 
             toastSuccess("Registrado com sucesso!");
         } catch (error) {

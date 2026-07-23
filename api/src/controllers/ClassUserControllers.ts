@@ -11,6 +11,7 @@ export class ClassUserController {
 
             return res.status(201).json(classUser);
         } catch (error) {
+            console.log(error)
             if (error instanceof AppError) {
                 return res.status(error.statusCode).json({
                     message: error.message
