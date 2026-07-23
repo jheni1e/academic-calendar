@@ -2,13 +2,21 @@ import EventCard from "../EventCard";
 import "./index.css";
 
 function DayCell({ day, events, viewMode, compact }) {
-  const morningEvents = events
-    .filter((event) => event.period === "morning")
-    .slice(0, 3);
+  const dayEvents = events.filter((event) => {
+    const date = new Date(event.start_date);
 
-  const afternoonEvents = events
-    .filter((event) => event.period === "afternoon")
-    .slice(0, 3);
+    return date.getDate() === day;
+  });
+
+  const morningEvents = dayEvents.filter((event) => {
+    const hour = new Date(event.start_date).getHours();
+    return hour < 12;
+  });
+
+  const afternoonEvents = dayEvents.filter((event) => {
+    const hour = new Date(event.start_date).getHours();
+    return hour >= 12;
+  });
 
   return (
     <div className={`day-cell ${viewMode === "week" ? "week" : "month"} ${compact ? "compact" : ""}`}>
@@ -16,13 +24,13 @@ function DayCell({ day, events, viewMode, compact }) {
 
       <div className="period morning">
         {morningEvents.map((event) => (
-          <EventCard key={event.id} event={event} compact={compact} />
+          <EventCard key={event.event_id} event={event} compact={compact} />
         ))}
       </div>
 
       <div className="period afternoon">
         {afternoonEvents.map((event) => (
-          <EventCard key={event.id} event={event} compact={compact} />
+          <EventCard key={event.event_id} event={event} compact={compact} />
         ))}
       </div>
     </div>
