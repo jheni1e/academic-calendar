@@ -1,4 +1,5 @@
-import { PrismaClient } from "@prisma/client";
+import "dotenv/config"
+import { PrismaClient } from "../src/generated/prisma/client.ts";
 
 const prisma = new PrismaClient();
 
@@ -10,14 +11,14 @@ async function main() {
                 name: "Jhenifer Halma",
                 password: "jheni123",
                 birthday: new Date("2006-10-13T00:00:00Z"),
-                role: "STUDENT"
-            },
+                role: "APPRENTICE"
+            },  
             {
                 user_edv: 92906815,
                 name: "Fernanda Fialho",
                 password: "fefito123",
                 birthday: new Date("2006-02-02T00:00:00Z"),
-                role: "STUDENT"
+                role: "APPRENTICE"
             },
             {
                 user_edv: 92906899,
@@ -87,31 +88,36 @@ async function main() {
                 class_id: mec25.class_id,
                 name: "IoT",
                 workload: 40,
-                start_date: new Date("2026-07-20T00:00:00Z")
+                start_date: new Date("2026-07-20T00:00:00Z"),
+                completed_workload: 0
             },
             {
                 class_id: add2.class_id,
                 name: "Python",
                 workload: 60,
-                start_date: new Date("2026-07-27T00:00:00Z")
+                start_date: new Date("2026-07-27T00:00:00Z"),
+                completed_workload: 0
             },
             {
                 class_id: dta3.class_id,
                 name: "C# Básico",
                 workload: 80,
-                start_date: new Date("2026-07-20T00:00:00Z")
+                start_date: new Date("2026-07-20T00:00:00Z"),
+                completed_workload: 0
             },
             {
                 class_id: mec26.class_id,
                 name: "Excel",
                 workload: 30,
-                start_date: new Date("2026-08-03T00:00:00Z")
+                start_date: new Date("2026-08-03T00:00:00Z"),
+                completed_workload: 0
             },
             {
                 class_id: man25.class_id,
                 name: "Power BI",
                 workload: 34,
-                start_date: new Date("2026-08-10T00:00:00Z")
+                start_date: new Date("2026-08-10T00:00:00Z"),
+                completed_workload: 0
             },
         ],
         skipDuplicates: true,
@@ -142,6 +148,31 @@ async function main() {
         ],
         skipDuplicates: true,
     });
+
+    await prisma.subjectInstructor.createMany({
+        data: [
+            {
+                subject_id: 1,
+                instructor_id: 6
+            },
+            {
+                subject_id: 2,
+                instructor_id: 4
+            },
+            {
+                subject_id: 3,
+                instructor_id: 5
+            },
+            {
+                subject_id: 4,
+                instructor_id: 6
+            },
+            {
+                subject_id: 5,
+                instructor_id: 4
+            }
+        ]
+    })
 }
 
 main()

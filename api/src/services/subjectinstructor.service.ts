@@ -20,10 +20,22 @@ export const findSubjectInstructorById = async (subjectInstructorId: number): Pr
     })
 }
 
-export const findSubjectInstructorsBySubject = async (subjectId: number): Promise<SubjectInstructor[]> => {
+export const findSubjectInstructorsBySubject = async (subjectId: number): Promise<any[]> => {
     return prisma.subjectInstructor.findMany({
         where: {
             subject_id: subjectId
+        },
+        select: {
+            subject: {
+                select: {
+                    name: true
+                }
+            },
+            instructor: {
+                select: {
+                    name: true
+                }
+            }
         }
     });
 }
@@ -51,8 +63,21 @@ export const findSubjectInstructorBySubjectAndInstructor = async (
     });
 }
 
-export const findAllSubjectInstructors = async (): Promise<SubjectInstructor[]> => {
-    return prisma.subjectInstructor.findMany();
+export const findAllSubjectInstructors = async (): Promise<any[]> => {
+    return prisma.subjectInstructor.findMany({
+        select: {
+            subject: {
+                select: {
+                    name: true
+                }
+            },
+            instructor: {
+                select: {
+                    name: true
+                }
+            }
+        }
+    });
 }
 
 export const updateSubjectInstructor = async (
