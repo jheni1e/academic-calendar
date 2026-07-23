@@ -1,10 +1,10 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from "react-router";
 import './index.css';
 import TextBox from '../../components/TextBox';
 import BoschButton from '../../components/BoschButton';
-import { postData } from '../../utils/apiBack';
-import { toastSuccess } from '../../components/BoschToast';
+import { getData, postData } from '../../utils/apiBack';
+import { toastError, toastSuccess, toastWarning } from '../../components/BoschToast';
 
 function Register() {
     const [edv, setEDV] = useState("");
@@ -15,8 +15,27 @@ function Register() {
 
     const navigate = useNavigate();
 
+    useEffect(() => {
+        initUserInfo();
+    }, []);
+
+    const initUserInfo = async () => {
+        const edv = localStorage.getItem("user");
+        const user = await getData(`/user/edv/${edv}`);
+
+        if (user) {
+            navigate("/home");
+            return;
+        }
+    }
+
     const handleSave = async () => {
         try {
+            if (password != confirmPassword) {
+                toastWarning("As senhas devem ser iguais.");
+                return;
+            }
+
             const payload = {
                 edv: parseInt(edv),
                 name: name,
@@ -27,8 +46,12 @@ function Register() {
 
             const created = await postData("/user", payload);
 
-            console.log(created)
+            if (!created) {
+                toastError("Falha ao se registrar.");
+                return;
+            }
 
+            navigate("/login");
             toastSuccess("Registrado com sucesso!");
         } catch (error) {
             console.error(error);

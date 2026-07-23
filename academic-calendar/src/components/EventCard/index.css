@@ -1,9 +1,10 @@
 .event-card {
   width: 100%;
   border-radius: 6px;
-  padding: 6px 8px;
+  padding: 2px 8px;
   font-size: 10px;
   margin-bottom: 6px;
+  color: #eff1f2;
 }
 
 .event-card.compact {

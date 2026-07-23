@@ -21,6 +21,7 @@ export class UserController {
             return res.status(200).send({ message : "User created!", user })
 
         } catch (error) {
+            console.log(error)
             if (error instanceof AppError) {
                 return res.status(error.statusCode).json({
                     message: error.message

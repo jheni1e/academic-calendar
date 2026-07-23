@@ -11,12 +11,22 @@ export const validateCreate = async (req: Request, res: Response, next: NextFunc
     try {
         const { edv, name, birthdate, password, role } = req.body;
 
+        const date = new Date(birthdate);
+
+        if (isNaN(date.getTime())) {
+            throw new BadRequestError("Invalid birthdate.");
+        }
+
+        if (date > new Date()) {
+            throw new BadRequestError("Birthdate cannot be in the future.");
+        }
+        
         if (!name || !edv || !password || !role) {
             throw new BadRequestError("Missing required fields.");
         }
 
         const exists = await findUserByEdv(Number(edv))
-
+ 
         if (exists) {
             throw new ConflictError("User already has an account");
         }

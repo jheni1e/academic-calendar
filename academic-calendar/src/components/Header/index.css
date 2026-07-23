@@ -36,14 +36,25 @@
 
 .divUser {
     display: flex;
-    width: 3.5rem;
-    height: 3.5rem;
+    align-items: center;
+    gap: 0.5rem;
+    margin-right: 2.5vw;
+}
+
+.userIcon {
+    width: 2rem;
+    height: 2rem;
     background-size: contain;
     background-image: url('../../images/UserIcon.png');
     background-position: center;
     background-repeat: no-repeat;
-    cursor: pointer;
-    margin-right: 10vw;
+}
+
+.txtUserName {
+    color: #000;
+    font-size: 16px;
+    white-space: nowrap;
+    font-weight: 400;
 }
 
 .txtLogo {
@@ -84,7 +95,7 @@
     }
 
     .divLogo,
-    .divHeaderInfos {
+    .divUser {
         justify-content: center;
         margin: 1rem 0;
     }

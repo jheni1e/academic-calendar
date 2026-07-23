@@ -3,10 +3,9 @@ import './index.css'
 import BoschButton from "../BoschButton";
 import TextBox from "../TextBox";
 import DropdownList from "../DropdownList";
-import ColorPicker from "../ColorPicker";
 import FrequencySelector from "../FrequencySelector";
 import { getData, postData } from "../../utils/apiBack";
-import { toastWarning } from '../../components/BoschToast';
+import { toastError, toastSuccess, toastWarning } from '../../components/BoschToast';
 
 function Dialog({ isOpen, onClose, type, setType, title, event }) {
     const dialogRef = useRef(null);
@@ -24,6 +23,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event }) {
     const [allRooms, setAllRooms] = useState([]);
 
     const [typeEvent, setTypeEvent] = useState(null);
+    const [eventName, setEventName] = useState("");
     const [selectedParticipant, setSelectedParticipant] = useState("");
     const [participants, setParticipants] = useState([]);
 
@@ -135,20 +135,32 @@ function Dialog({ isOpen, onClose, type, setType, title, event }) {
             }
 
             if (typeEvent === 1) {
-                const eventType = "EVENT";
-                const userEdv = localStorage.getItem("user");
+                const eventType = "EXTERNAL";
+
+                const edv = localStorage.getItem("user");
+                const user = await getData(`/user/edv/${edv}`);
+                const userId = user.user.id;
 
                 const payload = {
-                    title: title,
+                    title: eventName,
                     eventType: eventType,
                     startDate: startDate,
                     endDate: endDate,
-                    // createdBy: localStorage.getItem("user"),
-                    createdBy: 1,
+                    createdBy: userId,
                 };
 
-                console.log(payload)
-                console.log(userEdv)
+                const isInserted = await postData("/event", payload);
+
+                if (!isInserted) {
+                    toastError("Falha ao criar evento.");
+                    onClose();
+                    return;
+                }
+
+                const eventId = isInserted.event_id;
+
+                onClose();
+                toastSuccess("Evento criado com sucesso!");
             }
 
             if (typeEvent === 2) {
@@ -214,17 +226,25 @@ function Dialog({ isOpen, onClose, type, setType, title, event }) {
         setParticipants(participants.filter(p => p.value !== id));
     };
 
-    const addSubject = () => {
+    const addSubject = async () => {
         if (!responsible) return;
 
         const newSubject = {
             name: newSubjectName,
             workload: newSubjectWorkload,
-            startDate: "2026-02-28T00:00:00Z",
-            endDate: "2026-04-28T00:00:00Z"
+            startDate: startDate,
+            endDate: endDate
         }
 
-        postData("/subject", newSubject)
+        const isInserted = await postData("/subject", newSubject);
+
+        if (!isInserted) {
+            toastError("Falha ao criar matéria.");
+            onClose();
+            return;
+        }
+
+        toastSuccess("Matéria criada com sucesso.")
     }
 
     const formatDateTimeLocal = (date) =>
@@ -280,10 +300,6 @@ function Dialog({ isOpen, onClose, type, setType, title, event }) {
                             <button onClick={addRoom} className="addItem">+</button>
                         </div>
                     </div>
-                    <div className="dialogInput">
-                        <h4>Cor:</h4>
-                        <ColorPicker />
-                    </div>
                     <div className="roomsList">
                         {rooms.map((room) => (
                             <div key={room.value} className={`listItem ${room.isMain ? "mainRoom" : ""}`}>
@@ -293,7 +309,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event }) {
                             </div>
                         ))}
                     </div>
-                    <div style={{ display: "flex", flexDirection: "column", width: "500px" }}>
+                    <div style={{ display: "flex", flexDirection: "column", width: "280px" }}>
                         <h4>Frequência:</h4>
                         <FrequencySelector />
                     </div>
@@ -307,7 +323,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event }) {
                     </div>
                     <div className="dialogInput">
                         <h4>Título:</h4>
-                        <TextBox placeholder="e.g.: Aula IoT/Setor/Prova Python" />
+                        <TextBox placeholder="e.g.: Aula IoT/Setor/Prova Python" value={eventName} onChange={(e) => setEventName(e.target.value)} />
                     </div>
                     {typeEvent === 1 &&
                         <>
@@ -339,10 +355,6 @@ function Dialog({ isOpen, onClose, type, setType, title, event }) {
                                 <h4>Frequência:</h4>
                                 <FrequencySelector />
                             </div>
-                            <div className="dialogInput" style={{ marginLeft: "3rem" }}>
-                                <h4>Cor:</h4>
-                                <ColorPicker />
-                            </div>
                         </>
                     }
                     {typeEvent === 2 &&
@@ -353,11 +365,11 @@ function Dialog({ isOpen, onClose, type, setType, title, event }) {
                             </div>
                             <div className="dialogInput">
                                 <h4>Início:</h4>
-                                <TextBox placeholder="XX/XX/XXXX XX:XX" />
+                                <TextBox placeholder="XX/XX/XXXX XX:XX" type="datetime-local" value={formatDateTimeLocal(startDate)} onChange={(e) => setStartDate(new Date(e.target.value))} />
                             </div>
                             <div className="dialogInput">
                                 <h4>Encerramento:</h4>
-                                <TextBox placeholder="XX/XX/XXXX XX:XX" />
+                                <TextBox placeholder="XX/XX/XXXX XX:XX" type="datetime-local" value={formatDateTimeLocal(endDate)} onChange={(e) => setEndDate(new Date(e.target.value))} />
                             </div>
                             <div className="dialogInput">
                                 <h4>Sala:</h4>
@@ -377,11 +389,11 @@ function Dialog({ isOpen, onClose, type, setType, title, event }) {
                             </div>
                             <div className="dialogInput">
                                 <h4>Início:</h4>
-                                <TextBox placeholder="XX/XX/XXXX XX:XX" />
+                                <TextBox placeholder="XX/XX/XXXX XX:XX" type="datetime-local" value={formatDateTimeLocal(startDate)} onChange={(e) => setStartDate(new Date(e.target.value))} />
                             </div>
                             <div className="dialogInput">
                                 <h4>Encerramento:</h4>
-                                <TextBox placeholder="XX/XX/XXXX XX:XX" />
+                                <TextBox placeholder="XX/XX/XXXX XX:XX" type="datetime-local" value={formatDateTimeLocal(endDate)} onChange={(e) => setEndDate(new Date(e.target.value))} />
                             </div>
                             <div className="dialogInput">
                                 <h4>Turma:</h4>
@@ -391,7 +403,6 @@ function Dialog({ isOpen, onClose, type, setType, title, event }) {
                     }
                 </div>
             }
-        
             {type === "student" &&
                 <div className="dialogContent">
                     <div className="dialogInput">
