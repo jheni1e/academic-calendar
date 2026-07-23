@@ -23,8 +23,8 @@ function Classes() {
 
   const changeModal = () => {
     setIsModalOpen(!isModalOpen)
-    console.log(isModalOpen)
   };
+  
   return (
     <>
       <div className="containerPage">

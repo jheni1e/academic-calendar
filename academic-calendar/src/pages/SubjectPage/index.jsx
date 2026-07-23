@@ -18,7 +18,6 @@ function Subject() {
   }, []);
   
   const loadClasses = async () => {
-    console.log("classes")
     try {
       const data = await getData("/class/all");
 
@@ -35,17 +34,15 @@ function Subject() {
   };
 
 const loadSubjects = async () => {
-    console.log("materias")
   try {
     const data = await getData("/ subject/all");
+
     setSubjects(data);
-    console.log(data);
   } catch (error) {
     console.error(error);
   }
 }
 
-  console.log(selectedValue);
   return (
     <>
       <div className="container-page">
