@@ -33,6 +33,8 @@ function Home() {
     }
     
     const user = await getData(`/user/edv/${edv}`);
+
+    setIsInstructor(user.user.role === "ADMIN" || user.user.role === "INSTRUCTOR");
   }
 
   const getUserEvents = async () => {

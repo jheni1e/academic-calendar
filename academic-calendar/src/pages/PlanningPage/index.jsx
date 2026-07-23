@@ -8,10 +8,10 @@ import { useNavigate } from "react-router-dom";
 
 function Planning() {
   const [subjects, setSubjects] = useState([
-    { name: "DS-Machine Learning"},
-    { name: "DS-Angular"},
-    { name: "ADD-Excel"},
-    { name: "MAN-IoT"},
+    { name: "DS-Machine Learning" },
+    { name: "DS-Angular" },
+    { name: "ADD-Excel" },
+    { name: "MAN-IoT" },
   ]);
 
   const [selectedRoom, setSelectedRoom] = useState("");
@@ -34,18 +34,23 @@ function Planning() {
 
     return () => clearInterval(interval);
   }, []);
-  
+
   const initUserInfo = async () => {
     const edv = sessionStorage.getItem("user");
-    
+
     if (!edv) {
       navigate("/login");
       return;
     }
-    
+
     const user = await getData(`/user/edv/${edv}`);
+
+    if (user.user.role === "APPRENTICE") {
+      navigate("/unauthorized");
+      return;
+    }
   }
-  
+
   const getUserEvents = async () => {
     const edv = sessionStorage.getItem("user");
 
@@ -59,11 +64,11 @@ function Planning() {
     }
   };
 
-  const changeModal = () =>{
+  const changeModal = () => {
     setIsModalOpen(!isModalOpen)
   }
 
-  const handleSubjectClick = (item) =>{
+  const handleSubjectClick = (item) => {
     changeModal()
     setSujectSelected(item)
   }
@@ -72,20 +77,20 @@ function Planning() {
     <>
       <div className="body">
         <MenuSideBar
-            hasToggle={false}
-            hasDropDown={false}
-            hasCheckbox={false}
-            hasItems={true}
-            items={subjects}
-            selectedValueDrop={selectedRoom}
-            type={'planning'} 
-            onItemClick={(item) => handleSubjectClick(item)}
-            />
+          hasToggle={false}
+          hasDropDown={false}
+          hasCheckbox={false}
+          hasItems={true}
+          items={subjects}
+          selectedValueDrop={selectedRoom}
+          type={'planning'}
+          onItemClick={(item) => handleSubjectClick(item)}
+        />
         <div className="content">
-            { isModalOpen && 
-                <Dialog type={'planning'} isOpen={isModalOpen} onClose={changeModal} title={`Planejamento ${subjectSelected.name}`}></Dialog>
-            }
-            <MonthlyCalendar events={events}/>
+          {isModalOpen &&
+            <Dialog type={'planning'} isOpen={isModalOpen} onClose={changeModal} title={`Planejamento ${subjectSelected.name}`}></Dialog>
+          }
+          <MonthlyCalendar events={events} />
         </div>
       </div>
     </>

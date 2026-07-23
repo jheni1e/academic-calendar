@@ -12,7 +12,7 @@ function Subject() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [subjects, setSubjects] = useState([]);
   const [listMenu, setListMenu] = useState([]);
-  
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -23,13 +23,18 @@ function Subject() {
 
   const initUserInfo = async () => {
     const edv = sessionStorage.getItem("user");
-    
+
     if (!edv) {
       navigate("/login");
       return;
     }
 
     const user = await getData(`/user/edv/${edv}`);
+
+    if (user.user.role === "APPRENTICE") {
+      navigate("/unauthorized");
+      return;
+    }
   }
 
   const loadClasses = async () => {

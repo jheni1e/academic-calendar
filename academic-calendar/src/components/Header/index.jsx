@@ -5,6 +5,7 @@ import { getData } from "../../utils/apiBack";
 
 function Header() {
   const [userName, setUserName] = useState("");
+  const [isInstructor, setIsInstructor] = useState(false);
 
   useEffect(() => {
     initUserInfo();
@@ -16,6 +17,8 @@ function Header() {
     const userName = user.user.name;
 
     setUserName(userName);
+
+    setIsInstructor(user.user.role === "ADMIN" || user.user.role === "INSTRUCTOR");
   }
 
   return (
@@ -27,8 +30,10 @@ function Header() {
 
         <div className="divHeaderOptions">
           <HeaderOption option="Calendário" route="home" />
-          <HeaderOption option="Matérias" route="materias" />
-          <HeaderOption option="Planejamento" route="planejamento" />
+          {isInstructor && (<>
+            <HeaderOption option="Matérias" route="materias" />
+            <HeaderOption option="Planejamento" route="planejamento" />
+          </>)}
         </div>
 
         <div className="divUser">

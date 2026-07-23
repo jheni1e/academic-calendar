@@ -36,14 +36,14 @@ export default function AppRouter() {
   return (
     <Router basename="/calendario-academico">
       <Routes>
-        <Route path="/*" element={<NotFound />} />
         <Route element={<WithHeader />}>
           <Route path="/materias" element={<Subject />} />
           <Route path="/home" element={<Home />} />
-          <Route path="/*" element={<NotFound />} />
           <Route path="/planejamento" element={<Planning />} />
         </Route>
         <Route element={<WithoutHeader />}>
+          <Route path="/*" element={<NotFound />} />
+          <Route path="/unauthorized" element={<NotFound />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
         </Route>
