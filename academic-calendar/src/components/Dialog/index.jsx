@@ -8,8 +8,9 @@ import FrequencySelector from "../FrequencySelector";
 import { getData, postData } from "../../utils/apiBack";
 import { toastWarning } from '../../components/BoschToast';
 
-function Dialog({ isOpen, onClose, type, title, event }) {
+function Dialog({ isOpen, onClose, type, setType, title, event }) {
     const dialogRef = useRef(null);
+    
     const [responsible, setResponsible] = useState(null);
     const [allInstructors, setAllInstructors] = useState([]);
     const [allPeople, setAllPeople] = useState([]);
@@ -233,6 +234,11 @@ function Dialog({ isOpen, onClose, type, title, event }) {
                 .slice(0, 16)
             : "";
 
+    const setEvent = () => {
+        setType("edit-event");
+        setResponsible(event.responsible)
+        setTypeEvent(event.eventType)
+    }
     const typeEvents = [
         { value: 1, label: "Evento" },
         { value: 2, label: "Aula" },
@@ -385,79 +391,7 @@ function Dialog({ isOpen, onClose, type, title, event }) {
                     }
                 </div>
             }
-            {type === "view-event" &&
-                <div className="dialogContent">
-                    <div className="dialogInput">
-                        <h4>Tipo do evento:</h4>
-                    </div>
-                    <div className="dialogInput">
-                        <h4>Título:</h4>
-                        <h4>{event.title}</h4>
-                    </div>
-                    {typeEvent === 1 &&
-                        <>
-                            <div className="dialogInput">
-                                <h4>Participantes:</h4>
-                            </div>
-                            <div className="participantsList">
-                                {participants.map((participant) => (
-                                    <div key={participant.value} className="listItem">
-                                        <span className="itemName">{participant.label}</span>
-
-                                        <button className="removeItem" onClick={() => removeParticipant(participant.value)}>×</button>
-                                    </div>
-                                ))}
-                            </div>
-                            <div className="dialogInput">
-                                <h4>Início:</h4>
-                            </div>
-                            <div className="dialogInput">
-                                <h4>Encerramento:</h4>
-                            </div>
-                            <div style={{ display: "flex", flexDirection: "column", width: "500px" }}>
-                                <h4>Frequência:</h4>
-                            </div>
-                            <div className="dialogInput" style={{ marginLeft: "3rem" }}>
-                                <h4>Cor:</h4>
-                            </div>
-                        </>
-                    }
-                    {typeEvent === 2 &&
-                        <>
-                            <div className="dialogInput">
-                                <h4>Professor:</h4>
-                            </div>
-                            <div className="dialogInput">
-                                <h4>Início:</h4>
-                            </div>
-                            <div className="dialogInput">
-                                <h4>Encerramento:</h4>
-                            </div>
-                            <div className="dialogInput">
-                                <h4>Sala:</h4>
-                            </div>
-                        </>
-                    }
-                    {typeEvent === 3 &&
-                        <>
-                            <div className="dialogInput">
-                                <h4>Professor:</h4>
-                            </div>
-                            <div className="dialogInput">
-                                <h4>Sala:</h4>
-                            </div>
-                            <div className="dialogInput">
-                                <h4>Início:</h4>
-                            </div>
-                            <div className="dialogInput">
-                                <h4>Encerramento:</h4>
-                            </div>
-                            <div className="dialogInput">
-                                <h4>Turma:</h4> </div>
-                        </>
-                    }
-                </div>
-            }
+        
             {type === "student" &&
                 <div className="dialogContent">
                     <div className="dialogInput">
@@ -490,10 +424,132 @@ function Dialog({ isOpen, onClose, type, title, event }) {
                     </div>
                 </div>
             }
-            <div className="dialogButtons">
-                <BoschButton text="Confirmar" type="primary" onClick={createEvent} />
-                <BoschButton text="Cancelar" type="secondary" onClick={onClose} />
-            </div>
+            {type === "edit-event" &&
+                <div className="dialogContent">
+                    <div className="dialogInput">
+                        <h4>Tipo do evento:</h4>
+                        <DropdownList options={typeEvents} selectedValue={typeEvent} onChange={(e) => setTypeEvent(Number(e.target.value))} />
+                    </div>
+                    <div className="dialogInput">
+                        <h4>Título:</h4>
+                        <TextBox placeholder="e.g.: Aula IoT/Setor/Prova Python" />
+                    </div>
+                    {typeEvent === 1 &&
+                        <>
+                            <div className="dialogInput">
+                                <h4>Participantes:</h4>
+                                <div className="itemSelector">
+                                    <DropdownList options={allPeople} selectedValue={selectedParticipant} onChange={(e) => setSelectedParticipant(Number(e.target.value))} />
+                                    <button onClick={addParticipant} className="addItem">+</button>
+                                </div>
+                            </div>
+                            <div className="participantsList">
+                                {participants.map((participant) => (
+                                    <div key={participant.value} className="listItem">
+                                        <span className="itemName">{participant.label}</span>
+
+                                        <button className="removeItem" onClick={() => removeParticipant(participant.value)}>×</button>
+                                    </div>
+                                ))}
+                            </div>
+                            <div className="dialogInput">
+                                <h4>Início:</h4>
+                                <TextBox placeholder="XX/XX/XXXX XX:XX" type="datetime-local" value={formatDateTimeLocal(startDate)} onChange={(e) => setStartDate(new Date(e.target.value))} />
+                            </div>
+                            <div className="dialogInput">
+                                <h4>Encerramento:</h4>
+                                <TextBox placeholder="XX/XX/XXXX XX:XX" type="datetime-local" value={formatDateTimeLocal(endDate)} onChange={(e) => setEndDate(new Date(e.target.value))} />
+                            </div>
+                            <div style={{ display: "flex", flexDirection: "column", width: "500px" }}>
+                                <h4>Frequência:</h4>
+                                <FrequencySelector />
+                            </div>
+                            <div className="dialogInput" style={{ marginLeft: "3rem" }}>
+                                <h4>Cor:</h4>
+                                <ColorPicker />
+                            </div>
+                        </>
+                    }
+                    {typeEvent === 2 &&
+                        <>
+                            <div className="dialogInput">
+                                <h4>Professor:</h4>
+                                <DropdownList options={allInstructors} selectedValue={responsible} onChange={(e) => setResponsible(e.target.value)} />
+                            </div>
+                            <div className="dialogInput">
+                                <h4>Início:</h4>
+                                <TextBox placeholder="XX/XX/XXXX XX:XX" />
+                            </div>
+                            <div className="dialogInput">
+                                <h4>Encerramento:</h4>
+                                <TextBox placeholder="XX/XX/XXXX XX:XX" />
+                            </div>
+                            <div className="dialogInput">
+                                <h4>Sala:</h4>
+                                <DropdownList options={allRooms} selectedValue={selectedRoom} onChange={(e) => setSelectedRoom(e.target.value)} />
+                            </div>
+                        </>
+                    }
+                    {typeEvent === 3 &&
+                        <>
+                            <div className="dialogInput">
+                                <h4>Professor:</h4>
+                                <DropdownList options={allInstructors} selectedValue={responsible} onChange={(e) => setResponsible(e.target.value)} />
+                            </div>
+                            <div className="dialogInput">
+                                <h4>Sala:</h4>
+                                <DropdownList options={allRooms} selectedValue={selectedRoom} onChange={(e) => setSelectedRoom(e.target.value)} />
+                            </div>
+                            <div className="dialogInput">
+                                <h4>Início:</h4>
+                                <TextBox placeholder="XX/XX/XXXX XX:XX" />
+                            </div>
+                            <div className="dialogInput">
+                                <h4>Encerramento:</h4>
+                                <TextBox placeholder="XX/XX/XXXX XX:XX" />
+                            </div>
+                            <div className="dialogInput">
+                                <h4>Turma:</h4>
+                                <DropdownList options={allClasses} selectedValue={selectedClass} onChange={(e) => setSelectedClass(e.target.value)} />
+                            </div>
+                        </>
+                    }
+                </div>
+            }
+            {type === "view-event" ? (
+                <>
+                    <div className="dialogContent" style={{borderRadius: "10px"}}>
+                        <div className="dialogInput">
+                            <h4>Responsavel:</h4>
+                            <h4>{event.responsible}</h4>
+                        </div> 
+                            <div className="dialogInput">
+                                <h4>Sala:</h4>
+                                <h4>{event.responsible}</h4>
+                            </div>
+                            <div className="dialogInput">
+                                <h4>Início:</h4>
+                                <h4>{event.initial}</h4>
+                            </div>
+                            <div className="dialogInput">
+                                <h4>Encerramento:</h4>
+                                <h4>{event.end}</h4>
+                            </div>
+                            <div className="dialogInput">
+                                <h4>Turma:</h4>
+                                <h4>{event.class}</h4>
+                            </div>
+                    </div>
+                    <div className="dialogButtons">
+                        <BoschButton text="Editar" type="primary" onClick={() => setEvent()} />
+                    </div>
+                </>
+            ) : (
+                <div className="dialogButtons">
+                    <BoschButton text="Confirmar" type="primary" onClick={createEvent} />
+                    <BoschButton text="Cancelar" type="secondary" onClick={onClose} />
+                </div>)
+            }
         </dialog>
     );
 }

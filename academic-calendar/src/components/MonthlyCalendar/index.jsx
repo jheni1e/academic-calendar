@@ -165,7 +165,8 @@ function MonthlyCalendar({ initialDate, compact = false, type }) {
                 ))}
 
                 {days.map((day) => (
-                  <DayCell key={day} day={day} events={[]} viewMode={viewMode} compact={compact} />
+                  <DayCell key={day} day={day} 
+                  events={[{id: 1, color: "#2196f3", eventType: "Evento", title: "Teste", period: "morning", day: 2,}]} viewMode={viewMode} compact={compact} />
                 ))}
               </>
             )}
@@ -174,7 +175,7 @@ function MonthlyCalendar({ initialDate, compact = false, type }) {
                 <DayCell
                   key={date.toISOString()}
                   day={date.getDate()}
-                  events={[]}
+                  events={[{id: 1, color: "#2196f3", title: "Teste", period: "morning", day: 2,}]}
                   isToday={date.toDateString() === new Date().toDateString()}
                   viewMode={viewMode}
                 />
