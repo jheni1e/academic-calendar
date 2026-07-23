@@ -1,18 +1,22 @@
 import React, { forwardRef, useEffect, useState } from "react";
 import HeaderOption from "../HeaderOption";
 import "./index.css";
+import { getData } from "../../utils/apiBack";
 
 function Header() {
+  const [userName, setUserName] = useState("");
 
-  const handleClick = (option) => {
-    let page = "";
-    if (option.page) {
-      page = option.page;
-    } else {
-      page = option.name.toLowerCase().replace(/\s+/g, "");
-    }
-    navigate("/" + page);
-  };
+  useEffect(() => {
+    initUserInfo();
+  }, []);
+
+  const initUserInfo = async () => {
+    const edv = localStorage.getItem("user");
+    const user = await getData(`/user/edv/${edv}`);
+    const userName = user.user.name;
+
+    setUserName(userName);
+  }
 
   return (
     <div className="header">
@@ -27,7 +31,10 @@ function Header() {
           <HeaderOption option="Planejamento" route="planejamento" />
         </div>
 
-        <div className="divUser" />
+        <div className="divUser">
+          <div className="userIcon" />
+          <span className="txtUserName">{userName}</span>
+        </div>
       </div>
     </div>
   );
