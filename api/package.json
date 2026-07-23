@@ -11,14 +11,10 @@
     "start": "node dist/server.js",
     "generate": "prisma generate",
     "migrate": "prisma migrate dev",
-    "seed": "npx prisma db seed",
+    "seed": "tsx prisma/seed.ts",
     "reset" : "npx prisma migrate reset --force",
     "push": "prisma db push",
     "studio": "prisma studio"
-  },
-
-  "prisma": {
-    "seed": "tsx prisma/seed.ts"
   },
 
   "keywords": [],

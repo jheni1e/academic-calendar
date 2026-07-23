@@ -163,6 +163,7 @@ function MonthlyCalendar({ initialDate, compact = false, type, events = [] }) {
                 {emptyCells.map((_, index) => (
                   <div key={`empty-${index}`} className="empty-cell" />
                 ))}
+
                 {days.map((day) => {
                   return (
                     <DayCell

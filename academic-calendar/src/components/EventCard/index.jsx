@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import './index.css';
+import Dialog from '../Dialog';
 
 function getEventColor(id) {
   const colors = [
@@ -25,18 +26,24 @@ function EventCard({ event, compact }) {
   });
 
   return (
-    <div
-      className={`event-card ${compact ? "compact" : ""}`}
-      style={{ "--event-color": color }}
-    >
-      {!compact && (
-        <>
-          <span className="event-title">
-            {event.title}
-          </span>
-        </>
-      )}
-    </div>
+    <>
+      <div
+        className={`event-card ${compact ? "compact" : ""}`}
+        style={{ "--event-color": color }}
+        >
+        {!compact && (
+          <>
+            <span className="event-title">
+              {event.title}
+            </span>
+          </>
+        )}
+      </div>
+      {isModalOpen &&
+        <Dialog event={event} isOpen={isModalOpen} onClose={changeModal} title={event.title} type={dialogType} setType={setDialogType}></Dialog>
+      }
+    </>
+
   );
 }
 
