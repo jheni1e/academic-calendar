@@ -136,7 +136,7 @@ function Dialog({ isOpen, onClose, type, title, event }) {
             if (typeEvent === 1) {
                 const eventType = "EXTERNAL";
 
-                const edv = localStorage.getItem("user");
+                const edv = sessionStorage.getItem("user");
                 const user = await getData(`/user/edv/${edv}`);
                 const userId = user.user.id;
 

@@ -11,7 +11,7 @@ function Header() {
   }, []);
 
   const initUserInfo = async () => {
-    const edv = localStorage.getItem("user");
+    const edv = sessionStorage.getItem("user");
     const user = await getData(`/user/edv/${edv}`);
     const userName = user.user.name;
 
