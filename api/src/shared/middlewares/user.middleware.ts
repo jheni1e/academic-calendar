@@ -17,6 +17,7 @@ export const validateCreate = async (req: Request, res: Response, next: NextFunc
 
         const exists = await findUserByEdv(Number(edv))
 
+        if(Object)
         if (exists) {
             throw new ConflictError("User already has an account");
         }
