@@ -17,6 +17,7 @@ function Planning() {
   const [selectedRoom, setSelectedRoom] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [subjectSelected, setSujectSelected] = useState({});
+  const [events, setEvents] = useState([]);
 
   const navigate = useNavigate();
 
@@ -24,15 +25,38 @@ function Planning() {
     initUserInfo();
   }, []);
 
-  const initUserInfo = async () => {
-      const edv = localStorage.getItem("user");
-      const user = await getData(`/user/edv/${edv}`);
+  useEffect(() => {
+    getUserEvents();
+
+    const interval = setInterval(() => {
+      getUserEvents();
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, []);
   
-      if (!user) {
-        navigate("/login");
-        return;
-      }
+  const initUserInfo = async () => {
+    const edv = localStorage.getItem("user");
+    const user = await getData(`/user/edv/${edv}`);
+    
+    if (!user) {
+      navigate("/login");
+      return;
     }
+  }
+  
+  const getUserEvents = async () => {
+    const edv = localStorage.getItem("user");
+
+    const user = await getData(`/user/edv/${edv}`);
+    const userId = user.user.id;
+
+    if (user.user.role === "ADMIN" || user.user.role === "APPRENTICE") {
+      const allEvents = await getData("/event/all");
+
+      setEvents(allEvents);
+    }
+  };
 
   const changeModal = () =>{
     setIsModalOpen(!isModalOpen)
@@ -60,7 +84,7 @@ function Planning() {
             { isModalOpen && 
                 <Dialog type={'planning'} isOpen={isModalOpen} onClose={changeModal} title={`Planejamento ${subjectSelected.name}`}></Dialog>
             }
-            <MonthlyCalendar />
+            <MonthlyCalendar events={events}/>
         </div>
       </div>
     </>

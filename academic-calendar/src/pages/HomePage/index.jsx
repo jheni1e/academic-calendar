@@ -12,6 +12,9 @@ function Home() {
 
   useEffect(() => {
     initUserInfo();
+  },[]);
+
+  useEffect(() => {
     getUserEvents();
 
     const interval = setInterval(() => {
