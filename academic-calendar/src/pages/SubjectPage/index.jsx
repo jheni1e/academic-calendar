@@ -16,15 +16,14 @@ function Subject() {
     loadSubjects();
     loadClasses();
   }, []);
-  
+
   const loadClasses = async () => {
-    console.log("classes")
     try {
       const data = await getData("/class/all");
 
       const formatedClasses = data.map((d) => ({
-          value: d.class_id,
-          label: d.name
+        value: d.class_id,
+        label: d.name
       }));
 
       setListMenu(formatedClasses);
@@ -34,18 +33,16 @@ function Subject() {
     }
   };
 
-const loadSubjects = async () => {
-    console.log("materias")
-  try {
-    const data = await getData("/ subject/all");
-    setSubjects(data);
-    console.log(data);
-  } catch (error) {
-    console.error(error);
-  }
-}
+  const loadSubjects = async () => {
+    try {
+      const data = await getData("/subject/all");
 
-  console.log(selectedValue);
+      setSubjects(data);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   return (
     <>
       <div className="container-page">

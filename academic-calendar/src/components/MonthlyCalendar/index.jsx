@@ -27,7 +27,7 @@ const viewOptions = [
   { value: "semester", label: "Semestral" }
 ];
 
-function MonthlyCalendar({ initialDate, compact = false, type }) {
+function MonthlyCalendar({ initialDate, compact = false, type, events }) {
   const [currentDate, setCurrentDate] = useState(initialDate || new Date());
   const [viewMode, setViewMode] = useState("month");
 
@@ -136,7 +136,7 @@ function MonthlyCalendar({ initialDate, compact = false, type }) {
 
         {!compact && (
           <div className="actions">
-            {type === "calendar" && 
+            {type === "calendar" &&
               <div className="button-container">
                 <BoschButton text="+" type="secondary" onClick={() => setIsModalOpen(!isModalOpen)} />
               </div>
@@ -146,7 +146,7 @@ function MonthlyCalendar({ initialDate, compact = false, type }) {
         )}
       </div>
 
-     {viewMode !== "semester" && (
+      {viewMode !== "semester" && (
         <>
           <div className="weekdays">
             <span>DOM</span>
@@ -163,10 +163,17 @@ function MonthlyCalendar({ initialDate, compact = false, type }) {
                 {emptyCells.map((_, index) => (
                   <div key={`empty-${index}`} className="empty-cell" />
                 ))}
-
-                {days.map((day) => (
-                  <DayCell key={day} day={day} events={[]} viewMode={viewMode} compact={compact} />
-                ))}
+                {days.map((day) => {
+                  return (
+                    <DayCell
+                      key={day}
+                      day={day}
+                      events={events}
+                      viewMode={viewMode}
+                      compact={compact}
+                    />
+                  );
+                })}
               </>
             )}
             {viewMode === "week" && (
@@ -174,7 +181,7 @@ function MonthlyCalendar({ initialDate, compact = false, type }) {
                 <DayCell
                   key={date.toISOString()}
                   day={date.getDate()}
-                  events={[]}
+                  events={events}
                   isToday={date.toDateString() === new Date().toDateString()}
                   viewMode={viewMode}
                 />
@@ -192,7 +199,7 @@ function MonthlyCalendar({ initialDate, compact = false, type }) {
               initialDate={new Date(year, month, 1)}
               compact
             />
-            ))}
+          ))}
         </div>
       )}
 
