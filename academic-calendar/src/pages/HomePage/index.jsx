@@ -1,10 +1,35 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import MenuSideBar from "../../components/MenuSideBar";
 import MonthlyCalendar from "../../components/MonthlyCalendar";
 import "./index.css";
+import { getData } from "../../utils/apiBack";
 
 function Home() {
   const [isInstructor, setIsInstructor] = useState(false);
+  const [events, setEvents] = useState([]);
+
+  useEffect(() => {
+    getUserEvents();
+  
+    const interval = setInterval(() => {
+      getUserEvents();
+    }, 3000);
+  
+    return () => clearInterval(interval);
+  }, []);
+
+  const getUserEvents = async () => {
+    const edv = localStorage.getItem("user");
+
+    const user = await getData(`/user/edv/${edv}`);
+    const userId = user.user.id;
+    
+    if (user.user.role === "ADMIN" || user.user.role === "APPRENTICE") {
+      const allEvents = await getData("/event/all");
+
+      setEvents(allEvents);
+    }
+  };
 
   const [dropdownOptions, setDropdownOptions] = useState([
     { value: 1, label: "oii" }
@@ -44,7 +69,7 @@ function Home() {
             onDropDownChange={(e) => setSelectedRoom(e.target.value)} />
         }
         <div className="content">
-          <MonthlyCalendar type={'calendar'} />
+          <MonthlyCalendar type={'calendar'} events={events} />
         </div>
       </div>
     </>
