@@ -1,17 +1,31 @@
 import './index.css';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from "react-router";
 import TextBox from '../../components/TextBox';
 import BoschButton from '../../components/BoschButton';
 import boschImage from "../../images/bosch-renningen.jpg";
-import { postData } from '../../utils/apiBack';
-import { toastError } from '../../components/BoschToast';
+import { getData, postData } from '../../utils/apiBack';
+import { toastError, toastSuccess } from '../../components/BoschToast';
 
 function Login() {
     const [edv, setEdv] = useState("");
     const [password, setPassword] = useState("");
 
     const navigate = useNavigate();
+
+    useEffect(() => {
+        initUserInfo();
+    }, []);
+
+    const initUserInfo = async () => {
+        const edv = localStorage.getItem("user");
+        const user = await getData(`/user/edv/${edv}`);
+
+        if (user) {
+            navigate("/home");
+            return;
+        }
+    }
 
     const handleLogin = async () => {
         try {
@@ -29,6 +43,7 @@ function Login() {
             if (logged?.token) {
                 localStorage.setItem("token", logged.token);
                 localStorage.setItem("user", edv);
+                toastSuccess("Loggado com sucesso!");
                 navigate("/home");
             }
         } catch (error) {

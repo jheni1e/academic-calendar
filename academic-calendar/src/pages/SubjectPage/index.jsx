@@ -5,17 +5,31 @@ import MenuSideBar from "../../components/MenuSideBar";
 import { useState, useEffect } from "react";
 import Dialog from "../../components/Dialog";
 import { getData } from '../../utils/apiBack';
+import { useNavigate } from "react-router-dom";
 
 function Subject() {
   const [selectedValue, setSelectedValue] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [subjects, setSubjects] = useState([])
-  const [listMenu, setListMenu] = useState([])
+  const [subjects, setSubjects] = useState([]);
+  const [listMenu, setListMenu] = useState([]);
+  
+  const navigate = useNavigate();
 
   useEffect(() => {
+    initUserInfo();
     loadSubjects();
     loadClasses();
   }, []);
+
+  const initUserInfo = async () => {
+    const edv = localStorage.getItem("user");
+    const user = await getData(`/user/edv/${edv}`);
+
+    if (!user) {
+      navigate("/login");
+      return;
+    }
+  }
 
   const loadClasses = async () => {
     try {

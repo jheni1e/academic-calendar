@@ -3,27 +3,40 @@ import MenuSideBar from "../../components/MenuSideBar";
 import MonthlyCalendar from "../../components/MonthlyCalendar";
 import "./index.css";
 import { getData } from "../../utils/apiBack";
+import { useNavigate } from "react-router-dom";
 
 function Home() {
   const [isInstructor, setIsInstructor] = useState(false);
   const [events, setEvents] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
+    initUserInfo();
     getUserEvents();
-  
+
     const interval = setInterval(() => {
       getUserEvents();
     }, 3000);
-  
+
     return () => clearInterval(interval);
   }, []);
+
+  const initUserInfo = async () => {
+    const edv = localStorage.getItem("user");
+    const user = await getData(`/user/edv/${edv}`);
+
+    if (!user) {
+      navigate("/login");
+      return;
+    }
+  }
 
   const getUserEvents = async () => {
     const edv = localStorage.getItem("user");
 
     const user = await getData(`/user/edv/${edv}`);
     const userId = user.user.id;
-    
+
     if (user.user.role === "ADMIN" || user.user.role === "APPRENTICE") {
       const allEvents = await getData("/event/all");
 

@@ -1,8 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import MenuSideBar from "../../components/MenuSideBar";
 import MonthlyCalendar from "../../components/MonthlyCalendar";
 import "./index.css";
 import Dialog from "../../components/Dialog";
+import { getData } from "../../utils/apiBack";
+import { useNavigate } from "react-router-dom";
 
 function Planning() {
   const [subjects, setSubjects] = useState([
@@ -15,6 +17,22 @@ function Planning() {
   const [selectedRoom, setSelectedRoom] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [subjectSelected, setSujectSelected] = useState({});
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    initUserInfo();
+  }, []);
+
+  const initUserInfo = async () => {
+      const edv = localStorage.getItem("user");
+      const user = await getData(`/user/edv/${edv}`);
+  
+      if (!user) {
+        navigate("/login");
+        return;
+      }
+    }
 
   const changeModal = () =>{
     setIsModalOpen(!isModalOpen)
