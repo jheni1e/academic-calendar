@@ -60,6 +60,13 @@ npm install
 npx prisma generate
 npx prisma migrate dev
 
+## Test Setup
+
+npm i
+npm run generate
+npm run migrate
+npm run seed
+
 ## Data format - payload
  
 - ISO8601
