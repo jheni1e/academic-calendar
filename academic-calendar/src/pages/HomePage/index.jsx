@@ -12,8 +12,8 @@ function Home() {
   const [subjects, setSubjects] = useState([]);
 
   const [events, setEvents] = useState([]);
-  const [showExternal, setShowExternal] = useState(false);
-  const [showLesson, setShowLesson] = useState(false);
+  const [showExternal, setShowExternal] = useState(true);
+  const [showLesson, setShowLesson] = useState(true);
 
   const [view, setView] = useState(null);
   const [filterType, setFilterType] = useState("");
@@ -54,7 +54,13 @@ function Home() {
   }, [view, selectedFilter]);
 
   const filteredEvents = events.filter(event => {
-    if (!showExternal && !showLesson) return true;
+    if (!showExternal && !showLesson) {
+      return false;
+    }
+
+    if (showExternal && showLesson) {
+      return true;
+    }
 
     return (
       (showExternal && event.event_type === "EXTERNAL") ||
