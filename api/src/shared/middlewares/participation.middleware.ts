@@ -5,6 +5,7 @@ import { findUserById } from "../../services/user.service.ts";
 import { findEventById } from "../../services/event.service.ts";
 import { findEventRoleById } from "../../services/eventrole.service.ts";
 import { findParticipationById, findParticipationByUserAndEvent } from "../../services/participation.service.ts";
+import { ConflictError } from "../errors/ConflictError.ts";
 
 export const validateCreate = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -25,7 +26,9 @@ export const validateCreate = async (req: Request, res: Response, next: NextFunc
         const participation = await findParticipationByUserAndEvent(userId, eventId)
 
         if (participation) {
-            throw new Error("User is already participating in this event.");
+            throw new ConflictError(
+                "User is already participating in this event."
+            );
         }
 
         next();
