@@ -169,6 +169,8 @@ function MonthlyCalendar({ initialDate, compact = false, type, events = [] }) {
                     <DayCell
                       key={day}
                       day={day}
+                      month={month}
+                      year={year}
                       events={events}
                       viewMode={viewMode}
                       compact={compact}
@@ -182,6 +184,8 @@ function MonthlyCalendar({ initialDate, compact = false, type, events = [] }) {
                 <DayCell
                   key={date.toISOString()}
                   day={date.getDate()}
+                  month={date.getMonth()}
+                  year={date.getFullYear()}
                   events={events}
                   isToday={date.toDateString() === new Date().toDateString()}
                   viewMode={viewMode}

@@ -2,6 +2,7 @@ import { prisma } from "../lib/prisma.ts";
 import { CreateClassDTO, UpdateClassDTO } from "../dtos/ClassDto.ts";
 import { Class } from "../generated/prisma/client.ts";
 import { NotFoundError } from "../shared/errors/NotFoundError.ts";
+import { Event } from "../generated/prisma/client.ts";
 
 export const createClass = async (
     data: CreateClassDTO
@@ -57,4 +58,20 @@ export const deleteClass = async(
             class_id: classId
         }
     });
+}
+
+export const getEventsByClass = async (
+    classId: number
+): Promise<Event[]> => {
+
+    const classItem = await prisma.class.findUnique({
+        where: {
+            class_id: classId
+        },
+        include: {
+            events: true
+        }
+    });
+
+    return classItem?.events ?? [];
 }

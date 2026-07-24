@@ -9,12 +9,12 @@ import { toastError, toastSuccess, toastWarning } from '../../components/BoschTo
 
 function Dialog({ isOpen, onClose, type, setType, title, event }) {
     const dialogRef = useRef(null);
-    
+
     const [responsible, setResponsible] = useState(null);
     const [allInstructors, setAllInstructors] = useState([]);
     const [allPeople, setAllPeople] = useState([]);
 
-    const [classs, setClasss] = useState(null);
+    const [studentClass, setStudentClass] = useState(null)
     const [selectedClass, setSelectedClass] = useState(null);
     const [allClasses, setAllClasses] = useState([]);
 
@@ -63,7 +63,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event }) {
         getAllPeople();
         getAllInstructors();
     }, []);
-
+    
     const getAllRooms = async () => {
         try {
             const rooms = await getData("/room/all");
@@ -75,8 +75,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event }) {
 
             setAllRooms(formattedRooms);
         } catch (error) {
-            console.error(error);
-            alert(error.message);
+            toastError(`Erro: ${error.message}`)
         }
     };
 
@@ -91,8 +90,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event }) {
 
             setAllClasses(formatedClasses);
         } catch (error) {
-            console.error(error);
-            alert(error.message);
+            toastError(`Erro: ${error.message}`)
         }
     };
 
@@ -107,8 +105,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event }) {
 
             setAllPeople(formatedPeople);
         } catch (error) {
-            console.error(error);
-            alert(error.message);
+            toastError(`Erro: ${error.message}`)
         }
     };
 
@@ -123,56 +120,83 @@ function Dialog({ isOpen, onClose, type, setType, title, event }) {
 
             setAllInstructors(formatedInstructors);
         } catch (error) {
-            console.error(error);
-            alert(error.message);
+            toastError(`Erro: ${error.message}`)
         }
     };
 
-    const createEvent = async () => {
+    const create = async () => {
         try {
-            if (!title) {
-                toastWarning("O título é obrigatório.");
-            }
+            let eventType = "";
 
-            if (typeEvent === 1) {
-                const eventType = "EXTERNAL";
+            switch (type) {
+                case "event": {
 
-                const edv = localStorage.getItem("user");
-                const user = await getData(`/user/edv/${edv}`);
-                const userId = user.user.id;
+                    switch (typeEvent) {
+                        case 1:
+                            if (!eventName.trim()) {
+                                toastWarning("O título é obrigatório.");
+                                return;
+                            }
 
-                const payload = {
-                    title: eventName,
-                    eventType: eventType,
-                    startDate: startDate,
-                    endDate: endDate,
-                    createdBy: userId,
-                };
+                            eventType = "LESSON";
 
-                const isInserted = await postData("/event", payload);
+                            const edv = sessionStorage.getItem("user");
+                            const user = await getData(`/user/edv/${edv}`);
+                            const userId = user.user.id;
 
-                if (!isInserted) {
-                    toastError("Falha ao criar evento.");
-                    onClose();
-                    return;
+                            const payload = {
+                                title: eventName,
+                                eventType: eventType,
+                                startDate: startDate,
+                                endDate: endDate,
+                                createdBy: userId,
+                            };
+
+                            const isInserted = await postData("/event", payload);
+
+                            if (!isInserted) {
+                                onClose();
+                                toastError("Falha ao criar evento.");
+                                return;
+                            }
+
+                            const eventId = isInserted.event_id;
+
+                            onClose();
+                            toastSuccess("Evento criado com sucesso!");
+                            break;
+                        case 2:
+                            eventType = "EVENT";
+                            break;
+                        case 3:
+                            eventType = "EXAM";
+                            break;
+                    }
+                    break;
                 }
+                case "subject": {
+                    const newSubject = {
+                        name: newSubjectName,
+                        workload: parseInt(newSubjectWorkload),
+                        startDate: startDate,
+                        classId: selectedClass
+                    }
 
-                const eventId = isInserted.event_id;
+                    const isInserted = await postData("/subject", newSubject);
 
-                onClose();
-                toastSuccess("Evento criado com sucesso!");
-            }
+                    if (!isInserted) {
+                        onClose();
+                        toastError("Falha ao criar matéria.");
+                        return;
+                    }
 
-            if (typeEvent === 2) {
-                const eventType = "LESSON";
-            }
-
-            if (typeEvent === 3) {
-                const eventType = "EXAM";
+                    onClose();
+                    toastSuccess("Matéria criada com sucesso.")
+                    break;
+                }
             }
         } catch (error) {
-            console.error(error);
-            alert(error.message);
+            toastError(`Erro: ${error.message}`)
         }
     }
 
@@ -193,7 +217,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event }) {
             }
         ]);
 
-        setSelectedRoom("");
+        setSelectedRoom(null);
     };
 
 
@@ -219,33 +243,12 @@ function Dialog({ isOpen, onClose, type, setType, title, event }) {
         if (participants.some(p => p.value === participant.value)) return;
 
         setParticipants([...participants, participant]);
-        setSelectedParticipant("");
+        setSelectedParticipant(null);
     };
 
     const removeParticipant = (id) => {
         setParticipants(participants.filter(p => p.value !== id));
     };
-
-    const addSubject = async () => {
-        if (!responsible) return;
-
-        const newSubject = {
-            name: newSubjectName,
-            workload: newSubjectWorkload,
-            startDate: startDate,
-            endDate: endDate
-        }
-
-        const isInserted = await postData("/subject", newSubject);
-
-        if (!isInserted) {
-            toastError("Falha ao criar matéria.");
-            onClose();
-            return;
-        }
-
-        toastSuccess("Matéria criada com sucesso.")
-    }
 
     const formatDateTimeLocal = (date) =>
         date
@@ -253,15 +256,32 @@ function Dialog({ isOpen, onClose, type, setType, title, event }) {
                 .toISOString()
                 .slice(0, 16)
             : "";
-
+    
     const setEvent = () => {
         setType("edit-event");
         setResponsible(event.responsible)
-        setTypeEvent(event.eventType)
+        console.log(event)
+        if (event.eventType === "LESSON") {
+            setTypeEvent(1);
+        } else if (event.eventType === "EVENT") {
+            setTypeEvent(2);
+        } else if (event.eventType === "EXAM") {
+            setTypeEvent(3);
+        }
+        console.log(typeEvent)
+
+        setEventName(event.title);
+        setResponsible(event.responsible);
+        setSelectedRoom(event.roomId);
+        setSelectedClass(event.classId);
+        // setParticipants(event.participants);
+        setStartDate(new Date(event.initial));
+        setEndDate(new Date(event.end));
     }
+
     const typeEvents = [
-        { value: 1, label: "Evento" },
-        { value: 2, label: "Aula" },
+        { value: 1, label: "Aula" },
+        { value: 2, label: "Evento" },
         { value: 3, label: "Avaliação" }
     ];
 
@@ -286,8 +306,8 @@ function Dialog({ isOpen, onClose, type, setType, title, event }) {
                         <TextBox placeholder="e.g.: Internet das Coisas" onChange={(e) => setNewSubjectName(e.target.value)} />
                     </div>
                     <div className="dialogInput">
-                        <h4>Responsável:</h4>
-                        <DropdownList options={allInstructors} selectedValue={responsible} onChange={(e) => setResponsible(e.target.value)} />
+                        <h4>Turma:</h4>
+                        <DropdownList options={allClasses} selectedValue={selectedClass} onChange={(e) => setSelectedClass(Number(e.target.value))} />
                     </div>
                     <div className="dialogInput">
                         <h4>Carga horária:</h4>
@@ -373,7 +393,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event }) {
                             </div>
                             <div className="dialogInput">
                                 <h4>Sala:</h4>
-                                <DropdownList options={allRooms} selectedValue={selectedRoom} onChange={(e) => setSelectedRoom(e.target.value)} />
+                                <DropdownList options={allRooms} selectedValue={selectedRoom} onChange={(e) => setSelectedRoom(Number(e.target.value))} />
                             </div>
                         </>
                     }
@@ -385,7 +405,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event }) {
                             </div>
                             <div className="dialogInput">
                                 <h4>Sala:</h4>
-                                <DropdownList options={allRooms} selectedValue={selectedRoom} onChange={(e) => setSelectedRoom(e.target.value)} />
+                                <DropdownList options={allRooms} selectedValue={selectedRoom} onChange={(e) => setSelectedRoom(Number(e.target.value))} />
                             </div>
                             <div className="dialogInput">
                                 <h4>Início:</h4>
@@ -397,7 +417,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event }) {
                             </div>
                             <div className="dialogInput">
                                 <h4>Turma:</h4>
-                                <DropdownList options={allClasses} selectedValue={selectedClass} onChange={(e) => setSelectedClass(e.target.value)} />
+                                <DropdownList options={allClasses} selectedValue={selectedClass} onChange={(e) => setSelectedClass(Number(e.target.value))} />
                             </div>
                         </>
                     }
@@ -411,7 +431,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event }) {
                     </div>
                     <div className="dialogInput">
                         <h4>Turma:</h4>
-                        <DropdownList options={allClasses} selectedValue={classs} onChange={(e) => setClasss(e.target.value)} />
+                        <DropdownList options={allClasses} selectedValue={studentClass} onChange={(e) => setStudentClass(Number(e.target.value))} />
                     </div>
                     <div className="dialogInput">
                         <h4>Data de nascimento:</h4>
@@ -445,8 +465,8 @@ function Dialog({ isOpen, onClose, type, setType, title, event }) {
                         <h4>Título:</h4>
                         <TextBox placeholder="e.g.: Aula IoT/Setor/Prova Python" />
                     </div>
-                    {typeEvent === 1 &&
-                        <>
+                    {event.eventType === "LESSON" &&
+                         <>
                             <div className="dialogInput">
                                 <h4>Participantes:</h4>
                                 <div className="itemSelector">
@@ -475,10 +495,6 @@ function Dialog({ isOpen, onClose, type, setType, title, event }) {
                                 <h4>Frequência:</h4>
                                 <FrequencySelector />
                             </div>
-                            <div className="dialogInput" style={{ marginLeft: "3rem" }}>
-                                <h4>Cor:</h4>
-                                <ColorPicker />
-                            </div>
                         </>
                     }
                     {typeEvent === 2 &&
@@ -497,7 +513,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event }) {
                             </div>
                             <div className="dialogInput">
                                 <h4>Sala:</h4>
-                                <DropdownList options={allRooms} selectedValue={selectedRoom} onChange={(e) => setSelectedRoom(e.target.value)} />
+                                <DropdownList options={allRooms} selectedValue={selectedRoom} onChange={(e) => setSelectedRoom(Number(e.target.value))} />
                             </div>
                         </>
                     }
@@ -509,7 +525,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event }) {
                             </div>
                             <div className="dialogInput">
                                 <h4>Sala:</h4>
-                                <DropdownList options={allRooms} selectedValue={selectedRoom} onChange={(e) => setSelectedRoom(e.target.value)} />
+                                <DropdownList options={allRooms} selectedValue={selectedRoom} onChange={(e) => setSelectedRoom(Number(e.target.value))} />
                             </div>
                             <div className="dialogInput">
                                 <h4>Início:</h4>
@@ -521,7 +537,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event }) {
                             </div>
                             <div className="dialogInput">
                                 <h4>Turma:</h4>
-                                <DropdownList options={allClasses} selectedValue={selectedClass} onChange={(e) => setSelectedClass(e.target.value)} />
+                                <DropdownList options={allClasses} selectedValue={selectedClass} onChange={(e) => setSelectedClass(Number(e.target.value))} />
                             </div>
                         </>
                     }
@@ -529,27 +545,27 @@ function Dialog({ isOpen, onClose, type, setType, title, event }) {
             }
             {type === "view-event" ? (
                 <>
-                    <div className="dialogContent" style={{borderRadius: "10px"}}>
+                    <div className="dialogContent" style={{ borderRadius: "10px" }}>
                         <div className="dialogInput">
                             <h4>Responsavel:</h4>
                             <h4>{event.responsible}</h4>
-                        </div> 
-                            <div className="dialogInput">
-                                <h4>Sala:</h4>
-                                <h4>{event.responsible}</h4>
-                            </div>
-                            <div className="dialogInput">
-                                <h4>Início:</h4>
-                                <h4>{event.initial}</h4>
-                            </div>
-                            <div className="dialogInput">
-                                <h4>Encerramento:</h4>
-                                <h4>{event.end}</h4>
-                            </div>
-                            <div className="dialogInput">
-                                <h4>Turma:</h4>
-                                <h4>{event.class}</h4>
-                            </div>
+                        </div>
+                        <div className="dialogInput">
+                            <h4>Sala:</h4>
+                            <h4>{event.responsible}</h4>
+                        </div>
+                        <div className="dialogInput">
+                            <h4>Início:</h4>
+                            <h4>{event.initial}</h4>
+                        </div>
+                        <div className="dialogInput">
+                            <h4>Encerramento:</h4>
+                            <h4>{event.end}</h4>
+                        </div>
+                        <div className="dialogInput">
+                            <h4>Turma:</h4>
+                            <h4>{event.class}</h4>
+                        </div>
                     </div>
                     <div className="dialogButtons">
                         <BoschButton text="Editar" type="primary" onClick={() => setEvent()} />
@@ -557,7 +573,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event }) {
                 </>
             ) : (
                 <div className="dialogButtons">
-                    <BoschButton text="Confirmar" type="primary" onClick={createEvent} />
+                    <BoschButton text="Confirmar" type="primary" onClick={create} />
                     <BoschButton text="Cancelar" type="secondary" onClick={onClose} />
                 </div>)
             }

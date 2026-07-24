@@ -1,7 +1,13 @@
+import { isTokenExpired, logout } from "./auth";
 const BASE_URL = import.meta.env.VITE_BASE_ROUTE_API;
 
 const apiClient = async (url, options = {}) => {
-    const token = localStorage.getItem("token");
+    const token = sessionStorage.getItem("token");
+
+    // if (isTokenExpired(token)) {
+    //     logout();
+    //     return;
+    // }
 
     const headers = {
         'Content-Type': 'application/json',

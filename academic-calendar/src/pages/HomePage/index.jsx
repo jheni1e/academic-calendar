@@ -4,46 +4,144 @@ import MonthlyCalendar from "../../components/MonthlyCalendar";
 import "./index.css";
 import { getData } from "../../utils/apiBack";
 import { useNavigate } from "react-router-dom";
+import { toastError } from "../../components/BoschToast";
 
 function Home() {
   const [isInstructor, setIsInstructor] = useState(false);
+  const [userLoaded, setUserLoaded] = useState(false);
+  const [subjects, setSubjects] = useState([]);
+
   const [events, setEvents] = useState([]);
+  const [showExternal, setShowExternal] = useState(false);
+  const [showLesson, setShowLesson] = useState(false);
+
+  const [view, setView] = useState(null);
+  const [filterType, setFilterType] = useState("");
+  const [selectedFilter, setSelectedFilter] = useState("");
+
+  const filterOptions = [
+    { value: "ALL", label: "Todos" },
+    { value: "CLASS", label: "Turmas" },
+    { value: "PERSON", label: "Pessoas" },
+    { value: "ROOMS", label: "Salas" }
+  ];
+
+  const [filterItems, setFilterItems] = useState({
+    CLASS: [],
+    PERSON: [],
+    ROOMS: []
+  });
+
   const navigate = useNavigate();
 
   useEffect(() => {
     initUserInfo();
-  },[]);
-
-  useEffect(() => {
-    getUserEvents();
-
-    const interval = setInterval(() => {
-      getUserEvents();
-    }, 3000);
-
-    return () => clearInterval(interval);
+    initDropdownInfo();
   }, []);
 
-  const initUserInfo = async () => {
-    const edv = localStorage.getItem("user");
-    const user = await getData(`/user/edv/${edv}`);
+  useEffect(() => {
+    if (!userLoaded) return;
 
-    if (!user) {
+    setView(isInstructor ? "CLASSES" : "PERSONAL");
+
+  }, [userLoaded, isInstructor]);
+
+  useEffect(() => {
+    if (!view) return;
+
+    getUserEvents();
+
+  }, [view, selectedFilter]);
+
+  const filteredEvents = events.filter(event => {
+    if (!showExternal && !showLesson) return true;
+
+    return (
+      (showExternal && event.event_type === "EXTERNAL") ||
+      (showLesson && event.event_type === "LESSON")
+    );
+  });
+
+  const initUserInfo = async () => {
+    const edv = sessionStorage.getItem("user");
+
+    if (!edv) {
       navigate("/login");
       return;
     }
-  }
+
+    const response = await getData(`/user/edv/${edv}`);
+
+    const user = response.user;
+
+    const instructor =
+      user.role === "ADMIN" ||
+      user.role === "INSTRUCTOR";
+
+    setIsInstructor(instructor);
+
+    await loadSubjects(user.id, user.classId, instructor);
+
+    setUserLoaded(true);
+  };
+
+  const initDropdownInfo = async () => {
+    try {
+      const rooms = await getData("/room/all");
+      const classes = await getData("/class/all");
+      const people = await getData("/user/all");
+
+      setFilterItems({
+        ROOMS: rooms.map(room => ({
+          value: room.room_id,
+          label: room.title
+        })),
+
+        CLASS: classes.map(c => ({
+          value: c.class_id,
+          label: c.name
+        })),
+
+        PERSON: people.map(person => ({
+          value: person.id,
+          label: person.name
+        }))
+      });
+
+    } catch (error) {
+      toastError(`Error: ${error.message}`)
+    }
+  };
 
   const getUserEvents = async () => {
-    const edv = localStorage.getItem("user");
+    try {
+      let response;
 
-    const user = await getData(`/user/edv/${edv}`);
-    const userId = user.user.id;
+      if (isInstructor) {
+        if (filterType === "CLASS" && selectedFilter) {
+          response = await getData(`/event/class/${selectedFilter}`);
+        }
+        else if (filterType === "PERSON" && selectedFilter) {
+          response = await getData(`/event/user/${selectedFilter}`);
+        }
+        else if (filterType === "ROOMS" && selectedFilter) {
+          response = await getData(`/event/room/${selectedFilter}`);
+        }
+        else {
+          response = await getData("/event/all");
+        }
+      } else {
+        if (view === "PERSONAL") {
+          response = await getData("/event/personal");
+        }
+        if (view === "CLASS") {
+          // response = await getData("/event/class/my");
+        }
+      }
+      setEvents(response);
 
-    if (user.user.role === "ADMIN" || user.user.role === "APPRENTICE") {
-      const allEvents = await getData("/event/all");
-
-      setEvents(allEvents);
+    } catch (error) {
+      toastError(error.message);
     }
   };
 
@@ -51,41 +149,63 @@ function Home() {
     { value: 1, label: "oii" }
   ]);
 
-  const [subjects, setSubjects] = useState([
-    { name: "DS-Machine Learning", value: 30 },
-    { name: "DS-Angular", value: 60 },
-    { name: "ADD-Excel", value: 40 },
-    { name: "MAN-IoT", value: 80 },
-  ]);
+  const loadSubjects = async (userId, classId, instructor) => {
+    try {
+      let response;
 
-  const [selectedRoom, setSelectedRoom] = useState("");
+      if (instructor) {
+        response = await getData(`/subject/instructor/${userId}`);
+      } else {
+        response = await getData(`/subject/class/${classId}`);
+      }
+
+      const unfinishedSubjects = response
+        .filter(subject =>
+          subject.completedWorkload < subject.workload
+        )
+        .map(subject => ({
+          name: subject.name,
+          value: Math.round(
+            (subject.completedWorkload / subject.workload) * 100
+          )
+        }));
+
+      setSubjects(unfinishedSubjects);
+
+    } catch (error) {
+      toastError(error.message);
+    }
+  };
 
   return (
     <>
       <div className="body">
-        {isInstructor &&
-          <MenuSideBar option1="Turmas" option2="Salas"
-            hasToggle={true}
-            hasDropDown={true}
-            OptionsDropDown={dropdownOptions}
-            hasCheckbox={true}
-            hasItems={true}
-            type={'calendar'}
-            items={subjects}
-            selectedValueDrop={selectedRoom}
-            onDropDownChange={(e) => setSelectedRoom(e.target.value)} />
-        }
-        {!isInstructor &&
-          <MenuSideBar option1="Pessoal" option2="Turma"
-            hasToggle={true}
-            hasItems={true}
-            type={'calendar'}
-            items={subjects}
-            selectedValueDrop={selectedRoom}
-            onDropDownChange={(e) => setSelectedRoom(e.target.value)} />
-        }
+        <MenuSideBar
+          option1={isInstructor ? "Turmas" : "Pessoal"}
+          option2={isInstructor ? "Salas" : "Turma"}
+          option1Value={isInstructor ? "CLASSES" : "PERSONAL"}
+          option2Value={isInstructor ? "ROOMS" : "CLASS"}
+          view={view}
+          onToggleChange={setView}
+          hasToggle={!isInstructor}
+          hasCheckbox={userLoaded && isInstructor}
+          type="calendar"
+          {...(isInstructor && {
+            filterOptions,
+            filterType,
+            setFilterType,
+            filterItems: filterItems[filterType] || [],
+            selectedFilter,
+            setSelectedFilter,
+            showExternal,
+            setShowExternal,
+            showLesson,
+            setShowLesson
+          })}
+          items={subjects} />
+
         <div className="content">
-          <MonthlyCalendar type={'calendar'} events={events} />
+          <MonthlyCalendar type={'calendar'} events={filteredEvents} />
         </div>
       </div>
     </>

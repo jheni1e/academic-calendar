@@ -9,7 +9,7 @@ function DropdownList({ label, options, selectedValue, onChange, disabled }, ref
             <label>{label}</label>
             <div style={{ position: 'relative' }}>
                 <select id="dropdown" value={selectedValue} onChange={onChange} ref={ref} disabled={disabled}>
-                    <option value="" disabled selected={!selectedValue}>Select an option</option>
+                    <option value="" disabled >Select an option</option>
                     {options.map((option, index) => (
                         <option key={index} value={option.value}>{option.label}</option>
                     ))}

@@ -1,4 +1,4 @@
-import { EventType } from "../generated/prisma/enums.ts";
+import { EventStatus, EventType } from "../generated/prisma/enums.ts";
 export interface CreateEventDTO {
 
     title: string;
@@ -30,4 +30,12 @@ export interface UpdateEventDTO {
     endDate: Date; // Cannot be undefined
 
     roomId?: number;
+}
+
+export interface EventResponseDTO {
+    id: number;
+    title: string;
+    startDate: Date;
+    endDate: Date;
+    status: EventStatus;
 }

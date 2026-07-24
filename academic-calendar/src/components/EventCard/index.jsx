@@ -15,22 +15,44 @@ function getEventColor(id) {
   return colors[id % colors.length];
 }
 
+
 function EventCard({ event, compact }) {
-  const [color] = useState(getEventColor());
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [dialogType, setDialogType] = useState("view-event");
-  const [isModalOpen, setIsModalOpen] = useState(false)
+
+  const changeModal = () => {
+    setIsModalOpen(!isModalOpen)
+  }
+
+  const color = getEventColor(event.event_id);
+
+  const start = new Date(event.start_date);
+
+  const time = start.toLocaleTimeString("pt-BR", {
+    hour: "2-digit",
+    minute: "2-digit"
+  });
 
   return (
     <>
       <div
         className={`event-card ${compact ? "compact" : ""}`}
-        style={{ backgroundColor: getEventColor(event.event_id) }}>
-        {!compact && <span>{event.title}</span>}
+        style={{ "--event-color": color }}
+        onClick={() => changeModal()}
+        >
+        {!compact && (
+          <>
+            <span className="event-title">
+              {event.title}
+            </span>
+          </>
+        )}
       </div>
       {isModalOpen &&
         <Dialog event={event} isOpen={isModalOpen} onClose={changeModal} title={event.title} type={dialogType} setType={setDialogType}></Dialog>
       }
     </>
+
   );
 }
 

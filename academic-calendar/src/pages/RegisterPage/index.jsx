@@ -20,7 +20,7 @@ function Register() {
     }, []);
 
     const initUserInfo = async () => {
-        const edv = localStorage.getItem("user");
+        const edv = sessionStorage.getItem("user");
         const user = await getData(`/user/edv/${edv}`);
 
         if (user) {
@@ -54,8 +54,7 @@ function Register() {
             navigate("/login");
             toastSuccess("Registrado com sucesso!");
         } catch (error) {
-            console.error(error);
-            alert(error.message);
+            toastError(`Erro: ${error.message}`)
         }
     };
 
