@@ -43,7 +43,7 @@ enum EventStatus {
 
 enum ParticipationStatus {
   PENDING
-  CONFIRMED
+  CONRFIMED
   DECLINED
   ATTENDED // Optional
   CANCELLED

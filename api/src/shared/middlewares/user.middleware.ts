@@ -6,6 +6,7 @@ import { NotFoundError } from "../errors/NotFoundError.ts";
 import { UserRole } from "../../generated/prisma/enums.ts";
 import { findUserByEdv, findUserById, updateUser } from "../../services/user.service.ts";
 import { UnauthorizedError } from "../errors/UnauthorizedError.ts";
+import { findParticipationByUserAndEvent } from "../../services/participation.service.ts";
 
 export const validateCreate = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -132,9 +133,17 @@ export const validateUserExistsById = async (req: Request, res: Response, next: 
     }
 }
 
-// export const validateConfirmation = async (req: Request, res: Response, next: NextFunction) => {
-//     try {
-//         const 
-//     }
-// }
+export const validateParticipationExistsByUserandEvent = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { id } = req.params
+        const participation = findParticipationByUserAndEvent(res.locals.user.id, Number(id))
+
+        if(!participation)
+            throw new BadRequestError("Participation not found")
+
+        next();
+    } catch(error) {
+        next(error)
+    }
+}
 

@@ -31,6 +31,7 @@ route
     .put('/:id', authMiddleware, validateUpdate, UserController.update) // update user by id
     .put('/disable/:id', authMiddleware, authorize(UserRole.ADMIN, UserRole.INSTRUCTOR), validateDisable, UserController.disable) // disable a user instead of deleting them
     .put('/enable/:id', authMiddleware, authorize(UserRole.ADMIN, UserRole.INSTRUCTOR), validateActivate, UserController.activate) // waiting implementation
-    // .put('/event/confirm/:id', authMiddleware, validateConfirmation, ParticipationController.updateParticipation) // confirm event participation
+    .put('/event/confirm/:id', authMiddleware, validateClassUserExistsByClassAndUser, ParticipationController.updateParticipation) // confirm event participation
+    .put('/event/decline/:id', authMiddleware, validateClassUserExistsByClassAndUser, ParticipationController.declineParticipation)
 
 export default route

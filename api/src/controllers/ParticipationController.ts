@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { AppError } from "../shared/errors/AppError.ts";
-import { createParticipation, deleteParticipation, findAllParticipations, findParticipationByEvent, findParticipationById, findParticipationByUser, findParticipationByUserAndEvent, updateParticipation } from "../services/participation.service.ts";
+import { confirmParticipation, createParticipation, declineParticipation, deleteParticipation, findAllParticipations, findParticipationByEvent, findParticipationById, findParticipationByUser, findParticipationByUserAndEvent, updateParticipation } from "../services/participation.service.ts";
 import { CreateParticipationDTO, UpdateParticipationDTO } from "../dtos/ParticipationDTO.ts";
 
 export class ParticipationController {
@@ -159,8 +159,43 @@ export class ParticipationController {
                 });
             }
 
-            return res.status(500).json({ message: "Internal server error." });;
+            return res.status(500).json({ message: "Internal server error." });
         }
 
     }
+
+    static async confirmParticipation(req: Request, res: Response) {
+        const { id } = req.params
+
+        try {
+            await confirmParticipation(Number(id), res.locals.user.id)
+            return res.status(200).send({ message: "Participation confirmed"})
+        } catch (error) {
+            if (error instanceof AppError) {
+                return res.status(error.statusCode).json({
+                    message: error.message
+                });
+            }
+
+            return res.status(500).json({ message: "Internal server error." });
+        }
+    }
+
+    static async declineParticipation(req: Request, res: Response) {
+        const { id } = req.params
+
+        try {
+            await declineParticipation(Number(id), res.locals.user.id)
+            return res.status(200).send({ message: "Participation declined"})
+        } catch (error) {
+            if (error instanceof AppError) {
+                return res.status(error.statusCode).json({
+                    message: error.message
+                });
+            }
+
+            return res.status(500).json({ message: "Internal server error." });
+        }
+    }
+
 }

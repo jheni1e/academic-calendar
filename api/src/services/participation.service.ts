@@ -103,8 +103,55 @@ export const deleteParticipation = async (
 
 }
 
-// export const updateParticipationByEvent = async (
-//     eventId: number
-// ): Promise<Participation> => {
+export const confirmParticipation = async (
+    eventId: number,
+    userId: number
+): Promise<void> => {
+    
+    const participation = await prisma.participation.findUnique({
+        where: {
+            user_event_unique: {
+                event_id: eventId,
+                user_id: userId
+            }
+        }
+    })
 
-// }
+    if(participation) {
+         await prisma.participation.update({
+            where: {
+                participation_id: participation.participation_id
+            },
+            data: {
+                status: "CONFIRMED"
+            }
+        })
+    }
+}
+
+export const declineParticipation = async (
+    eventId: number,
+    userId: number
+): Promise<void> => {
+    
+    const participation = await prisma.participation.findUnique({
+        where: {
+            user_event_unique: {
+                event_id: eventId,
+                user_id: userId
+            }
+        }
+    })
+
+    if(participation) {
+         await prisma.participation.update({
+            where: {
+                participation_id: participation.participation_id
+            },
+            data: {
+                status: "DECLINED"
+            }
+        })
+    }
+}
+
