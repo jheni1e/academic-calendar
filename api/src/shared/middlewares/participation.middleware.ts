@@ -22,12 +22,6 @@ export const validateCreate = async (req: Request, res: Response, next: NextFunc
             throw new NotFoundError("Event not found.");
         }
 
-        const eventRole = await findEventRoleById(eventRoleId)
-
-        if (!eventRole) {
-            throw new NotFoundError("Event role not found.");
-        }
-
         const participation = await findParticipationByUserAndEvent(userId, eventId)
 
         if (participation) {
