@@ -22,7 +22,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event }) {
     const [rooms, setRooms] = useState([]);
     const [allRooms, setAllRooms] = useState([]);
 
-    const [typeEvent, setTypeEvent] = useState(null);
+    const [typeEvent, setTypeEvent] = useState(1);
     const [eventName, setEventName] = useState("");
     const [selectedParticipant, setSelectedParticipant] = useState("");
     const [participants, setParticipants] = useState([]);
@@ -179,8 +179,8 @@ function Dialog({ isOpen, onClose, type, setType, title, event }) {
                             eventType = "LESSON";
 
                             edv = sessionStorage.getItem("user");
-                            const user = await getData(`/user/edv/${edv}`);
-                            const userId = user.user.id;
+                            user = await getData(`/user/edv/${edv}`);
+                            userId = user.user.id;
 
                             payload = {
                                 title: eventName,
@@ -191,8 +191,6 @@ function Dialog({ isOpen, onClose, type, setType, title, event }) {
                                 roomId: selectedRoom,
                                 startDate: startDate
                             };
-
-                            console.log(payload)
 
                             // isInserted = await postData("/schedule/lessons", payload);
 
@@ -319,8 +317,8 @@ function Dialog({ isOpen, onClose, type, setType, title, event }) {
     }
 
     const typeEvents = [
-        { value: 1, label: "Aula" },
-        { value: 2, label: "Evento" },
+        { value: 1, label: "Evento" },
+        { value: 2, label: "Aula" },
         { value: 3, label: "Avaliação" }
     ];
 
