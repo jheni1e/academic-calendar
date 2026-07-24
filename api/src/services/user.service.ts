@@ -1,5 +1,5 @@
 import { CreateUserDTO, UpdateUserDTO, UserResponseDTO } from "../dtos/UserDto.ts";
-import { User, UserRole } from "../generated/prisma/client.ts";
+import { Subject, User, UserRole } from "../generated/prisma/client.ts";
 import { prisma } from "../lib/prisma.ts";
 
 export const createUser = async (
@@ -188,4 +188,24 @@ export const getInstructors = async () : Promise<UserResponseDTO[]> => {
         role: user.role,
         birthdate: user.birthday
     }));
+}
+
+export const getSubjectsByInstructor = async (instructorId: number) : Promise<Subject[]>=> {
+    const user = await prisma.user.findUnique({
+        where: {
+            user_id: instructorId
+        },
+        select: {
+            subjectAssignments: {
+                select: {
+                    subject: true
+                }
+            }
+        }
+    });
+
+    if(!user)
+        return []
+
+    return user.subjectAssignments.map(sa => sa.subject)
 }

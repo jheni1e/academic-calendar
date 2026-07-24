@@ -25,6 +25,7 @@ route
     .get('/classes/:classId', authMiddleware, validateClassUserExistsByClassAndUser, ClassUserController.findClassUsersByClassAndUser) // get class by id 
     .get('/events/', authMiddleware, EventController.findEventsByUser)
     .get('/instructors', authMiddleware, UserController.getInstructors) // get instructors and admins
+    .get('/subjects/:', authMiddleware, UserController.findSubjectByInstructor)
 
     .put('/:id', authMiddleware, validateUpdate, UserController.update) // update user by id
     .put('/disable/:id', authMiddleware, authorize(UserRole.ADMIN, UserRole.INSTRUCTOR), validateDisable, UserController.disable) // disable a user instead of deleting them
