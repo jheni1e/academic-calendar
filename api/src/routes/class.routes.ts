@@ -13,7 +13,7 @@ const route = express.Router();
 
 route 
     .post('/', validateCreate, ClassController.create) // create a new class
-    .post('/participants', authMiddleware, authorize(UserRole.ADMIN, UserRole.INSTRUCTOR), ClassUserController.create) // add a new participant
+    .post('/participant', authMiddleware, authorize(UserRole.ADMIN, UserRole.INSTRUCTOR), ClassUserController.create) // add a new participant
 
     .get('/all', authMiddleware, authorize(UserRole.ADMIN, UserRole.INSTRUCTOR), ClassController.findAll) // get all classes
     .get('/:id', authMiddleware, authorize(UserRole.ADMIN, UserRole.INSTRUCTOR), validateClassExistsById, ClassController.findClassById) // get class by id
