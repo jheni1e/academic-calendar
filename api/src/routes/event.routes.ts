@@ -25,7 +25,7 @@ route
     // participation
     .get('/participants/:eventId', authMiddleware, validateClassExistsById, ClassUserController.findClassUsersByClass) // get participants by class id
     .delete("/participants/remove/:eventId", authMiddleware, validateDeleteByEventandUser, ParticipationController.deleteByEventandUser) // remove a user from an event
-    .post('/participant', authMiddleware, authorize(UserRole.ADMIN, UserRole.INSTRUCTOR), ClassUserController.create) // add a new participant
+
     
     .put('/:id', authMiddleware, validateUpdate, EventController.update) 
 

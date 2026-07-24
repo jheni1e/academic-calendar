@@ -3,6 +3,9 @@ import { prisma } from "../../lib/prisma.ts";
 import { ConflictError } from "../errors/ConflictError.ts";
 import { NotFoundError } from "../errors/NotFoundError.ts";
 import { findClassById } from "../../services/class.service.ts";
+import { findClassUsersByClassAndUser, findClassUsersByUser } from "../../services/classuser.service.ts";
+import { UnauthorizedError } from "../errors/UnauthorizedError.ts";
+import { findUserById } from "../../services/user.service.ts";
 
 export const validateActivate = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -109,6 +112,33 @@ export const validateClassExistsById = async (req: Request, res: Response, next:
         next(err);
     }
 }
+
+export const validateClassEvent = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const classId = Number(req.params.id);
+        const userId = res.locals.user.id;
+
+        const user = await findUserById(userId);
+
+        if (!user) {
+            throw new NotFoundError("User not found.");
+        }
+
+        if (user.role !== "APPRENTICE") {
+            return next();
+        }
+
+        const isRegistered = await findClassUsersByClassAndUser(classId, userId);
+
+        if (!isRegistered) {
+            throw new UnauthorizedError("User is not enrolled in this class.");
+        }
+
+        return next();
+    } catch (error) {
+        next(error);
+    }
+};
 
 export const validateUpdate = async (req: Request, res: Response, next: NextFunction) => {
     try {
