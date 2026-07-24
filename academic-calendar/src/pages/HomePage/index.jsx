@@ -12,6 +12,8 @@ function Home() {
   const [subjects, setSubjects] = useState([]);
 
   const [events, setEvents] = useState([]);
+  const [showExternal, setShowExternal] = useState(true);
+  const [showLesson, setShowLesson] = useState(true);
 
   const [view, setView] = useState(null);
   const [filterType, setFilterType] = useState("");
@@ -39,38 +41,52 @@ function Home() {
 
   useEffect(() => {
     if (!userLoaded) return;
-  
+
     setView(isInstructor ? "CLASSES" : "PERSONAL");
-  
+
   }, [userLoaded, isInstructor]);
 
   useEffect(() => {
     if (!view) return;
 
     getUserEvents();
+  }, [view, filterType, selectedFilter]);
 
-  }, [view, selectedFilter]);
+  const filteredEvents = events.filter(event => {
+    if (!showExternal && !showLesson) {
+      return false;
+    }
+
+    if (showExternal && showLesson) {
+      return true;
+    }
+
+    return (
+      (showExternal && event.event_type === "EXTERNAL") ||
+      (showLesson && event.event_type === "LESSON")
+    );
+  });
 
   const initUserInfo = async () => {
     const edv = sessionStorage.getItem("user");
-  
+
     if (!edv) {
       navigate("/login");
       return;
     }
-  
+
     const response = await getData(`/user/edv/${edv}`);
-  
+
     const user = response.user;
-  
+
     const instructor =
       user.role === "ADMIN" ||
       user.role === "INSTRUCTOR";
-  
+
     setIsInstructor(instructor);
-  
+
     await loadSubjects(user.id, user.classId, instructor);
-  
+
     setUserLoaded(true);
   };
 
@@ -107,24 +123,57 @@ function Home() {
       let response;
 
       if (isInstructor) {
-        if (filterType === "CLASS" && selectedFilter) {
-          response = await getData(`/event/class/${selectedFilter}`);
-        }
-        else if (filterType === "PERSON" && selectedFilter) {
-          response = await getData(`/event/user/${selectedFilter}`);
-        }
-        else if (filterType === "ROOMS" && selectedFilter) {
-          response = await getData(`/event/room/${selectedFilter}`);
-        }
-        else {
-          response = await getData("/event/all");
+        switch (filterType) {
+          case "CLASS":
+            response = selectedFilter
+              ? await getData(`/class/events/${selectedFilter}`)
+              : await getData("/event/all");
+            break;
+          case "PERSON":
+            response = selectedFilter
+              ? await getData(`/user/events/${selectedFilter}`)
+              : await getData("/event/all");
+            break;
+          case "ROOMS":
+            response = selectedFilter
+              ? await getData(`/room/events/${selectedFilter}`)
+              : await getData("/event/all");
+            break;
+          case "ALL":
+          default:
+            response = await getData("/event/all");
+            break;
         }
       } else {
         if (view === "PERSONAL") {
-          response = await getData("/event/personal");
+          const edv = sessionStorage.getItem("user");
+
+          if (!edv) {
+            navigate("/login");
+            return;
+          }
+
+          const response = await getData(`/user/edv/${edv}`);
+
+          const user = response.user;
+          const userId = user.id;
+
+          response = await getData(`/user/events/${userId}`);
         }
         if (view === "CLASS") {
-          // response = await getData("/event/class/my");
+          const edv = sessionStorage.getItem("user");
+
+          if (!edv) {
+            navigate("/login");
+            return;
+          }
+
+          const response = await getData(`/user/edv/${edv}`);
+
+          const user = response.user;
+          const userId = user.id;
+
+          response = await getData(`/class/events/${selectedFilter}`);
         }
       }
       setEvents(response);
@@ -141,13 +190,13 @@ function Home() {
   const loadSubjects = async (userId, classId, instructor) => {
     try {
       let response;
-  
+
       if (instructor) {
         response = await getData(`/subject/instructor/${userId}`);
       } else {
         response = await getData(`/subject/class/${classId}`);
       }
-  
+
       const unfinishedSubjects = response
         .filter(subject =>
           subject.completedWorkload < subject.workload
@@ -158,10 +207,10 @@ function Home() {
             (subject.completedWorkload / subject.workload) * 100
           )
         }));
-  
+
       setSubjects(unfinishedSubjects);
-  
-    } catch(error) {
+
+    } catch (error) {
       toastError(error.message);
     }
   };
@@ -177,7 +226,7 @@ function Home() {
           view={view}
           onToggleChange={setView}
           hasToggle={!isInstructor}
-          hasCheckbox={true}
+          hasCheckbox={userLoaded && isInstructor}
           type="calendar"
           {...(isInstructor && {
             filterOptions,
@@ -185,12 +234,16 @@ function Home() {
             setFilterType,
             filterItems: filterItems[filterType] || [],
             selectedFilter,
-            setSelectedFilter
+            setSelectedFilter,
+            showExternal,
+            setShowExternal,
+            showLesson,
+            setShowLesson
           })}
           items={subjects} />
 
         <div className="content">
-          <MonthlyCalendar type={'calendar'} events={events} />
+          <MonthlyCalendar type={'calendar'} events={filteredEvents} />
         </div>
       </div>
     </>

@@ -9,8 +9,7 @@ export const createParticipation = async (
     return prisma.participation.create({
         data: {
             user_id: data.userId,
-            event_id: data.eventId,
-            status: data.status
+            event_id: data.eventId
         }
     });
 
@@ -103,3 +102,9 @@ export const deleteParticipation = async (
     });
 
 }
+
+// export const updateParticipationByEvent = async (
+//     eventId: number
+// ): Promise<Participation> => {
+
+// }

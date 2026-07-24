@@ -6,6 +6,7 @@ import { useState, useEffect } from "react";
 import Dialog from "../../components/Dialog";
 import { getData } from '../../utils/apiBack';
 import { useNavigate } from "react-router-dom";
+import { toastError } from "../../components/BoschToast";
 
 function Subject() {
   const [selectedValue, setSelectedValue] = useState("");
@@ -57,9 +58,8 @@ function Subject() {
       }));
 
       setListMenu(formatedClasses);
-
     } catch (error) {
-      console.error(error);
+      toastError(`Erro: ${error.message}`)
     }
   };
 
@@ -67,9 +67,24 @@ function Subject() {
     try {
       const data = await getData("/subject/all");
 
-      setSubjects(data);
+      const subjectsWithClass = await Promise.all(
+        data.map(async (subject) => {
+          const classData = await getData(`/class/${subject.class_id}`);
+
+          // const subjectInstructor = await getData()
+
+          return {
+            ...subject,
+            className: classData.name
+          };
+        })
+      );
+
+      console.log(subjectsWithClass)
+
+      setSubjects(subjectsWithClass);
     } catch (error) {
-      console.error(error);
+      toastError(`Erro: ${error.message}`)
     }
   }
 
@@ -100,7 +115,7 @@ function Subject() {
           <div className="subjects-list">
             {subjects
               .filter(subject =>
-                selectedValue === "" || subject.class === selectedValue
+                selectedValue === "" || subject.class_id === Number(selectedValue)
               )
               .map(subject => (
                 <ViewSubjectComponent
@@ -109,7 +124,7 @@ function Subject() {
                   responsible={subject.responsible}
                   workload={subject.workload}
                   completedWorkload={subject.completedWorkload}
-                  class={subject.classId}
+                  studentClass={subject.className}
                 />
               ))}
           </div>

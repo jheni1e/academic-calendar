@@ -1,5 +1,5 @@
 import { prisma } from "../lib/prisma.ts";
-import { CreateEventDTO, UpdateEventDTO } from "../dtos/EventDto.ts";
+import { CreateEventDTO, EventResponseDTO, UpdateEventDTO } from "../dtos/EventDto.ts";
 import { Class, Event, EventStatus, EventType, Subject, SubjectInstructor, User } from "../generated/prisma/client.ts";
 import { NotFoundError } from "../shared/errors/NotFoundError.ts";
 import { ValidationError } from "../shared/errors/ValidationError.ts";
@@ -288,24 +288,71 @@ export const findEventById = async (
 
 };
 
-export const findAllEvents = async (): Promise<Event[]> => {
+export const findAllEvents = async (): Promise<EventResponseDTO[]> => {
 
     return prisma.event.findMany({
         orderBy: {
             start_date: "asc"
         },
-        include: {
-            class: true,
-            recurrence: true,
-            reservation: {
-                include: {
-                    room: true
+        select: {
+            event_id: true,
+            title: true,
+            description: true,
+            start_date: true,
+            end_date: true,
+            event_type: true,
+            status: true,
+            is_blocked: true,
+    
+            class: {
+                select: {
+                    class_id: true,
+                    name: true
                 }
             },
+    
+            recurrence: {
+                select: {
+                    recurrence_id: true,
+                    series_name: true,
+                    repeat_until: true,
+                    occurrences: true,
+                    monday: true,
+                    tuesday: true,
+                    wednesday: true,
+                    thursday: true,
+                    friday: true
+                }
+            },
+    
+            reservation: {
+                select: {
+                    room: {
+                        select: {
+                            room_id: true,
+                            title: true,
+                            capacity: true
+                        }
+                    }
+                }
+            },
+    
             subject_instructor: {
-                include: {
-                    subject: true,
-                    instructor: true
+                select: {
+                    subject: {
+                        select: {
+                            subject_id: true,
+                            name: true
+                        }
+                    },
+                    instructor: {
+                        select: {
+                            user_id: true,
+                            user_edv: true,
+                            name: true,
+                            role: true
+                        }
+                    }
                 }
             }
         }
@@ -369,6 +416,23 @@ export const findEventsByInstructor = async (
         }
     });
 
+};
+
+export const findEventsByRoom = async (
+    roomId: number
+): Promise<Event[]> => {
+    return prisma.event.findMany({
+        where: {
+            reservation: {
+                is: {
+                    room_id: roomId
+                }
+            }
+        },
+        orderBy: {
+            start_date: "asc"
+        }
+    });
 };
 
 export const findEventsByUser = async (

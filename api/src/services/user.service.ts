@@ -1,5 +1,5 @@
 import { CreateUserDTO, UpdateUserDTO, UserResponseDTO } from "../dtos/UserDto.ts";
-import { User, UserRole } from "../generated/prisma/client.ts";
+import { Subject, User, UserRole } from "../generated/prisma/client.ts";
 import { prisma } from "../lib/prisma.ts";
 
 export const createUser = async (
@@ -189,3 +189,4 @@ export const getInstructors = async () : Promise<UserResponseDTO[]> => {
         birthdate: user.birthday
     }));
 }
+

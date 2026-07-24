@@ -47,8 +47,7 @@ function Login() {
                 navigate("/home");
             }
         } catch (error) {
-            console.error(error);
-            alert(error.message);
+            toastError(`Erro: ${error.message}`)
         }
     };
 

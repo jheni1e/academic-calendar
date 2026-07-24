@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 
 import { AppError } from "../shared/errors/AppError.ts";
 import { CreateRoomDTO, UpdateRoomDTO } from "../dtos/RoomDto.ts";
-import { createRoom, deleteRoom, disableRoom, findAllRooms, findRoomById, updateRoom } from "../services/room.service.ts";
+import { createRoom, deleteRoom, disableRoom, findAllRooms, findRoomById, getEventsByRoom, updateRoom } from "../services/room.service.ts";
 
 export class RoomController {
     static async create(req: Request, res: Response) {
@@ -125,5 +125,22 @@ export class RoomController {
             return res.status(500).json({ message: "Internal server error." });
         }
 
+    }
+
+    static async findEventsByRoom(req: Request, res: Response) {
+        const id = req.params
+
+        try {
+            const events = await getEventsByRoom(Number(id))
+            return res.status(200).send(events)
+        
+        } catch(error) {
+            if (error instanceof AppError) {
+                return res.status(error.statusCode).json({
+                    message: error.message
+                });
+            }
+            return res.status(500).json({ message: "Internal server error." });
+        }
     }
 }

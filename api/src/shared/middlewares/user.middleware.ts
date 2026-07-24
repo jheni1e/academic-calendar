@@ -131,3 +131,10 @@ export const validateUserExistsById = async (req: Request, res: Response, next: 
         next(err);
     }
 }
+
+// export const validateConfirmation = async (req: Request, res: Response, next: NextFunction) => {
+//     try {
+//         const 
+//     }
+// }
+

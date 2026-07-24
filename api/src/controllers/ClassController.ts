@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 
 import { AppError } from "../shared/errors/AppError.ts";
 import { CreateClassDTO, UpdateClassDTO } from "../dtos/ClassDto.ts";
-import { createClass, deleteClass, findAllClasses, findClassById, updateClass } from "../services/class.service.ts";
+import { createClass, deleteClass, findAllClasses, findClassById, getEventsByClass, updateClass } from "../services/class.service.ts";
 import { NotFoundError } from "../shared/errors/NotFoundError.ts";
 
 
@@ -123,6 +123,21 @@ export class ClassController {
                 return res.status(error.statusCode).json({
                     message: error.message
                 });
+            }
+
+            return res.status(500).json({ message: "Internal server error." });
+        }
+    }
+
+    static async findEventsByClass(req: Request, res: Response) {
+        try {
+            const classItem = res.locals.class;
+            const events = await getEventsByClass(classItem.class_id);
+
+            return res.status(200).json(events);
+        } catch (error) {
+            if (error instanceof AppError) {
+                res.status(error.statusCode).send({ message: error.message})
             }
 
             return res.status(500).json({ message: "Internal server error." });
