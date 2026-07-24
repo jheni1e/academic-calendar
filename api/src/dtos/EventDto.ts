@@ -1,4 +1,4 @@
-import { EventStatus, EventType } from "../generated/prisma/enums.ts";
+import { EventStatus, EventType, UserRole } from "../generated/prisma/enums.ts";
 export interface CreateEventDTO {
 
     title: string;
@@ -33,9 +33,50 @@ export interface UpdateEventDTO {
 }
 
 export interface EventResponseDTO {
-    id: number;
+    event_id: number;
     title: string;
-    startDate: Date;
-    endDate: Date;
+    description: string | null;
+    start_date: Date;
+    end_date: Date;
+    event_type: EventType;
     status: EventStatus;
+    is_blocked: boolean;
+
+    class: {
+        class_id: number;
+        name: string;
+    } | null;
+
+    recurrence: {
+        recurrence_id: number;
+        series_name: string;
+        repeat_until: Date | null;
+        occurrences: number | null;
+        monday: boolean;
+        tuesday: boolean;
+        wednesday: boolean;
+        thursday: boolean;
+        friday: boolean;
+    } | null;
+
+    reservation: {
+        room: {
+            room_id: number;
+            title: string;
+            capacity: number;
+        };
+    } | null;
+
+    subject_instructor: {
+        subject: {
+            subject_id: number;
+            name: string;
+        };
+        instructor: {
+            user_id: number;
+            user_edv: number;
+            name: string;
+            role: UserRole;
+        };
+    } | null;
 }
