@@ -4,7 +4,7 @@ import BoschButton from "../BoschButton";
 import TextBox from "../TextBox";
 import DropdownList from "../DropdownList";
 import FrequencySelector from "../FrequencySelector";
-import { getData, postData } from "../../utils/apiBack";
+import { getData, postData, putData } from "../../utils/apiBack";
 import { toastError, toastSuccess, toastWarning } from '../../components/BoschToast';
 
 function Dialog({ isOpen, onClose, type, setType, title, event }) {
@@ -139,6 +139,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event }) {
             let userId;
             let payload;
             let isInserted;
+            let isUpdated;
             let eventId;
 
             switch (type) {
@@ -240,6 +241,84 @@ function Dialog({ isOpen, onClose, type, setType, title, event }) {
                     toastSuccess("Matéria criada com sucesso.")
                     break;
                 }
+                case "edit-event":{
+                    switch (typeEvent) {
+                        case 1:
+                            if (!eventName.trim()) {
+                                onClose();
+                                toastWarning("O título é obrigatório.");
+                                return;
+                            }
+
+                            eventType = "EXTERNAL";
+
+                            edv = sessionStorage.getItem("user");
+                            user = await getData(`/user/edv/${edv}`);
+                            userId = user.user.id;
+
+                            payload = {
+                                title: eventName,
+                                eventType: eventType,
+                                startDate: startDate,
+                                endDate: endDate,
+                                createdBy: userId,
+                            };
+
+                            isUpdated = await putData(`/event/${event.event_id}`, payload);
+
+                            if (!isUpdated) {
+                                onClose();
+                                toastError("Falha ao atualizar evento.");
+                                return;
+                            }
+
+                            eventId = isUpdated.event_id;
+
+                            onClose();
+                            toastSuccess("Evento atualizado com sucesso!");
+                            break;
+                        case 2:
+                            if (!eventName.trim()) {
+                                onClose();
+                                toastWarning("O título é obrigatório.");
+                                return;
+                            }
+
+                            eventType = "LESSON";
+
+                            edv = sessionStorage.getItem("user");
+                            user = await getData(`/user/edv/${edv}`);
+                            userId = user.user.id;
+
+                            payload = {
+                                title: eventName,
+                                eventType: eventType,
+                                startDate: startDate,
+                                subjectInstructorId: responsible,
+                                createdBy: userId,
+                                roomId: selectedRoom,
+                                startDate: startDate
+                            };
+
+                            isUpdated = await putData(`/event/${event.event_id}`, payload);
+
+                            if (!isUpdated) {
+                                onClose();
+                                toastError("Falha ao criar evento.");
+                                return;
+                            }
+
+                            eventId = isUpdated.event_id;
+
+                            onClose();
+                            toastSuccess("Aulas atualizadas com sucesso!");
+                            break;
+                        case 3:
+                            eventType = "EXAM";
+                            break;
+                    }
+                    break;
+                }
             }
         } catch (error) {
             onClose();
@@ -297,15 +376,22 @@ function Dialog({ isOpen, onClose, type, setType, title, event }) {
         setParticipants(participants.filter(p => p.value !== id));
     };
 
-    const formatDateTimeLocal = (date) =>
-        date
-            ? new Date(date.getTime() - date.getTimezoneOffset() * 60000)
-                .toISOString()
-                .slice(0, 16)
-            : "";
+    const formatDateTimeLocal = (date) => {
+        if (!(date instanceof Date) || isNaN(date.getTime())) {
+            return "";
+        }
+
+        return new Date(
+            date.getTime() - date.getTimezoneOffset() * 60000
+        )
+            .toISOString()
+            .slice(0, 16);
+    };
 
     const setEvent = () => {
         setType("edit-event");
+        console.log(event.initial)
+        console.log(event)
         setResponsible(event.responsible)
 
         if (event.eventType === "LESSON") {
@@ -321,8 +407,8 @@ function Dialog({ isOpen, onClose, type, setType, title, event }) {
         setSelectedRoom(event.roomId);
         setSelectedClass(event.classId);
         // setParticipants(event.participants);
-        setStartDate(new Date(event.initial));
-        setEndDate(new Date(event.end));
+        setStartDate(new Date(event.start_date));
+        setEndDate(new Date(event.end_date));
     }
 
     const typeEvents = [
@@ -532,26 +618,10 @@ function Dialog({ isOpen, onClose, type, setType, title, event }) {
                     </div>
                     <div className="dialogInput">
                         <h4>Título:</h4>
-                        <TextBox placeholder="e.g.: Aula IoT/Setor/Prova Python" />
+                        <TextBox placeholder="e.g.: Aula IoT/Setor/Prova Python"  value={eventName} onChange={(e) => setEventName(e.target.value)}/>
                     </div>
-                    {event.eventType === "LESSON" &&
+                    {typeEvent === 1 &&
                         <>
-                            <div className="dialogInput">
-                                <h4>Participantes:</h4>
-                                <div className="itemSelector">
-                                    <DropdownList options={allPeople} selectedValue={selectedParticipant} onChange={(e) => setSelectedParticipant(Number(e.target.value))} />
-                                    <button onClick={addParticipant} className="addItem">+</button>
-                                </div>
-                            </div>
-                            <div className="participantsList">
-                                {participants.map((participant) => (
-                                    <div key={participant.value} className="listItem">
-                                        <span className="itemName">{participant.label}</span>
-
-                                        <button className="removeItem" onClick={() => removeParticipant(participant.value)}>×</button>
-                                    </div>
-                                ))}
-                            </div>
                             <div className="dialogInput">
                                 <h4>Início:</h4>
                                 <TextBox placeholder="XX/XX/XXXX XX:XX" type="datetime-local" value={formatDateTimeLocal(startDate)} onChange={(e) => setStartDate(new Date(e.target.value))} />
@@ -566,7 +636,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event }) {
                             </div>
                         </>
                     }
-                    {event.eventType === "EVENT" &&
+                    {typeEvent === 2 &&
                         <>
                             <div className="dialogInput">
                                 <h4>Professor:</h4>
@@ -586,7 +656,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event }) {
                             </div>
                         </>
                     }
-                    {event.eventType === "EXAM" &&
+                    {typeEvent === 3 &&
                         <>
                             <div className="dialogInput">
                                 <h4>Professor:</h4>
