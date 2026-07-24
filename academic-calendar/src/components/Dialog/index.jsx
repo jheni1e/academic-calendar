@@ -127,10 +127,15 @@ function Dialog({ isOpen, onClose, type, setType, title, event }) {
     const create = async () => {
         try {
             let eventType = "";
+            let edv;
+            let user;
+            let userId;
+            let payload;
+            let isInserted;
+            let eventId;
 
             switch (type) {
                 case "event": {
-
                     switch (typeEvent) {
                         case 1:
                             if (!eventName.trim()) {
@@ -138,13 +143,13 @@ function Dialog({ isOpen, onClose, type, setType, title, event }) {
                                 return;
                             }
 
-                            eventType = "LESSON";
+                            eventType = "EXTERNAL";
 
-                            const edv = sessionStorage.getItem("user");
-                            const user = await getData(`/user/edv/${edv}`);
-                            const userId = user.user.id;
+                            edv = sessionStorage.getItem("user");
+                            user = await getData(`/user/edv/${edv}`);
+                            userId = user.user.id;
 
-                            const payload = {
+                            payload = {
                                 title: eventName,
                                 eventType: eventType,
                                 startDate: startDate,
@@ -152,7 +157,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event }) {
                                 createdBy: userId,
                             };
 
-                            const isInserted = await postData("/event", payload);
+                            isInserted = await postData("/event", payload);
 
                             if (!isInserted) {
                                 onClose();
@@ -160,13 +165,47 @@ function Dialog({ isOpen, onClose, type, setType, title, event }) {
                                 return;
                             }
 
-                            const eventId = isInserted.event_id;
+                            eventId = isInserted.event_id;
 
                             onClose();
                             toastSuccess("Evento criado com sucesso!");
                             break;
                         case 2:
-                            eventType = "EVENT";
+                            if (!eventName.trim()) {
+                                toastWarning("O título é obrigatório.");
+                                return;
+                            }
+                            
+                            eventType = "LESSON";
+
+                            edv = sessionStorage.getItem("user");
+                            const user = await getData(`/user/edv/${edv}`);
+                            const userId = user.user.id;
+
+                            payload = {
+                                title: eventName,
+                                eventType: eventType,
+                                startDate: startDate,
+                                subjectInstructorId: responsible,
+                                createdBy: userId,
+                                roomId: selectedRoom,
+                                startDate: startDate
+                            };
+
+                            console.log(payload)
+
+                            // isInserted = await postData("/schedule/lessons", payload);
+
+                            if (!isInserted) {
+                                onClose();
+                                toastError("Falha ao criar evento.");
+                                return;
+                            }
+
+                            eventId = isInserted.event_id;
+
+                            onClose();
+                            toastSuccess("Aulas criadas com sucesso!");
                             break;
                         case 3:
                             eventType = "EXAM";
