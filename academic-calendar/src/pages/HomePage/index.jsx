@@ -125,23 +125,48 @@ function Home() {
 
       if (isInstructor) {
         if (filterType === "CLASS" && selectedFilter) {
-          response = await getData(`/event/class/${selectedFilter}`);
+          response = await getData(`/class/events/${selectedFilter}`);
         }
         else if (filterType === "PERSON" && selectedFilter) {
-          response = await getData(`/event/user/${selectedFilter}`);
+          response = await getData(`/user/events/${selectedFilter}`);
         }
         else if (filterType === "ROOMS" && selectedFilter) {
-          response = await getData(`/event/room/${selectedFilter}`);
+          console.log(selectedFilter)
+          response = await getData(`/room/events/${selectedFilter}`);
         }
         else {
           response = await getData("/event/all");
         }
       } else {
         if (view === "PERSONAL") {
-          response = await getData("/event/personal");
+          const edv = sessionStorage.getItem("user");
+
+          if (!edv) {
+            navigate("/login");
+            return;
+          }
+
+          const response = await getData(`/user/edv/${edv}`);
+
+          const user = response.user;
+          const userId = user.id;
+
+          response = await getData(`/user/events/${userId}`);
         }
         if (view === "CLASS") {
-          // response = await getData("/event/class/my");
+          const edv = sessionStorage.getItem("user");
+
+          if (!edv) {
+            navigate("/login");
+            return;
+          }
+
+          const response = await getData(`/user/edv/${edv}`);
+
+          const user = response.user;
+          const userId = user.id;
+
+          response = await getData(`/class/events/${selectedFilter}`);
         }
       }
       setEvents(response);
