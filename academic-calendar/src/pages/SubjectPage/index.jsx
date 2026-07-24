@@ -21,6 +21,16 @@ function Subject() {
     loadClasses();
   }, []);
 
+  useEffect(() => {
+    loadSubjects();
+
+    const interval = setInterval(() => {
+      loadSubjects();
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, []);
+
   const initUserInfo = async () => {
     const edv = sessionStorage.getItem("user");
 
@@ -95,10 +105,11 @@ function Subject() {
               .map(subject => (
                 <ViewSubjectComponent
                   key={subject.name}
-                  SubjectName={subject.name}
-                  Responsible={subject.reponsible}
-                  Percentage={subject.percentage}
-                  Class={subject.class}
+                  subjectName={subject.name}
+                  responsible={subject.responsible}
+                  workload={subject.workload}
+                  completedWorkload={subject.completedWorkload}
+                  class={subject.classId}
                 />
               ))}
           </div>

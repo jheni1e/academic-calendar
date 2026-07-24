@@ -155,8 +155,8 @@ function Dialog({ isOpen, onClose, type, setType, title, event }) {
                             const isInserted = await postData("/event", payload);
 
                             if (!isInserted) {
-                                toastError("Falha ao criar evento.");
                                 onClose();
+                                toastError("Falha ao criar evento.");
                                 return;
                             }
 
@@ -175,23 +175,22 @@ function Dialog({ isOpen, onClose, type, setType, title, event }) {
                     break;
                 }
                 case "subject": {
-                    if (!responsible) return;
-
                     const newSubject = {
                         name: newSubjectName,
-                        workload: newSubjectWorkload,
+                        workload: parseInt(newSubjectWorkload),
                         startDate: startDate,
-                        endDate: endDate
+                        classId: selectedClass
                     }
 
                     const isInserted = await postData("/subject", newSubject);
 
                     if (!isInserted) {
-                        toastError("Falha ao criar matéria.");
                         onClose();
+                        toastError("Falha ao criar matéria.");
                         return;
                     }
 
+                    onClose();
                     toastSuccess("Matéria criada com sucesso.")
                     break;
                 }
@@ -296,8 +295,8 @@ function Dialog({ isOpen, onClose, type, setType, title, event }) {
                         <TextBox placeholder="e.g.: Internet das Coisas" onChange={(e) => setNewSubjectName(e.target.value)} />
                     </div>
                     <div className="dialogInput">
-                        <h4>Responsável:</h4>
-                        <DropdownList options={allInstructors} selectedValue={responsible} onChange={(e) => setResponsible(e.target.value)} />
+                        <h4>Turma:</h4>
+                        <DropdownList options={allClasses} selectedValue={selectedClass} onChange={(e) => setSelectedClass(Number(e.target.value))} />
                     </div>
                     <div className="dialogInput">
                         <h4>Carga horária:</h4>
