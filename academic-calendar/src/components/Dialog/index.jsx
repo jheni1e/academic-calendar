@@ -297,7 +297,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event }) {
     const setEvent = () => {
         setType("edit-event");
         setResponsible(event.responsible)
-        console.log(event)
+
         if (event.eventType === "LESSON") {
             setTypeEvent(1);
         } else if (event.eventType === "EVENT") {
@@ -305,7 +305,6 @@ function Dialog({ isOpen, onClose, type, setType, title, event }) {
         } else if (event.eventType === "EXAM") {
             setTypeEvent(3);
         }
-        console.log(typeEvent)
 
         setEventName(event.title);
         setResponsible(event.responsible);
@@ -333,6 +332,14 @@ function Dialog({ isOpen, onClose, type, setType, title, event }) {
                     <div className="dialogInput">
                         <h4>Data de Inicio:</h4>
                         <TextBox placeholder="e.g.: XX/XX/XXXX" />
+                    </div>
+                    <div className="dialogInput">
+                        <h4>Ínicio:</h4>
+                        <TextBox placeholder="e.g.: XX:XX" />
+                    </div>
+                    <div className="dialogInput">
+                        <h4>Fim:</h4>
+                        <TextBox placeholder="e.g.: XX:XX" />
                     </div>
                 </div>
             }
@@ -619,3 +626,4 @@ function Dialog({ isOpen, onClose, type, setType, title, event }) {
 }
 
 export default Dialog;
+ 

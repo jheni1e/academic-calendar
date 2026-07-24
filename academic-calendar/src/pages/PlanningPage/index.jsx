@@ -57,12 +57,12 @@ function Planning() {
 
       const unfinishedSubjects = response
         .filter(subject =>
-          subject.completedWorkload < subject.workload
+          subject.completed_workload < subject.workload
         )
         .map(subject => ({
           name: subject.name,
           value: Math.round(
-            (subject.completedWorkload / subject.workload) * 100
+            (subject.completed_workload / subject.workload) * 100
           )
         }));
 
@@ -103,9 +103,9 @@ function Planning() {
           hasDropDown={false}
           hasCheckbox={false}
           hasItems={true}
-          items={subjects}
           selectedValueDrop={selectedRoom}
-          type={'planning'}
+          type="planning"
+          items={subjects}
           onItemClick={(item) => handleSubjectClick(item)}
         />
         <div className="content">

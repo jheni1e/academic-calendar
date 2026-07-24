@@ -196,12 +196,12 @@ function Home() {
 
       const unfinishedSubjects = response
         .filter(subject =>
-          subject.completedWorkload < subject.workload
+          subject.completed_workload < subject.workload
         )
         .map(subject => ({
           name: subject.name,
           value: Math.round(
-            (subject.completedWorkload / subject.workload) * 100
+            (subject.completed_workload / subject.workload) * 100
           )
         }));
 
@@ -224,6 +224,7 @@ function Home() {
           onToggleChange={setView}
           hasToggle={!isInstructor}
           hasCheckbox={userLoaded && isInstructor}
+          hasItems={userLoaded && isInstructor}
           type="calendar"
           {...(isInstructor && {
             filterOptions,
