@@ -35,6 +35,7 @@
     http://localhost:8080/api/class/all
     http://localhost:8080/api/class/:id
     http://localhost:8080/api/class/participants/:id - all participants
+    http://localhost:8080/api/class/events/:id
 
 ### Put
     http://localhost:8080/api/class/:id
