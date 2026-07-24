@@ -43,8 +43,8 @@ export const validateDelete = async (req: Request, res: Response, next: NextFunc
 
         const participation = await findParticipationById(participationId)
 
-        if (participation) {
-            throw new Error("User is already participating in this event.");
+        if (!participation) {
+            throw new NotFoundError("Participation not found.");
         }
 
         next();
