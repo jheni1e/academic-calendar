@@ -39,6 +39,22 @@ export class ParticipationController {
         }
     }
 
+    static async deleteByEventandUser(req: Request, res: Response) {
+        try {
+            await deleteParticipation(res.locals.participationId);
+
+            return res.status(204).send({ message: "Participation deleted successfully." });
+        } catch (error) {
+            if (error instanceof AppError) {
+                return res.status(error.statusCode).json({
+                    message: error.message
+                });
+            }
+
+            return res.status(500).json({ message: "Internal server error." });;
+        }
+    }
+
     static async findParticipationById(req: Request, res: Response) {
         const id: number = parseInt(req.params.id.toString());
 

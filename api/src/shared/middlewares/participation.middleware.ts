@@ -56,6 +56,22 @@ export const validateDelete = async (req: Request, res: Response, next: NextFunc
     }
 }
 
+export const validateDeleteByEventandUser = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { eventId, userId } = req.body
+
+        const participation = await findParticipationByUserAndEvent(userId, eventId)
+
+        if (!participation) {
+            throw new Error("Invalid participation")
+        }
+        res.locals.participationId = participation.participation_id
+        next();
+    } catch (error) {
+        next(error);
+    }
+}
+
 export const validateUpdate = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const participationId: number = parseInt(req.params.id.toString());
