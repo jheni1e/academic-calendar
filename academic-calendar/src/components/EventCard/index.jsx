@@ -32,7 +32,7 @@ function EventCard({ event, compact }) {
     hour: "2-digit",
     minute: "2-digit"
   });
-
+  console.log("Evento", event)
 
   return (
     <>
