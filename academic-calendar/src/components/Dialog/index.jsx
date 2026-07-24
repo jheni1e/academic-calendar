@@ -32,6 +32,9 @@ function Dialog({ isOpen, onClose, type, setType, title, event }) {
 
     const [startDate, setStartDate] = useState(new Date());
     const [endDate, setEndDate] = useState(new Date());
+    const [startTime, setStartTime] = useState("");
+    const [endTime, setEndTime] = useState("");
+    const [frequency, setFrequency] = useState("");
 
     useEffect(() => {
         const dialog = dialogRef.current;
@@ -63,7 +66,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event }) {
         getAllPeople();
         getAllInstructors();
     }, []);
-    
+
     const getAllRooms = async () => {
         try {
             const rooms = await getData("/room/all");
@@ -175,7 +178,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event }) {
                                 toastWarning("O título é obrigatório.");
                                 return;
                             }
-                            
+
                             eventType = "LESSON";
 
                             edv = sessionStorage.getItem("user");
@@ -293,7 +296,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event }) {
                 .toISOString()
                 .slice(0, 16)
             : "";
-    
+
     const setEvent = () => {
         setType("edit-event");
         setResponsible(event.responsible)
@@ -330,16 +333,35 @@ function Dialog({ isOpen, onClose, type, setType, title, event }) {
             {type === "planning" &&
                 <div className="dialogContent">
                     <div className="dialogInput">
-                        <h4>Data de Inicio:</h4>
-                        <TextBox placeholder="e.g.: XX/XX/XXXX" />
+                        <h4>Data de Início:</h4>
+                        <TextBox
+                            type="date"
+                            value={startDate}
+                            onChange={(e) => setStartDate(e.target.value)}
+                        />
+                    </div>
+                    <div style={{ display: "flex", flexDirection: "column" }}>
+                        <h4>Frequência:</h4>
+                        <FrequencySelector
+                            value={frequency}
+                            onChange={(value) => setFrequency(value)}
+                        />
                     </div>
                     <div className="dialogInput">
-                        <h4>Ínicio:</h4>
-                        <TextBox placeholder="e.g.: XX:XX" />
+                        <h4>Início:</h4>
+                        <TextBox
+                            type="time"
+                            value={startTime}
+                            onChange={(e) => setStartTime(e.target.value)}
+                        />
                     </div>
                     <div className="dialogInput">
                         <h4>Fim:</h4>
-                        <TextBox placeholder="e.g.: XX:XX" />
+                        <TextBox
+                            type="time"
+                            value={endTime}
+                            onChange={(e) => setEndTime(e.target.value)}
+                        />
                     </div>
                 </div>
             }
@@ -372,10 +394,6 @@ function Dialog({ isOpen, onClose, type, setType, title, event }) {
                                 <button className="removeItem" onClick={() => removeRoom(room.value)}>×</button>
                             </div>
                         ))}
-                    </div>
-                    <div style={{ display: "flex", flexDirection: "column", width: "280px" }}>
-                        <h4>Frequência:</h4>
-                        <FrequencySelector />
                     </div>
                 </div>
             }
@@ -415,7 +433,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event }) {
                                 <h4>Encerramento:</h4>
                                 <TextBox placeholder="XX/XX/XXXX XX:XX" type="datetime-local" value={formatDateTimeLocal(endDate)} onChange={(e) => setEndDate(new Date(e.target.value))} />
                             </div>
-                            <div style={{ display: "flex", flexDirection: "column", width: "500px" }}>
+                            <div style={{ display: "flex", flexDirection: "column" }}>
                                 <h4>Frequência:</h4>
                                 <FrequencySelector />
                             </div>
@@ -510,7 +528,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event }) {
                         <TextBox placeholder="e.g.: Aula IoT/Setor/Prova Python" />
                     </div>
                     {event.eventType === "LESSON" &&
-                         <>
+                        <>
                             <div className="dialogInput">
                                 <h4>Participantes:</h4>
                                 <div className="itemSelector">
@@ -626,4 +644,3 @@ function Dialog({ isOpen, onClose, type, setType, title, event }) {
 }
 
 export default Dialog;
- 
