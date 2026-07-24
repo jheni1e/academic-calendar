@@ -16,13 +16,19 @@ const MenuSideBar = ({
   hasToggle,
   hasItems,
   hasDropDown,
-  LabelDropDown,
-  OptionsDropDown,
+  labelDropDown,
+  optionsDropDown,
   selectedValueDrop,
   onDropDownChange,
   hasCheckbox,
   type,
-  onItemClick
+  onItemClick,
+  filterOptions,
+  filterType,
+  setFilterType,
+  filterItems,
+  selectedFilter,
+  setSelectedFilter
 }) => {
   const color1 = "#19375E";
   const color2 = "#007BC0";
@@ -31,11 +37,11 @@ const MenuSideBar = ({
   const [classesFilter, setClassesFilter] = useState(false);
 
   const handleToggleChange = () => {
-    onToggleChange(
-      view === option1Value
-        ? option2Value
-        : option1Value
-    );
+    if (view === option1Value) {
+      onToggleChange(option2Value);
+    } else {
+      onToggleChange(option1Value);
+    }
   };
 
   return (
@@ -48,13 +54,47 @@ const MenuSideBar = ({
       {hasDropDown &&
         <div style={{ width: "220px", marginLeft: "9%" }}>
           <DropdownList
-            label={LabelDropDown}
-            options={OptionsDropDown}
+            label={labelDropDown}
+            options={optionsDropDown}
             selectedValue={selectedValueDrop}
             onChange={onDropDownChange}
           />
         </div>
       }
+      {filterOptions && (
+        <>
+          <div style={{ width: "220px", marginLeft: "9%" }}>
+            <DropdownList
+              label="Filtrar por"
+              options={filterOptions}
+              selectedValue={filterType}
+              onChange={(e) => {
+                setFilterType(e.target.value);
+                setSelectedFilter("");
+              }}
+            />
+          </div>
+
+
+          {filterType && filterType !== "ALL" && (
+            <div style={{ width: "220px", marginLeft: "9%", marginTop: "10px" }}>
+              <DropdownList
+                label={
+                  filterType === "CLASS"
+                    ? "Turmas"
+                    : filterType === "PERSON"
+                      ? "Pessoas"
+                      : "Salas"
+                }
+                options={filterItems}
+                selectedValue={selectedFilter}
+                onChange={(e) => setSelectedFilter(e.target.value)}
+              />
+            </div>
+          )}
+
+        </>
+      )}
       {hasItems && (
         type === "planning" ? (
           items.map((item) => (

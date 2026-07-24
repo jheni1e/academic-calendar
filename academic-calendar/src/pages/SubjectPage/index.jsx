@@ -79,8 +79,8 @@ function Subject() {
         <MenuSideBar
           hasToggle={false}
           hasDropDown={true}
-          OptionsDropDown={listMenu}
-          LabelDropDown="Turmas"
+          optionsDropDown={listMenu}
+          labelDropDown="Turmas"
           selectedValueDrop={selectedValue}
           onDropDownChange={(e) => setSelectedValue(e.target.value)}
         />
