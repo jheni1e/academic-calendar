@@ -1,6 +1,6 @@
 export interface CreateRecurrenceDTO {
+    
     seriesName?: string;
-    createdBy?: number;
     repeatUntil?: Date;
     occurrences?: number;
 

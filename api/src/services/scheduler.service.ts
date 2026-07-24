@@ -39,11 +39,10 @@ const createLessonRecurrence = async (
     data: ScheduleLessonsDTO
 ) => {
 
-    return createRecurrence({
-        ...data.recurrence,
-        created_by: data.createdBy
-    });
-
+    return createRecurrence(
+        data.recurrence,
+        data.createdBy
+    );
 };
 
 const hasReachedLimit = (
@@ -186,16 +185,21 @@ export const scheduleLessonSeries = async (
     data: ScheduleLessonsDTO
 ): Promise<void> => {
 
-    // await prisma.$transaction(async (tx) => { 
-    // }
+    // await prisma.$transaction(async (tx) => {
 
     const assignment = await loadAssignment(
         data.subjectInstructorId
     );
 
-    const recurrence = await createLessonRecurrence(data);
-
     const subject = assignment.subject;
+
+    if (subject.workload <= subject.completed_workload) {
+        throw new ConflictError(
+            "This subject has already completed its workload."
+        );
+    }
+
+    const recurrence = await createLessonRecurrence(data);
 
     let remainingHours =
         subject.workload -
@@ -208,29 +212,25 @@ export const scheduleLessonSeries = async (
 
     let createdLessons = 0;
 
-    if (subject.workload <= subject.completed_workload) {
-        return;
-    }
-
     while (remainingHours >= LESSON_DURATION) {
 
-        if (hasReachedLimit(recurrence, currentDate, createdLessons))
+        if (hasReachedLimit(recurrence, currentDate, createdLessons)) {
             break;
-    
+        }
+
         if (!isValidDay(currentDate, recurrence)) {
             currentDate = addDays(currentDate, 1);
             continue;
         }
-    
-        const { startDate, endDate } =
-            buildLessonDates(
-                currentDate,
-                data.startHour,
-                data.endHour
-            );
-    
+
+        const { startDate, endDate } = buildLessonDates(
+            currentDate,
+            data.startHour,
+            data.endHour
+        );
+
         try {
-    
+
             await createLesson(
                 data,
                 assignment,
@@ -239,22 +239,21 @@ export const scheduleLessonSeries = async (
                 startDate,
                 endDate
             );
-    
+
             createdLessons++;
             lessonNumber++;
             remainingHours -= LESSON_DURATION;
-    
-        }
-        catch (error) {
-    
+
+        } catch (error) {
+
             if (error instanceof ConflictError) {
                 currentDate = addDays(currentDate, 1);
                 continue;
             }
-    
+
             throw error;
         }
-    
+
         currentDate = addDays(currentDate, 1);
     }
 
@@ -262,4 +261,6 @@ export const scheduleLessonSeries = async (
         subject.subject_id,
         createdLessons * LESSON_DURATION
     );
+
+    // });
 };
