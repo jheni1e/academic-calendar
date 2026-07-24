@@ -1,6 +1,7 @@
 import { prisma } from "../lib/prisma.ts";
 import { CreateSubjectInstructorDTO, UpdateSubjectInstructorDTO } from "../dtos/SubjectInstructorDto.ts";
-import { SubjectInstructor } from "../generated/prisma/client.ts";
+import { Subject, SubjectInstructor } from "../generated/prisma/client.ts";
+import { UserResponseDTO } from "../dtos/UserDto.ts";
 
 export const createSubjectInstructor = async (data: CreateSubjectInstructorDTO): Promise<SubjectInstructor> => {
         
@@ -102,4 +103,55 @@ export const deleteSubjectInstructor = async (subjectInstructorId: number): Prom
             subject_instructor_id: subjectInstructorId
         }
     });
+}
+
+export const getInstructorsBySubject = async (
+    subjectId: number
+): Promise<UserResponseDTO[]> => {
+
+    const subject = await prisma.subject.findUnique({
+        where: {
+            subject_id: subjectId
+        },
+        select: {
+            responsables: {
+                select: {
+                    instructor: true
+                }
+            }
+        }
+    });
+
+    if (!subject) {
+        return [];
+    }
+
+    return subject.responsables.map(r => ({
+        id: r.instructor.user_id,
+        edv: r.instructor.user_edv,
+        name: r.instructor.name,
+        isActive: r.instructor.is_active,
+        birthdate: r.instructor.birthday,
+        role: r.instructor.role
+    }));
+}
+
+export const getSubjectsByInstructor = async (instructorId: number) : Promise<Subject[]>=> {
+    const user = await prisma.user.findUnique({
+        where: {
+            user_id: instructorId
+        },
+        select: {
+            subjectAssignments: {
+                select: {
+                    subject: true
+                }
+            }
+        }
+    });
+
+    if(!user)
+        return []
+
+    return user.subjectAssignments.map(sa => sa.subject)
 }
