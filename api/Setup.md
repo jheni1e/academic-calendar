@@ -66,6 +66,8 @@ npm i
 npm run generate
 npm run migrate
 npm run seed
+----------
+npm run reset
 
 ## Data format - payload
  
