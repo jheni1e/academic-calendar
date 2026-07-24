@@ -63,7 +63,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event }) {
         getAllPeople();
         getAllInstructors();
     }, []);
-
+    
     const getAllRooms = async () => {
         try {
             const rooms = await getData("/room/all");
@@ -259,6 +259,16 @@ function Dialog({ isOpen, onClose, type, setType, title, event }) {
 
     const setEvent = () => {
         setType("edit-event");
+
+        setResponsible(event.responsible)
+        if (event.eventType === "LESSON") {
+            setTypeEvent(1);
+        } else if (event.eventType === "EVENT") {
+            setTypeEvent(2);
+        } else if (event.eventType === "EXAM") {
+            setTypeEvent(3);
+        }
+
         setEventName(event.title);
         setResponsible(event.responsible);
         setSelectedRoom(event.roomId);
@@ -269,8 +279,8 @@ function Dialog({ isOpen, onClose, type, setType, title, event }) {
     }
 
     const typeEvents = [
-        { value: 1, label: "Evento" },
-        { value: 2, label: "Aula" },
+        { value: 1, label: "Aula" },
+        { value: 2, label: "Evento" },
         { value: 3, label: "Avaliação" }
     ];
 
