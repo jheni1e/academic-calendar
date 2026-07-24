@@ -19,6 +19,7 @@
     http://localhost:8080/api/user/disable/:id
     http://localhost:8080/api/user/enable/:id
     http://localhost:8080/api/user/event/confirm/:id
+    http://localhost:8080/api/user/event/decline/:id
 
 # Login
 
@@ -43,7 +44,6 @@
     http://localhost:8080/api/class/disable/:id
 
 ### Delete
-    http://localhost:8080/api/class/participants/remove/:id
     http://localhost:8080/api/class/:id
 
 # Room
@@ -77,7 +77,8 @@
     http://localhost:8080/api/subject/all
     http://localhost:8080/api/subject/:id
     http://localhost:8080/api/subject/instructors/:subjectId
-
+    http://localhost:8080/api/subject/instructor/:instructorId/ongoing
+    http://localhost:8080/api/subject/class/:classId/ongoing
 
 ### Put
     http://localhost:8080/api/subject/:id
@@ -95,6 +96,7 @@
 ### Get
     http://localhost:8080/api/event/all
     http://localhost:8080/api/event/:id
+    http://localhost:8080/api/event/participants/all/:eventId
     http://localhost:8080/api/event/participants/:eventId
 
 ### Put

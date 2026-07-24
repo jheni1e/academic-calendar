@@ -19,11 +19,9 @@ route
     .get('/participants/all/:id', authMiddleware, validateEventExistsById, ParticipationController.findParticipationByEvent) // get all participants of a specific event
     .get('/participants/:id', authMiddleware, ParticipationController.findParticipationByEvent) // get a participant by id (idk if it's necessary)
 
-    // participation
 
     .delete("/participants/remove/:eventId", authMiddleware, validateDeleteByEventandUser, ParticipationController.deleteByEventandUser) // remove a user from an event
 
-    
     .put('/:id', authMiddleware, validateUpdate, EventController.update) 
 
     .delete("/:id", authMiddleware, validateDelete, EventController.delete)
