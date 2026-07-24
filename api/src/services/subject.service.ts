@@ -52,6 +52,24 @@ export const updateSubject = async (
     });
 }
 
+export const findActiveSubjectsByInstructor = async (
+    instructorId: number
+) => {
+    const subjects = await prisma.subject.findMany({
+        where: {
+            responsables: {
+                some: {
+                    instructor_id: instructorId
+                }
+            }
+        }
+    });
+
+    return subjects.filter(
+        s => s.completed_workload < s.workload
+    );
+};
+
 export const deleteSubject = async (
     subjectId: number
 ): Promise<void> => {

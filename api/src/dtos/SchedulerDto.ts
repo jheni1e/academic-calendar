@@ -16,3 +16,9 @@ export interface ScheduleLessonsDTO {
 
     recurrence: CreateRecurrenceDTO;
 }
+
+export interface ScheduleLessonResponseDTO {
+    recurrenceId: number;
+    lessonsCreated: number;
+    eventIds: number[];
+}

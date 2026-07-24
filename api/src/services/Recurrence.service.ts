@@ -1,24 +1,33 @@
 import { CreateRecurrenceDTO, UpdateRecurrenceDTO } from "../dtos/recurrenceDTO.ts";
 import { prisma } from "../lib/prisma.ts";
+import { NotFoundError } from "../shared/errors/NotFoundError.ts";
 
-export const createRecurrence = async (data: CreateRecurrenceDTO) => {
-    const { seriesName, createdBy, repeatUntil, occurrences, monday, tuesday, wednesday, thursday, friday } = data;
+export const createRecurrence = async (
+    data: CreateRecurrenceDTO,
+    createdBy: number
+) => {
 
-    if (createdBy == null) {
-        throw new Error("Criador é obrigatório.");
+    const creator = await prisma.user.findUnique({
+        where: {
+            user_id: createdBy
+        }
+    });
+    
+    if (!creator) {
+        throw new NotFoundError("Creator user not found.");
     }
 
-    return await prisma.recurrence.create({
+    return prisma.recurrence.create({
         data: {
-            series_name: seriesName != undefined ? seriesName : "",
+            series_name: data.seriesName ?? "",
             created_by: createdBy,
-            repeat_until: repeatUntil,
-            occurrences: occurrences,
-            monday: monday,
-            tuesday: tuesday,
-            wednesday: wednesday,
-            thursday: thursday,
-            friday: friday
+            repeat_until: data.repeatUntil,
+            occurrences: data.occurrences,
+            monday: data.monday,
+            tuesday: data.tuesday,
+            wednesday: data.wednesday,
+            thursday: data.thursday,
+            friday: data.friday
         }
     });
 }

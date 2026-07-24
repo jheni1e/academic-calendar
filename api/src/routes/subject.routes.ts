@@ -17,6 +17,8 @@ route
     .get('/all', authMiddleware, SubjectController.findAllSubjects) // get all subjects
     .get('/:id', authMiddleware, validateSubjectExistsById, SubjectController.findSubjectById) // get a subject by its id
     .get('/instructors/:id', authMiddleware, validateSubjectExistsById, SubjectInstructorController.findSubjectInstructorsBySubject) // get all instructors by subject
+    
+    .get('/instructor/:instructorId/active', authMiddleware, authorize(Role.ADMIN, Role.INSTRUCTOR), SubjectController.findActiveSubjectsByInstructor) // get active subjects by instructor
 
     .put('/:id', authMiddleware, authorize(Role.ADMIN, Role.INSTRUCTOR), validateUpdate, SubjectController.update) // update subject
     
