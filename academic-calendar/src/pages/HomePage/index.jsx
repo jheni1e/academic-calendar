@@ -47,10 +47,11 @@ function Home() {
   }, [userLoaded, isInstructor]);
 
   useEffect(() => {
-    if (!view) return;
+    if (!userLoaded) return;
 
     getUserEvents();
-  }, [view, filterType, selectedFilter]);
+
+  }, [userLoaded, filterType, selectedFilter]);
 
   const filteredEvents = events.filter(event => {
     if (!showExternal && !showLesson) {
@@ -135,9 +136,11 @@ function Home() {
               : await getData("/event/all");
             break;
           case "ROOMS":
+            console.log("buscando turma:", selectedFilter);
             response = selectedFilter
               ? await getData(`/room/events/${selectedFilter}`)
               : await getData("/event/all");
+            console.log(response)
             break;
           case "ALL":
           default:
@@ -176,8 +179,16 @@ function Home() {
           response = await getData(`/class/events/${selectedFilter}`);
         }
       }
-      setEvents(response);
 
+      const formattedEvents = response.map(event => ({
+        ...event,
+        event_id: event.event_id ?? event.id,
+        start_date: event.start_date ?? event.startDate,
+        end_date: event.end_date ?? event.endDate,
+        event_type: event.event_type ?? "EXTERNAL"
+      }));
+
+      setEvents(formattedEvents);
     } catch (error) {
       toastError(error.message);
     }

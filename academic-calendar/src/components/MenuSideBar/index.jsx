@@ -72,7 +72,7 @@ const MenuSideBar = ({
               selectedValue={filterType}
               onChange={(e) => {
                 setFilterType(e.target.value);
-                setSelectedFilter("");
+                setSelectedFilter(null);
               }}
             />
           </div>
@@ -90,7 +90,7 @@ const MenuSideBar = ({
                 }
                 options={filterItems}
                 selectedValue={selectedFilter}
-                onChange={(e) => setSelectedFilter(e.target.value)}
+                onChange={(e) => setSelectedFilter(Number(e.target.value))}
               />
             </div>
           )}
