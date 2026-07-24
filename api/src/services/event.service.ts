@@ -281,6 +281,12 @@ export const createEvent = async (
     // --- Lesson Validation ---
     if (data.eventType === EventType.LESSON) {
 
+        if (!data.classId) {
+            throw new ValidationError(
+                "Class is required for lessons."
+            );
+        }
+
         if (!data.subjectInstructorId) {
             throw new ValidationError(
                 "Subject instructor is required for lessons."
@@ -292,7 +298,6 @@ export const createEvent = async (
                 "Room is required for lessons."
             );
         }
-
 
         assignment = await validateLesson(
             data.subjectInstructorId,
