@@ -28,13 +28,15 @@ const MenuSideBar = ({
   setFilterType,
   filterItems,
   selectedFilter,
-  setSelectedFilter
+  setSelectedFilter,
+  showExternal,
+  setShowExternal,
+  showLesson,
+  setShowLesson
 }) => {
   const color1 = "#19375E";
   const color2 = "#007BC0";
   const arrow = " > "
-  const [eventsFilter, setEventsFilter] = useState(false);
-  const [classesFilter, setClassesFilter] = useState(false);
 
   const handleToggleChange = () => {
     if (view === option1Value) {
@@ -123,14 +125,22 @@ const MenuSideBar = ({
       {hasCheckbox &&
         <div className="checkboxWrapper">
           <div className="divCheckbox">
-            <CheckBox isChecked={eventsFilter} onCheckboxChange={() => setEventsFilter(!eventsFilter)} />
+            <CheckBox
+              isChecked={showExternal}
+              onCheckboxChange={() => setShowExternal(!showExternal)}
+            />
             <h4>Eventos</h4>
           </div>
+
           <div className="divCheckbox">
-            <CheckBox isChecked={classesFilter} onCheckboxChange={() => setClassesFilter(!classesFilter)} />
+            <CheckBox
+              isChecked={showLesson}
+              onCheckboxChange={() => setShowLesson(!showLesson)}
+            />
             <h4>Aulas</h4>
           </div>
-        </div>}
+        </div>
+      }
     </div>
   );
 };

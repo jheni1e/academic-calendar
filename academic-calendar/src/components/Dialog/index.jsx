@@ -138,7 +138,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event }) {
                                 return;
                             }
 
-                            eventType = "EXTERNAL";
+                            eventType = "LESSON";
 
                             const edv = sessionStorage.getItem("user");
                             const user = await getData(`/user/edv/${edv}`);
@@ -166,7 +166,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event }) {
                             toastSuccess("Evento criado com sucesso!");
                             break;
                         case 2:
-                            eventType = "LESSON";
+                            eventType = "EVENT";
                             break;
                         case 3:
                             eventType = "EXAM";
@@ -256,11 +256,11 @@ function Dialog({ isOpen, onClose, type, setType, title, event }) {
                 .toISOString()
                 .slice(0, 16)
             : "";
-
+    
     const setEvent = () => {
         setType("edit-event");
-
         setResponsible(event.responsible)
+        console.log(event)
         if (event.eventType === "LESSON") {
             setTypeEvent(1);
         } else if (event.eventType === "EVENT") {
@@ -268,6 +268,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event }) {
         } else if (event.eventType === "EXAM") {
             setTypeEvent(3);
         }
+        console.log(typeEvent)
 
         setEventName(event.title);
         setResponsible(event.responsible);
@@ -464,8 +465,8 @@ function Dialog({ isOpen, onClose, type, setType, title, event }) {
                         <h4>Título:</h4>
                         <TextBox placeholder="e.g.: Aula IoT/Setor/Prova Python" />
                     </div>
-                    {typeEvent === 1 &&
-                        <>
+                    {event.eventType === "LESSON" &&
+                         <>
                             <div className="dialogInput">
                                 <h4>Participantes:</h4>
                                 <div className="itemSelector">

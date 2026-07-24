@@ -33,7 +33,6 @@ function EventCard({ event, compact }) {
     minute: "2-digit"
   });
 
-
   return (
     <>
       <div

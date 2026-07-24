@@ -54,8 +54,7 @@ function Register() {
             navigate("/login");
             toastSuccess("Registrado com sucesso!");
         } catch (error) {
-            console.error(error);
-            alert(error.message);
+            toastError(`Erro: ${error.message}`)
         }
     };
 
