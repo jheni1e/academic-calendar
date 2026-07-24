@@ -39,13 +39,10 @@ function Home() {
 
   useEffect(() => {
     if (!userLoaded) return;
-
-    if (isInstructor) {
-      setView("CLASSES");
-    } else {
-      setView("PERSONAL");
-    }
-  }, [isInstructor]);
+  
+    setView(isInstructor ? "CLASSES" : "PERSONAL");
+  
+  }, [userLoaded, isInstructor]);
 
   useEffect(() => {
     if (!view) return;
@@ -56,26 +53,26 @@ function Home() {
 
   const initUserInfo = async () => {
     const edv = sessionStorage.getItem("user");
-
+  
     if (!edv) {
       navigate("/login");
       return;
     }
-
-    const user = await getData(`/user/edv/${edv}`);
-
+  
+    const response = await getData(`/user/edv/${edv}`);
+  
+    const user = response.user;
+  
     const instructor =
-      user.user.role === "ADMIN" ||
-      user.user.role === "INSTRUCTOR";
-
+      user.role === "ADMIN" ||
+      user.role === "INSTRUCTOR";
+  
     setIsInstructor(instructor);
-
-    if (!instructor) {
-      initStudentSubjects();
-    }
-
+  
+    await loadSubjects(user.id, user.classId, instructor);
+  
     setUserLoaded(true);
-  }
+  };
 
   const initDropdownInfo = async () => {
     try {
@@ -141,33 +138,33 @@ function Home() {
     { value: 1, label: "oii" }
   ]);
 
-  const initStudentSubjects = async () => {
+  const loadSubjects = async (userId, classId, instructor) => {
     try {
-      const edv = sessionStorage.getItem("user");
-
-      const user = await getData(`/user/edv/${edv}`);
-
-      const classId = user.user.classId;
-
-      const subjects = await getData(`/subject/class/${classId}`);
-
-      const unfinishedSubjects = subjects
+      let response;
+  
+      if (instructor) {
+        response = await getData(`/subject/instructor/${userId}`);
+      } else {
+        response = await getData(`/subject/class/${classId}`);
+      }
+  
+      const unfinishedSubjects = response
         .filter(subject =>
           subject.completedWorkload < subject.workload
         )
         .map(subject => ({
           name: subject.name,
-          value: (subject.completedWorkload / subject.workload) * 100
+          value: Math.round(
+            (subject.completedWorkload / subject.workload) * 100
+          )
         }));
-
+  
       setSubjects(unfinishedSubjects);
-
-    } catch (error) {
+  
+    } catch(error) {
       toastError(error.message);
     }
   };
-
-  const [selectedRoom, setSelectedRoom] = useState("");
 
   return (
     <>
