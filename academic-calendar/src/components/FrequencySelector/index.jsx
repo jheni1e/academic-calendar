@@ -1,7 +1,7 @@
 import './index.css';
 import { useState } from "react";
 
-const days = ["D", "S", "T", "Q", "Q", "S", "S"];
+const days = ["S", "T", "Q", "Q", "S"];
 
 export default function FrequencySelector() {
     const [selectedDays, setSelectedDays] = useState([]);
