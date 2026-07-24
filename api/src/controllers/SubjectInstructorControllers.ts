@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 
 import { AppError } from "../shared/errors/AppError.ts";
 import { CreateSubjectInstructorDTO, UpdateSubjectInstructorDTO } from "../dtos/SubjectInstructorDto.ts";
-import { createSubjectInstructor, deleteSubjectInstructor, findAllSubjectInstructors, findSubjectInstructorById, findSubjectInstructorBySubjectAndInstructor, findSubjectInstructorsByInstructor, findSubjectInstructorsBySubject, updateSubjectInstructor } from "../services/subjectinstructor.service.ts";
+import { createSubjectInstructor, deleteSubjectInstructor, findAllSubjectInstructors, findSubjectInstructorById, findSubjectInstructorBySubjectAndInstructor, findSubjectInstructorsByInstructor, findSubjectInstructorsBySubject, getInstructorsBySubject, getSubjectsByInstructor, updateSubjectInstructor } from "../services/subjectinstructor.service.ts";
 import { findUserById } from "../services/user.service.ts";
 import { UserRole } from "../generated/prisma/enums.ts";
 
@@ -149,4 +149,37 @@ export class SubjectInstructorController {
             return res.status(500).json({ message: "Internal server error." });
         }
     }
+
+    static async findSubjectByInstructor(req: Request, res: Response) {
+        const id = res.locals.user.id
+        try {
+            const subjects = await getSubjectsByInstructor(id)
+            return res.status(200).send(subjects)
+        
+        } catch(error) {
+            if (error instanceof AppError) {
+                return res.status(error.statusCode).send({ message: error.message})
+            }
+
+            return res.status(500).json({ message: "Internal server error." });
+        }
+    }
+
+    static async findInstructorBySubject(req: Request, res: Response) {
+        const { subjectId } = req.params
+        try {
+            const instructors = await getInstructorsBySubject(Number(subjectId))
+            return res.status(200).send(instructors)
+        
+        } catch(error) {
+            if (error instanceof AppError) {
+                return res.status(error.statusCode).send({ message: error.message})
+            }
+
+            return res.status(500).json({ message: "Internal server error." });
+        }
+    }
+
+    
+
 }

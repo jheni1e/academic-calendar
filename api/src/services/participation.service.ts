@@ -9,8 +9,7 @@ export const createParticipation = async (
     return prisma.participation.create({
         data: {
             user_id: data.userId,
-            event_id: data.eventId,
-            status: data.status
+            event_id: data.eventId
         }
     });
 

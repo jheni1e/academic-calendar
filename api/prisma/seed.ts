@@ -1,5 +1,6 @@
 import "dotenv/config"
 import { PrismaClient } from "../src/generated/prisma/client.ts";
+import { hashPassword } from "../src/app/utils/password.ts";
 
 const prisma = new PrismaClient();
 
@@ -9,43 +10,43 @@ async function main() {
             {
                 user_edv: 92906824,
                 name: "Jhenifer Halma",
-                password: "jheni123",
+                password: await hashPassword("jheni123"),
                 birthday: new Date("2006-10-13T00:00:00Z"),
                 role: "APPRENTICE"
-            },  
+            },
             {
                 user_edv: 92906815,
                 name: "Fernanda Fialho",
-                password: "fefito123",
+                password: await hashPassword("fefito123"),
                 birthday: new Date("2006-02-02T00:00:00Z"),
                 role: "APPRENTICE"
             },
             {
                 user_edv: 92906899,
                 name: "Fabio Silveira",
-                password: "fabio123",
+                password: await hashPassword("fabio123"),
                 birthday: new Date("1970-02-02T00:00:00Z"),
                 role: "ADMIN"
             },
             {
                 user_edv: 92906898,
                 name: "Queila Lima",
-                password: "queila123",
+                password: await hashPassword("queila123"),
                 birthday: new Date("2002-02-02T00:00:00Z"),
                 role: "ADMIN"
             },
             {
                 user_edv: 92906897,
                 name: "Patrick Pereira",
-                password: "quadrado1",
+                password: await hashPassword("quadrado1"),
                 birthday: new Date("2003-02-02T00:00:00Z"),
                 role: "INSTRUCTOR"
             },
             {
                 user_edv: 92906896,
                 name: "Gabriel Bernadelli",
+                password: await hashPassword("bernadelli123"),
                 birthday: new Date("2004-02-02T00:00:00Z"),
-                password: "bernadelli123",
                 role: "INSTRUCTOR"
             },
         ],

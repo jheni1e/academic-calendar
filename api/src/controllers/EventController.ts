@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 
 import { AppError } from "../shared/errors/AppError.ts";
 import { CreateEventDTO, UpdateEventDTO } from "../dtos/EventDto.ts";
-import { createEvent, deleteEvent, findAllEvents, findEventsByClass, findEventById, updateEvent, findEventsByUser } from "../services/event.service.ts";
+import { createEvent, deleteEvent, findAllEvents, findEventsByClass, findEventById, updateEvent, findEventsByUser, findEventsByRoom } from "../services/event.service.ts";
 import { NotFoundError } from "../shared/errors/NotFoundError.ts";
 
 export class EventController {
@@ -62,8 +62,29 @@ export class EventController {
         }
     }
 
+    static async findEventsByRoom(req: Request, res: Response) {
+        const roomId = Number(req.params.id);
+    
+        try {
+            const events = await findEventsByRoom(roomId);
+    
+            return res.status(200).json(events);
+        } catch (error) {
+    
+            if (error instanceof AppError) {
+                return res.status(error.statusCode).json({
+                    message: error.message
+                });
+            }
+    
+            return res.status(500).json({
+                message: "Internal server error."
+            });
+        }
+    }
+
     static async findEventsByUser(req: Request, res: Response) {
-        const id = req.params;
+        const id = Number(req.params.id);
 
         try {
             const events = await findEventsByUser(Number(id))

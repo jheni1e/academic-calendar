@@ -249,7 +249,7 @@ model Participation {
   participation_id Int                 @id @default(autoincrement())
   user_id          Int
   event_id         Int
-  status           ParticipationStatus
+  status           ParticipationStatus @default(PENDING)
 
   user       User      @relation(fields: [user_id], references: [user_id])
   event      Event     @relation(fields: [event_id], references: [event_id])
