@@ -7,9 +7,6 @@ import { ParticipationController } from '../controllers/ParticipationController.
 import { validateCreate, validateDeleteByEventandUser } from '../shared/middlewares/participation.middleware.ts';
 import { validateDelete, validateEventExistsById, validateUpdate } from '../shared/middlewares/event.middleware.ts';
 import { validateDelete as validateDeleteParticipation } from '../shared/middlewares/participation.middleware.ts';
-import { validateClassExistsById } from '../shared/middlewares/class.middleware.ts';
-import { UserRole } from '../generated/prisma/enums.ts';
-import { ClassUserController } from '../controllers/ClassUserControllers.ts';
 
 const route = express.Router();
 

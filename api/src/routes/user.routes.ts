@@ -6,7 +6,7 @@ import { authMiddleware } from "../shared/middlewares/auth.middleware.ts";
 import { authorize } from "../shared/middlewares/authorization.middleware.ts";
 
 import express from 'express'
-import { validateActivate, validateCreate, validateDisable, validateUpdate, validateUserExistsByEdv, validateUserExistsById } from "../shared/middlewares/user.middleware.ts";
+import { validateActivate, validateCreate, validateDisable, validateParticipationExistsByUserandEvent, validateUpdate, validateUserExistsByEdv, validateUserExistsById } from "../shared/middlewares/user.middleware.ts";
 import { UserRole } from "../generated/prisma/enums.ts";
 import { validateClassUserExistsByClassAndUser } from "../shared/middlewares/classuser.middleware.ts";
 import { AuthController } from "../controllers/AuthController.ts";
@@ -31,7 +31,7 @@ route
     .put('/:id', authMiddleware, validateUpdate, UserController.update) // update user by id
     .put('/disable/:id', authMiddleware, authorize(UserRole.ADMIN, UserRole.INSTRUCTOR), validateDisable, UserController.disable) // disable a user instead of deleting them
     .put('/enable/:id', authMiddleware, authorize(UserRole.ADMIN, UserRole.INSTRUCTOR), validateActivate, UserController.activate) // waiting implementation
-    .put('/event/confirm/:id', authMiddleware, validateClassUserExistsByClassAndUser, ParticipationController.updateParticipation) // confirm event participation
-    .put('/event/decline/:id', authMiddleware, validateClassUserExistsByClassAndUser, ParticipationController.declineParticipation)
+    .put('/event/confirm/:id', authMiddleware, validateParticipationExistsByUserandEvent, ParticipationController.confirmParticipation) // confirm event participation
+    .put('/event/decline/:id', authMiddleware, validateParticipationExistsByUserandEvent, ParticipationController.declineParticipation)
 
 export default route
