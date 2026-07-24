@@ -86,7 +86,7 @@
 
 ### Post
     http://localhost:8080/api/event
-    http://localhost:8080/api/event/participants/:eventId
+    http://localhost:8080/api/event/participants/
 
 ### Get
     http://localhost:8080/api/event/all
