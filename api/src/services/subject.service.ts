@@ -52,7 +52,7 @@ export const updateSubject = async (
     });
 }
 
-export const findActiveSubjectsByInstructor = async (
+export const findOnGoingSubjectsByInstructor = async (
     instructorId: number
 ) => {
     const subjects = await prisma.subject.findMany({
@@ -68,6 +68,19 @@ export const findActiveSubjectsByInstructor = async (
     return subjects.filter(
         s => s.completed_workload < s.workload
     );
+};
+
+
+export const findOnGoingSubjectsByClass = async (
+    classId: number
+) => {
+    return prisma.$queryRaw`
+        SELECT *
+        FROM Subject
+        WHERE class_id = ${classId}
+        AND completed_workload < workload
+        AND is_active = true
+    `;
 };
 
 export const deleteSubject = async (

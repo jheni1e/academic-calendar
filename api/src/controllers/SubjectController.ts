@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 
 import { AppError } from "../shared/errors/AppError.ts";
 import { CreateSubjectDTO, UpdateSubjectDTO } from "../dtos/SubjectDto.ts";
-import { createSubject, deleteSubject, findActiveSubjectsByInstructor, findAllSubjects, findSubjectById, updateSubject, } from "../services/subject.service.ts";
+import { createSubject, deleteSubject, findOnGoingSubjectsByInstructor, findAllSubjects, findSubjectById, updateSubject, findOnGoingSubjectsByClass, } from "../services/subject.service.ts";
 
 export class SubjectController {
     static async create(req: Request, res: Response) {
@@ -75,7 +75,7 @@ export class SubjectController {
         }
     }
 
-    static async findActiveSubjectsByInstructor(
+    static async findOnGoingSubjectsByInstructor(
         req: Request,
         res: Response
     ) {
@@ -84,8 +84,37 @@ export class SubjectController {
         );
     
         try {
-            const subjects = await findActiveSubjectsByInstructor(
+            const subjects = await findOnGoingSubjectsByInstructor(
                 instructorId
+            );
+    
+            return res.status(200).json(subjects);
+    
+        } catch (error) {
+    
+            if (error instanceof AppError) {
+                return res.status(error.statusCode).json({
+                    message: error.message
+                });
+            }
+    
+            return res.status(500).json({
+                message: "Internal server error."
+            });
+        }
+    }
+
+    static async findOnGoingSubjectsByClass(
+        req: Request,
+        res: Response
+    ) {
+        const classId = parseInt(
+            req.params.classId.toString()
+        );
+    
+        try {
+            const subjects = await findOnGoingSubjectsByClass(
+                classId
             );
     
             return res.status(200).json(subjects);
