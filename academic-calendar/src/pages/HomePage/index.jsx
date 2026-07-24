@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 
 function Home() {
   const [isInstructor, setIsInstructor] = useState(false);
+
   const [events, setEvents] = useState([
     {
       event_id: 1,
@@ -26,11 +27,24 @@ function Home() {
       start_date: "2026-07-26T09:00:00",
       end_date: "2026-07-26T11:00:00"
     }]);
+
+  const [view, setView] = useState(null);
+
   const navigate = useNavigate();
 
   useEffect(() => {
     initUserInfo();
-  },[]);
+  }, []);
+
+  useEffect(() => {
+    if (isInstructor) {
+      setView("CLASSES");
+      console.log("turmas")
+    } else {
+      setView("PERSONAL");
+      console.log("pessoal")
+    }
+  }, [isInstructor]);
 
   useEffect(() => {
     getUserEvents();
@@ -42,31 +56,50 @@ function Home() {
     return () => clearInterval(interval);
   }, []);
 
+  useEffect(() => {
+    if (!view) return;
+
+    getUserEvents();
+
+    const interval = setInterval(getUserEvents, 3000);
+
+    return () => clearInterval(interval);
+  }, [view]);
+
   const initUserInfo = async () => {
     const edv = sessionStorage.getItem("user");
-    
+
     if (!edv) {
       navigate("/login");
       return;
     }
-    
+
     const user = await getData(`/user/edv/${edv}`);
 
     setIsInstructor(user.user.role === "ADMIN" || user.user.role === "INSTRUCTOR");
   }
 
   const getUserEvents = async () => {
-    const edv = sessionStorage.getItem("user");
+    switch (view) {
+      case "PERSONAL":
+        setEvents([]);
+        break;
 
-    const user = await getData(`/user/edv/${edv}`);
-    const userId = user.user.id;
+      case "CLASS":
+        setEvents([]);
+        break;
 
-    if (user.user.role === "ADMIN" || user.user.role === "APPRENTICE") {
-      const allEvents = await getData("/event/all");
+      case "CLASSES":
+        const events = await getData("/event/all");
 
-      setEvents(allEvents);
+        setEvents(events);
+        break;
+
+      case "ROOMS":
+        setEvents([]);
+        break;
     }
-  };
+  }
 
   const [dropdownOptions, setDropdownOptions] = useState([
     { value: 1, label: "oii" }
@@ -84,27 +117,23 @@ function Home() {
   return (
     <>
       <div className="body">
-        {isInstructor &&
-          <MenuSideBar option1="Turmas" option2="Salas"
-            hasToggle={true}
-            hasDropDown={true}
-            OptionsDropDown={dropdownOptions}
-            hasCheckbox={true}
-            hasItems={true}
-            type={'calendar'}
-            items={subjects}
-            selectedValueDrop={selectedRoom}
-            onDropDownChange={(e) => setSelectedRoom(e.target.value)} />
-        }
-        {!isInstructor &&
-          <MenuSideBar option1="Pessoal" option2="Turma"
-            hasToggle={true}
-            hasItems={true}
-            type={'calendar'}
-            items={subjects}
-            selectedValueDrop={selectedRoom}
-            onDropDownChange={(e) => setSelectedRoom(e.target.value)} />
-        }
+        <MenuSideBar
+          option1={isInstructor ? "Turmas" : "Pessoal"}
+          option2={isInstructor ? "Salas" : "Turma"}
+          option1Value={isInstructor ? "CLASSES" : "PERSONAL"}
+          option2Value={isInstructor ? "ROOMS" : "CLASS"}
+          view={view}
+          onToggleChange={setView}
+          hasToggle={true}
+          hasDropDown={true}
+          OptionsDropDown={dropdownOptions}
+          hasCheckbox={true}
+          hasItems={true}
+          type="calendar"
+          items={subjects}
+          selectedValueDrop={selectedRoom}
+          onDropDownChange={(e) => setSelectedRoom(e.target.value)} />
+
         <div className="content">
           <MonthlyCalendar type={'calendar'} events={events} />
         </div>

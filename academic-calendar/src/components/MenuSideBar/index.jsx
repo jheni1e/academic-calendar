@@ -9,6 +9,10 @@ const MenuSideBar = ({
   items,
   option1,
   option2,
+  option1Value,
+  option2Value,
+  view,
+  onToggleChange,
   hasToggle,
   hasItems,
   hasDropDown,
@@ -18,9 +22,8 @@ const MenuSideBar = ({
   onDropDownChange,
   hasCheckbox,
   type,
-  onItemClick }) => {
-
-  const [activeItem, setActiveItem] = useState(option1);
+  onItemClick
+}) => {
   const color1 = "#19375E";
   const color2 = "#007BC0";
   const arrow = " > "
@@ -28,12 +31,12 @@ const MenuSideBar = ({
   const [classesFilter, setClassesFilter] = useState(false);
 
   const handleToggleChange = () => {
-    if (activeItem == option1) {
-      setActiveItem(option2)
-    } else {
-      setActiveItem(option1)
-    }
-  }
+    onToggleChange(
+      view === option1Value
+        ? option2Value
+        : option1Value
+    );
+  };
 
   return (
     <div className={`divMenuSideBar`}>
@@ -52,30 +55,31 @@ const MenuSideBar = ({
           />
         </div>
       }
-    {hasItems && (
-      type === "planning" ? (
-        items.map((item) => (
-          <div className="divItem" key={item.id || item.name} 
-            style={{
-              cursor: "pointer", 
-              justifyContent: "space-between", 
-              paddingRight: "1rem", 
-              paddingLeft: "1rem"}}
-            onClick={() => onItemClick?.(item)} >
-              
-            <h2>{item.name}</h2>
-            <h2>{arrow}</h2>
-          </div>
-        ))
-      ) : type === "calendar" ? (
-        items.map((item) => (
-          <div className="divItem" key={item.id || item.name}>
-            <CircleChartItem percentage={item.value} color1={color1} color2={color2} />
-            <h2>{item.name}</h2>
-          </div>
-        ))
-      ) : null
-    )}
+      {hasItems && (
+        type === "planning" ? (
+          items.map((item) => (
+            <div className="divItem" key={item.id || item.name}
+              style={{
+                cursor: "pointer",
+                justifyContent: "space-between",
+                paddingRight: "1rem",
+                paddingLeft: "1rem"
+              }}
+              onClick={() => onItemClick?.(item)} >
+
+              <h2>{item.name}</h2>
+              <h2>{arrow}</h2>
+            </div>
+          ))
+        ) : type === "calendar" ? (
+          items.map((item) => (
+            <div className="divItem" key={item.id || item.name}>
+              <CircleChartItem percentage={item.value} color1={color1} color2={color2} />
+              <h2>{item.name}</h2>
+            </div>
+          ))
+        ) : null
+      )}
       {hasCheckbox &&
         <div className="checkboxWrapper">
           <div className="divCheckbox">
