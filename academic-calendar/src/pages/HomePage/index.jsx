@@ -56,10 +56,8 @@ function Home() {
   useEffect(() => {
     if (isInstructor) {
       setView("CLASSES");
-      console.log("turmas")
     } else {
       setView("PERSONAL");
-      console.log("pessoal")
     }
   }, [isInstructor]);
 
