@@ -12,8 +12,8 @@ function Home() {
   const [subjects, setSubjects] = useState([]);
 
   const [events, setEvents] = useState([]);
-  const [showExternal, setShowExternal] = useState(false);
-  const [showLesson, setShowLesson] = useState(false);
+  const [showExternal, setShowExternal] = useState(true);
+  const [showLesson, setShowLesson] = useState(true);
 
   const [view, setView] = useState(null);
   const [filterType, setFilterType] = useState("");
@@ -50,11 +50,16 @@ function Home() {
     if (!view) return;
 
     getUserEvents();
-
-  }, [view, selectedFilter]);
+  }, [view, filterType, selectedFilter]);
 
   const filteredEvents = events.filter(event => {
-    if (!showExternal && !showLesson) return true;
+    if (!showExternal && !showLesson) {
+      return false;
+    }
+
+    if (showExternal && showLesson) {
+      return true;
+    }
 
     return (
       (showExternal && event.event_type === "EXTERNAL") ||
@@ -118,24 +123,57 @@ function Home() {
       let response;
 
       if (isInstructor) {
-        if (filterType === "CLASS" && selectedFilter) {
-          response = await getData(`/event/class/${selectedFilter}`);
-        }
-        else if (filterType === "PERSON" && selectedFilter) {
-          response = await getData(`/event/user/${selectedFilter}`);
-        }
-        else if (filterType === "ROOMS" && selectedFilter) {
-          response = await getData(`/event/room/${selectedFilter}`);
-        }
-        else {
-          response = await getData("/event/all");
+        switch (filterType) {
+          case "CLASS":
+            response = selectedFilter
+              ? await getData(`/class/events/${selectedFilter}`)
+              : await getData("/event/all");
+            break;
+          case "PERSON":
+            response = selectedFilter
+              ? await getData(`/user/events/${selectedFilter}`)
+              : await getData("/event/all");
+            break;
+          case "ROOMS":
+            response = selectedFilter
+              ? await getData(`/room/events/${selectedFilter}`)
+              : await getData("/event/all");
+            break;
+          case "ALL":
+          default:
+            response = await getData("/event/all");
+            break;
         }
       } else {
         if (view === "PERSONAL") {
-          response = await getData("/event/personal");
+          const edv = sessionStorage.getItem("user");
+
+          if (!edv) {
+            navigate("/login");
+            return;
+          }
+
+          const response = await getData(`/user/edv/${edv}`);
+
+          const user = response.user;
+          const userId = user.id;
+
+          response = await getData(`/user/events/${userId}`);
         }
         if (view === "CLASS") {
-          // response = await getData("/event/class/my");
+          const edv = sessionStorage.getItem("user");
+
+          if (!edv) {
+            navigate("/login");
+            return;
+          }
+
+          const response = await getData(`/user/edv/${edv}`);
+
+          const user = response.user;
+          const userId = user.id;
+
+          response = await getData(`/class/events/${selectedFilter}`);
         }
       }
       setEvents(response);
