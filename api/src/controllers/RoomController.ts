@@ -128,10 +128,10 @@ export class RoomController {
     }
 
     static async findEventsByRoom(req: Request, res: Response) {
-        const id = req.params
+        const id: number = parseInt(req.params.id.toString());
 
         try {
-            const events = await getEventsByRoom(Number(id))
+            const events = await getEventsByRoom(id)
             return res.status(200).send(events)
         
         } catch(error) {
