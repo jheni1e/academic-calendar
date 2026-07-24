@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 
 import { AppError } from "../shared/errors/AppError.ts";
 import { CreateSubjectDTO, UpdateSubjectDTO } from "../dtos/SubjectDto.ts";
-import { createSubject, deleteSubject, findAllSubjects, findSubjectById, updateSubject, } from "../services/subject.service.ts";
+import { createSubject, deleteSubject, findActiveSubjectsByInstructor, findAllSubjects, findSubjectById, updateSubject, } from "../services/subject.service.ts";
 
 export class SubjectController {
     static async create(req: Request, res: Response) {
@@ -72,6 +72,35 @@ export class SubjectController {
             }
 
             return res.status(500).json({ message: "Internal server error." });
+        }
+    }
+
+    static async findActiveSubjectsByInstructor(
+        req: Request,
+        res: Response
+    ) {
+        const instructorId = parseInt(
+            req.params.instructorId.toString()
+        );
+    
+        try {
+            const subjects = await findActiveSubjectsByInstructor(
+                instructorId
+            );
+    
+            return res.status(200).json(subjects);
+    
+        } catch (error) {
+    
+            if (error instanceof AppError) {
+                return res.status(error.statusCode).json({
+                    message: error.message
+                });
+            }
+    
+            return res.status(500).json({
+                message: "Internal server error."
+            });
         }
     }
 
