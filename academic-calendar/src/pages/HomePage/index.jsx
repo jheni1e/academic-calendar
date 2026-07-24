@@ -8,6 +8,8 @@ import { toastError } from "../../components/BoschToast";
 
 function Home() {
   const [isInstructor, setIsInstructor] = useState(false);
+  const [userLoaded, setUserLoaded] = useState(false);
+  const [subjects, setSubjects] = useState([]);
 
   const [events, setEvents] = useState([]);
 
@@ -36,14 +38,11 @@ function Home() {
   }, []);
 
   useEffect(() => {
-    if (isInstructor) {
-      setView("CLASSES");
-      console.log("turmas")
-    } else {
-      setView("PERSONAL");
-      console.log("pessoal")
-    }
-  }, [isInstructor]);
+    if (!userLoaded) return;
+  
+    setView(isInstructor ? "CLASSES" : "PERSONAL");
+  
+  }, [userLoaded, isInstructor]);
 
   useEffect(() => {
     if (!view) return;
@@ -54,16 +53,26 @@ function Home() {
 
   const initUserInfo = async () => {
     const edv = sessionStorage.getItem("user");
-
+  
     if (!edv) {
       navigate("/login");
       return;
     }
-
-    const user = await getData(`/user/edv/${edv}`);
-
-    setIsInstructor(user.user.role === "ADMIN" || user.user.role === "INSTRUCTOR");
-  }
+  
+    const response = await getData(`/user/edv/${edv}`);
+  
+    const user = response.user;
+  
+    const instructor =
+      user.role === "ADMIN" ||
+      user.role === "INSTRUCTOR";
+  
+    setIsInstructor(instructor);
+  
+    await loadSubjects(user.id, user.classId, instructor);
+  
+    setUserLoaded(true);
+  };
 
   const initDropdownInfo = async () => {
     try {
@@ -96,7 +105,7 @@ function Home() {
   const getUserEvents = async () => {
     try {
       let response;
-  
+
       if (isInstructor) {
         if (filterType === "CLASS" && selectedFilter) {
           response = await getData(`/event/class/${selectedFilter}`);
@@ -119,8 +128,8 @@ function Home() {
         }
       }
       setEvents(response);
-  
-    } catch(error) {
+
+    } catch (error) {
       toastError(error.message);
     }
   };
@@ -129,14 +138,33 @@ function Home() {
     { value: 1, label: "oii" }
   ]);
 
-  const [subjects, setSubjects] = useState([
-    { name: "DS-Machine Learning", value: 30 },
-    { name: "DS-Angular", value: 60 },
-    { name: "ADD-Excel", value: 40 },
-    { name: "MAN-IoT", value: 80 },
-  ]);
-
-  const [selectedRoom, setSelectedRoom] = useState("");
+  const loadSubjects = async (userId, classId, instructor) => {
+    try {
+      let response;
+  
+      if (instructor) {
+        response = await getData(`/subject/instructor/${userId}`);
+      } else {
+        response = await getData(`/subject/class/${classId}`);
+      }
+  
+      const unfinishedSubjects = response
+        .filter(subject =>
+          subject.completedWorkload < subject.workload
+        )
+        .map(subject => ({
+          name: subject.name,
+          value: Math.round(
+            (subject.completedWorkload / subject.workload) * 100
+          )
+        }));
+  
+      setSubjects(unfinishedSubjects);
+  
+    } catch(error) {
+      toastError(error.message);
+    }
+  };
 
   return (
     <>
