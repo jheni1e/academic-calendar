@@ -11,6 +11,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event }) {
     const dialogRef = useRef(null);
 
     const [responsible, setResponsible] = useState(null);
+    const [instructors, setInstructors] = useState([])
     const [allInstructors, setAllInstructors] = useState([]);
     const [allPeople, setAllPeople] = useState([]);
 
@@ -290,6 +291,25 @@ function Dialog({ isOpen, onClose, type, setType, title, event }) {
         setParticipants(participants.filter(p => p.value !== id));
     };
 
+    const addInstructor = () => {
+        if (!responsible) return;
+
+        const instructor = allInstructors.find(
+            user => user.value === responsible
+        );
+
+        if (!instructor) return;
+
+        if (instructors.some(p => p.value === instructor.value)) return;
+
+        setInstructors([...instructors, instructor]);
+        setResponsible(null);
+    };
+
+    const removeInstructor = (id) => {
+        setInstructors(instructors.filter(p => p.value !== id));
+    };
+
     const formatDateTimeLocal = (date) =>
         date
             ? new Date(date.getTime() - date.getTimezoneOffset() * 60000)
@@ -362,6 +382,22 @@ function Dialog({ isOpen, onClose, type, setType, title, event }) {
                             value={endTime}
                             onChange={(e) => setEndTime(e.target.value)}
                         />
+                    </div>
+                    <div className="dialogInput">
+                        <h4>Professores:</h4>
+                        <div className="itemSelector">
+                            <DropdownList options={allInstructors} selectedValue={responsible} onChange={(e) => setResponsible(Number(e.target.value))} />
+                            <button onClick={addInstructor} className="addItem">+</button>
+                        </div>
+                    </div>
+                    <div className="participantsList">
+                        {instructors.map((instructor) => (
+                            <div key={instructor.value} className="listItem">
+                                <span className="itemName">{instructor.label}</span>
+
+                                <button className="removeItem" onClick={() => removeInstructor(instructor.value)}>×</button>
+                            </div>
+                        ))}
                     </div>
                 </div>
             }
