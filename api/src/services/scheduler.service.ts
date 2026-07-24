@@ -1,10 +1,11 @@
-import { ScheduleLessonsDTO } from "../dtos/SchedulerDto.ts";
+import { ScheduleLessonResponseDTO, ScheduleLessonsDTO } from "../dtos/SchedulerDto.ts";
 import { EventType, Recurrence } from "../generated/prisma/client.ts";
 import { prisma } from "../lib/prisma.ts";
 import { ConflictError } from "../shared/errors/ConflictError.ts";
 import { NotFoundError } from "../shared/errors/NotFoundError.ts";
 import { createEvent, LoadedAssignment } from "./event.service.ts";
 import { createRecurrence } from "./Recurrence.service.ts";
+import { Event } from "../generated/prisma/client.ts";
 
 const LESSON_DURATION = 4;
 
@@ -157,9 +158,9 @@ const createLesson = async (
     lessonNumber: number,
     startDate: Date,
     endDate: Date
-):  Promise<void> => {
+):  Promise<Event> => {
 
-    await createEvent({
+    return createEvent({
         title: `${assignment.subject.name} - Aula ${lessonNumber}`,
         description: data.description,
 
@@ -183,7 +184,7 @@ const createLesson = async (
 
 export const scheduleLessonSeries = async (
     data: ScheduleLessonsDTO
-): Promise<void> => {
+): Promise<ScheduleLessonResponseDTO> => {
 
     // await prisma.$transaction(async (tx) => {
 
@@ -212,6 +213,8 @@ export const scheduleLessonSeries = async (
 
     let createdLessons = 0;
 
+    const eventIds: number[] = [];
+
     while (remainingHours >= LESSON_DURATION) {
 
         if (hasReachedLimit(recurrence, currentDate, createdLessons)) {
@@ -231,7 +234,7 @@ export const scheduleLessonSeries = async (
 
         try {
 
-            await createLesson(
+            const event = await createLesson(
                 data,
                 assignment,
                 recurrence,
@@ -239,6 +242,8 @@ export const scheduleLessonSeries = async (
                 startDate,
                 endDate
             );
+            
+            eventIds.push(event.event_id);
 
             createdLessons++;
             lessonNumber++;
@@ -247,6 +252,7 @@ export const scheduleLessonSeries = async (
         } catch (error) {
 
             if (error instanceof ConflictError) {
+                console.log("Conflict found:", currentDate);
                 currentDate = addDays(currentDate, 1);
                 continue;
             }
@@ -261,6 +267,12 @@ export const scheduleLessonSeries = async (
         subject.subject_id,
         createdLessons * LESSON_DURATION
     );
+
+    return {
+        recurrenceId: recurrence.recurrence_id,
+        lessonsCreated: createdLessons,
+        eventIds
+    };
 
     // });
 };
