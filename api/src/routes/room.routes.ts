@@ -17,7 +17,8 @@ route
     .get('/all', authMiddleware, RoomController.findAllRooms)
     .get('/:id', authMiddleware, validateRoomExistsById, RoomController.findRoomById)
     .get('/reservations/:id', authMiddleware, validateRoomExistsById, ReservationController.findReservationById)
-    
+    .get('/events/:id', authMiddleware, validateRoomExistsById, RoomController.findEventsByRoom)
+
     .put('/:id', authMiddleware, authorize(Role.ADMIN, Role.INSTRUCTOR), validateUpdate, RoomController.update)
     .put('/deactivate/:id', authMiddleware, authorize(Role.ADMIN, Role.INSTRUCTOR), validateDeactivate, RoomController.disable)
 

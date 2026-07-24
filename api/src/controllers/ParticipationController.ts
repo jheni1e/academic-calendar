@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { AppError } from "../shared/errors/AppError.ts";
 import { createParticipation, deleteParticipation, findAllParticipations, findParticipationByEvent, findParticipationById, findParticipationByUser, findParticipationByUserAndEvent, updateParticipation } from "../services/participation.service.ts";
-import { CreateParticipationDTO, UpdateParticipationDTO } from "../dtos/ParticipationDto.ts";
+import { CreateParticipationDTO, UpdateParticipationDTO } from "../dtos/ParticipationDTO.ts";
 
 export class ParticipationController {
     static async create(req: Request, res: Response) {
@@ -26,6 +26,22 @@ export class ParticipationController {
 
         try {
             await deleteParticipation(id);
+
+            return res.status(204).send({ message: "Participation deleted successfully." });
+        } catch (error) {
+            if (error instanceof AppError) {
+                return res.status(error.statusCode).json({
+                    message: error.message
+                });
+            }
+
+            return res.status(500).json({ message: "Internal server error." });;
+        }
+    }
+
+    static async deleteByEventandUser(req: Request, res: Response) {
+        try {
+            await deleteParticipation(res.locals.participationId);
 
             return res.status(204).send({ message: "Participation deleted successfully." });
         } catch (error) {
