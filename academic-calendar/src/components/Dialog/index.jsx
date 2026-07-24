@@ -534,7 +534,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event }) {
                             </div>
                         </>
                     }
-                    {typeEvent === 2 &&
+                    {event.eventType === "EVENT" &&
                         <>
                             <div className="dialogInput">
                                 <h4>Professor:</h4>
@@ -554,7 +554,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event }) {
                             </div>
                         </>
                     }
-                    {typeEvent === 3 &&
+                    {event.eventType === "EXAM" &&
                         <>
                             <div className="dialogInput">
                                 <h4>Professor:</h4>
