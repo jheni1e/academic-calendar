@@ -4,10 +4,10 @@ const BASE_URL = import.meta.env.VITE_BASE_ROUTE_API;
 const apiClient = async (url, options = {}) => {
     const token = sessionStorage.getItem("token");
 
-    if (isTokenExpired(token)) {
-        logout();
-        return;
-    }
+    // if (isTokenExpired(token)) {
+    //     logout();
+    //     return;
+    // }
 
     const headers = {
         'Content-Type': 'application/json',
