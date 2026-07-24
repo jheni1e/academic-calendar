@@ -183,10 +183,6 @@ function Home() {
     }
   };
 
-  const [dropdownOptions, setDropdownOptions] = useState([
-    { value: 1, label: "oii" }
-  ]);
-
   const loadSubjects = async (userId, classId, instructor) => {
     try {
       let response;
@@ -243,7 +239,7 @@ function Home() {
           items={subjects} />
 
         <div className="content">
-          <MonthlyCalendar type={'calendar'} events={filteredEvents} />
+          <MonthlyCalendar type={'calendar'} events={filteredEvents} refreshEvents={getUserEvents} />
         </div>
       </div>
     </>

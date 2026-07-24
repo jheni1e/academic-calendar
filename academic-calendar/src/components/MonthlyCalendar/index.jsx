@@ -27,7 +27,7 @@ const viewOptions = [
   { value: "semester", label: "Semestral" }
 ];
 
-function MonthlyCalendar({ initialDate, compact = false, type, events = [] }) {
+function MonthlyCalendar({ initialDate, compact = false, type, events = [], refreshEvents }) {
   const [currentDate, setCurrentDate] = useState(initialDate || new Date());
   const [viewMode, setViewMode] = useState("month");
 
@@ -53,10 +53,13 @@ function MonthlyCalendar({ initialDate, compact = false, type, events = [] }) {
 
   const days = Array.from({ length: daysInMonth }, (_, i) => i + 1);
 
-  const monthOptions = months.map((monthName, index) => ({
-    label: monthName,
-    value: index,
-  }));
+  const handleClose = async () => {
+    setIsModalOpen(false);
+
+    if (refreshEvents) {
+      await refreshEvents();
+    }
+  };
 
   const startOfWeek = (date) => {
     const d = new Date(date);
@@ -210,7 +213,7 @@ function MonthlyCalendar({ initialDate, compact = false, type, events = [] }) {
       )}
 
       {isModalOpen &&
-        <Dialog isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title="Registrar evento" type="event" />
+        <Dialog isOpen={isModalOpen} onClose={handleClose} title="Registrar evento" type="event" />
       }
     </div>
   );
