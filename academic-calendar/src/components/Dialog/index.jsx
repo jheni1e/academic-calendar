@@ -222,6 +222,10 @@ function Dialog({ isOpen, onClose, type, setType, title, event }) {
                     break;
                 }
                 case "subject": {
+                    edv = sessionStorage.getItem("user");
+                    user = await getData(`/user/edv/${edv}`);
+                    userId = user.user.id;
+
                     const newSubject = {
                         name: newSubjectName,
                         workload: parseInt(newSubjectWorkload),
@@ -236,6 +240,23 @@ function Dialog({ isOpen, onClose, type, setType, title, event }) {
                         toastError("Falha ao criar matéria.");
                         return;
                     }
+
+                    const subjectId = isInserted.subject_id;
+
+                    const newSubjectInstructor = {
+                        "subjectId": subjectId,
+                        "instructorId": userId
+                    }
+
+                    const subjectInstructorAdded = await postData("/subject/instructor/", newSubjectInstructor);
+
+                    if (!subjectInstructorAdded) {
+                        onClose();
+                        toastError("Falha ao lhe associar a matéria criada.");
+                        return;
+                    }
+
+                    console.log(subjectInstructorAdded)
 
                     onClose();
                     toastSuccess("Matéria criada com sucesso.")
