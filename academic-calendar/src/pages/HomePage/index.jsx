@@ -8,6 +8,7 @@ import { toastError } from "../../components/BoschToast";
 
 function Home() {
   const [isInstructor, setIsInstructor] = useState(false);
+  const [userLoaded, setUserLoaded] = useState(false);
 
   const [events, setEvents] = useState([]);
 
@@ -36,6 +37,8 @@ function Home() {
   }, []);
 
   useEffect(() => {
+    if (!userLoaded) return;
+    
     if (isInstructor) {
       setView("CLASSES");
     } else {
@@ -61,6 +64,8 @@ function Home() {
     const user = await getData(`/user/edv/${edv}`);
 
     setIsInstructor(user.user.role === "ADMIN" || user.user.role === "INSTRUCTOR");
+
+    setUserLoaded(true);
   }
 
   const initDropdownInfo = async () => {
