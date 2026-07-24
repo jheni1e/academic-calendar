@@ -190,22 +190,3 @@ export const getInstructors = async () : Promise<UserResponseDTO[]> => {
     }));
 }
 
-export const getSubjectsByInstructor = async (instructorId: number) : Promise<Subject[]>=> {
-    const user = await prisma.user.findUnique({
-        where: {
-            user_id: instructorId
-        },
-        select: {
-            subjectAssignments: {
-                select: {
-                    subject: true
-                }
-            }
-        }
-    });
-
-    if(!user)
-        return []
-
-    return user.subjectAssignments.map(sa => sa.subject)
-}

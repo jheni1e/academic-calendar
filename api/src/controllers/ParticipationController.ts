@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { AppError } from "../shared/errors/AppError.ts";
 import { createParticipation, deleteParticipation, findAllParticipations, findParticipationByEvent, findParticipationById, findParticipationByUser, findParticipationByUserAndEvent, updateParticipation } from "../services/participation.service.ts";
-import { CreateParticipationDTO, UpdateParticipationDTO } from "../dtos/ParticipationDto.ts";
+import { CreateParticipationDTO, UpdateParticipationDTO } from "../dtos/ParticipationDTO.ts";
 
 export class ParticipationController {
     static async create(req: Request, res: Response) {

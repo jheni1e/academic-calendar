@@ -11,6 +11,7 @@
     http://localhost:8080/api/user/classes/:classId 
     http://localhost:8080/api/user/events 
     http://localhost:8080/api/user/instructors 
+    http://localhost:8080/api/user/subjects
 
 
 ### Put
@@ -74,6 +75,7 @@
     http://localhost:8080/api/subject/all
     http://localhost:8080/api/subject/:id
     http://localhost:8080/api/subject/instructors/:subjectId
+
 
 ### Put
     http://localhost:8080/api/subject/:id

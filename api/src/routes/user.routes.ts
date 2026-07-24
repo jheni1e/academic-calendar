@@ -11,6 +11,7 @@ import { UserRole } from "../generated/prisma/enums.ts";
 import { validateClassUserExistsByClassAndUser } from "../shared/middlewares/classuser.middleware.ts";
 import { AuthController } from "../controllers/AuthController.ts";
 import { EventController } from "../controllers/EventController.ts";
+import { SubjectInstructorController } from "../controllers/SubjectInstructorControllers.ts";
 
 //dependencias
 const route = express.Router();
@@ -23,9 +24,9 @@ route
     .get('/id/:id', authMiddleware, validateUserExistsById, UserController.getById) // get user by id
     .get('/classes', authMiddleware, ClassUserController.findClassUsersByUser) // get classes of the authenticated user
     .get('/classes/:classId', authMiddleware, validateClassUserExistsByClassAndUser, ClassUserController.findClassUsersByClassAndUser) // get class by id 
-    .get('/events/', authMiddleware, EventController.findEventsByUser)
+    .get('/events', authMiddleware, EventController.findEventsByUser)
     .get('/instructors', authMiddleware, UserController.getInstructors) // get instructors and admins
-    .get('/subjects/:', authMiddleware, UserController.findSubjectByInstructor)
+    .get('/subjects', authMiddleware, SubjectInstructorController.findSubjectByInstructor)
 
     .put('/:id', authMiddleware, validateUpdate, UserController.update) // update user by id
     .put('/disable/:id', authMiddleware, authorize(UserRole.ADMIN, UserRole.INSTRUCTOR), validateDisable, UserController.disable) // disable a user instead of deleting them

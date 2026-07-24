@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { CreateUserDTO, UpdateUserDTO } from "../dtos/UserDto.ts";
-import { activateUser, createUser, disableUser, findAllUsers, findUserByEdv, findUserById, getInstructors, getSubjectsByInstructor, updateUser } from "../services/user.service.ts";
+import { activateUser, createUser, disableUser, findAllUsers, findUserByEdv, findUserById, getInstructors, updateUser } from "../services/user.service.ts";
 import { hashPassword } from "../app/utils/password.ts";
 import { UserRole } from "../generated/prisma/enums.ts";
 import { AppError } from "../shared/errors/AppError.ts";
@@ -153,19 +153,5 @@ export class UserController {
         }
     }
 
-    static async findSubjectByInstructor(req: Request, res: Response) {
-        const id = res.locals.user.id
-        try {
-            const subjects = await getSubjectsByInstructor(id)
-            return res.status(200).send(subjects)
-        
-        } catch(error) {
-            if (error instanceof AppError) {
-                return res.status(error.statusCode).send({ message: error.message})
-            }
-
-            return res.status(500).json({ message: "Internal server error." });
-        }
-    }
-
+    
 }
