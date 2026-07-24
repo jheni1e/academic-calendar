@@ -50,8 +50,7 @@ function Home() {
     if (!view) return;
 
     getUserEvents();
-
-  }, [view, selectedFilter]);
+  }, [view, filterType, selectedFilter]);
 
   const filteredEvents = events.filter(event => {
     if (!showExternal && !showLesson) {
@@ -124,18 +123,26 @@ function Home() {
       let response;
 
       if (isInstructor) {
-        if (filterType === "CLASS" && selectedFilter) {
-          response = await getData(`/class/events/${selectedFilter}`);
-        }
-        else if (filterType === "PERSON" && selectedFilter) {
-          response = await getData(`/user/events/${selectedFilter}`);
-        }
-        else if (filterType === "ROOMS" && selectedFilter) {
-          console.log(selectedFilter)
-          response = await getData(`/room/events/${selectedFilter}`);
-        }
-        else {
-          response = await getData("/event/all");
+        switch (filterType) {
+          case "CLASS":
+            response = selectedFilter
+              ? await getData(`/class/events/${selectedFilter}`)
+              : await getData("/event/all");
+            break;
+          case "PERSON":
+            response = selectedFilter
+              ? await getData(`/user/events/${selectedFilter}`)
+              : await getData("/event/all");
+            break;
+          case "ROOMS":
+            response = selectedFilter
+              ? await getData(`/room/events/${selectedFilter}`)
+              : await getData("/event/all");
+            break;
+          case "ALL":
+          default:
+            response = await getData("/event/all");
+            break;
         }
       } else {
         if (view === "PERSONAL") {
