@@ -90,6 +90,7 @@ dist/
 | `npm run migrate` | Cria migration e aplica no banco | Back |
 | `npm run push` | Atualiza o banco sem gerar migration | Back |
 | `npm run studio` | Abre interface web para ver o banco | Back |
+| `npm run seed` | Roda a seed que popula o banco | Back |
 
 ---
 
@@ -103,5 +104,5 @@ dist/
 - **Axios**: Requisições HTTP para a API.
 - **ESLint**: Padronização e análise de código.
 - **React Toastify**: Exibição de notificações.
-- **Recharts**: Criação de gráficos.
+- **JWT Decode**: Identifica validade do token.
 ---
