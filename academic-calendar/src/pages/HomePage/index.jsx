@@ -9,6 +9,7 @@ import { toastError } from "../../components/BoschToast";
 function Home() {
   const [isInstructor, setIsInstructor] = useState(false);
   const [userLoaded, setUserLoaded] = useState(false);
+  const [subjects, setSubjects] = useState([]);
 
   const [events, setEvents] = useState([]);
 
@@ -38,7 +39,7 @@ function Home() {
 
   useEffect(() => {
     if (!userLoaded) return;
-    
+
     if (isInstructor) {
       setView("CLASSES");
     } else {
@@ -63,7 +64,15 @@ function Home() {
 
     const user = await getData(`/user/edv/${edv}`);
 
-    setIsInstructor(user.user.role === "ADMIN" || user.user.role === "INSTRUCTOR");
+    const instructor =
+      user.user.role === "ADMIN" ||
+      user.user.role === "INSTRUCTOR";
+
+    setIsInstructor(instructor);
+
+    if (!instructor) {
+      initStudentSubjects();
+    }
 
     setUserLoaded(true);
   }
@@ -99,7 +108,7 @@ function Home() {
   const getUserEvents = async () => {
     try {
       let response;
-  
+
       if (isInstructor) {
         if (filterType === "CLASS" && selectedFilter) {
           response = await getData(`/event/class/${selectedFilter}`);
@@ -122,8 +131,8 @@ function Home() {
         }
       }
       setEvents(response);
-  
-    } catch(error) {
+
+    } catch (error) {
       toastError(error.message);
     }
   };
@@ -132,12 +141,31 @@ function Home() {
     { value: 1, label: "oii" }
   ]);
 
-  const [subjects, setSubjects] = useState([
-    { name: "DS-Machine Learning", value: 30 },
-    { name: "DS-Angular", value: 60 },
-    { name: "ADD-Excel", value: 40 },
-    { name: "MAN-IoT", value: 80 },
-  ]);
+  const initStudentSubjects = async () => {
+    try {
+      const edv = sessionStorage.getItem("user");
+
+      const user = await getData(`/user/edv/${edv}`);
+
+      const classId = user.user.classId;
+
+      const subjects = await getData(`/subject/class/${classId}`);
+
+      const unfinishedSubjects = subjects
+        .filter(subject =>
+          subject.completedWorkload < subject.workload
+        )
+        .map(subject => ({
+          name: subject.name,
+          value: (subject.completedWorkload / subject.workload) * 100
+        }));
+
+      setSubjects(unfinishedSubjects);
+
+    } catch (error) {
+      toastError(error.message);
+    }
+  };
 
   const [selectedRoom, setSelectedRoom] = useState("");
 
