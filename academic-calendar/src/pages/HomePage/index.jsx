@@ -188,9 +188,10 @@ function Home() {
       let response;
 
       if (instructor) {
-        response = await getData(`/subject/instructor/${userId}`);
+        response = await getData(`/subject/instructor/${userId}/ongoing`);
+        console.log(response)
       } else {
-        response = await getData(`/subject/class/${classId}`);
+        response = await getData(`/subject/class/${classId}/ongoing`);
       }
 
       const unfinishedSubjects = response
