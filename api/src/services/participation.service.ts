@@ -102,3 +102,9 @@ export const deleteParticipation = async (
     });
 
 }
+
+// export const updateParticipationByEvent = async (
+//     eventId: number
+// ): Promise<Participation> => {
+
+// }

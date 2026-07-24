@@ -56,6 +56,7 @@
     http://localhost:8080/api/room/all
     http://localhost:8080/api/room/:id
     http://localhost:8080/api/room/reservations/:roomId
+    http://localhost:8080/api/room/events/:id
 
 ### Put
     http://localhost:8080/api/room/:id

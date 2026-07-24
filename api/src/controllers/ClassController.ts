@@ -131,8 +131,7 @@ export class ClassController {
 
     static async findEventsByClass(req: Request, res: Response) {
         try {
-            const classItem = res.locals.foundClass;
-
+            const classItem = res.locals.class;
             const events = await getEventsByClass(classItem.class_id);
 
             return res.status(200).json(events);

@@ -70,7 +70,9 @@ function Subject() {
       const subjectsWithClass = await Promise.all(
         data.map(async (subject) => {
           const classData = await getData(`/class/${subject.class_id}`);
-  
+
+          // const subjectInstructor = await getData()
+
           return {
             ...subject,
             className: classData.name
@@ -79,7 +81,7 @@ function Subject() {
       );
 
       console.log(subjectsWithClass)
-  
+
       setSubjects(subjectsWithClass);
     } catch (error) {
       toastError(`Erro: ${error.message}`)
@@ -113,7 +115,7 @@ function Subject() {
           <div className="subjects-list">
             {subjects
               .filter(subject =>
-                selectedValue === "" || subject.class === selectedValue
+                selectedValue === "" || subject.class_id === Number(selectedValue)
               )
               .map(subject => (
                 <ViewSubjectComponent

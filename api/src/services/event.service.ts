@@ -428,7 +428,6 @@ export const findEventsByInstructor = async (
 export const findEventsByRoom = async (
     roomId: number
 ): Promise<Event[]> => {
-
     return prisma.event.findMany({
         where: {
             reservation: {
@@ -436,9 +435,11 @@ export const findEventsByRoom = async (
                     room_id: roomId
                 }
             }
+        },
+        orderBy: {
+            start_date: "asc"
         }
     });
-
 };
 
 export const findEventsByUser = async (
