@@ -15,7 +15,15 @@ function getEventColor(id) {
   return colors[id % colors.length];
 }
 
+
 function EventCard({ event, compact }) {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [dialogType, setDialogType] = useState("view-event");
+
+  const changeModal = () => {
+    setIsModalOpen(!isModalOpen)
+  }
+
   const color = getEventColor(event.event_id);
 
   const start = new Date(event.start_date);
@@ -30,6 +38,7 @@ function EventCard({ event, compact }) {
       <div
         className={`event-card ${compact ? "compact" : ""}`}
         style={{ "--event-color": color }}
+        onClick={() => changeModal()}
         >
         {!compact && (
           <>
