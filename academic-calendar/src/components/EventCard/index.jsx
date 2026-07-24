@@ -50,7 +50,7 @@ function EventCard({ event, compact }) {
         )}
       </div>
       {isModalOpen &&
-        <Dialog event={event} isOpen={isModalOpen} onClose={changeModal} title={event.title} type="view-event"></Dialog>
+        <Dialog event={event} isOpen={isModalOpen} onClose={changeModal} title={event.title} type={dialogType} setType={setDialogType}></Dialog>
       }
     </>
 
