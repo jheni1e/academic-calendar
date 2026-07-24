@@ -78,6 +78,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event }) {
 
             setAllRooms(formattedRooms);
         } catch (error) {
+            onClose();
             toastError(`Erro: ${error.message}`)
         }
     };
@@ -93,6 +94,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event }) {
 
             setAllClasses(formatedClasses);
         } catch (error) {
+            onClose();
             toastError(`Erro: ${error.message}`)
         }
     };
@@ -108,6 +110,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event }) {
 
             setAllPeople(formatedPeople);
         } catch (error) {
+            onClose();
             toastError(`Erro: ${error.message}`)
         }
     };
@@ -123,6 +126,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event }) {
 
             setAllInstructors(formatedInstructors);
         } catch (error) {
+            onClose();
             toastError(`Erro: ${error.message}`)
         }
     };
@@ -142,6 +146,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event }) {
                     switch (typeEvent) {
                         case 1:
                             if (!eventName.trim()) {
+                                onClose();
                                 toastWarning("O título é obrigatório.");
                                 return;
                             }
@@ -175,6 +180,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event }) {
                             break;
                         case 2:
                             if (!eventName.trim()) {
+                                onClose();
                                 toastWarning("O título é obrigatório.");
                                 return;
                             }
@@ -236,6 +242,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event }) {
                 }
             }
         } catch (error) {
+            onClose();
             toastError(`Erro: ${error.message}`)
         }
     }

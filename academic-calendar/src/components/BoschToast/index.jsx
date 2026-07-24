@@ -7,7 +7,7 @@ const defaultOptions = {
   closeOnClick: true,
   pauseOnHover: true,
   draggable: true,
-  theme: "colored",
+  theme: "colored"
 };
 
 export const toastSuccess = (message) => {
