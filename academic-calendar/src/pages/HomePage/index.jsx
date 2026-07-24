@@ -4,6 +4,7 @@ import MonthlyCalendar from "../../components/MonthlyCalendar";
 import "./index.css";
 import { getData } from "../../utils/apiBack";
 import { useNavigate } from "react-router-dom";
+import { toastError } from "../../components/BoschToast";
 
 function Home() {
   const [isInstructor, setIsInstructor] = useState(false);
@@ -11,11 +12,27 @@ function Home() {
   const [events, setEvents] = useState([]);
 
   const [view, setView] = useState(null);
+  const [filterType, setFilterType] = useState("");
+  const [selectedFilter, setSelectedFilter] = useState("");
+
+  const filterOptions = [
+    { value: "ALL", label: "Todos" },
+    { value: "CLASS", label: "Turmas" },
+    { value: "PERSON", label: "Pessoas" },
+    { value: "ROOMS", label: "Salas" }
+  ];
+
+  const [filterItems, setFilterItems] = useState({
+    CLASS: [],
+    PERSON: [],
+    ROOMS: []
+  });
 
   const navigate = useNavigate();
 
   useEffect(() => {
     initUserInfo();
+    initDropdownInfo();
   }, []);
 
   useEffect(() => {
@@ -29,24 +46,11 @@ function Home() {
   }, [isInstructor]);
 
   useEffect(() => {
-    getUserEvents();
-
-    const interval = setInterval(() => {
-      getUserEvents();
-    }, 3000);
-
-    return () => clearInterval(interval);
-  }, []);
-
-  useEffect(() => {
     if (!view) return;
 
     getUserEvents();
 
-    const interval = setInterval(getUserEvents, 3000);
-
-    return () => clearInterval(interval);
-  }, [view]);
+  }, [view, selectedFilter]);
 
   const initUserInfo = async () => {
     const edv = sessionStorage.getItem("user");
@@ -61,27 +65,65 @@ function Home() {
     setIsInstructor(user.user.role === "ADMIN" || user.user.role === "INSTRUCTOR");
   }
 
-  const getUserEvents = async () => {
-    switch (view) {
-      case "PERSONAL":
-        setEvents([]);
-        break;
+  const initDropdownInfo = async () => {
+    try {
+      const rooms = await getData("/room/all");
+      const classes = await getData("/class/all");
+      const people = await getData("/user/all");
 
-      case "CLASS":
-        setEvents([]);
-        break;
+      setFilterItems({
+        ROOMS: rooms.map(room => ({
+          value: room.room_id,
+          label: room.title
+        })),
 
-      case "CLASSES":
-        const events = await getData("/event/all");
+        CLASS: classes.map(c => ({
+          value: c.class_id,
+          label: c.name
+        })),
 
-        setEvents(events);
-        break;
+        PERSON: people.map(person => ({
+          value: person.id,
+          label: person.name
+        }))
+      });
 
-      case "ROOMS":
-        setEvents([]);
-        break;
+    } catch (error) {
+      toastError(`Error: ${error.message}`)
     }
-  }
+  };
+
+  const getUserEvents = async () => {
+    try {
+      let response;
+  
+      if (isInstructor) {
+        if (filterType === "CLASS" && selectedFilter) {
+          response = await getData(`/event/class/${selectedFilter}`);
+        }
+        else if (filterType === "PERSON" && selectedFilter) {
+          response = await getData(`/event/user/${selectedFilter}`);
+        }
+        else if (filterType === "ROOMS" && selectedFilter) {
+          response = await getData(`/event/room/${selectedFilter}`);
+        }
+        else {
+          response = await getData("/event/all");
+        }
+      } else {
+        if (view === "PERSONAL") {
+          response = await getData("/event/personal");
+        }
+        if (view === "CLASS") {
+          // response = await getData("/event/class/my");
+        }
+      }
+      setEvents(response);
+  
+    } catch(error) {
+      toastError(error.message);
+    }
+  };
 
   const [dropdownOptions, setDropdownOptions] = useState([
     { value: 1, label: "oii" }
@@ -106,15 +148,18 @@ function Home() {
           option2Value={isInstructor ? "ROOMS" : "CLASS"}
           view={view}
           onToggleChange={setView}
-          hasToggle={true}
-          hasDropDown={true}
-          OptionsDropDown={dropdownOptions}
+          hasToggle={!isInstructor}
           hasCheckbox={true}
-          hasItems={true}
           type="calendar"
-          items={subjects}
-          selectedValueDrop={selectedRoom}
-          onDropDownChange={(e) => setSelectedRoom(e.target.value)} />
+          {...(isInstructor && {
+            filterOptions,
+            filterType,
+            setFilterType,
+            filterItems: filterItems[filterType] || [],
+            selectedFilter,
+            setSelectedFilter
+          })}
+          items={subjects} />
 
         <div className="content">
           <MonthlyCalendar type={'calendar'} events={events} />
