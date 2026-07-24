@@ -46,12 +46,15 @@ export const createReservation = async (
     data: CreateReservationDTO
 ): Promise<Reservation> => {
    
+    console.log("Creating reservation...");
 
     await validateRoomConflict(
         data.roomId,
         data.startDate,
         data.endDate
     );
+
+    console.log("No conflict found.");
 
     return prisma.reservation.create({
         data: {
