@@ -7,13 +7,7 @@ import { getData } from "../../utils/apiBack";
 import { useNavigate } from "react-router-dom";
 
 function Planning() {
-  const [subjects, setSubjects] = useState([
-    { name: "DS-Machine Learning" },
-    { name: "DS-Angular" },
-    { name: "ADD-Excel" },
-    { name: "MAN-IoT" },
-  ]);
-
+  const [subjects, setSubjects] = useState([]);
   const [selectedRoom, setSelectedRoom] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [subjectSelected, setSujectSelected] = useState({});
@@ -43,13 +37,41 @@ function Planning() {
       return;
     }
 
-    const user = await getData(`/user/edv/${edv}`);
+    const response = await getData(`/user/edv/${edv}`);
 
-    if (user.user.role === "APPRENTICE") {
+    const user = response.user;
+
+    if (user.role === "APPRENTICE") {
       navigate("/unauthorized");
       return;
     }
-  }
+
+    if (user.role === "ADMIN" || user.role === "INSTRUCTOR") {
+      await loadSubjects(user.id);
+    }
+  };
+
+  const loadSubjects = async (userId) => {
+    try {
+      const response = await getData(`/subject/instructor/${userId}/ongoing`);
+
+      const unfinishedSubjects = response
+        .filter(subject =>
+          subject.completedWorkload < subject.workload
+        )
+        .map(subject => ({
+          name: subject.name,
+          value: Math.round(
+            (subject.completedWorkload / subject.workload) * 100
+          )
+        }));
+
+      setSubjects(unfinishedSubjects);
+
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const getUserEvents = async () => {
     const edv = sessionStorage.getItem("user");
