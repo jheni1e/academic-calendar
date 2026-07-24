@@ -8,25 +8,7 @@ import { useNavigate } from "react-router-dom";
 function Home() {
   const [isInstructor, setIsInstructor] = useState(false);
 
-  const [events, setEvents] = useState([
-    {
-      event_id: 1,
-      title: "Prova de Python",
-      start_date: "2026-07-24T08:30:00",
-      end_date: "2026-07-24T10:00:00"
-    },
-    {
-      event_id: 2,
-      title: "Reunião da Equipe",
-      start_date: "2026-07-24T14:00:00",
-      end_date: "2026-07-24T15:30:00"
-    },
-    {
-      event_id: 3,
-      title: "Apresentação Final",
-      start_date: "2026-07-26T09:00:00",
-      end_date: "2026-07-26T11:00:00"
-    }]);
+  const [events, setEvents] = useState([]);
 
   const [view, setView] = useState(null);
 
