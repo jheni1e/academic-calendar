@@ -6,6 +6,7 @@ import { useState, useEffect } from "react";
 import Dialog from "../../components/Dialog";
 import { getData } from '../../utils/apiBack';
 import { useNavigate } from "react-router-dom";
+import { toastError } from "../../components/BoschToast";
 
 function Subject() {
   const [selectedValue, setSelectedValue] = useState("");
@@ -59,7 +60,7 @@ function Subject() {
       setListMenu(formatedClasses);
 
     } catch (error) {
-      console.error(error);
+      toastError(`Erro: ${error.message}`)
     }
   };
 
@@ -69,7 +70,7 @@ function Subject() {
 
       setSubjects(data);
     } catch (error) {
-      console.error(error);
+      toastError(`Erro: ${error.message}`)
     }
   }
 
