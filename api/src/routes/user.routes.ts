@@ -24,7 +24,7 @@ route
     .get('/id/:id', authMiddleware, validateUserExistsById, UserController.getById) // get user by id
     .get('/classes', authMiddleware, ClassUserController.findClassUsersByUser) // get classes of the authenticated user
     .get('/classes/:classId', authMiddleware, validateClassUserExistsByClassAndUser, ClassUserController.findClassUsersByClassAndUser) // get class by id 
-    .get('/events', authMiddleware, EventController.findEventsByUser)
+    .get('/events/:id', authMiddleware, EventController.findEventsByUser)
     .get('/instructors', authMiddleware, UserController.getInstructors) // get instructors and admins
     .get('/subjects', authMiddleware, SubjectInstructorController.findSubjectByInstructor)
 

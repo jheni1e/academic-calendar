@@ -115,6 +115,12 @@ const buildLessonDates = (
     startDate.setHours(startH, startM, 0, 0);
     endDate.setHours(endH, endM, 0, 0);
 
+    if (endDate <= startDate) {
+        throw new Error(
+            "End time must be after start time"
+        );
+    }
+
     return {
         startDate,
         endDate
