@@ -1,5 +1,7 @@
 ## User
 
+### Apprentices
+
 Jhenifer Halma
 
 ```json
@@ -18,6 +20,8 @@ Fernanda Fialho
 }
 ```
 
+### Admins
+
 Fabio Silveira
 
 ```json
@@ -35,6 +39,8 @@ Queila Lima
     "role": "ADMIN"
 }
 ```
+
+### Instructors
 
 Patrick Pereira
 
