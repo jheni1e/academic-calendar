@@ -54,20 +54,22 @@ function Planning() {
   const loadSubjects = async (userId) => {
     try {
       const response = await getData(`/subject/instructor/${userId}/ongoing`);
-
+  
       const unfinishedSubjects = response
         .filter(subject =>
           subject.completed_workload < subject.workload
         )
         .map(subject => ({
+          subject_id: subject.subject_id,
           name: subject.name,
+          workload: subject.workload,
           value: Math.round(
             (subject.completed_workload / subject.workload) * 100
           )
         }));
-
+  
       setSubjects(unfinishedSubjects);
-
+  
     } catch (error) {
       console.error(error);
     }
@@ -110,7 +112,12 @@ function Planning() {
         />
         <div className="content">
           {isModalOpen &&
-            <Dialog type={'planning'} isOpen={isModalOpen} onClose={changeModal} title={`Planejamento ${subjectSelected.name}`}></Dialog>
+            <Dialog
+              type={'planning'}
+              isOpen={isModalOpen}
+              onClose={changeModal}
+              title={`Planejamento ${subjectSelected.name}`}
+              subject={subjectSelected} />
           }
           <MonthlyCalendar events={events} />
         </div>

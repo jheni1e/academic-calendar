@@ -7,7 +7,7 @@ import FrequencySelector from "../FrequencySelector";
 import { getData, postData, putData } from "../../utils/apiBack";
 import { toastError, toastSuccess, toastWarning } from '../../components/BoschToast';
 
-function Dialog({ isOpen, onClose, type, setType, title, event }) {
+function Dialog({ isOpen, onClose, type, setType, title, event, subject }) {
     const dialogRef = useRef(null);
 
     const [responsible, setResponsible] = useState(null);
@@ -35,7 +35,9 @@ function Dialog({ isOpen, onClose, type, setType, title, event }) {
     const [endDate, setEndDate] = useState(new Date());
     const [startTime, setStartTime] = useState("");
     const [endTime, setEndTime] = useState("");
-    const [frequency, setFrequency] = useState("");
+
+    const [selectedDays, setSelectedDays] = useState([]);
+    const [seriesName, setSeriesName] = useState("");
 
     useEffect(() => {
         const dialog = dialogRef.current;
@@ -257,13 +259,61 @@ function Dialog({ isOpen, onClose, type, setType, title, event }) {
                         return;
                     }
 
-                    console.log(subjectInstructorAdded)
-
                     onClose();
                     toastSuccess("Matéria criada com sucesso.")
                     break;
                 }
-                case "edit-event":{
+                case "planning":
+                    edv = sessionStorage.getItem("user");
+                    user = await getData(`/user/edv/${edv}`);
+                    userId = user.user.id;
+
+                    const occurrences = Math.ceil(subject.workload / 4);
+
+                    const daysNames = [
+                        "Segunda",
+                        "Terça",
+                        "Quarta",
+                        "Quinta",
+                        "Sexta"
+                    ];
+
+                    const selectedNames = selectedDays.map(
+                        day => daysNames[day]
+                    );
+
+                    payload = {
+                        title: subject.name,
+                        startDate: startDate,
+                        startHour: startTime,
+                        endHour: endTime,
+                        createdBy: userId,
+                        subjectInstructorId: Number(responsible),
+                        roomId: Number(selectedRoom),
+                        classId: Number(selectedClass),
+                        recurrence: {
+                            seriesName: seriesName || `${subject.name} - ${selectedNames.join(" e ")}`,
+                            occurrences,
+                            monday: selectedDays.includes(0),
+                            tuesday: selectedDays.includes(1),
+                            wednesday: selectedDays.includes(2),
+                            thursday: selectedDays.includes(3),
+                            friday: selectedDays.includes(4)
+                        }
+                    }
+
+                    const schedulePlanned = await postData('/scheduler/lessons', payload);
+
+                    if (!schedulePlanned) {
+                        onClose();
+                        toastError("Falha ao planejar as aulas.");
+                        return;
+                    }
+
+                    onClose();
+                    toastSuccess("Aulas planejadas com sucesso!")
+                    break;
+                case "edit-event": {
                     switch (typeEvent) {
                         case 1:
                             if (!eventName.trim()) {
@@ -297,7 +347,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event }) {
                             eventId = isUpdated.event_id;
 
                             onClose();
-                            window.location.reload()    
+                            window.location.reload()
                             toastSuccess("Evento atualizado com sucesso!");
                             break;
                         case 2:
@@ -468,18 +518,19 @@ function Dialog({ isOpen, onClose, type, setType, title, event }) {
             {type === "planning" &&
                 <div className="dialogContent">
                     <div className="dialogInput">
+                        <h4>Nome da série:</h4>
+                        <TextBox
+                            type="text"
+                            value={seriesName}
+                            onChange={(e) => setSeriesName(e.target.value)}
+                        />
+                    </div>
+                    <div className="dialogInput">
                         <h4>Data de Início:</h4>
                         <TextBox
                             type="date"
                             value={startDate}
                             onChange={(e) => setStartDate(e.target.value)}
-                        />
-                    </div>
-                    <div style={{ display: "flex", flexDirection: "column" }}>
-                        <h4>Frequência:</h4>
-                        <FrequencySelector
-                            value={frequency}
-                            onChange={(value) => setFrequency(value)}
                         />
                     </div>
                     <div className="dialogInput">
@@ -499,20 +550,27 @@ function Dialog({ isOpen, onClose, type, setType, title, event }) {
                         />
                     </div>
                     <div className="dialogInput">
-                        <h4>Professores:</h4>
+                        <h4>Professor:</h4>
                         <div className="itemSelector">
                             <DropdownList options={allInstructors} selectedValue={responsible} onChange={(e) => setResponsible(Number(e.target.value))} />
-                            <button onClick={addInstructor} className="addItem">+</button>
                         </div>
                     </div>
-                    <div className="participantsList">
-                        {instructors.map((instructor) => (
-                            <div key={instructor.value} className="listItem">
-                                <span className="itemName">{instructor.label}</span>
-
-                                <button className="removeItem" onClick={() => removeInstructor(instructor.value)}>×</button>
-                            </div>
-                        ))}
+                    <div style={{ display: "flex", flexDirection: "column" }}>
+                        <h4>Frequência:</h4>
+                        <FrequencySelector
+                            value={selectedDays}
+                            onChange={(value) => setSelectedDays(value)}
+                        />
+                    </div>
+                    <div className="dialogInput">
+                        <h4>Sala:</h4>
+                        <div className="itemSelector">
+                            <DropdownList options={allRooms} selectedValue={selectedRoom} onChange={(e) => setSelectedRoom(Number(e.target.value))} />
+                        </div>
+                    </div>
+                    <div className="dialogInput">
+                        <h4>Turma:</h4>
+                        <DropdownList options={allClasses} selectedValue={selectedClass} onChange={(e) => setSelectedClass(Number(e.target.value))} />
                     </div>
                 </div>
             }
@@ -656,6 +714,16 @@ function Dialog({ isOpen, onClose, type, setType, title, event }) {
                     </div>
                 </div>
             }
+            {type === "instructor" &&
+                <div className="dialogContent">
+                    <div className="dialogInput">
+                        <h4>Instrutor:</h4>
+                        <div className="itemSelector">
+                            <DropdownList options={allPeople} selectedValue={selectedParticipant} onChange={(e) => setSelectedParticipant(Number(e.target.value))} />
+                        </div>
+                    </div>
+                </div>
+            }
             {type === "editDate" &&
                 <div className="dialogContent">
                     <div className="dialogInput">
@@ -676,7 +744,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event }) {
                     </div>
                     <div className="dialogInput">
                         <h4>Título:</h4>
-                        <TextBox placeholder="e.g.: Aula IoT/Setor/Prova Python"  value={eventName} onChange={(e) => setEventName(e.target.value)}/>
+                        <TextBox placeholder="e.g.: Aula IoT/Setor/Prova Python" value={eventName} onChange={(e) => setEventName(e.target.value)} />
                     </div>
                     {typeEvent === 1 &&
                         <>
@@ -746,11 +814,11 @@ function Dialog({ isOpen, onClose, type, setType, title, event }) {
                         <div className="dialogContent" style={{ borderRadius: "10px" }}>
                             <div className="dialogInput">
                                 <h4>Início:</h4>
-                                <h4>{new Date(event.start_date).toLocaleString("pt-BR", {day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit", })}</h4>
+                                <h4>{new Date(event.start_date).toLocaleString("pt-BR", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit", })}</h4>
                             </div>
                             <div className="dialogInput">
                                 <h4>Encerramento:</h4>
-                                <h4>{new Date(event.end_date).toLocaleString("pt-BR", {day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit", })}</h4>
+                                <h4>{new Date(event.end_date).toLocaleString("pt-BR", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit", })}</h4>
                             </div>
                         </div>
                     }
@@ -758,11 +826,11 @@ function Dialog({ isOpen, onClose, type, setType, title, event }) {
                         <div className="dialogContent" style={{ borderRadius: "10px" }}>
                             <div className="dialogInput">
                                 <h4>Início:</h4>
-                                <h4>{new Date(event.start_date).toLocaleString("pt-BR", {day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit", })}</h4>
+                                <h4>{new Date(event.start_date).toLocaleString("pt-BR", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit", })}</h4>
                             </div>
                             <div className="dialogInput">
                                 <h4>Encerramento:</h4>
-                                <h4>{new Date(event.end_date).toLocaleString("pt-BR", {day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit", })}</h4>
+                                <h4>{new Date(event.end_date).toLocaleString("pt-BR", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit", })}</h4>
                             </div>
                         </div>
                     }
@@ -770,11 +838,11 @@ function Dialog({ isOpen, onClose, type, setType, title, event }) {
                         <div className="dialogContent" style={{ borderRadius: "10px" }}>
                             <div className="dialogInput">
                                 <h4>Início:</h4>
-                                <h4>{new Date(event.start_date).toLocaleString("pt-BR", {day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit", })}</h4>
+                                <h4>{new Date(event.start_date).toLocaleString("pt-BR", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit", })}</h4>
                             </div>
                             <div className="dialogInput">
                                 <h4>Encerramento:</h4>
-                                <h4>{new Date(event.end_date).toLocaleString("pt-BR", {day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit", })}</h4>
+                                <h4>{new Date(event.end_date).toLocaleString("pt-BR", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit", })}</h4>
                             </div>
                         </div>
                     }

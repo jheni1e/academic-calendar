@@ -108,7 +108,7 @@ function SubjectDetails() {
                     ))}
                 </div>
                 {isModalOpen &&
-                    <Dialog isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title="Registrar matéria" type="subject" />
+                    <Dialog isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title="Registrar instrutor" type="instructor" />
                 }
             </div>
         </>
