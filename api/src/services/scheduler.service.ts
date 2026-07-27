@@ -164,7 +164,7 @@ const createLesson = async (
     lessonNumber: number,
     startDate: Date,
     endDate: Date
-):  Promise<Event> => {
+): Promise<Event> => {
 
     return createEvent({
         title: `${assignment.subject.name} - Aula ${lessonNumber}`,
@@ -174,18 +174,17 @@ const createLesson = async (
 
         createdBy: data.createdBy,
 
-        subjectInstructorId:
-            assignment.subject_instructor_id,
+        classId: assignment.subject.class.class_id,
 
-        recurrenceId:
-            recurrence.recurrence_id,
+        subjectInstructorId: assignment.subject_instructor_id,
+
+        recurrenceId: recurrence.recurrence_id,
 
         roomId: data.roomId,
 
         startDate,
         endDate
     });
-
 };
 
 export const scheduleLessonSeries = async (
