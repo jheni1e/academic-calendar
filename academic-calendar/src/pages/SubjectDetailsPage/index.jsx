@@ -1,12 +1,12 @@
 import BoschButton from "../../components/BoschButton";
 import "./index.css";
 import { useState, useEffect } from "react";
-import { getData } from '../../utils/apiBack';
+import { deleteData, getData } from '../../utils/apiBack';
 import { useNavigate, useParams } from "react-router-dom";
-import { toastError } from "../../components/BoschToast";
 import chevronLeft from "../../images/chevronLeft.png";
 import deleteIcon from "../../images/deleteIcon.png";
 import Dialog from "../../components/Dialog";
+import { toastSuccess, toastError } from "../../components/BoschToast";
 
 function SubjectDetails() {
     const { id } = useParams();
@@ -43,8 +43,6 @@ function SubjectDetails() {
             const data = await getData(`/subject/${id}`);
 
             setSubject(data);
-
-            console.log(data)
         } catch (error) {
             toastError(`Erro: ${error.message}`)
         }
@@ -62,10 +60,21 @@ function SubjectDetails() {
 
     const handleDelete = async (item) => {
         try {
-            await deleteData(`/subject/instructor/${item.instructor.id}`);
+            const payload = {
+                subjectId: subject.subject_id,
+                instructorId: item.instructor.user_id
+            };
+
+            console.log(payload)
+        
+            const response = await deleteData('/subject/instructor/remove', payload);
     
+            if (!response) {
+                toastError("Erro ao remover instrutor.");
+                return;
+            }
+
             toastSuccess("Instrutor removido com sucesso");
-    
             loadInstructors();
         } catch (error) {
             toastError(`Erro: ${error.message}`);
