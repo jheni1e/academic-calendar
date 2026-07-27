@@ -118,6 +118,7 @@ function Subject() {
                 selectedValue === "" || subject.class_id === Number(selectedValue)
               )
               .map(subject => (
+                <div style={{"cursor": "pointer"}} onClick={() => navigate(`/materias/${subject.subject_id}`)}>
                 <ViewSubjectComponent
                   key={subject.name}
                   subjectName={subject.name}
@@ -126,6 +127,7 @@ function Subject() {
                   completedWorkload={subject.completedWorkload}
                   studentClass={subject.className}
                 />
+                </div>
               ))}
           </div>
         </div>

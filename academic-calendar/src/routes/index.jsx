@@ -5,7 +5,7 @@ import Home from "../pages/HomePage";
 import NotFound from "../pages/NotFoundPage";
 import Subject from "../pages/SubjectPage";
 import Register from "../pages/RegisterPage";
-import Semester from "../pages/SemesterPage";
+import SubjectDetails from "../pages/SubjectDetailsPage";
 import './index.css';
 import Login from "../pages/LoginPage";
 import Planning from "../pages/PlanningPage";
@@ -40,6 +40,7 @@ export default function AppRouter() {
           <Route path="/materias" element={<Subject />} />
           <Route path="/home" element={<Home />} />
           <Route path="/planejamento" element={<Planning />} />
+          <Route path="/materias/:id" element={<SubjectDetails />} />
         </Route>
         <Route element={<WithoutHeader />}>
           <Route path="/*" element={<NotFound />} />
