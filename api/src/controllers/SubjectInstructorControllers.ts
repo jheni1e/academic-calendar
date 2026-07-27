@@ -103,13 +103,20 @@ export class SubjectInstructorController {
 
             return res.status(200).json(subjectInstructors);
         } catch (error) {
+
+            console.error(error);
+        
             if (error instanceof AppError) {
                 return res.status(error.statusCode).json({
                     message: error.message
                 });
             }
-
-            return res.status(500).json({ message: "Internal server error." });
+        
+            return res.status(500).json({
+                message: error instanceof Error
+                    ? error.message
+                    : "Internal server error."
+            });
         }
     }
 
