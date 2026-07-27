@@ -331,16 +331,16 @@ export const createEvent = async (
     return prisma.$transaction(async () => {
 
         console.log("Creating event");
-
+    
         const event = await createEventRecord(
             data,
             assignment,
             start,
             end
         );
-
+    
         console.log("Event created", event.event_id);
-
+    
         if (data.roomId) {
             await createReservation({
                 roomId: data.roomId,
@@ -350,9 +350,9 @@ export const createEvent = async (
                 description: data.description
             });
         }
-
+    
         console.log("Transaction finished");
-
+    
         return event;
     });
 };

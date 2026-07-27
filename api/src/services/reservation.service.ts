@@ -14,33 +14,39 @@ const validateRoomConflict = async (
     const conflict = await prisma.reservation.findFirst({
         where: {
             room_id: roomId,
-        
+
             ...(reservationId && {
                 reservation_id: {
                     not: reservationId
                 }
             }),
-        
+
             event: {
                 status: EventStatus.SCHEDULED,
-        
+
                 start_date: {
                     lt: end
                 },
-        
+
                 end_date: {
                     gt: start
                 }
             }
+        },
+        include: {
+            event: true
         }
     });
 
     if (conflict) {
+        console.log("ROOM CONFLICT FOUND");
+        console.log(conflict);
+
         throw new ConflictError(
             "Room already has a scheduled reservation during this period."
         );
     }
-};
+}
 
 export const createReservation = async (
     data: CreateReservationDTO
