@@ -60,14 +60,7 @@ function SubjectDetails() {
 
     const handleDelete = async (item) => {
         try {
-            const payload = {
-                subjectId: subject.subject_id,
-                instructorId: item.instructor.user_id
-            };
-
-            console.log(payload)
-        
-            const response = await deleteData('/subject/instructor/remove', payload);
+            const response = await deleteData(`/subject/${subject.subject_id}/instructor/${item.instructor.user_id}`);
     
             if (!response) {
                 toastError("Erro ao remover instrutor.");
