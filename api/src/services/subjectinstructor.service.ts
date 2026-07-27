@@ -34,7 +34,8 @@ export const findSubjectInstructorsBySubject = async (subjectId: number): Promis
             },
             instructor: {
                 select: {
-                    name: true
+                    name: true,
+                    user_id: true
                 }
             }
         }
@@ -69,12 +70,14 @@ export const findAllSubjectInstructors = async (): Promise<any[]> => {
         select: {
             subject: {
                 select: {
-                    name: true
+                    name: true,
+                    subject_id: true
                 }
             },
             instructor: {
                 select: {
-                    name: true
+                    name: true,
+                    user_id: true
                 }
             }
         }

@@ -97,7 +97,6 @@
     http://localhost:8080/api/event/all
     http://localhost:8080/api/event/:id
     http://localhost:8080/api/event/participants/all/:eventId
-    http://localhost:8080/api/event/participants/:eventId
 
 ### Put
     http://localhost:8080/api/event/:id
