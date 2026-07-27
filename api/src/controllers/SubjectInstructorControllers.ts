@@ -26,11 +26,11 @@ export class SubjectInstructorController {
     }
 
     static async delete(req: Request, res: Response) {
-        const id: number = parseInt(req.params.id.toString());
+        const { subjectId, instructorId } = req.params;
 
         try {
-            await deleteSubjectInstructor(id);
-            return res.status(204).send({ message: "Subject deleted successfully." });
+            await deleteSubjectInstructor(Number(subjectId), Number(instructorId));
+            return res.status(204).send({ message: "Subject / Instructor deleted successfully." });
 
         } catch (error) {
             if (error instanceof AppError) {
@@ -103,13 +103,20 @@ export class SubjectInstructorController {
 
             return res.status(200).json(subjectInstructors);
         } catch (error) {
+
+            console.error(error);
+        
             if (error instanceof AppError) {
                 return res.status(error.statusCode).json({
                     message: error.message
                 });
             }
-
-            return res.status(500).json({ message: "Internal server error." });
+        
+            return res.status(500).json({
+                message: error instanceof Error
+                    ? error.message
+                    : "Internal server error."
+            });
         }
     }
 
