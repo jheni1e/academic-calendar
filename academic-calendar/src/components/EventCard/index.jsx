@@ -22,6 +22,7 @@ function EventCard({ event, compact }) {
 
   const changeModal = () => {
     setIsModalOpen(!isModalOpen)
+    console.log(event)
   }
 
   const color = getEventColor(event.event_id);
