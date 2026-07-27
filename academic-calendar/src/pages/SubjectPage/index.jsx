@@ -125,7 +125,7 @@ function Subject() {
                   subjectName={subject.name}
                   responsible={subject.instructors[0]?.instructor.name}
                   workload={subject.workload}
-                  completedWorkload={subject.completedWorkload}
+                  completedWorkload={subject.completed_workload}
                   studentClass={subject.className}
                 />
                 </div>
