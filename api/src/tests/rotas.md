@@ -108,7 +108,7 @@
 # Schedule
 
 ### Post
-    http://localhost:8080/api/lessons
+    http://localhost:8080/api/scheduler/lessons
 
 
 
