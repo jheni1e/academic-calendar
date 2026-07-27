@@ -23,7 +23,7 @@ route
 
     .put('/:id', authMiddleware, authorize(Role.ADMIN, Role.INSTRUCTOR), validateUpdate, SubjectController.update) // update subject
     
-    .delete('/instructor/remove/:id', authMiddleware, authorize(Role.ADMIN, Role.INSTRUCTOR), validateDeleteSI, SubjectInstructorController.delete)
+    .delete('/:subjectId/instructor/:instructorId', authMiddleware, authorize(Role.ADMIN, Role.INSTRUCTOR), validateDeleteSI, SubjectInstructorController.delete)
     .delete("/:id", authMiddleware, authorize(Role.ADMIN, Role.INSTRUCTOR), validateDelete, SubjectController.delete)
 
 export default route
