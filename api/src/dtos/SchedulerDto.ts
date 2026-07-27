@@ -9,6 +9,7 @@ export interface ScheduleLessonsDTO {
 
     subjectInstructorId: number;
     roomId: number;
+    classId?: number;
 
     startDate: Date;
     startHour: string;
