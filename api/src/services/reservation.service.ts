@@ -1,17 +1,18 @@
 import { CreateReservationDTO, UpdateReservationDTO } from "../dtos/ReservationDto.ts";
-import { EventStatus, Prisma, Reservation } from "../generated/prisma/client.ts";
+import { EventStatus, Prisma, PrismaClient, Reservation } from "../generated/prisma/client.ts";
 import { prisma } from "../lib/prisma.ts";
 import { ConflictError } from "../shared/errors/ConflictError.ts";
 import { NotFoundError } from "../shared/errors/NotFoundError.ts";
 
 const validateRoomConflict = async (
+    db: PrismaClient | Prisma.TransactionClient,
     roomId: number,
     start: Date,
     end: Date,
     reservationId?: number
 ): Promise<void> => {
 
-    const conflict = await prisma.reservation.findFirst({
+    const conflict = await db.reservation.findFirst({
         where: {
             room_id: roomId,
 
@@ -49,12 +50,14 @@ const validateRoomConflict = async (
 }
 
 export const createReservation = async (
+    tx: Prisma.TransactionClient,
     data: CreateReservationDTO
 ): Promise<Reservation> => {
    
     console.log("Creating reservation...");
 
     await validateRoomConflict(
+        tx,
         data.roomId,
         data.startDate,
         data.endDate
@@ -62,7 +65,7 @@ export const createReservation = async (
 
     console.log("No conflict found.");
 
-    return prisma.reservation.create({
+    return tx.reservation.create({
         data: {
             room_id: data.roomId,
             event_id: data.eventId,
@@ -82,6 +85,7 @@ export const updateReservation = async (
         data.endDate
     ) {
         await validateRoomConflict(
+            prisma,
             data.roomId,
             data.startDate,
             data.endDate,
@@ -122,6 +126,7 @@ export const updateReservationByEvent = async (
         data.endDate
     ) {
         await validateRoomConflict(
+            prisma,
             data.roomId,
             data.startDate,
             data.endDate,

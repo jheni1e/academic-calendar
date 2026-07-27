@@ -1,6 +1,6 @@
 import { prisma } from "../lib/prisma.ts";
 import { CreateEventDTO, EventResponseDTO, UpdateEventDTO } from "../dtos/EventDto.ts";
-import { Class, Event, EventStatus, EventType, Subject, SubjectInstructor, User } from "../generated/prisma/client.ts";
+import { Class, Event, EventStatus, EventType, Prisma, Subject, SubjectInstructor, User } from "../generated/prisma/client.ts";
 import { NotFoundError } from "../shared/errors/NotFoundError.ts";
 import { ValidationError } from "../shared/errors/ValidationError.ts";
 import { ConflictError } from "../shared/errors/ConflictError.ts";
@@ -161,13 +161,14 @@ const validateClassConflict = async (
 // --- HELPERS ---
 
 const createEventRecord = async (
+    tx: Prisma.TransactionClient,
     data: CreateEventDTO,
     assignment: LoadedAssignment | null,
     start: Date,
     end: Date
 ): Promise<Event> => {
 
-    return prisma.event.create({
+    return tx.event.create({
         data: {
             title: data.title,
             description: data.description,
@@ -328,11 +329,12 @@ export const createEvent = async (
         }
     }
 
-    return prisma.$transaction(async () => {
+    return prisma.$transaction(async (tx) => {
 
         console.log("Creating event");
     
         const event = await createEventRecord(
+            tx,
             data,
             assignment,
             start,
@@ -342,7 +344,10 @@ export const createEvent = async (
         console.log("Event created", event.event_id);
     
         if (data.roomId) {
-            await createReservation({
+            
+            await createReservation(
+            tx,
+            {
                 roomId: data.roomId,
                 eventId: event.event_id,
                 startDate: start,
