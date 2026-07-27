@@ -2,10 +2,14 @@ import React, { forwardRef, useEffect, useState } from "react";
 import HeaderOption from "../HeaderOption";
 import "./index.css";
 import { getData } from "../../utils/apiBack";
+import { logout } from "../../utils/auth";
+import { useNavigate } from "react-router-dom";
 
 function Header() {
   const [userName, setUserName] = useState("");
   const [isInstructor, setIsInstructor] = useState(false);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     initUserInfo();
@@ -19,6 +23,11 @@ function Header() {
     setUserName(userName);
 
     setIsInstructor(user.user.role === "ADMIN" || user.user.role === "INSTRUCTOR");
+  }
+
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
   }
 
   return (
@@ -36,7 +45,7 @@ function Header() {
           </>)}
         </div>
 
-        <div className="divUser">
+        <div className="divUser" onClick={handleLogout}>
           <div className="userIcon" />
           <span className="txtUserName">{userName}</span>
         </div>
