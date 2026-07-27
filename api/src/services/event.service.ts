@@ -11,6 +11,18 @@ const validateDates = (
     end: Date
 ): void => {
 
+    if (isNaN(start.getTime()) || isNaN(end.getTime())) {
+        throw new ValidationError(
+            "Invalid date format."
+        );
+    }
+
+    if (start >= end) {
+        throw new ValidationError(
+            "Start date must be before end date."
+        );
+    }
+
     if (isNaN(start.getTime())) {
         throw new ValidationError(
             "Invalid start date."
@@ -214,27 +226,107 @@ export const createEvent = async (
     data: CreateEventDTO
 ): Promise<Event> => {
 
+    // --- Required fields ---
+
+    if (!data.title || data.title.trim() === "") {
+        throw new ValidationError(
+            "Event title is required."
+        );
+    }
+
+    if (!data.createdBy) {
+        throw new ValidationError(
+            "Creator is required."
+        );
+    }
+
+    if (!data.startDate || !data.endDate) {
+        throw new ValidationError(
+            "Start date and end date are required."
+        );
+    }
+
     const start = new Date(data.startDate);
     const end = new Date(data.endDate);
 
     validateDates(start, end);
 
+    // --- Duration Validations ---
+    const durationMinutes =
+    (end.getTime() - start.getTime()) / 60000;
+
+    const MAX_DURATION_MINUTES = 9 * 60;
+
+    if (durationMinutes > MAX_DURATION_MINUTES) {
+        throw new ValidationError(
+            "Event duration cannot exceed 9 hours."
+        );
+    }
+
+    // --- Creator validation ---
+    const creator = await prisma.user.findUnique({
+        where: {
+            user_id: data.createdBy
+        }
+    });
+
+    if (!creator) {
+        throw new NotFoundError(
+            "Creator not found."
+        );
+    }
+
     let assignment: LoadedAssignment | null = null;
 
-    if (data.eventType === EventType.LESSON && data.subjectInstructorId) {
+    // --- Lesson Validation ---
+    if (data.eventType === EventType.LESSON) {
+
+        if (!data.classId) {
+            throw new ValidationError(
+                "Class is required for lessons."
+            );
+        }
+
+        if (!data.subjectInstructorId) {
+            throw new ValidationError(
+                "Subject instructor is required for lessons."
+            );
+        }
+
+        if (!data.roomId) {
+            throw new ValidationError(
+                "Room is required for lessons."
+            );
+        }
+
         assignment = await validateLesson(
             data.subjectInstructorId,
             start,
             end
         );
+    }
 
-        if (!data.roomId) {
+    // --- Room Validation ---
+    if (data.roomId) {
+
+        const room = await prisma.room.findUnique({
+            where: {
+                room_id: data.roomId
+            }
+        });
+
+        if (!room) {
+            throw new NotFoundError(
+                "Room not found."
+            );
+        }
+
+        if (!room.is_active) {
             throw new ValidationError(
-                "Room is required."
+                "Room is inactive."
             );
         }
     }
-
 
     return prisma.$transaction(async () => {
 
@@ -266,7 +358,6 @@ export const createEvent = async (
 };
 
 // ---- CRUD ----
-
 export const findEventById = async (
     eventId: number
 ): Promise<Event | null> => {

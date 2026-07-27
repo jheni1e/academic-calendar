@@ -18,6 +18,7 @@ route
     .get('/all', authMiddleware, authorize(UserRole.ADMIN, UserRole.INSTRUCTOR), ClassController.findAll) // get all classes
     .get('/:id', authMiddleware, authorize(UserRole.ADMIN, UserRole.INSTRUCTOR), validateClassExistsById, ClassController.findClassById) // get class by id
     .get('/events/:id', authMiddleware, validateClassExistsById, validateClassEvent, ClassController.findEventsByClass)
+    .get('/participants/:id', authMiddleware, validateClassExistsById, ClassUserController.findClassUsersByClass) // get participants by class id
 
     .put('/:id', authMiddleware, authorize(UserRole.ADMIN, UserRole.INSTRUCTOR), validateClassExistsById, ClassController.update) // get class by id
     .put("/enable/:id", authMiddleware, authorize(UserRole.ADMIN, UserRole.INSTRUCTOR), validateClassExistsById, ClassController.enable) // enable class

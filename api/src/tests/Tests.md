@@ -45,9 +45,8 @@
 
 ## Participantes
 
-    [ ] Confirmar participação.
-    [ ] Recusar participação.
-    [ ] Cancelar participação.
+    [x] Confirmar participação.
+    [x] Recusar participação.
     [x] Mesmo usuário participando duas vezes do mesmo evento (deve falhar).
 
 ## Permissões
