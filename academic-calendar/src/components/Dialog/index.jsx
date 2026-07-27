@@ -297,7 +297,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event }) {
                             eventId = isUpdated.event_id;
 
                             onClose();
-                            location.reload()
+                            window.location.reload()    
                             toastSuccess("Evento atualizado com sucesso!");
                             break;
                         case 2:
@@ -742,28 +742,42 @@ function Dialog({ isOpen, onClose, type, setType, title, event }) {
             }
             {type === "view-event" ? (
                 <>
-                    <div className="dialogContent" style={{ borderRadius: "10px" }}>
-                        <div className="dialogInput">
-                            <h4>Responsavel:</h4>
-                            <h4>{event.responsible}</h4>
+                    {typeEvent === 1 &&
+                        <div className="dialogContent" style={{ borderRadius: "10px" }}>
+                            <div className="dialogInput">
+                                <h4>Início:</h4>
+                                <h4>{new Date(event.start_date).toLocaleString("pt-BR", {day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit", })}</h4>
+                            </div>
+                            <div className="dialogInput">
+                                <h4>Encerramento:</h4>
+                                <h4>{new Date(event.end_date).toLocaleString("pt-BR", {day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit", })}</h4>
+                            </div>
                         </div>
-                        <div className="dialogInput">
-                            <h4>Sala:</h4>
-                            <h4>{event.responsible}</h4>
+                    }
+                    {typeEvent === 2 &&
+                        <div className="dialogContent" style={{ borderRadius: "10px" }}>
+                            <div className="dialogInput">
+                                <h4>Início:</h4>
+                                <h4>{new Date(event.start_date).toLocaleString("pt-BR", {day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit", })}</h4>
+                            </div>
+                            <div className="dialogInput">
+                                <h4>Encerramento:</h4>
+                                <h4>{new Date(event.end_date).toLocaleString("pt-BR", {day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit", })}</h4>
+                            </div>
                         </div>
-                        <div className="dialogInput">
-                            <h4>Início:</h4>
-                            <h4>{event.initial}</h4>
+                    }
+                    {typeEvent === 3 &&
+                        <div className="dialogContent" style={{ borderRadius: "10px" }}>
+                            <div className="dialogInput">
+                                <h4>Início:</h4>
+                                <h4>{new Date(event.start_date).toLocaleString("pt-BR", {day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit", })}</h4>
+                            </div>
+                            <div className="dialogInput">
+                                <h4>Encerramento:</h4>
+                                <h4>{new Date(event.end_date).toLocaleString("pt-BR", {day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit", })}</h4>
+                            </div>
                         </div>
-                        <div className="dialogInput">
-                            <h4>Encerramento:</h4>
-                            <h4>{event.end}</h4>
-                        </div>
-                        <div className="dialogInput">
-                            <h4>Turma:</h4>
-                            <h4>{event.class}</h4>
-                        </div>
-                    </div>
+                    }
                     <div className="dialogButtons">
                         <BoschButton text="Editar" type="primary" onClick={() => setEvent()} />
                     </div>
