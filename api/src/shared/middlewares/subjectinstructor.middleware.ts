@@ -4,6 +4,7 @@ import { UserRole } from "../../generated/prisma/enums.ts";
 import { findSubjectById } from "../../services/subject.service.ts";
 import { findUserById } from "../../services/user.service.ts";
 import { findSubjectInstructorBySubjectAndInstructor } from "../../services/subjectinstructor.service.ts";
+import { BadRequestError } from "../errors/BadRequestError.ts";
 
 export const validateCreate = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -38,12 +39,12 @@ export const validateCreate = async (req: Request, res: Response, next: NextFunc
 
 export const validateDelete = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { subjectId, instructorId } = req.body;
+        const { subjectId, instructorId } = req.params;
 
-        const relation = await findSubjectInstructorBySubjectAndInstructor(subjectId, instructorId)
+        const relation = await findSubjectInstructorBySubjectAndInstructor(Number(subjectId), Number(instructorId))
 
         if (!relation) {
-            throw new Error("Instructor is not connected to the subject.");
+            throw new BadRequestError("Instructor is not connected to the subject.");
         }
 
         next();

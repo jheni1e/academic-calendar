@@ -5,6 +5,7 @@ import { CreateSubjectInstructorDTO, UpdateSubjectInstructorDTO } from "../dtos/
 import { createSubjectInstructor, deleteSubjectInstructor, findAllSubjectInstructors, findSubjectInstructorById, findSubjectInstructorBySubjectAndInstructor, findSubjectInstructorsByInstructor, findSubjectInstructorsBySubject, getInstructorsBySubject, getSubjectsByInstructor, updateSubjectInstructor } from "../services/subjectinstructor.service.ts";
 import { findUserById } from "../services/user.service.ts";
 import { UserRole } from "../generated/prisma/enums.ts";
+import { BadRequestError } from "../shared/errors/BadRequestError.ts";
 
 export class SubjectInstructorController {
     static async create(req: Request, res: Response) {
@@ -33,7 +34,7 @@ export class SubjectInstructorController {
             return res.status(204).send({ message: "Subject / Instructor deleted successfully." });
 
         } catch (error) {
-            if (error instanceof AppError) {
+            if (error instanceof BadRequestError) {
                 return res.status(error.statusCode).json({
                     message: error.message
                 });
