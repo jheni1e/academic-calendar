@@ -47,11 +47,10 @@ function Home() {
   }, [userLoaded, isInstructor]);
 
   useEffect(() => {
-    if (!userLoaded) return;
-
+    if (!userLoaded || !view) return;
+  
     getUserEvents();
-
-  }, [userLoaded, filterType, selectedFilter]);
+  }, [userLoaded, view, filterType, selectedFilter]);
 
   const filteredEvents = events.filter(event => {
     if (!showExternal && !showLesson) {
@@ -80,13 +79,17 @@ function Home() {
 
     const user = response.user;
 
+    const classUser = await getData('/user/classes');
+
+    const classId = classUser[0].classId;
+
     const instructor =
       user.role === "ADMIN" ||
       user.role === "INSTRUCTOR";
 
     setIsInstructor(instructor);
 
-    await loadSubjects(user.id, user.classId, instructor);
+    await loadSubjects(user.id, classId, instructor);
 
     setUserLoaded(true);
   };
@@ -136,11 +139,9 @@ function Home() {
               : await getData("/event/all");
             break;
           case "ROOMS":
-            console.log("buscando turma:", selectedFilter);
             response = selectedFilter
               ? await getData(`/room/events/${selectedFilter}`)
               : await getData("/event/all");
-            console.log(response)
             break;
           case "ALL":
           default:
@@ -156,7 +157,7 @@ function Home() {
             return;
           }
 
-          const response = await getData(`/user/edv/${edv}`);
+          let response = await getData(`/user/edv/${edv}`);
 
           const user = response.user;
           const userId = user.id;
@@ -171,12 +172,11 @@ function Home() {
             return;
           }
 
-          const response = await getData(`/user/edv/${edv}`);
+          const classUser = await getData('/user/classes');
 
-          const user = response.user;
-          const userId = user.id;
+          const classId = classUser[0].classId;
 
-          response = await getData(`/class/events/${selectedFilter}`);
+          let response = await getData(`/class/events/${classId}`);
         }
       }
 
@@ -200,7 +200,6 @@ function Home() {
 
       if (instructor) {
         response = await getData(`/subject/instructor/${userId}/ongoing`);
-        console.log(response)
       } else {
         response = await getData(`/subject/class/${classId}/ongoing`);
       }
@@ -229,7 +228,7 @@ function Home() {
         <MenuSideBar
           option1={isInstructor ? "Turmas" : "Pessoal"}
           option2={isInstructor ? "Salas" : "Turma"}
-          option1Value={isInstructor ? "CLASSES" : "PERSONAL"}
+          option1Value={isInstructor ? "CLASS" : "PERSONAL"}
           option2Value={isInstructor ? "ROOMS" : "CLASS"}
           view={view}
           onToggleChange={setView}
