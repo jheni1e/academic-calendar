@@ -1,4 +1,4 @@
-import { CreateParticipationDTO, UpdateParticipationDTO } from "../dtos/ParticipationDTO.ts";
+import { CreateParticipationDTO, ParticipationResponseDTO, UpdateParticipationDTO } from "../dtos/ParticipationDTO.ts";
 import { Participation } from "../generated/prisma/client.ts";
 import { prisma } from "../lib/prisma.ts";
 
@@ -81,13 +81,37 @@ export const findParticipationByUser = async (
 
 export const findParticipationByEvent = async (
     eventId: number
-): Promise<Participation[]> => {
+): Promise<ParticipationResponseDTO[]> => {
 
-    return prisma.participation.findMany({
+    const participations = await prisma.participation.findMany({
         where: {
             event_id: eventId
+        },
+        select: {
+            participation_id: true,
+
+            user: {
+                select: {
+                    name: true,
+                    user_id: true
+                }
+            },
+            event: {
+                select: {
+                    title: true,
+                    event_id: true
+                }
+            }
         }
     });
+
+    return participations.map(participation => ({
+        participationId: participation.participation_id,
+        eventId: participation.event.event_id,
+        eventName: participation.event.title,
+        userId: participation.user.user_id,
+        userName: participation.user.name
+    }));
 
 }
 
@@ -123,7 +147,7 @@ export const confirmParticipation = async (
                 participation_id: participation.participation_id
             },
             data: {
-                status: "CONFIRMED"
+                status: "CONRFIMED"
             }
         })
     }

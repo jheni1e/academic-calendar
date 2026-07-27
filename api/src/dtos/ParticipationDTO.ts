@@ -9,3 +9,11 @@ export interface UpdateParticipationDTO {
     eventId?: number;
     status?: ParticipationStatus;
 }
+
+export interface ParticipationResponseDTO {
+    participationId: number
+    eventId: number
+    eventName: string
+    userId: number
+    userName: string
+}
