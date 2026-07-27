@@ -48,7 +48,8 @@ export const findClassUsersByUser = async (
     });
 
     return classNames.map(c => ({
-        className: c.class.name
+        className: c.class.name,
+        classId: c.class_id
     }));
 }
 
