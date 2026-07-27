@@ -100,10 +100,13 @@ export const updateSubjectInstructor = async (
     });
 }
 
-export const deleteSubjectInstructor = async (subjectInstructorId: number): Promise<void> => {
+export const deleteSubjectInstructor = async (subjectId: number, instructorId: number): Promise<void> => {    
     await prisma.subjectInstructor.delete({
         where: {
-            subject_instructor_id: subjectInstructorId
+            subject_instructor_unique: {
+                subject_id: subjectId,
+                instructor_id: instructorId
+            }
         }
     });
 }

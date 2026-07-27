@@ -85,7 +85,7 @@
 
 ### Delete
     http://localhost:8080/api/subject/:id
-    http://localhost:8080/api/subject/participants/remove/:participationId
+    http://localhost:8080/api/subject/:subjectId/instructor/:instructorId
 
 # Event
 

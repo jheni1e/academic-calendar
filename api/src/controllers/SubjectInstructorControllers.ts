@@ -26,11 +26,11 @@ export class SubjectInstructorController {
     }
 
     static async delete(req: Request, res: Response) {
-        const id: number = parseInt(req.params.id.toString());
+        const { subjectId, instructorId } = req.params;
 
         try {
-            await deleteSubjectInstructor(id);
-            return res.status(204).send({ message: "Subject deleted successfully." });
+            await deleteSubjectInstructor(Number(subjectId), Number(instructorId));
+            return res.status(204).send({ message: "Subject / Instructor deleted successfully." });
 
         } catch (error) {
             if (error instanceof AppError) {
