@@ -2,30 +2,38 @@
     width: 100%;
     box-sizing: border-box;
     height: 5rem;
-    border: 1px solid black;
+    border: 0.5px solid #e4e4e4;
     border-radius: 10px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0 2rem;
+    padding: 2.8rem;
+    transition: all .2s ease;
 }
 
-.subject-name{
+.component-container:hover {
+    background: #f2f2f2;
+    border-color: #c9c9c9;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    transform: translateX(-4px);
+}
+
+.subject-name {
     height: 100%;
-    gap: 1rem;
+    gap: 5px;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: start;     
+    align-items: start;
 }
 
-h1{
+h1 {
     font-size: 30px;
     font-family: 'Bosch Sans';
     margin: 0;
 }
-    
-h4{
+
+h4 {
     font-family: 'Bosch Sans';
     margin: 0;
 }

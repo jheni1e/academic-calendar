@@ -1,22 +1,22 @@
-import { jwtDecode } from "jwt-decode";
+// import { jwtDecode } from "jwt-decode";
 
 export const isTokenExpired = () => {
   const token = sessionStorage.getItem("token");
 
-  if (!token) {
-    return true;
-  }
+  // if (!token) {
+  //   return true;
+  // }
 
-  try {
-    const decoded = jwtDecode(token);
+  // try {
+  //   const decoded = jwtDecode(token);
 
-    const expirationTime = decoded.exp * 1000;
+  //   const expirationTime = decoded.exp * 1000;
 
-    return Date.now() >= expirationTime;
+  //   return Date.now() >= expirationTime;
 
-  } catch (error) {
-    return true;
-  }
+  // } catch (error) {
+  //   return true;
+  // }
 };
 
 
