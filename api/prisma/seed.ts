@@ -49,6 +49,27 @@ async function main() {
                 birthday: new Date("2004-02-02T00:00:00Z"),
                 role: "INSTRUCTOR"
             },
+            {
+                user_edv: 92906895,
+                name: "Rebeca Ianz",
+                password: await hashPassword("caximba123"),
+                birthday: new Date("2006-02-02T00:00:00Z"),
+                role: "APPRENTICE"
+            },
+            {
+                user_edv: 92906894,
+                name: "Leticia Burlinski",
+                password: await hashPassword("leleca123"),
+                birthday: new Date("2006-02-02T00:00:00Z"),
+                role: "APPRENTICE"
+            },
+            {
+                user_edv: 92906893,
+                name: "Thais Michel",
+                password: await hashPassword("kindle123"),
+                birthday: new Date("2006-02-02T00:00:00Z"),
+                role: "APPRENTICE"
+            }
         ],
         skipDuplicates: true,
     });
@@ -83,39 +104,65 @@ async function main() {
         }
     });
 
+    await prisma.classUser.createMany({
+        data: [
+            {
+                class_id: dta3.class_id,
+                user_id: 1 // Jhenifer Halma
+            },
+            {
+                class_id: dta3.class_id,
+                user_id: 2 // Fernanda Fialho
+            },
+            {
+                class_id: dta3.class_id,
+                user_id: 7 // Rebeca Ianz
+            },
+            {
+                class_id: dta3.class_id,
+                user_id: 8 // Leticia Burlinski
+            },
+            {
+                class_id: dta3.class_id,
+                user_id: 9 // Thais Michel
+            }
+        ],
+        skipDuplicates: true
+    });
+
     await prisma.subject.createMany({
         data: [
             {
                 class_id: mec25.class_id,
-                name: "IoT",
+                name: "MEC25 - IoT",
                 workload: 40,
                 start_date: new Date("2026-07-20T00:00:00Z"),
                 completed_workload: 0
             },
             {
                 class_id: add2.class_id,
-                name: "Python",
+                name: "ADD2 - Python",
                 workload: 60,
                 start_date: new Date("2026-07-27T00:00:00Z"),
                 completed_workload: 0
             },
             {
                 class_id: dta3.class_id,
-                name: "C# Básico",
+                name: "DTA3 - C# Básico",
                 workload: 80,
                 start_date: new Date("2026-07-20T00:00:00Z"),
                 completed_workload: 0
             },
             {
                 class_id: mec26.class_id,
-                name: "Excel",
+                name: "MEC26 - Excel",
                 workload: 30,
                 start_date: new Date("2026-08-03T00:00:00Z"),
                 completed_workload: 0
             },
             {
                 class_id: man25.class_id,
-                name: "Power BI",
+                name: "MAN25 - Power BI",
                 workload: 34,
                 start_date: new Date("2026-08-10T00:00:00Z"),
                 completed_workload: 0
@@ -175,35 +222,57 @@ async function main() {
         ]
     })
 
-    const recurrence = await prisma.recurrence.create({
-        data: {
-            series_name: "Python - Segunda e Quarta",
-            repeat_until: new Date("2026-09-30T00:00:00Z"),
+    // const recurrence = await prisma.recurrence.create({
+    //     data: {
+    //         series_name: "Python - Segunda e Quarta",
+    //         repeat_until: new Date("2026-09-30T00:00:00Z"),
 
-            monday: true,
-            wednesday: true,
+    //         monday: true,
+    //         wednesday: true,
 
-            creator: {
-                connect: {
-                    user_id: 4
-                }
-            }
-        }
-    });
+    //         creator: {
+    //             connect: {
+    //                 user_id: 4
+    //             }
+    //         }
+    //     }
+    // });
 
     await prisma.event.create({
         data: {
             title: "Aula de Python",
             description: "Introdução à linguagem Python",
             event_type: EventType.LESSON,
-
+    
             start_date: new Date("2026-07-27T13:30:00Z"),
             end_date: new Date("2026-07-27T17:30:00Z"),
-
-            subject_instructor_id: 1,
-            recurrence_id: recurrence.recurrence_id,
-
+    
+            class_id: add2.class_id,
+            subject_instructor_id: 2,
+    
             created_by: 4
+        }
+    });
+
+    const feedback = await prisma.event.create({
+        data: {
+            title: "Feedback Individual",
+            description: "Feedback mensal com a aprendiz Jhenifer Halma.",
+    
+            event_type: EventType.FEEDBACK,
+    
+            start_date: new Date("2026-07-28T14:00:00Z"),
+            end_date: new Date("2026-07-28T14:30:00Z"),
+    
+            created_by: 4
+        }
+    });
+
+    await prisma.participation.create({
+        data: {
+            user_id: 1,
+            event_id: feedback.event_id,
+            status: "PENDING"
         }
     });
 }
