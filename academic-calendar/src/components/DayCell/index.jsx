@@ -26,13 +26,13 @@ function DayCell({ day, month, year, events = [], viewMode, compact }) {
     <div className={`day-cell ${viewMode === "week" ? "week" : "month"} ${compact ? "compact" : ""}`}>
       <span className="day-number">{day}</span>
 
-      <div className="period morning">
+      <div className={`period afternoon ${viewMode === "week" ? "week-period" : ""}`}>
         {morningEvents.map((event) => (
           <EventCard key={event.event_id} event={event} compact={compact} />
         ))}
       </div>
 
-      <div className="period afternoon">
+      <div className={`period afternoon ${viewMode === "week" ? "week-period" : ""}`}>
         {afternoonEvents.map((event) => (
           <EventCard key={event.event_id} event={event} compact={compact} />
         ))}

@@ -14,6 +14,8 @@
   border: 1px solid #cfcfcf;
   min-height: 100px;
   padding: 8px;
+  min-width: 0;
+  overflow: hidden;
 }
 
 .day-number {
@@ -28,6 +30,18 @@
   justify-content: center;
   flex-direction: row;
   gap: 2px;
+  overflow: hidden;
+}
+
+.week-period {
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.day-cell.week {
+  min-height: 380px;
+  height: 66.3vh;
+  min-width: 0;
   overflow: hidden;
 }
 

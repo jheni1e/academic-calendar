@@ -1,5 +1,8 @@
 .event-card {
-  width: 100%;
+  flex: 1;
+  min-width: 0;
+  width: auto;
+  box-sizing: border-box;
   min-height: 20px;
   border-radius: 8px;
   padding: 6px 8px;
@@ -11,7 +14,7 @@
   flex-direction: column;
   justify-content: start;
   font-size: 11px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
   cursor: pointer;
   transition:
     transform 0.15s ease,
@@ -30,10 +33,17 @@
 }
 
 .event-card.compact {
-  width: 8px;
-  height: 8px;
-  margin: 2px auto;
-  border-radius: 100%;
+  width: 12px;
+  height: 12px;
+  min-width: 12px;
+  min-height: 12px;
+  max-width: 30px;
+  max-height: 30px;
+  padding: 0;
+  margin: 2.5px;
+  border-radius: 50%;
+  flex: 0 0 auto;
+  align-self: center;
   background-color: var(--event-color);
   cursor: pointer;
 }
