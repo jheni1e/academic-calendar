@@ -1,5 +1,5 @@
 import "dotenv/config"
-import { PrismaClient } from "../src/generated/prisma/client.ts";
+import { EventType, PrismaClient } from "../src/generated/prisma/client.ts";
 import { hashPassword } from "../src/app/utils/password.ts";
 
 const prisma = new PrismaClient();
@@ -174,6 +174,38 @@ async function main() {
             }
         ]
     })
+
+    const recurrence = await prisma.recurrence.create({
+        data: {
+            series_name: "Python - Segunda e Quarta",
+            repeat_until: new Date("2026-09-30T00:00:00Z"),
+
+            monday: true,
+            wednesday: true,
+
+            creator: {
+                connect: {
+                    user_id: 4
+                }
+            }
+        }
+    });
+
+    await prisma.event.create({
+        data: {
+            title: "Aula de Python",
+            description: "Introdução à linguagem Python",
+            event_type: EventType.LESSON,
+
+            start_date: new Date("2026-07-27T13:30:00Z"),
+            end_date: new Date("2026-07-27T17:30:00Z"),
+
+            subject_instructor_id: 1,
+            recurrence_id: recurrence.recurrence_id,
+
+            created_by: 4
+        }
+    });
 }
 
 main()
