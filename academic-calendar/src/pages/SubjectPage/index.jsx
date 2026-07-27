@@ -66,27 +66,28 @@ function Subject() {
   const loadSubjects = async () => {
     try {
       const data = await getData("/subject/all");
-
+  
       const subjectsWithClass = await Promise.all(
         data.map(async (subject) => {
           const classData = await getData(`/class/${subject.class_id}`);
-
-          // const subjectInstructor = await getData()
-
+  
+          const subjectInstructors = await getData(
+            `/subject/instructors/${subject.subject_id}`
+          );
+  
           return {
             ...subject,
-            className: classData.name
+            className: classData.name,
+            instructors: subjectInstructors
           };
         })
       );
-
-      console.log(subjectsWithClass)
-
+  
       setSubjects(subjectsWithClass);
     } catch (error) {
-      toastError(`Erro: ${error.message}`)
+      toastError(`Erro: ${error.message}`);
     }
-  }
+  };
 
   return (
     <>
@@ -122,7 +123,7 @@ function Subject() {
                 <ViewSubjectComponent
                   key={subject.name}
                   subjectName={subject.name}
-                  responsible={subject.responsible}
+                  responsible={subject.instructors[0]?.instructor.name}
                   workload={subject.workload}
                   completedWorkload={subject.completedWorkload}
                   studentClass={subject.className}
