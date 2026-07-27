@@ -297,6 +297,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event }) {
                             eventId = isUpdated.event_id;
 
                             onClose();
+                            location.reload()
                             toastSuccess("Evento atualizado com sucesso!");
                             break;
                         case 2:
