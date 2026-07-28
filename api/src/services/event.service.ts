@@ -5,6 +5,7 @@ import { NotFoundError } from "../shared/errors/NotFoundError.ts";
 import { ValidationError } from "../shared/errors/ValidationError.ts";
 import { ConflictError } from "../shared/errors/ConflictError.ts";
 import { createReservation, updateReservationByEvent } from "./reservation.service.ts";
+import { BadRequestError } from "../shared/errors/BadRequestError.ts";
 
 const validateDates = (
     start: Date,
@@ -649,3 +650,59 @@ export const deleteEvent = async (
     });
 
 };
+
+export const blockEvent = async (
+    eventId : number
+) : Promise<void> => {
+
+    await prisma.event.update({
+        where: {
+            event_id: eventId
+        },
+        data: {
+            is_blocked: true
+        }
+    });
+}
+
+export const unblockEvent = async (
+    eventId : number
+) : Promise<void> => {
+
+    await prisma.event.update({
+        where: {
+            event_id: eventId
+        },
+        data: {
+            is_blocked: false
+        }
+    });
+}
+
+export const confirmEvent = async (
+    eventId : number
+) : Promise<void> => {
+    
+    await prisma.event.update({
+        where: {
+            event_id: eventId
+        },
+        data: {
+            status: "CONFIRMED"
+        }
+    })
+}
+
+export const cancelEvent = async (
+    eventId : number
+) : Promise<void> => {
+
+    await prisma.event.update({
+        where: {
+            event_id: eventId
+        },
+        data: {
+            status: "CANCELLED"
+        }
+    })
+}

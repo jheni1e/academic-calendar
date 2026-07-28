@@ -37,6 +37,7 @@ enum EventType {
 
 enum EventStatus {
   SCHEDULED
+  CONFIRMED
   COMPLETED
   CANCELLED
 }
