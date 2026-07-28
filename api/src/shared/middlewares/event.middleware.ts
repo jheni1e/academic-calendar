@@ -10,6 +10,7 @@ import { findEventById } from "../../services/event.service.ts";
 import { findReservationByEvent } from "../../services/reservation.service.ts";
 import { UnauthorizedError } from "../errors/UnauthorizedError.ts";
 import { BadRequestError } from "../errors/BadRequestError.ts";
+import { findParticipationByEvent } from "../../services/participation.service.ts";
 
 export const validateCreate = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -147,8 +148,15 @@ export const validateEditEvent = async (req: Request, res: Response, next: NextF
 
         const userId = res.locals.user.id
 
-        if(event.created_by != userId)
-            throw new UnauthorizedError("Access denied")
+        const participants = await findParticipationByEvent(event.event_id)
+        
+        const isParticipant = participants.some(
+            participant => participant.userId === userId
+        );
+
+        if (!isParticipant) {
+            throw new UnauthorizedError("Access denied");
+        }
 
         if (event.end_date.getTime() < Date.now()) 
             throw new BadRequestError("Event has already ended");

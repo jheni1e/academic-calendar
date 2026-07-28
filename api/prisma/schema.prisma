@@ -174,7 +174,7 @@ model Event {
 
   status EventStatus @default(SCHEDULED)
   participations Participation[]
-  reservation    Reservation?
+  C    Reservation?
   recurrence     Recurrence?     @relation(fields: [recurrence_id], references: [recurrence_id])
   subject_instructor SubjectInstructor?  @relation(fields: [subject_instructor_id], references: [subject_instructor_id])
 
