@@ -22,6 +22,7 @@ function EventCard({ event, compact }) {
 
   const changeModal = () => {
     setIsModalOpen(!isModalOpen)
+    setDialogType("view-event")
     console.log(event)
   }
 
