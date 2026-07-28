@@ -5,7 +5,7 @@ import { Role } from '../shared/enums/role.ts';
 import { EventController } from '../controllers/EventController.ts';
 import { ParticipationController } from '../controllers/ParticipationController.ts';
 import { validateCreate, validateDeleteByEventandUser } from '../shared/middlewares/participation.middleware.ts';
-import { validateBlockEvent, validateDelete, validateEventExistsById, validateUpdate } from '../shared/middlewares/event.middleware.ts';
+import { validateEditEvent, validateDelete, validateEventExistsById, validateUpdate } from '../shared/middlewares/event.middleware.ts';
 import { validateDelete as validateDeleteParticipation } from '../shared/middlewares/participation.middleware.ts';
 
 const route = express.Router();
@@ -21,8 +21,10 @@ route
     .delete("/participants/remove/:eventId", authMiddleware, validateDeleteByEventandUser, ParticipationController.deleteByEventandUser) // remove a user from an event
 
     .put('/:id', authMiddleware, validateUpdate, EventController.update) 
-    .put('/block/:id', authMiddleware, validateBlockEvent, EventController.block)
-    .put('/unblock/:id', authMiddleware, validateBlockEvent, EventController.unblock)
+    .put('/block/:id', authMiddleware, validateEditEvent, EventController.block)
+    .put('/unblock/:id', authMiddleware, validateEditEvent, EventController.unblock)
+    .put('/confirm/:id', authMiddleware, validateEditEvent, EventController.confirm)
+    .put('/cancel/:id', authMiddleware, validateEditEvent, EventController.cancel)
 
     .delete("/:id", authMiddleware, validateDelete, EventController.delete)
     

@@ -11,13 +11,13 @@
     [ ] Editar evento.
     [ ] Cancelar evento.
     [ ] Excluir evento.
-    [ ] Reservar sala para um evento.
+    [x] Reservar sala para um evento.
 
 ## Conflitos de horário
 
-    [ ] Aulas com horários conflitantes na mesma sala.
-    [ ] Instrutor ocupado no mesmo horário.
-    [ ] Turma ocupada no mesmo horário.
+    [x] Aulas com horários conflitantes na mesma sala.
+    [x] Instrutor ocupado no mesmo horário.
+    [x] Turma ocupada no mesmo horário.
     [ ] Usuário com evento pessoal no mesmo horário.
     [ ] Evento iniciando exatamente quando outro termina.
     [ ] Evento terminando exatamente quando outro inicia.
