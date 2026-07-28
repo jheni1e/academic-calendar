@@ -1,6 +1,8 @@
 import { CreateParticipationDTO, ParticipationResponseDTO, UpdateParticipationDTO } from "../dtos/ParticipationDTO.ts";
-import { Participation } from "../generated/prisma/client.ts";
+import { EventStatus, Participation, ParticipationStatus } from "../generated/prisma/client.ts";
 import { prisma } from "../lib/prisma.ts";
+import { ConflictError } from "../shared/errors/ConflictError.ts";
+import { NotFoundError } from "../shared/errors/NotFoundError.ts";
 
 export const createParticipation = async (
     data: CreateParticipationDTO
@@ -128,29 +130,43 @@ export const deleteParticipation = async (
 }
 
 export const confirmParticipation = async (
-    eventId: number,
+    participationId: number,
     userId: number
-): Promise<void> => {
-    
-    const participation = await prisma.participation.findUnique({
-        where: {
-            user_event_unique: {
-                event_id: eventId,
-                user_id: userId
-            }
-        }
-    })
+) => {
 
-    if(participation) {
-         await prisma.participation.update({
-            where: {
-                participation_id: participation.participation_id
-            },
-            data: {
-                status: "CONRFIMED"
-            }
-        })
+    const participation = await prisma.participation.findFirst({
+        where: {
+            participation_id: participationId,
+            user_id: userId
+        },
+        include: {
+            event: true
+        }
+    });
+
+    if (!participation) {
+        throw new NotFoundError("Participation not found.");
     }
+    
+    if (participation.status === ParticipationStatus.CONFIRMED) {
+    return participation;
+    }
+
+    await validateParticipantConflict(
+        participation.user_id,
+        participation.event.start_date,
+        participation.event.end_date,
+        participation.event.event_id
+    );
+
+    return prisma.participation.update({
+        where: {
+            participation_id: participationId
+        },
+        data: {
+            status: ParticipationStatus.CONFIRMED
+        }
+    });
 }
 
 export const declineParticipation = async (
@@ -173,9 +189,45 @@ export const declineParticipation = async (
                 participation_id: participation.participation_id
             },
             data: {
-                status: "DECLINED"
+                status: ParticipationStatus.DECLINED
             }
         })
     }
 }
 
+const validateParticipantConflict = async (
+    userId: number,
+    start: Date,
+    end: Date,
+    eventId: number
+): Promise<void> => {
+
+    const conflict = await prisma.participation.findFirst({
+        where: {
+            user_id: userId,
+            status: ParticipationStatus.CONFIRMED,
+
+            event: {
+                event_id: {
+                    not: eventId
+                },
+
+                status: EventStatus.SCHEDULED,
+
+                start_date: {
+                    lt: end
+                },
+
+                end_date: {
+                    gt: start
+                }
+            }
+        }
+    });
+
+    if (conflict) {
+        throw new ConflictError(
+            "You already have another confirmed event during this period."
+        );
+    }
+}
