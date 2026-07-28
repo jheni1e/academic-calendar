@@ -597,8 +597,8 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
             <div className="dialogHeader">
                 <h2 style={{ display: "flex", gap: ".5rem" }}>
                     <>
-                        {event.is_blocked &&
-                            <img src={CadeadoTrancado} alt="bloqueado" style={{ height: "1.5rem" }} />
+                        {event != null && event.is_blocked &&
+                            <img src={CadeadoTrancado} alt="bloqueado" style={{height: "1.5rem"}}/>
                         }
                     </>
                     {title}
