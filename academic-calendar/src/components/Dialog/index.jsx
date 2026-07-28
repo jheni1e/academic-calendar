@@ -8,7 +8,7 @@ import { getData, postData, putData } from "../../utils/apiBack";
 import { toastError, toastSuccess, toastWarning } from '../../components/BoschToast';
 import CadeadoTrancado from "../../images/cadeado-trancado.png"
 
-function Dialog({ isOpen, onClose, type, setType, title, event, subject }) {
+function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) {
     const dialogRef = useRef(null);
 
     const [responsible, setResponsible] = useState(null);
@@ -39,9 +39,9 @@ function Dialog({ isOpen, onClose, type, setType, title, event, subject }) {
 
     const [selectedDays, setSelectedDays] = useState([]);
     const [seriesName, setSeriesName] = useState("");
-    
+
     const [typeStatusEvent, setTypeStatusEvent] = useState(
-        event != null ? event.is_blocked === true ? 1 : 2 : 2 );
+        event?.is_blocked === true ? 1 : 2);
 
     useEffect(() => {
         const dialog = dialogRef.current;
@@ -184,6 +184,15 @@ function Dialog({ isOpen, onClose, type, setType, title, event, subject }) {
 
                             eventId = isInserted.event_id;
 
+                            participants.forEach(async p => {
+                                let participantPayload = {
+                                    userId: p.value,
+                                    eventId: eventId
+                                };
+
+                                await postData("/event/participants", participantPayload);
+                            });
+
                             onClose();
                             toastSuccess("Evento criado com sucesso!");
                             break;
@@ -204,27 +213,64 @@ function Dialog({ isOpen, onClose, type, setType, title, event, subject }) {
                                 title: eventName,
                                 eventType: eventType,
                                 startDate: startDate,
-                                subjectInstructorId: responsible,
+                                endDate: endDate,
                                 createdBy: userId,
                                 roomId: selectedRoom,
-                                startDate: startDate
+                                // subjectInstructorId: TODO
                             };
 
-                            // isInserted = await postData("/schedule/lessons", payload);
+                            isInserted = await postData("/event/", payload);
+
+                            console.log(isInserted)
 
                             if (!isInserted) {
                                 onClose();
-                                toastError("Falha ao criar evento.");
+                                toastError("Falha ao criar aula.");
                                 return;
                             }
 
                             eventId = isInserted.event_id;
 
                             onClose();
-                            toastSuccess("Aulas criadas com sucesso!");
+                            toastSuccess("Aula criada com sucesso!");
                             break;
                         case 3:
+                            if (!eventName.trim()) {
+                                onClose();
+                                toastWarning("O título é obrigatório.");
+                                return;
+                            }
+
                             eventType = "EXAM";
+
+                            edv = sessionStorage.getItem("user");
+                            user = await getData(`/user/edv/${edv}`);
+                            userId = user.user.id;
+
+                            payload = {
+                                title: eventName,
+                                eventType: eventType,
+                                startDate: startDate,
+                                endDate: endDate,
+                                createdBy: userId,
+                                roomId: selectedRoom,
+                                // subjectInstructorId: TODO
+                            };
+
+                            isInserted = await postData("/event/", payload);
+
+                            console.log(isInserted)
+
+                            if (!isInserted) {
+                                onClose();
+                                toastError("Falha ao criar avaliação.");
+                                return;
+                            }
+
+                            eventId = isInserted.event_id;
+
+                            onClose();
+                            toastSuccess("Avaliação criada com sucesso!");
                             break;
                     }
                     break;
@@ -349,7 +395,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event, subject }) {
                             edv = sessionStorage.getItem("user");
                             user = await getData(`/user/edv/${edv}`);
                             userId = user.user.id;
-                            
+
                             payload = {
                                 title: eventName,
                                 eventType: eventType,
@@ -357,23 +403,23 @@ function Dialog({ isOpen, onClose, type, setType, title, event, subject }) {
                                 endDate: endDate,
                                 createdBy: userId,
                             };
-                            
+
                             isUpdated = await putData(`/event/${event.event_id}`, payload);
-                            
+
                             if (!isUpdated) {
                                 onClose();
                                 toastError("Falha ao atualizar evento.");
                                 return;
                             }
-                            if(typeStatusEvent === 1) { 
+                            if (typeStatusEvent === 1) {
                                 await putData(`/event/block/${event.event_id}`)
                             }
-                            else{ 
+                            else {
                                 await putData(`/event/unblock/${event.event_id}`)
                             }
-                            
+
                             eventId = isUpdated.event_id;
-                            
+
                             onClose();
                             window.location.reload()
                             toastSuccess("Evento atualizado com sucesso!");
@@ -551,7 +597,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event, subject }) {
     return (
         <dialog ref={dialogRef} className="customDialog">
             <div className="dialogHeader">
-                <h2 style={{display: "flex", gap: ".5rem"}}>
+                <h2 style={{ display: "flex", gap: ".5rem" }}>
                     <>
                         {event != null && event.is_blocked &&
                             <img src={CadeadoTrancado} alt="bloqueado" style={{height: "1.5rem"}}/>
@@ -688,18 +734,10 @@ function Dialog({ isOpen, onClose, type, setType, title, event, subject }) {
                                 <h4>Encerramento:</h4>
                                 <TextBox placeholder="XX/XX/XXXX XX:XX" type="datetime-local" value={formatDateTimeLocal(endDate)} onChange={(e) => setEndDate(new Date(e.target.value))} />
                             </div>
-                            <div style={{ display: "flex", flexDirection: "column" }}>
-                                <h4>Frequência:</h4>
-                                <FrequencySelector />
-                            </div>
                         </>
                     }
                     {typeEvent === 2 &&
                         <>
-                            <div className="dialogInput">
-                                <h4>Professor:</h4>
-                                <DropdownList options={allInstructors} selectedValue={responsible} onChange={(e) => setResponsible(e.target.value)} />
-                            </div>
                             <div className="dialogInput">
                                 <h4>Início:</h4>
                                 <TextBox placeholder="XX/XX/XXXX XX:XX" type="datetime-local" value={formatDateTimeLocal(startDate)} onChange={(e) => setStartDate(new Date(e.target.value))} />
@@ -709,28 +747,36 @@ function Dialog({ isOpen, onClose, type, setType, title, event, subject }) {
                                 <TextBox placeholder="XX/XX/XXXX XX:XX" type="datetime-local" value={formatDateTimeLocal(endDate)} onChange={(e) => setEndDate(new Date(e.target.value))} />
                             </div>
                             <div className="dialogInput">
+                                <h4>Professor:</h4>
+                                <DropdownList options={allInstructors} selectedValue={responsible} onChange={(e) => setResponsible(e.target.value)} />
+                            </div>
+                            <div className="dialogInput">
                                 <h4>Sala:</h4>
                                 <DropdownList options={allRooms} selectedValue={selectedRoom} onChange={(e) => setSelectedRoom(Number(e.target.value))} />
+                            </div>
+                            <div className="dialogInput">
+                                <h4>Turma:</h4>
+                                <DropdownList options={allClasses} selectedValue={selectedClass} onChange={(e) => setSelectedClass(Number(e.target.value))} />
                             </div>
                         </>
                     }
                     {typeEvent === 3 &&
                         <>
                             <div className="dialogInput">
-                                <h4>Professor:</h4>
-                                <DropdownList options={allInstructors} selectedValue={responsible} onChange={(e) => setResponsible(e.target.value)} />
-                            </div>
-                            <div className="dialogInput">
-                                <h4>Sala:</h4>
-                                <DropdownList options={allRooms} selectedValue={selectedRoom} onChange={(e) => setSelectedRoom(Number(e.target.value))} />
-                            </div>
-                            <div className="dialogInput">
                                 <h4>Início:</h4>
                                 <TextBox placeholder="XX/XX/XXXX XX:XX" type="datetime-local" value={formatDateTimeLocal(startDate)} onChange={(e) => setStartDate(new Date(e.target.value))} />
                             </div>
                             <div className="dialogInput">
                                 <h4>Encerramento:</h4>
                                 <TextBox placeholder="XX/XX/XXXX XX:XX" type="datetime-local" value={formatDateTimeLocal(endDate)} onChange={(e) => setEndDate(new Date(e.target.value))} />
+                            </div>
+                            <div className="dialogInput">
+                                <h4>Professor:</h4>
+                                <DropdownList options={allInstructors} selectedValue={responsible} onChange={(e) => setResponsible(e.target.value)} />
+                            </div>
+                            <div className="dialogInput">
+                                <h4>Sala:</h4>
+                                <DropdownList options={allRooms} selectedValue={selectedRoom} onChange={(e) => setSelectedRoom(Number(e.target.value))} />
                             </div>
                             <div className="dialogInput">
                                 <h4>Turma:</h4>
