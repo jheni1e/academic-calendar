@@ -99,8 +99,9 @@ CREATE TABLE `Event` (
     `end_date` DATETIME(3) NOT NULL,
     `event_type` ENUM('LESSON', 'ASSESSMENT', 'FEEDBACK', 'EXTERNAL', 'PERSONAL', 'OTHER') NOT NULL,
     `is_blocked` BOOLEAN NOT NULL DEFAULT false,
-    `status` ENUM('SCHEDULED', 'COMPLETED', 'CANCELLED') NOT NULL DEFAULT 'SCHEDULED',
+    `status` ENUM('SCHEDULED', 'CONFIRMED', 'COMPLETED', 'CANCELLED') NOT NULL DEFAULT 'SCHEDULED',
 
+    UNIQUE INDEX `Event_event_id_key`(`event_id`),
     INDEX `Event_subject_instructor_id_idx`(`subject_instructor_id`),
     INDEX `Event_class_id_idx`(`class_id`),
     INDEX `Event_created_by_idx`(`created_by`),
@@ -166,7 +167,7 @@ CREATE TABLE `Participation` (
     `participation_id` INTEGER NOT NULL AUTO_INCREMENT,
     `user_id` INTEGER NOT NULL,
     `event_id` INTEGER NOT NULL,
-    `status` ENUM('PENDING', 'CONFIRMED', 'DECLINED', 'ATTENDED', 'CANCELLED') NOT NULL,
+    `status` ENUM('PENDING', 'CONFIRMED', 'DECLINED', 'ATTENDED', 'CANCELLED') NOT NULL DEFAULT 'PENDING',
 
     INDEX `Participation_user_id_idx`(`user_id`),
     INDEX `Participation_event_id_idx`(`event_id`),
