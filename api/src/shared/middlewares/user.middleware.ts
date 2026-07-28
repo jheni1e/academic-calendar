@@ -40,9 +40,9 @@ export const validateCreate = async (req: Request, res: Response, next: NextFunc
 
 export const validateDisable = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const edv: number = parseInt(req.params.id.toString());
+        const id: number = parseInt(req.params.id.toString());
 
-        const exists = await findUserByEdv(edv)
+        const exists = await findUserById(id)
 
         if (!exists) {
             throw new NotFoundError("User not found.");
@@ -87,8 +87,13 @@ export const validateUpdate = async (req: Request, res: Response, next: NextFunc
         if (!user) 
             throw new NotFoundError("User not found");
 
-        if(res.locals.user.id != userId) 
-            throw new UnauthorizedError("Access denied")
+        if (
+            res.locals.user.role !== "ADMIN" &&
+            res.locals.user.role !== "INSTRUCTOR" &&
+            res.locals.user.id !== userId
+        ) {
+            throw new UnauthorizedError("Access denied");
+        }
         
 
         next();
