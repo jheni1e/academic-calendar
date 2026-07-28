@@ -569,6 +569,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
         }
         
         const participants = await getData(`event/participants/all/${event.event_id}`)
+        console.log(participants)
 
         setEventName(event.title);
         setResponsible(event.responsible);
@@ -720,7 +721,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                             <div className="participantsList">
                                 {participants.map((participant) => (
                                     <div key={participant.value} className="listItem">
-                                        <span className="itemName">{participant.label}</span>
+                                        <span className="itemName">{participant.userName}</span>
 
                                         <button className="removeItem" onClick={() => removeParticipant(participant.value)}>×</button>
                                     </div>
