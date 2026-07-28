@@ -275,16 +275,18 @@ const validateLesson = async (
 
     validateSubjectWorkload(assignment);
 
-    await validateInstructorConflict(
-        assignment,
+    await validateInstructorConflictById(
+        assignment.instructor.user_id,
         start,
-        end
-    );
+        end,
+        0 
+        );
 
     await validateClassConflict(
         assignment.subject.class.class_id,
         start,
-        end
+        end,
+        0
     );
 
     return assignment;
@@ -302,8 +304,8 @@ const validateLessonUpdate = async (
 
     validateSubjectWorkload(assignment);
 
-    await validateInstructorConflict(
-        assignment,
+    await validateInstructorConflictById(
+        assignment.instructor.user_id,
         start,
         end,
         eventId
