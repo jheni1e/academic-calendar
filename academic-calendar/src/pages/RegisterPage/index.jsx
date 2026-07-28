@@ -5,6 +5,7 @@ import TextBox from '../../components/TextBox';
 import BoschButton from '../../components/BoschButton';
 import { getData, postData } from '../../utils/apiBack';
 import { toastError, toastSuccess, toastWarning } from '../../components/BoschToast';
+import DropdownList from '../../components/DropdownList';
 
 function Register() {
     const [edv, setEDV] = useState("");
@@ -12,11 +13,14 @@ function Register() {
     const [birthdate, setBirthdate] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
+    const [selectedClass, setSelectedClass] = useState(null);
+    const [allClasses, setAllClasses] = useState([]);
 
     const navigate = useNavigate();
 
     useEffect(() => {
         initUserInfo();
+        getAllClasses();
     }, []);
 
     const initUserInfo = async () => {
@@ -28,6 +32,22 @@ function Register() {
             return;
         }
     }
+
+    const getAllClasses = async () => {
+        try {
+            const classes = await getData("/class/all");
+
+            const formatedClasses = classes.map((c) => ({
+                value: c.class_id,
+                label: c.name
+            }));
+
+            setAllClasses(formatedClasses);
+        } catch (error) {
+            onClose();
+            toastError(`Erro: ${error.message}`)
+        }
+    };
 
     const handleSave = async () => {
         try {
@@ -48,6 +68,20 @@ function Register() {
 
             if (!created) {
                 toastError("Falha ao se registrar.");
+                return;
+            }
+
+            const userId = created.user.user_id;
+
+            const classUserPayload = {
+                classId: selectedClass,
+                userId: userId
+            }
+
+            const addedToClass = await postData("/class/participant", classUserPayload);
+
+            if (!addedToClass) {
+                toastError("Falha ao se registrar na turma.");
                 return;
             }
 
@@ -83,6 +117,10 @@ function Register() {
             <div className="divInput">
                 <h3 className="inputTitle">Confirme sua senha:</h3>
                 <TextBox type="password" placeholder="Confirme sua senha" text={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
+            </div>
+            <div className="divInput" style={{ "width": "240px", "marginLeft": "-30px" }}>
+                <h3 className="inputTitle">Turma:</h3>
+                <DropdownList options={allClasses} selectedValue={selectedClass} onChange={(e) => setSelectedClass(Number(e.target.value))} />
             </div>
             <div className="divButton">
                 <BoschButton type="primary" text="Salvar" onClick={handleSave} />
