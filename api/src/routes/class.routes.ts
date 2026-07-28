@@ -13,9 +13,9 @@ const route = express.Router();
 
 route 
     .post('/', validateCreate, ClassController.create) // create a new class
-    .post('/participant', authMiddleware, authorize(UserRole.ADMIN, UserRole.INSTRUCTOR), ClassUserController.create) // add a new participant
+    .post('/participant', ClassUserController.create) // add a new participant OBS: Removed Token 
  
-    .get('/all', ClassController.findAll) // get all classes
+    .get('/all', ClassController.findAll) // get all classes OBS: Removed Token 
     .get('/:id', authMiddleware, authorize(UserRole.ADMIN, UserRole.INSTRUCTOR), validateClassExistsById, ClassController.findClassById) // get class by id
     .get('/events/:id', authMiddleware, validateClassExistsById, validateClassEvent, ClassController.findEventsByClass)
     .get('/participants/:id', authMiddleware, validateClassExistsById, ClassUserController.findClassUsersByClass) // get participants by class id
