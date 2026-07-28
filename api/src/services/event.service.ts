@@ -1,6 +1,6 @@
 import { prisma } from "../lib/prisma.ts";
 import { CreateEventDTO, EventResponseDTO, UpdateEventDTO } from "../dtos/EventDto.ts";
-import { Class, Event, EventStatus, EventType, Prisma, Subject, SubjectInstructor, User } from "../generated/prisma/client.ts";
+import { Class, Event, EventStatus, EventType, ParticipationStatus, Prisma, Subject, SubjectInstructor, User } from "../generated/prisma/client.ts";
 import { NotFoundError } from "../shared/errors/NotFoundError.ts";
 import { ValidationError } from "../shared/errors/ValidationError.ts";
 import { ConflictError } from "../shared/errors/ConflictError.ts";
@@ -155,6 +155,45 @@ const validateClassConflict = async (
     if (conflict) {
         throw new ConflictError(
             "Class already has a scheduled event during this period."
+        );
+    }
+};
+
+const validateUserConflict = async (
+    userId: number,
+    start: Date,
+    end: Date,
+    currentEventId?: number
+): Promise<void> => {
+
+    const conflict = await prisma.participation.findFirst({
+        where: {
+            user_id: userId,
+            status: ParticipationStatus.CONFIRMED,
+
+            event: {
+                status: EventStatus.SCHEDULED,
+
+                ...(currentEventId && {
+                    event_id: {
+                        not: currentEventId
+                    }
+                }),
+
+                start_date: {
+                    lt: end
+                },
+
+                end_date: {
+                    gt: start
+                }
+            }
+        }
+    });
+
+    if (conflict) {
+        throw new ConflictError(
+            "User already has another confirmed event during this period."
         );
     }
 };
