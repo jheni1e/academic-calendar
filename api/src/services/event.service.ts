@@ -656,18 +656,6 @@ export const deleteEvent = async (
 export const blockEvent = async (
     eventId : number
 ) : Promise<void> => {
-    const event = await prisma.event.findUnique({
-        where: {
-            event_id : eventId
-        }
-    })
-
-    if(!event)
-        throw new NotFoundError("Event not found")
-
-    if (event.end_date.getTime() < Date.now()) {
-        throw new BadRequestError("Cannot block an event that has already ended");
-    }
 
     await prisma.event.update({
         where: {
@@ -682,18 +670,6 @@ export const blockEvent = async (
 export const unblockEvent = async (
     eventId : number
 ) : Promise<void> => {
-    const event = await prisma.event.findUnique({
-        where: {
-            event_id : eventId
-        }
-    })
-
-    if(!event)
-        throw new NotFoundError("Event not found")
-
-    if (event.end_date.getTime() < Date.now()) {
-        throw new BadRequestError("Cannot unblock an event that has already ended");
-    }
 
     await prisma.event.update({
         where: {
@@ -705,3 +681,30 @@ export const unblockEvent = async (
     });
 }
 
+export const confirmEvent = async (
+    eventId : number
+) : Promise<void> => {
+    
+    await prisma.event.update({
+        where: {
+            event_id: eventId
+        },
+        data: {
+            status: "CONFIRMED"
+        }
+    })
+}
+
+export const cancelEvent = async (
+    eventId : number
+) : Promise<void> => {
+
+    await prisma.event.update({
+        where: {
+            event_id: eventId
+        },
+        data: {
+            status: "CANCELLED"
+        }
+    })
+}
