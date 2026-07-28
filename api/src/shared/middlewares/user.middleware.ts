@@ -56,9 +56,9 @@ export const validateDisable = async (req: Request, res: Response, next: NextFun
 
 export const validateActivate = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const edv: number = parseInt(req.params.id.toString());
+        const id: number = parseInt(req.params.id.toString());
 
-        const exists = await findUserByEdv(edv)
+        const exists = await findUserById(id)
 
         if (!exists) {
             throw new NotFoundError("User not found.");
