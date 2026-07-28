@@ -39,6 +39,9 @@ function Dialog({ isOpen, onClose, type, setType, title, event, subject }) {
 
     const [selectedDays, setSelectedDays] = useState([]);
     const [seriesName, setSeriesName] = useState("");
+    
+    const [typeStatusEvent, setTypeStatusEvent] = useState(
+        event.is_blocked === true ? 1 :2 );
 
     useEffect(() => {
         const dialog = dialogRef.current;
@@ -346,7 +349,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event, subject }) {
                             edv = sessionStorage.getItem("user");
                             user = await getData(`/user/edv/${edv}`);
                             userId = user.user.id;
-
+                            
                             payload = {
                                 title: eventName,
                                 eventType: eventType,
@@ -354,17 +357,23 @@ function Dialog({ isOpen, onClose, type, setType, title, event, subject }) {
                                 endDate: endDate,
                                 createdBy: userId,
                             };
-
+                            
                             isUpdated = await putData(`/event/${event.event_id}`, payload);
-
+                            
                             if (!isUpdated) {
                                 onClose();
                                 toastError("Falha ao atualizar evento.");
                                 return;
                             }
-
+                            if(typeStatusEvent === 1) { 
+                                await putData(`/event/block/${event.event_id}`)
+                            }
+                            else{ 
+                                await putData(`/event/unblock/${event.event_id}`)
+                            }
+                            
                             eventId = isUpdated.event_id;
-
+                            
                             onClose();
                             window.location.reload()
                             toastSuccess("Evento atualizado com sucesso!");
@@ -533,7 +542,10 @@ function Dialog({ isOpen, onClose, type, setType, title, event, subject }) {
         { value: 2, label: "Aula" },
         { value: 3, label: "Avaliação" }
     ];
-
+    const typeStatus = [
+        { value: 1, label: "Bloqueado" },
+        { value: 2, label: "Desbloqueado" }
+    ];
     return (
         <dialog ref={dialogRef} className="customDialog">
             <div className="dialogHeader">
@@ -794,7 +806,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event, subject }) {
                             </div>
                             <div className="dialogInput">
                                 <h4>Status Evento:</h4>
-                                <DropdownList options={typeEvents} selectedValue={typeEvent} onChange={(e) => setTypeEvent(Number(e.target.value))} />
+                                <DropdownList options={typeStatus} selectedValue={typeStatusEvent} onChange={(e) => setTypeStatusEvent(Number(e.target.value))} />
                             </div>
                         </>
                     }
@@ -815,6 +827,10 @@ function Dialog({ isOpen, onClose, type, setType, title, event, subject }) {
                             <div className="dialogInput">
                                 <h4>Sala:</h4>
                                 <DropdownList options={allRooms} selectedValue={selectedRoom} onChange={(e) => setSelectedRoom(Number(e.target.value))} />
+                            </div>
+                            <div className="dialogInput">
+                                <h4>Status Evento:</h4>
+                                <DropdownList options={typeStatus} selectedValue={typeStatusEvent} onChange={(e) => setTypeStatusEvent(Number(e.target.value))} />
                             </div>
                         </>
                     }
@@ -839,6 +855,10 @@ function Dialog({ isOpen, onClose, type, setType, title, event, subject }) {
                             <div className="dialogInput">
                                 <h4>Turma:</h4>
                                 <DropdownList options={allClasses} selectedValue={selectedClass} onChange={(e) => setSelectedClass(Number(e.target.value))} />
+                            </div>
+                            <div className="dialogInput">
+                                <h4>Status Evento:</h4>
+                                <DropdownList options={typeStatus} selectedValue={typeStatusEvent} onChange={(e) => setTypeStatusEvent(Number(e.target.value))} />
                             </div>
                         </>
                     }
