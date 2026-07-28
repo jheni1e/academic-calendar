@@ -100,26 +100,24 @@ const validateSubjectWorkload = (
     }
 };
 
-const validateInstructorConflict = async (
-    assignment: LoadedAssignment,
+const validateInstructorConflictById = async (
+    instructorId: number,
     start: Date,
-    end: Date
+    end: Date,
+    ignoreEventId: number
 ): Promise<void> => {
 
     const conflict = await prisma.event.findFirst({
         where: {
+            event_id: { not: ignoreEventId },
+
             status: EventStatus.SCHEDULED,
 
-            start_date: {
-                lt: end
-            },
-
-            end_date: {
-                gt: start
-            },
+            start_date: { lt: end },
+            end_date: { gt: start },
 
             subject_instructor: {
-                instructor_id: assignment.instructor.user_id
+                instructor_id: instructorId
             }
         }
     });
@@ -134,21 +132,19 @@ const validateInstructorConflict = async (
 const validateClassConflict = async (
     classId: number,
     start: Date,
-    end: Date
+    end: Date,
+    ignoreEventId: number
 ): Promise<void> => {
 
     const conflict = await prisma.event.findFirst({
         where: {
+            event_id: { not: ignoreEventId },
+
             class_id: classId,
             status: EventStatus.SCHEDULED,
 
-            start_date: {
-                lt: end
-            },
-
-            end_date: {
-                gt: start
-            }
+            start_date: { lt: end },
+            end_date: { gt: start }
         }
     });
 
@@ -236,6 +232,37 @@ const createEventRecord = async (
 
 };
 
+const validateRoomConflict = async (
+    roomId: number,
+    start: Date,
+    end: Date,
+    ignoreEventId: number
+): Promise<void> => {
+
+    const conflict = await prisma.event.findFirst({
+        where: {
+            event_id: { not: ignoreEventId },
+
+            reservation: {
+                is: {
+                    room_id: roomId
+                }
+            },
+
+            status: EventStatus.SCHEDULED,
+
+            start_date: { lt: end },
+            end_date: { gt: start }
+        }
+    });
+
+    if (conflict) {
+        throw new ConflictError(
+            "Room already has another event scheduled during this period."
+        );
+    }
+};
+
 const validateLesson = async (
     subjectInstructorId: number,
     start: Date,
@@ -248,17 +275,57 @@ const validateLesson = async (
 
     validateSubjectWorkload(assignment);
 
-    await validateInstructorConflict(
-        assignment,
+    await validateInstructorConflictById(
+        assignment.instructor.user_id,
         start,
-        end
+        end,
+        0 
+        );
+
+    await validateClassConflict(
+        assignment.subject.class.class_id,
+        start,
+        end,
+        0
+    );
+
+    return assignment;
+};
+
+const validateLessonUpdate = async (
+    eventId: number,
+    subjectInstructorId: number,
+    start: Date,
+    end: Date,
+    roomId?: number
+): Promise<LoadedAssignment> => {
+
+    const assignment = await loadAssignment(subjectInstructorId);
+
+    validateSubjectWorkload(assignment);
+
+    await validateInstructorConflictById(
+        assignment.instructor.user_id,
+        start,
+        end,
+        eventId
     );
 
     await validateClassConflict(
         assignment.subject.class.class_id,
         start,
-        end
+        end,
+        eventId
     );
+
+    if (roomId) {
+        await validateRoomConflict(
+            roomId,
+            start,
+            end,
+            eventId
+        );
+    }
 
     return assignment;
 };
@@ -610,12 +677,27 @@ export const updateEvent = async (
     data: UpdateEventDTO
 ): Promise<Event> => {
 
-    const event = await findEventById(eventId);
+    const event = await prisma.event.findUnique({
+        where: {
+            event_id: eventId
+        },
+        select: {
+            subject_instructor: {
+                select: {
+                    instructor_id: true
+                }
+            },
+            reservation: {
+                select: {
+                    room: true
+                }
+            },
+            class_id: true
+        }
+    });
 
     if (!event) {
-        throw new NotFoundError(
-            "Event not found."
-        );
+        throw new NotFoundError("Event not found.");
     }
 
     const start = new Date(data.startDate);
@@ -623,43 +705,65 @@ export const updateEvent = async (
 
     validateDates(start, end);
 
-    let assignment: LoadedAssignment | null = null;
+    const durationMinutes = (end.getTime() - start.getTime()) / 60000;
 
-    if (
-        data.eventType === EventType.LESSON &&
-        data.subjectInstructorId
-    ) {
-        assignment = await validateLesson(
-            data.subjectInstructorId,
-            start,
-            end
+    const MAX_DURATION_MINUTES = 9 * 60;
+
+    if (durationMinutes > MAX_DURATION_MINUTES) {
+        throw new ValidationError(
+            "Event duration cannot exceed 9 hours."
         );
     }
 
-    return prisma.$transaction(async () => {
-        const updatedEvent = await prisma.event.update({
+    if (event.class_id) {
+        await validateClassConflict(
+            event.class_id,
+            start,
+            end,
+            eventId
+        );
+    }
+
+    if (event.subject_instructor) {
+        await validateInstructorConflictById(
+            event.subject_instructor.instructor_id,
+            start,
+            end,
+            eventId
+        );
+    }
+
+    const roomId =
+        data.roomId ??
+        event.reservation?.room.room_id;
+
+    if (roomId) {
+        await validateRoomConflict(
+            roomId,
+            start,
+            end,
+            eventId
+        );
+    }
+
+    return prisma.$transaction(async (tx) => {
+
+        const updatedEvent = await tx.event.update({
             where: {
                 event_id: eventId
             },
             data: {
                 title: data.title,
                 description: data.description,
-                event_type: data.eventType,
 
                 start_date: start,
-                end_date: end,
-
-                class_id: assignment?.subject.class.class_id,
-                subject_instructor_id:
-                    assignment?.subject_instructor_id,
-
-                recurrence_id: data.recurrenceId
+                end_date: end
             }
         });
 
-        if (data.roomId) {
+        if (roomId) {
             await updateReservationByEvent(eventId, {
-                roomId: data.roomId,
+                roomId,
                 startDate: start,
                 endDate: end,
                 description: data.description
@@ -667,6 +771,8 @@ export const updateEvent = async (
         }
 
         return updatedEvent;
+
+        
     });
 };
 
