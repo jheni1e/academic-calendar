@@ -6,6 +6,7 @@ import DropdownList from "../DropdownList";
 import FrequencySelector from "../FrequencySelector";
 import { getData, postData, putData } from "../../utils/apiBack";
 import { toastError, toastSuccess, toastWarning } from '../../components/BoschToast';
+import CadeadoTrancado from "../../images/cadeado-trancado.png"
 
 function Dialog({ isOpen, onClose, type, setType, title, event, subject }) {
     const dialogRef = useRef(null);
@@ -143,6 +144,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event, subject }) {
             let payload;
             let isInserted;
             let isUpdated;
+            let isBlocked;
             let eventId;
 
             switch (type) {
@@ -512,7 +514,14 @@ function Dialog({ isOpen, onClose, type, setType, title, event, subject }) {
     return (
         <dialog ref={dialogRef} className="customDialog">
             <div className="dialogHeader">
-                <h2>{title}</h2>
+                <h2 style={{display: "flex", gap: ".5rem"}}>
+                    <>
+                        {event.is_blocked &&
+                            <img src={CadeadoTrancado} alt="bloqueado" style={{height: "1.5rem"}}/>
+                        }
+                    </>
+                    {title}
+                </h2>
                 <button onClick={onClose} className="closeButton">x</button>
             </div>
             {type === "planning" &&
@@ -847,7 +856,9 @@ function Dialog({ isOpen, onClose, type, setType, title, event, subject }) {
                         </div>
                     }
                     <div className="dialogButtons">
-                        <BoschButton text="Editar" type="primary" onClick={() => setEvent()} />
+                        {!event.is_blocked &&
+                            <BoschButton text="Editar" type="primary" onClick={() => setEvent()} />
+                        }
                     </div>
                 </>
             ) : (
