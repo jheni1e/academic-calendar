@@ -100,6 +100,9 @@
 
 ### Put
     http://localhost:8080/api/event/:id
+    http://localhost:8080/api/event/block/:id
+    http://localhost:8080/api/event/unblock/:id
+
 
 ### Delete
     http://localhost:8080/api/event/:id
