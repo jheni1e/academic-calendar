@@ -469,7 +469,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event, subject }) {
 
         if (participants.some(p => p.value === participant.value)) return;
 
-        setParticipants([...participants, participant]);
+         ([...participants, participant]);
         setSelectedParticipant(null);
     };
 
@@ -508,7 +508,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event, subject }) {
             .slice(0, 16);
     };
 
-    const setEvent = () => {
+    const setEvent = async () => {
         setType("edit-event");
         console.log(event.initial)
         console.log(event)
@@ -521,12 +521,14 @@ function Dialog({ isOpen, onClose, type, setType, title, event, subject }) {
         } else if (event.eventType === "EXAM") {
             setTypeEvent(3);
         }
+        
+        const participants = await getData(`event/participants/all/${event.event_id}`)
 
         setEventName(event.title);
         setResponsible(event.responsible);
         setSelectedRoom(event.roomId);
         setSelectedClass(event.classId);
-        // setParticipants(event.participants);
+        setParticipants(participants);
         setStartDate(new Date(event.start_date));
         setEndDate(new Date(event.end_date));
     }
@@ -866,7 +868,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event, subject }) {
             }
             {type === "view-event" ? (
                 <>
-                    {typeEvent === 1 &&
+                    {event.event_type === "EXTERNAL" &&
                         <div className="dialogContent" style={{ borderRadius: "10px" }}>
                             <div className="dialogInput">
                                 <h4>Início:</h4>
@@ -875,10 +877,22 @@ function Dialog({ isOpen, onClose, type, setType, title, event, subject }) {
                             <div className="dialogInput">
                                 <h4>Encerramento:</h4>
                                 <h4>{new Date(event.end_date).toLocaleString("pt-BR", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit", })}</h4>
+                            </div>
+                            <div className="dialogInput">
+                                <h4>Participantes:</h4>
+                                <div className="participantsList">
+                                    {participants.map((participant) => (
+                                        <div key={participant.value} className="listItem">
+                                            <span className="itemName">{participant.label}</span>
+
+                                            <button className="removeItem" onClick={() => removeParticipant(participant.value)}>×</button>
+                                        </div>
+                                    ))}
+                                </div>
                             </div>
                         </div>
                     }
-                    {typeEvent === 2 &&
+                    {event.event_type === "FEEDBACK"  &&
                         <div className="dialogContent" style={{ borderRadius: "10px" }}>
                             <div className="dialogInput">
                                 <h4>Início:</h4>
@@ -887,6 +901,18 @@ function Dialog({ isOpen, onClose, type, setType, title, event, subject }) {
                             <div className="dialogInput">
                                 <h4>Encerramento:</h4>
                                 <h4>{new Date(event.end_date).toLocaleString("pt-BR", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit", })}</h4>
+                            </div>
+                            <div className="dialogInput">
+                                <h4>Participantes:</h4>
+                                <div className="participantsList">
+                                    {participants.map((participant) => (
+                                        <div key={participant.value} className="listItem">
+                                            <span className="itemName">{participant.label}</span>
+
+                                            <button className="removeItem" onClick={() => removeParticipant(participant.value)}>×</button>
+                                        </div>
+                                    ))}
+                                </div>
                             </div>
                         </div>
                     }
