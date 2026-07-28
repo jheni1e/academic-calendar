@@ -522,6 +522,12 @@ function Dialog({ isOpen, onClose, type, setType, title, event, subject }) {
         setEndDate(new Date(event.end_date));
     }
 
+    const unblockEvent = async () => {
+        await putData(`/event/unblock/${event.event_id}`)
+        onClose()
+        toastSuccess("Evento Desbloqueado!")
+    }
+
     const typeEvents = [
         { value: 1, label: "Evento" },
         { value: 2, label: "Aula" },
@@ -786,6 +792,10 @@ function Dialog({ isOpen, onClose, type, setType, title, event, subject }) {
                                 <h4>Frequência:</h4>
                                 <FrequencySelector />
                             </div>
+                            <div className="dialogInput">
+                                <h4>Status Evento:</h4>
+                                <DropdownList options={typeEvents} selectedValue={typeEvent} onChange={(e) => setTypeEvent(Number(e.target.value))} />
+                            </div>
                         </>
                     }
                     {typeEvent === 2 &&
@@ -875,6 +885,9 @@ function Dialog({ isOpen, onClose, type, setType, title, event, subject }) {
                     <div className="dialogButtons">
                         {!event.is_blocked &&
                             <BoschButton text="Editar" type="primary" onClick={() => setEvent()} />
+                        }
+                        {event.is_blocked &&
+                            <BoschButton text="Desbloquear" type="primary" onClick={unblockEvent} />
                         }
                     </div>
                 </>
