@@ -1,6 +1,6 @@
 import { prisma } from "../lib/prisma.ts";
 import { CreateEventDTO, EventResponseDTO, UpdateEventDTO } from "../dtos/EventDto.ts";
-import { Class, Event, EventStatus, EventType, Prisma, Subject, SubjectInstructor, User } from "../generated/prisma/client.ts";
+import { Class, Event, EventStatus, EventType, ParticipationStatus, Prisma, Subject, SubjectInstructor, User } from "../generated/prisma/client.ts";
 import { NotFoundError } from "../shared/errors/NotFoundError.ts";
 import { ValidationError } from "../shared/errors/ValidationError.ts";
 import { ConflictError } from "../shared/errors/ConflictError.ts";
@@ -100,26 +100,24 @@ const validateSubjectWorkload = (
     }
 };
 
-const validateInstructorConflict = async (
-    assignment: LoadedAssignment,
+const validateInstructorConflictById = async (
+    instructorId: number,
     start: Date,
-    end: Date
+    end: Date,
+    ignoreEventId: number
 ): Promise<void> => {
 
     const conflict = await prisma.event.findFirst({
         where: {
+            event_id: { not: ignoreEventId },
+
             status: EventStatus.SCHEDULED,
 
-            start_date: {
-                lt: end
-            },
-
-            end_date: {
-                gt: start
-            },
+            start_date: { lt: end },
+            end_date: { gt: start },
 
             subject_instructor: {
-                instructor_id: assignment.instructor.user_id
+                instructor_id: instructorId
             }
         }
     });
@@ -134,21 +132,19 @@ const validateInstructorConflict = async (
 const validateClassConflict = async (
     classId: number,
     start: Date,
-    end: Date
+    end: Date,
+    ignoreEventId: number
 ): Promise<void> => {
 
     const conflict = await prisma.event.findFirst({
         where: {
+            event_id: { not: ignoreEventId },
+
             class_id: classId,
             status: EventStatus.SCHEDULED,
 
-            start_date: {
-                lt: end
-            },
-
-            end_date: {
-                gt: start
-            }
+            start_date: { lt: end },
+            end_date: { gt: start }
         }
     });
 
@@ -159,12 +155,52 @@ const validateClassConflict = async (
     }
 };
 
+const validateUserConflict = async (
+    userId: number,
+    start: Date,
+    end: Date,
+    currentEventId?: number
+): Promise<void> => {
+
+    const conflict = await prisma.participation.findFirst({
+        where: {
+            user_id: userId,
+            status: ParticipationStatus.CONFIRMED,
+
+            event: {
+                status: EventStatus.SCHEDULED,
+
+                ...(currentEventId && {
+                    event_id: {
+                        not: currentEventId
+                    }
+                }),
+
+                start_date: {
+                    lt: end
+                },
+
+                end_date: {
+                    gt: start
+                }
+            }
+        }
+    });
+
+    if (conflict) {
+        throw new ConflictError(
+            "User already has another confirmed event during this period."
+        );
+    }
+};
+
 // --- HELPERS ---
 
 const createEventRecord = async (
     tx: Prisma.TransactionClient,
     data: CreateEventDTO,
     assignment: LoadedAssignment | null,
+    classId: number | undefined,
     start: Date,
     end: Date
 ): Promise<Event> => {
@@ -182,8 +218,7 @@ const createEventRecord = async (
 
             created_by: data.createdBy,
 
-            class_id:
-                assignment?.subject.class.class_id,
+            class_id: classId,
 
             subject_instructor_id:
                 assignment?.subject_instructor_id,
@@ -195,6 +230,37 @@ const createEventRecord = async (
         }
     });
 
+};
+
+const validateRoomConflict = async (
+    roomId: number,
+    start: Date,
+    end: Date,
+    ignoreEventId: number
+): Promise<void> => {
+
+    const conflict = await prisma.event.findFirst({
+        where: {
+            event_id: { not: ignoreEventId },
+
+            reservation: {
+                is: {
+                    room_id: roomId
+                }
+            },
+
+            status: EventStatus.SCHEDULED,
+
+            start_date: { lt: end },
+            end_date: { gt: start }
+        }
+    });
+
+    if (conflict) {
+        throw new ConflictError(
+            "Room already has another event scheduled during this period."
+        );
+    }
 };
 
 const validateLesson = async (
@@ -220,6 +286,44 @@ const validateLesson = async (
         start,
         end
     );
+
+    return assignment;
+};
+
+const validateLessonUpdate = async (
+    eventId: number,
+    subjectInstructorId: number,
+    start: Date,
+    end: Date,
+    roomId?: number
+): Promise<LoadedAssignment> => {
+
+    const assignment = await loadAssignment(subjectInstructorId);
+
+    validateSubjectWorkload(assignment);
+
+    await validateInstructorConflict(
+        assignment,
+        start,
+        end,
+        eventId
+    );
+
+    await validateClassConflict(
+        assignment.subject.class.class_id,
+        start,
+        end,
+        eventId
+    );
+
+    if (roomId) {
+        await validateRoomConflict(
+            roomId,
+            start,
+            end,
+            eventId
+        );
+    }
 
     return assignment;
 };
@@ -280,14 +384,10 @@ export const createEvent = async (
 
     let assignment: LoadedAssignment | null = null;
 
+    let classId = data.classId;
+
     // --- Lesson Validation ---
     if (data.eventType === EventType.LESSON) {
-
-        if (!data.classId) {
-            throw new ValidationError(
-                "Class is required for lessons."
-            );
-        }
 
         if (!data.subjectInstructorId) {
             throw new ValidationError(
@@ -306,6 +406,7 @@ export const createEvent = async (
             start,
             end
         );
+        classId = assignment.subject.class_id;
     }
 
     // --- Room Validation ---
@@ -338,6 +439,7 @@ export const createEvent = async (
             tx,
             data,
             assignment,
+            classId,
             start,
             end
         );
@@ -573,12 +675,27 @@ export const updateEvent = async (
     data: UpdateEventDTO
 ): Promise<Event> => {
 
-    const event = await findEventById(eventId);
+    const event = await prisma.event.findUnique({
+        where: {
+            event_id: eventId
+        },
+        select: {
+            subject_instructor: {
+                select: {
+                    instructor_id: true
+                }
+            },
+            reservation: {
+                select: {
+                    room: true
+                }
+            },
+            class_id: true
+        }
+    });
 
     if (!event) {
-        throw new NotFoundError(
-            "Event not found."
-        );
+        throw new NotFoundError("Event not found.");
     }
 
     const start = new Date(data.startDate);
@@ -586,43 +703,65 @@ export const updateEvent = async (
 
     validateDates(start, end);
 
-    let assignment: LoadedAssignment | null = null;
+    const durationMinutes = (end.getTime() - start.getTime()) / 60000;
 
-    if (
-        data.eventType === EventType.LESSON &&
-        data.subjectInstructorId
-    ) {
-        assignment = await validateLesson(
-            data.subjectInstructorId,
-            start,
-            end
+    const MAX_DURATION_MINUTES = 9 * 60;
+
+    if (durationMinutes > MAX_DURATION_MINUTES) {
+        throw new ValidationError(
+            "Event duration cannot exceed 9 hours."
         );
     }
 
-    return prisma.$transaction(async () => {
-        const updatedEvent = await prisma.event.update({
+    if (event.class_id) {
+        await validateClassConflict(
+            event.class_id,
+            start,
+            end,
+            eventId
+        );
+    }
+
+    if (event.subject_instructor) {
+        await validateInstructorConflictById(
+            event.subject_instructor.instructor_id,
+            start,
+            end,
+            eventId
+        );
+    }
+
+    const roomId =
+        data.roomId ??
+        event.reservation?.room.room_id;
+
+    if (roomId) {
+        await validateRoomConflict(
+            roomId,
+            start,
+            end,
+            eventId
+        );
+    }
+
+    return prisma.$transaction(async (tx) => {
+
+        const updatedEvent = await tx.event.update({
             where: {
                 event_id: eventId
             },
             data: {
                 title: data.title,
                 description: data.description,
-                event_type: data.eventType,
 
                 start_date: start,
-                end_date: end,
-
-                class_id: assignment?.subject.class.class_id,
-                subject_instructor_id:
-                    assignment?.subject_instructor_id,
-
-                recurrence_id: data.recurrenceId
+                end_date: end
             }
         });
 
-        if (data.roomId) {
+        if (roomId) {
             await updateReservationByEvent(eventId, {
-                roomId: data.roomId,
+                roomId,
                 startDate: start,
                 endDate: end,
                 description: data.description
@@ -630,6 +769,8 @@ export const updateEvent = async (
         }
 
         return updatedEvent;
+
+        
     });
 };
 
@@ -656,18 +797,6 @@ export const deleteEvent = async (
 export const blockEvent = async (
     eventId : number
 ) : Promise<void> => {
-    const event = await prisma.event.findUnique({
-        where: {
-            event_id : eventId
-        }
-    })
-
-    if(!event)
-        throw new NotFoundError("Event not found")
-
-    if (event.end_date.getTime() < Date.now()) {
-        throw new BadRequestError("Cannot block an event that has already ended");
-    }
 
     await prisma.event.update({
         where: {
@@ -682,18 +811,6 @@ export const blockEvent = async (
 export const unblockEvent = async (
     eventId : number
 ) : Promise<void> => {
-    const event = await prisma.event.findUnique({
-        where: {
-            event_id : eventId
-        }
-    })
-
-    if(!event)
-        throw new NotFoundError("Event not found")
-
-    if (event.end_date.getTime() < Date.now()) {
-        throw new BadRequestError("Cannot unblock an event that has already ended");
-    }
 
     await prisma.event.update({
         where: {
@@ -705,3 +822,30 @@ export const unblockEvent = async (
     });
 }
 
+export const confirmEvent = async (
+    eventId : number
+) : Promise<void> => {
+    
+    await prisma.event.update({
+        where: {
+            event_id: eventId
+        },
+        data: {
+            status: "CONFIRMED"
+        }
+    })
+}
+
+export const cancelEvent = async (
+    eventId : number
+) : Promise<void> => {
+
+    await prisma.event.update({
+        where: {
+            event_id: eventId
+        },
+        data: {
+            status: "CANCELLED"
+        }
+    })
+}
