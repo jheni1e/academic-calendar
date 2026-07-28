@@ -22,6 +22,10 @@ function SubjectDetails() {
         loadSubjectInfo();
     }, []);
 
+    useEffect(() => {
+        loadInstructors();
+    }, [isModalOpen]);
+
     const initUserInfo = async () => {
         const edv = sessionStorage.getItem("user");
 
@@ -61,11 +65,6 @@ function SubjectDetails() {
     const handleDelete = async (item) => {
         try {
             const response = await deleteData(`/subject/${subject.subject_id}/instructor/${item.instructor.user_id}`);
-    
-            if (!response) {
-                toastError("Erro ao remover instrutor.");
-                return;
-            }
 
             toastSuccess("Instrutor removido com sucesso");
             loadInstructors();
@@ -108,7 +107,7 @@ function SubjectDetails() {
                     ))}
                 </div>
                 {isModalOpen &&
-                    <Dialog isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title="Registrar instrutor" type="instructor" />
+                    <Dialog isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title="Registrar instrutor" type="instructor" subject={subject} />
                 }
             </div>
         </>

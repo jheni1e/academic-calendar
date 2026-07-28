@@ -313,6 +313,23 @@ function Dialog({ isOpen, onClose, type, setType, title, event, subject }) {
                     onClose();
                     toastSuccess("Aulas planejadas com sucesso!")
                     break;
+                case "instructor":
+                    payload = {
+                        subjectId: subject.subject_id,
+                        instructorId: responsible
+                    }
+
+                    const instructorAdded = await postData('/subject/instructor', payload);
+
+                    if (!instructorAdded) {
+                        onClose();
+                        toastError("Falha ao adicionar instrutor à aula.");
+                        return;
+                    }
+
+                    onClose();
+                    toastSuccess("Instrutor adicionado com sucesso!")
+                    break;
                 case "edit-event": {
                     switch (typeEvent) {
                         case 1:
@@ -719,7 +736,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event, subject }) {
                     <div className="dialogInput">
                         <h4>Instrutor:</h4>
                         <div className="itemSelector">
-                            <DropdownList options={allPeople} selectedValue={selectedParticipant} onChange={(e) => setSelectedParticipant(Number(e.target.value))} />
+                            <DropdownList options={allInstructors} selectedValue={responsible} onChange={(e) => setResponsible(Number(e.target.value))} />
                         </div>
                     </div>
                 </div>
