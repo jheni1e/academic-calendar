@@ -41,7 +41,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event, subject }) {
     const [seriesName, setSeriesName] = useState("");
     
     const [typeStatusEvent, setTypeStatusEvent] = useState(
-        event.is_blocked === true ? 1 :2 );
+        event != null ? event.is_blocked === true ? 1 : 2 : 2 );
 
     useEffect(() => {
         const dialog = dialogRef.current;
@@ -551,7 +551,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event, subject }) {
             <div className="dialogHeader">
                 <h2 style={{display: "flex", gap: ".5rem"}}>
                     <>
-                        {event.is_blocked &&
+                        {event != null && event.is_blocked &&
                             <img src={CadeadoTrancado} alt="bloqueado" style={{height: "1.5rem"}}/>
                         }
                     </>
