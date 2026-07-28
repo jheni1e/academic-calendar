@@ -18,11 +18,11 @@
     [x] Aulas com horários conflitantes na mesma sala.
     [x] Instrutor ocupado no mesmo horário.
     [x] Turma ocupada no mesmo horário.
-    [ ] Usuário com evento pessoal no mesmo horário.
-    [ ] Evento iniciando exatamente quando outro termina.
-    [ ] Evento terminando exatamente quando outro inicia.
-    [ ] Evento completamente contido dentro de outro.
-    [ ] Evento abrangendo completamente outro evento.
+    [x] Usuário com evento pessoal no mesmo horário.
+    [x] Evento iniciando exatamente quando outro termina.
+    [x] Evento terminando exatamente quando outro inicia.
+    [x] Evento completamente contido dentro de outro.
+    [x] Evento abrangendo completamente outro evento.
 
 ## Regras de recorrência
 
