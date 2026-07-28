@@ -238,7 +238,7 @@ async function main() {
     //     }
     // });
 
-    await prisma.event.create({
+    const pythonLesson = await prisma.event.create({
         data: {
             title: "Aula de Python",
             description: "Introdução à linguagem Python",
@@ -251,6 +251,14 @@ async function main() {
             subject_instructor_id: 2,
     
             created_by: 4
+        }
+    });
+
+    await prisma.reservation.create({
+        data: {
+            room_id: 1,
+            event_id: pythonLesson.event_id,
+            description: "Python room reservation"
         }
     });
 
