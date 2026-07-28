@@ -48,7 +48,7 @@ function Home() {
 
   useEffect(() => {
     if (!userLoaded || !view) return;
-  
+
     getUserEvents();
   }, [userLoaded, view, filterType, selectedFilter]);
 
@@ -163,6 +163,8 @@ function Home() {
           const userId = user.id;
 
           response = await getData(`/user/events/${userId}`);
+
+          setEvents(response)
         }
         if (view === "CLASS") {
           const edv = sessionStorage.getItem("user");
@@ -177,6 +179,8 @@ function Home() {
           const classId = classUser[0].classId;
 
           let response = await getData(`/class/events/${classId}`);
+
+          setEvents(response)
         }
       }
 
@@ -202,6 +206,11 @@ function Home() {
         response = await getData(`/subject/instructor/${userId}/ongoing`);
       } else {
         response = await getData(`/subject/class/${classId}/ongoing`);
+      }
+
+      if (!response) {
+        setSubjects([]);
+        return;
       }
 
       const unfinishedSubjects = response
