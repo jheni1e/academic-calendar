@@ -165,6 +165,7 @@ const createEventRecord = async (
     tx: Prisma.TransactionClient,
     data: CreateEventDTO,
     assignment: LoadedAssignment | null,
+    classId: number | undefined,
     start: Date,
     end: Date
 ): Promise<Event> => {
@@ -182,8 +183,7 @@ const createEventRecord = async (
 
             created_by: data.createdBy,
 
-            class_id:
-                assignment?.subject.class.class_id,
+            class_id: classId,
 
             subject_instructor_id:
                 assignment?.subject_instructor_id,
@@ -280,14 +280,10 @@ export const createEvent = async (
 
     let assignment: LoadedAssignment | null = null;
 
+    let classId = data.classId;
+
     // --- Lesson Validation ---
     if (data.eventType === EventType.LESSON) {
-
-        if (!data.classId) {
-            throw new ValidationError(
-                "Class is required for lessons."
-            );
-        }
 
         if (!data.subjectInstructorId) {
             throw new ValidationError(
@@ -306,6 +302,7 @@ export const createEvent = async (
             start,
             end
         );
+        classId = assignment.subject.class_id;
     }
 
     // --- Room Validation ---
@@ -338,6 +335,7 @@ export const createEvent = async (
             tx,
             data,
             assignment,
+            classId,
             start,
             end
         );

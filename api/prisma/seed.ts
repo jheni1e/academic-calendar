@@ -167,6 +167,13 @@ async function main() {
                 start_date: new Date("2026-08-10T00:00:00Z"),
                 completed_workload: 0
             },
+            {
+                class_id: mec25.class_id,
+                name: "MEC25 - Redes",
+                workload: 40,
+                start_date: new Date("2026-07-20T00:00:00Z"),
+                completed_workload: 0
+            }
         ],
         skipDuplicates: true,
     });
@@ -199,28 +206,17 @@ async function main() {
 
     await prisma.subjectInstructor.createMany({
         data: [
-            {
-                subject_id: 1,
-                instructor_id: 6
-            },
-            {
-                subject_id: 2,
-                instructor_id: 4
-            },
-            {
-                subject_id: 3,
-                instructor_id: 5
-            },
-            {
-                subject_id: 4,
-                instructor_id: 6
-            },
-            {
-                subject_id: 5,
-                instructor_id: 4
-            }
+            { subject_id: 1, instructor_id: 6 }, // IoT -> Gabriel
+            { subject_id: 2, instructor_id: 4 }, // Python -> Queila
+            { subject_id: 2, instructor_id: 5 }, // Python -> Patrick
+            { subject_id: 3, instructor_id: 5 }, // C# -> Patrick
+            { subject_id: 3, instructor_id: 6 }, // C# -> Gabriel
+            { subject_id: 4, instructor_id: 6 }, // Excel -> Gabriel
+            { subject_id: 5, instructor_id: 4 }, // Power BI -> Queila
+            { subject_id: 5, instructor_id: 6 }, // Power BI -> Gabriel
+            { subject_id: 6, instructor_id: 5 }, // Redes -> Patrick
         ]
-    })
+    });
 
     // const recurrence = await prisma.recurrence.create({
     //     data: {
