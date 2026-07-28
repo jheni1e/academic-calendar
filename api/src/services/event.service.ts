@@ -5,6 +5,7 @@ import { NotFoundError } from "../shared/errors/NotFoundError.ts";
 import { ValidationError } from "../shared/errors/ValidationError.ts";
 import { ConflictError } from "../shared/errors/ConflictError.ts";
 import { createReservation, updateReservationByEvent } from "./reservation.service.ts";
+import { BadRequestError } from "../shared/errors/BadRequestError.ts";
 
 const validateDates = (
     start: Date,
@@ -651,3 +652,56 @@ export const deleteEvent = async (
     });
 
 };
+
+export const blockEvent = async (
+    eventId : number
+) : Promise<void> => {
+    const event = await prisma.event.findUnique({
+        where: {
+            event_id : eventId
+        }
+    })
+
+    if(!event)
+        throw new NotFoundError("Event not found")
+
+    if (event.end_date.getTime() < Date.now()) {
+        throw new BadRequestError("Cannot block an event that has already ended");
+    }
+
+    await prisma.event.update({
+        where: {
+            event_id: eventId
+        },
+        data: {
+            is_blocked: true
+        }
+    });
+}
+
+export const unblockEvent = async (
+    eventId : number
+) : Promise<void> => {
+    const event = await prisma.event.findUnique({
+        where: {
+            event_id : eventId
+        }
+    })
+
+    if(!event)
+        throw new NotFoundError("Event not found")
+
+    if (event.end_date.getTime() < Date.now()) {
+        throw new BadRequestError("Cannot unblock an event that has already ended");
+    }
+
+    await prisma.event.update({
+        where: {
+            event_id: eventId
+        },
+        data: {
+            is_blocked: false
+        }
+    });
+}
+
