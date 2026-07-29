@@ -31,7 +31,7 @@ export class SubjectInstructorController {
 
         try {
             await deleteSubjectInstructor(Number(subjectId), Number(instructorId));
-            return res.status(204).send({ message: "Subject / Instructor deleted successfully." });
+            return res.status(200).send({ message: "Subject / Instructor deleted successfully." });
 
         } catch (error) {
             if (error instanceof BadRequestError) {

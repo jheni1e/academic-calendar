@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { AppError } from "../shared/errors/AppError.ts";
 import { NotFoundError } from "../shared/errors/NotFoundError.ts";
-import { CreateReservationDTO, UpdateReservationDTO } from "../dtos/reservationDto.ts";
 import { createReservation, deleteReservation, findAllReservations, findReservationByEvent, findReservationById, findReservationsByRoom, updateReservation } from "../services/reservation.service.ts";
 import { prisma } from "../lib/prisma.ts";
 
@@ -23,7 +22,7 @@ export class ReservationController {
         try {
             await deleteReservation(id);
 
-            return res.status(204).send({ message: "Reservation deleted successfully." });
+            return res.status(200).send({ message: "Reservation deleted successfully." });
         } catch (error) {
             next(error);
         }

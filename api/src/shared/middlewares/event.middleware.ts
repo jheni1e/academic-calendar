@@ -75,13 +75,19 @@ export const validateCreate = async (req: Request, res: Response, next: NextFunc
 
 export const validateDelete = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const eventId: number = parseInt(req.params.id[0].toString());
+        const eventId = Number(req.params.id);
 
         const event = await findEventById(eventId)
 
         if (!event) {
             throw new NotFoundError("Event not found");
         }
+
+        if(event.created_by != res.locals.user.user_id)
+            throw new UnauthorizedError("Access denied")
+
+        if(event.is_blocked)
+            throw new BadRequestError("Cannot delete a blocked event")
 
         const reservation = await findReservationByEvent(eventId)
 

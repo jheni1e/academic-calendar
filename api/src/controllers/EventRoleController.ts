@@ -26,7 +26,7 @@ export class EventRoleController {
 
         try {
             await deleteEventRole(id);
-            return res.status(204).send({ message: "Event role deleted successfully." });
+            return res.status(200).send({ message: "Event role deleted successfully." });
 
         } catch (error) {
             if (error instanceof AppError) {
