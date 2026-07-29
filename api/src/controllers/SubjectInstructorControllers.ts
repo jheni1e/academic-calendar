@@ -140,11 +140,9 @@ export class SubjectInstructorController {
     }
 
     static async findSubjectInstructorBySubjectAndInstructor(req: Request, res: Response) {
-        const subjectId: number = parseInt(req.params.id[0].toString());
-        const instructorId: number = parseInt(req.params.id[1].toString());
-
+        const { subjectId, instructorId } = req.params
         try {
-            const subjectInstructor = await findSubjectInstructorBySubjectAndInstructor(subjectId, instructorId);
+            const subjectInstructor = await findSubjectInstructorBySubjectAndInstructor(Number(subjectId), Number(instructorId));
 
             return res.status(200).json(subjectInstructor);
         } catch (error) {
