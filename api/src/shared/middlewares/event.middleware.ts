@@ -136,6 +136,32 @@ export const validateEventExistsById = async (req: Request, res: Response, next:
     }
 }
 
+export const validateBlockEvent = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { id } = req.params
+
+        if (Number.isNaN(id)) 
+            throw new BadRequestError("Invalid event id");
+        
+        const event = await findEventById(Number(id))
+        
+        if(!event)
+            throw new NotFoundError("Event not found")
+
+        const userId = res.locals.user.id
+
+        if(event.created_at != userId)
+            throw new UnauthorizedError("Access denied")
+
+        if (event.end_date.getTime() < Date.now()) 
+            throw new BadRequestError("Event has already ended");
+        next()
+
+    } catch (error) {
+        next(error)
+    }
+}
+
 export const validateEditEvent = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { id } = req.params
