@@ -12,7 +12,6 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
     const dialogRef = useRef(null);
 
     const [responsible, setResponsible] = useState(null);
-    const [instructors, setInstructors] = useState([])
     const [allInstructors, setAllInstructors] = useState([]);
     const [allPeople, setAllPeople] = useState([]);
 
@@ -190,7 +189,13 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                                     eventId: eventId
                                 };
 
-                                await postData("/event/participants", participantPayload);
+                                const participation = await postData("/event/participants", participantPayload);
+
+                                if (!participation) {
+                                    onClose();
+                                    toastError("Falha ao adicionar participantes.");
+                                    return;
+                                }
                             });
 
                             onClose();
@@ -515,31 +520,12 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
 
         if (participants.some(p => p.value === participant.value)) return;
 
-         ([...participants, participant]);
+        setParticipants([...participants, participant]);
         setSelectedParticipant(null);
     };
 
     const removeParticipant = (id) => {
         setParticipants(participants.filter(p => p.value !== id));
-    };
-
-    const addInstructor = () => {
-        if (!responsible) return;
-
-        const instructor = allInstructors.find(
-            user => user.value === responsible
-        );
-
-        if (!instructor) return;
-
-        if (instructors.some(p => p.value === instructor.value)) return;
-
-        setInstructors([...instructors, instructor]);
-        setResponsible(null);
-    };
-
-    const removeInstructor = (id) => {
-        setInstructors(instructors.filter(p => p.value !== id));
     };
 
     const formatDateTimeLocal = (date) => {
@@ -556,28 +542,31 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
 
     const setEvent = async () => {
         setType("edit-event");
-        console.log(event.initial)
-        console.log(event)
-        setResponsible(event.responsible)
 
         if (event.eventType === "LESSON") {
             setTypeEvent(1);
-        } else if (event.eventType === "EVENT") {
+        } else if (event.eventType === "EXTERNAL") {
             setTypeEvent(2);
         } else if (event.eventType === "EXAM") {
             setTypeEvent(3);
         }
-        
-        const participants = await getData(`event/participants/all/${event.event_id}`)
-        console.log(participants)
 
         setEventName(event.title);
-        setResponsible(event.responsible);
-        setSelectedRoom(event.roomId);
-        setSelectedClass(event.classId);
-        setParticipants(participants);
         setStartDate(new Date(event.start_date));
         setEndDate(new Date(event.end_date));
+
+        try {
+            const participants = await getData(`/event/participants/all/${event.event_id}`);
+
+            setParticipants(
+                participants.map(p => ({
+                    value: p.userId,
+                    label: p.userName
+                }))
+            );
+        } catch (err) {
+            console.error(err);
+        }
     }
 
     const unblockEvent = async () => {
@@ -601,7 +590,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                 <h2 style={{ display: "flex", gap: ".5rem" }}>
                     <>
                         {event != null && event.is_blocked &&
-                            <img src={CadeadoTrancado} alt="bloqueado" style={{height: "1.5rem"}}/>
+                            <img src={CadeadoTrancado} alt="bloqueado" style={{ height: "1.5rem" }} />
                         }
                     </>
                     {title}
@@ -721,7 +710,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                             <div className="participantsList">
                                 {participants.map((participant) => (
                                     <div key={participant.value} className="listItem">
-                                        <span className="itemName">{participant.userName}</span>
+                                        <span className="itemName">{participant.label}</span>
 
                                         <button className="removeItem" onClick={() => removeParticipant(participant.value)}>×</button>
                                     </div>
@@ -938,7 +927,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                             </div>
                         </div>
                     }
-                    {event.event_type === "FEEDBACK"  &&
+                    {event.event_type === "FEEDBACK" &&
                         <div className="dialogContent" style={{ borderRadius: "10px" }}>
                             <div className="dialogInput">
                                 <h4>Início:</h4>
