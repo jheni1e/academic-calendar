@@ -148,7 +148,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
             const subjectsWithClass = await Promise.all(
                 data.map(async (subject) => {
                     const classData = await getData(`/class/${subject.class_id}`);
-    
+
                     return {
                         value: subject.subject_id,
                         label: `${subject.name} - ${classData.name}`
@@ -303,6 +303,55 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
 
                             onClose();
                             toastSuccess("Avaliação criada com sucesso!");
+                            break;
+                        case 4:
+                            if (!eventName.trim()) {
+                                onClose();
+                                toastWarning("O título é obrigatório.");
+                                return;
+                            }
+
+                            eventType = "FEEDBACK";
+
+                            edv = sessionStorage.getItem("user");
+                            user = await getData(`/user/edv/${edv}`);
+                            userId = user.user.id;
+
+                            payload = {
+                                title: eventName,
+                                eventType: eventType,
+                                startDate: startDate,
+                                endDate: endDate,
+                                createdBy: userId
+                            };
+
+                            isInserted = await postData("/event/", payload);
+
+                            if (!isInserted) {
+                                onClose();
+                                toastError("Falha ao criar feedback.");
+                                return;
+                            }
+
+                            eventId = isInserted.event_id;
+
+                            participants.forEach(async p => {
+                                let participantPayload = {
+                                    userId: p.value,
+                                    eventId: eventId
+                                };
+
+                                const participation = await postData("/event/participants", participantPayload);
+
+                                if (!participation) {
+                                    onClose();
+                                    toastError("Falha ao adicionar participantes.");
+                                    return;
+                                }
+                            });
+
+                            onClose();
+                            toastSuccess("Feedback criado com sucesso!");
                             break;
                     }
                     break;
@@ -605,7 +654,8 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
     const typeEvents = [
         { value: 1, label: "Evento" },
         { value: 2, label: "Aula" },
-        { value: 3, label: "Avaliação" }
+        { value: 3, label: "Avaliação" },
+        { value: 4, label: "Feedback" }
     ];
     const typeStatus = [
         { value: 1, label: "Bloqueado" },
@@ -798,6 +848,34 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                             <div className="dialogInput">
                                 <h4>Matéria:</h4>
                                 <DropdownList options={allSubjects} selectedValue={selectedSubject} onChange={(e) => setSelectedSubject(Number(e.target.value))} />
+                            </div>
+                        </>
+                    }
+                    {typeEvent === 4 &&
+                        <>
+                            <div className="dialogInput">
+                                <h4>Participantes:</h4>
+                                <div className="itemSelector">
+                                    <DropdownList options={allPeople} selectedValue={selectedParticipant} onChange={(e) => setSelectedParticipant(Number(e.target.value))} />
+                                    <button onClick={addParticipant} className="addItem">+</button>
+                                </div>
+                            </div>
+                            <div className="participantsList">
+                                {participants.map((participant) => (
+                                    <div key={participant.value} className="listItem">
+                                        <span className="itemName">{participant.label}</span>
+
+                                        <button className="removeItem" onClick={() => removeParticipant(participant.value)}>×</button>
+                                    </div>
+                                ))}
+                            </div>
+                            <div className="dialogInput">
+                                <h4>Início:</h4>
+                                <TextBox placeholder="XX/XX/XXXX XX:XX" type="datetime-local" value={formatDateTimeLocal(startDate)} onChange={(e) => setStartDate(new Date(e.target.value))} />
+                            </div>
+                            <div className="dialogInput">
+                                <h4>Encerramento:</h4>
+                                <TextBox placeholder="XX/XX/XXXX XX:XX" type="datetime-local" value={formatDateTimeLocal(endDate)} onChange={(e) => setEndDate(new Date(e.target.value))} />
                             </div>
                         </>
                     }
