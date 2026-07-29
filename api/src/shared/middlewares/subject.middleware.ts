@@ -154,10 +154,10 @@ export const validateUpdate = async (req: Request, res: Response, next: NextFunc
 
 export const validateSubjectExistsById = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const classId: number = parseInt(req.params.id.toString());
+        const subjectId: number = parseInt(req.params.subjectId.toString());
 
         const subject = await prisma.subject.findFirst({
-            where: { class_id: classId },
+            where: { subject_id: subjectId },
         });
 
         if (!subject) {
