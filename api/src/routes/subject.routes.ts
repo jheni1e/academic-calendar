@@ -7,6 +7,7 @@ import { SubjectInstructorController } from '../controllers/SubjectInstructorCon
 import { validateCreate } from '../shared/middlewares/subjectinstructor.middleware.ts';
 import { validateDelete, validateSubjectExistsById, validateUpdate } from '../shared/middlewares/subject.middleware.ts';
 import { validateDelete as validateDeleteSI } from '../shared/middlewares/subjectinstructor.middleware.ts'
+import { validateUserExistsById } from '../shared/middlewares/user.middleware.ts';
 
 const route = express.Router();
 
@@ -17,7 +18,7 @@ route
     .get('/all', authMiddleware, SubjectController.findAllSubjects) // get all subjects
     .get('/:id', authMiddleware, validateSubjectExistsById, SubjectController.findSubjectById) // get a subject by its id
     .get('/instructors/:id', authMiddleware, validateSubjectExistsById, SubjectInstructorController.findSubjectInstructorsBySubject) // get all instructors by subject
-
+    .get('/:subjectId/instructor/:instructorId', authMiddleware, SubjectInstructorController.findSubjectInstructorBySubjectAndInstructor)
     .get('/instructor/:instructorId/ongoing', authMiddleware, authorize(Role.ADMIN, Role.INSTRUCTOR), SubjectController.findOnGoingSubjectsByInstructor) // get active subjects by instructor
     .get('class/:classId/ongoing', SubjectController.findOnGoingSubjectsByClass)
 

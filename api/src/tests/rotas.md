@@ -79,6 +79,7 @@
     http://localhost:8080/api/subject/instructors/:subjectId
     http://localhost:8080/api/subject/instructor/:instructorId/ongoing
     http://localhost:8080/api/subject/class/:classId/ongoing
+    http://localhost:8080/api/subject/:subjectId/instructor/:instructorId
 
 ### Put
     http://localhost:8080/api/subject/:id
