@@ -81,7 +81,10 @@ function Home() {
 
     const classUser = await getData('/user/classes');
 
-    const classId = classUser[0].classId;
+    const classId =
+      Array.isArray(classUser) && classUser.length > 0
+        ? classUser[0].classId
+        : null;
 
     const instructor =
       user.role === "ADMIN" ||
@@ -89,7 +92,12 @@ function Home() {
 
     setIsInstructor(instructor);
 
-    await loadSubjects(user.id, classId, instructor);
+    if (!classId) {
+      setUserLoaded(true);
+      return;
+    } else {
+      await loadSubjects(user.id, null, isInstructor);
+    }
 
     setUserLoaded(true);
   };
