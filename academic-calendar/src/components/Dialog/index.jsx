@@ -12,7 +12,6 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
     const dialogRef = useRef(null);
 
     const [responsible, setResponsible] = useState(null);
-    const [instructors, setInstructors] = useState([])
     const [allInstructors, setAllInstructors] = useState([]);
     const [allPeople, setAllPeople] = useState([]);
 
@@ -191,7 +190,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                                 };
 
                                 const participation = await postData("/event/participants", participantPayload);
-                                
+
                                 if (!participation) {
                                     onClose();
                                     toastError("Falha ao adicionar participantes.");
@@ -529,25 +528,6 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
         setParticipants(participants.filter(p => p.value !== id));
     };
 
-    const addInstructor = () => {
-        if (!responsible) return;
-
-        const instructor = allInstructors.find(
-            user => user.value === responsible
-        );
-
-        if (!instructor) return;
-
-        if (instructors.some(p => p.value === instructor.value)) return;
-
-        setInstructors([...instructors, instructor]);
-        setResponsible(null);
-    };
-
-    const removeInstructor = (id) => {
-        setInstructors(instructors.filter(p => p.value !== id));
-    };
-
     const formatDateTimeLocal = (date) => {
         if (!(date instanceof Date) || isNaN(date.getTime())) {
             return "";
@@ -562,28 +542,31 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
 
     const setEvent = async () => {
         setType("edit-event");
-        console.log(event.initial)
-        console.log(event)
-        setResponsible(event.responsible)
 
         if (event.eventType === "LESSON") {
             setTypeEvent(1);
-        } else if (event.eventType === "EVENT") {
+        } else if (event.eventType === "EXTERNAL") {
             setTypeEvent(2);
         } else if (event.eventType === "EXAM") {
             setTypeEvent(3);
         }
 
-        const participants = await getData(`event/participants/all/${event.event_id}`)
-        console.log(participants)
-
         setEventName(event.title);
-        setResponsible(event.responsible);
-        setSelectedRoom(event.roomId);
-        setSelectedClass(event.classId);
-        setParticipants(participants);
         setStartDate(new Date(event.start_date));
         setEndDate(new Date(event.end_date));
+
+        try {
+            const participants = await getData(`/event/participants/all/${event.event_id}`);
+
+            setParticipants(
+                participants.map(p => ({
+                    value: p.userId,
+                    label: p.userName
+                }))
+            );
+        } catch (err) {
+            console.error(err);
+        }
     }
 
     const unblockEvent = async () => {
