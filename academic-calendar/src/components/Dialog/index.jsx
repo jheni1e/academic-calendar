@@ -569,6 +569,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
 
     const setEvent = async () => {
         setType("edit-event");
+        console.log(event)
 
         if (event.eventType === "LESSON") {
             setTypeEvent(1);
@@ -931,6 +932,34 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
             }
             {type === "view-event" ? (
                 <>
+                    {event.event_type === "LESSON" &&
+                        <div className="dialogContent" style={{ borderRadius: "10px" }}>
+                            <div className="dialogInput">
+                                <h4>Início:</h4>
+                                <h4>{new Date(event.start_date).toLocaleString("pt-BR", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit", })}</h4>
+                            </div>
+                            <div className="dialogInput">
+                                <h4>Encerramento:</h4>
+                                <h4>{new Date(event.end_date).toLocaleString("pt-BR", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit", })}</h4>
+                            </div>
+                            <div className="dialogInput">
+                                <h4>Turma:</h4>
+                                <div className="participantsList">
+                                    <div className="listItem">
+                                        <span className="itemName" style={{justifyContent: "center"}}>{event.class.name}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="dialogInput">
+                                <h4>Instrutor:</h4>
+                                <div className="participantsList">
+                                    <div className="listItem">
+                                        <span className="itemName" style={{justifyContent: "center"}}>{event.subject_instructor.instructor.name}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
                     {event.event_type === "EXTERNAL" &&
                         <div className="dialogContent" style={{ borderRadius: "10px" }}>
                             <div className="dialogInput">
