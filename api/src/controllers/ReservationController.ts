@@ -2,13 +2,13 @@ import { Request, Response, NextFunction } from "express";
 import { AppError } from "../shared/errors/AppError.ts";
 import { NotFoundError } from "../shared/errors/NotFoundError.ts";
 import { createReservation, deleteReservation, findAllReservations, findReservationByEvent, findReservationById, findReservationsByRoom, updateReservation } from "../services/reservation.service.ts";
-import { CreateReservationDTO, UpdateReservationDTO } from "../dtos/ReservationDto.ts";
+import { prisma } from "../lib/prisma.ts";
 
 export class ReservationController {
     static async create(req: Request, res: Response, next: NextFunction) {
         const data: CreateReservationDTO = req.body;
         try {
-            const reservation = await createReservation(data);
+            const reservation = await createReservation(prisma, data);
 
             return res.status(201).json(reservation);
         } catch (error) {
