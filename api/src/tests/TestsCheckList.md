@@ -4,11 +4,11 @@
 
     [x] Criar aula única.
     [ ] Criar aula recorrente.
-    [ ] Criar evento pessoal.
+    [x] Criar evento pessoal.
     [ ] Criar evento externo.
     [ ] Criar avaliação.
-    [ ] Criar feedback.
-    [ ] Editar evento.
+    [x] Criar feedback.
+    [x] Editar evento.
     [ ] Cancelar evento.
     [ ] Excluir evento.
     [x] Reservar sala para um evento.
@@ -18,11 +18,11 @@
     [x] Aulas com horários conflitantes na mesma sala.
     [x] Instrutor ocupado no mesmo horário.
     [x] Turma ocupada no mesmo horário.
-    [ ] Usuário com evento pessoal no mesmo horário.
-    [ ] Evento iniciando exatamente quando outro termina.
-    [ ] Evento terminando exatamente quando outro inicia.
-    [ ] Evento completamente contido dentro de outro.
-    [ ] Evento abrangendo completamente outro evento.
+    [x] Usuário com evento pessoal no mesmo horário.
+    [x] Evento iniciando exatamente quando outro termina.
+    [x] Evento terminando exatamente quando outro inicia.
+    [x] Evento completamente contido dentro de outro.
+    [x] Evento abrangendo completamente outro evento.
 
 ## Regras de recorrência
 
@@ -36,12 +36,12 @@
 
 ## Salas
 
-    [ ] Sala disponível.
-    [ ] Sala ocupada.
+    [x] Sala disponível.
+    [x] Sala ocupada.
     [ ] Alterar sala para uma disponível.
     [ ] Alterar sala para uma ocupada.
-    [ ] Excluir reserva.
-    [ ] Atualizar reserva.
+    [ ] Excluir reserva. (Excluir Evento)
+    [ ] Atualizar reserva. (Editar Evento)
 
 ## Participantes
 
@@ -60,16 +60,16 @@
 
 ## Casos de validação
 
-    [ ] Data inicial maior que a final.
-    [ ] Data inicial igual à final.
-    [ ] Sala inexistente.
-    [ ] Matéria inexistente.
-    [ ] Instrutor inexistente.
-    [ ] SubjectInstructor inexistente.
-    [ ] Usuário criador inexistente.
-    [ ] Evento sem título.
-    [ ] Evento sem horário.
-    [ ] Evento com duração muito longa (se houver limite).
+    [x] Data inicial maior que a final.
+    [x] Data inicial igual à final.
+    [x] Sala inexistente.
+    [x] Matéria inexistente.
+    [x] Instrutor inexistente.
+    [x] SubjectInstructor inexistente.
+    [x] Usuário criador inexistente.
+    [x] Evento sem título.
+    [x] Evento sem horário.
+    [x] Evento com duração muito longa (+9h).
 
 ## Fluxos gerais
 
@@ -80,7 +80,7 @@
     [ ] CRUD de Salas.
     [ ] CRUD de Eventos.
     [ ] CRUD de Reservas.
-    [ ] Feed do calendário.
+    [x] Feed do calendário.
     [ ] Busca por período.
     [ ] Busca por sala.
     [ ] Busca por instrutor.

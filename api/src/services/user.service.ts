@@ -1,3 +1,4 @@
+import { truncate } from "node:fs";
 import { CreateUserDTO, UpdateUserDTO, UserResponseDTO } from "../dtos/UserDto.ts";
 import { Subject, User, UserRole } from "../generated/prisma/client.ts";
 import { prisma } from "../lib/prisma.ts";
@@ -85,7 +86,11 @@ export const findUserById = async (
 
 export const findAllUsers = async() : Promise<UserResponseDTO[] | null> => {
 
-    const users = await prisma.user.findMany({});
+    const users = await prisma.user.findMany({
+        where: {
+            is_active: true
+        }
+    });
 
     return users.map(({ password, ...user }) => ({
         edv: user.user_edv,
