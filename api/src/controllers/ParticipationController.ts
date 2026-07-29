@@ -27,7 +27,7 @@ export class ParticipationController {
         try {
             await deleteParticipation(id);
 
-            return res.status(204).send({ message: "Participation deleted successfully." });
+            return res.status(200).send({ message: "Participation deleted successfully." });
         } catch (error) {
             if (error instanceof AppError) {
                 return res.status(error.statusCode).json({
@@ -43,7 +43,7 @@ export class ParticipationController {
         try {
             await deleteParticipation(res.locals.participationId);
 
-            return res.status(204).send({ message: "Participation deleted successfully." });
+            return res.status(200).send({ message: "Participation deleted successfully." });
         } catch (error) {
             if (error instanceof AppError) {
                 return res.status(error.statusCode).json({
