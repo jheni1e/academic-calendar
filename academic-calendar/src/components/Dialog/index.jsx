@@ -144,28 +144,23 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
     const getAllSubjects = async () => {
         try {
             const data = await getData("/subject/all");
-        
+
             const subjectsWithClass = await Promise.all(
-              data.map(async (subject) => {
-                const classData = await getData(`/class/${subject.class_id}`);
-        
-                const subjectInstructors = await getData(
-                  `/subject/instructors/${subject.subject_id}`
-                );
-        
-                return {
-                  ...subject,
-                  className: classData.name,
-                  instructors: subjectInstructors
-                };
-              })
+                data.map(async (subject) => {
+                    const classData = await getData(`/class/${subject.class_id}`);
+    
+                    return {
+                        value: subject.subject_id,
+                        label: `${subject.name} - ${classData.name}`
+                    };
+                })
             );
-        
+
             setAllSubjects(subjectsWithClass);
-          } catch (error) {
+        } catch (error) {
             onClose();
             toastError(`Erro: ${error.message}`);
-          }
+        }
     }
 
     const create = async () => {
@@ -179,6 +174,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
             let isUpdated;
             let isBlocked;
             let eventId;
+            let subjectInstructor;
 
             switch (type) {
                 case "event": {
@@ -245,32 +241,27 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                             user = await getData(`/user/edv/${edv}`);
                             userId = user.user.id;
 
-                            console.log(subject)
-                            console.log(responsible)
+                            subjectInstructor = await getData(`/subject/${selectedSubject}/instructor/${responsible}`)
 
-                            // const subjectInstructorId = await getData(`/subject/{subject.id}/instructor/${responsible.user_id}`)
+                            payload = {
+                                title: eventName,
+                                eventType: eventType,
+                                startDate: startDate,
+                                endDate: endDate,
+                                createdBy: userId,
+                                roomId: selectedRoom,
+                                subjectInstructor: subjectInstructor.subject_instructor_id
+                            };
 
-                            // payload = {
-                            //     title: eventName,
-                            //     eventType: eventType,
-                            //     startDate: startDate,
-                            //     endDate: endDate,
-                            //     createdBy: userId,
-                            //     roomId: selectedRoom,
-                            //     subjectInstructorId: subjectInstructorId
-                            // };
+                            isInserted = await postData("/event/", payload);
 
-                            // isInserted = await postData("/event/", payload);
+                            if (!isInserted) {
+                                onClose();
+                                toastError("Falha ao criar aula.");
+                                return;
+                            }
 
-                            // console.log(isInserted)
-
-                            // if (!isInserted) {
-                            //     onClose();
-                            //     toastError("Falha ao criar aula.");
-                            //     return;
-                            // }
-
-                            // eventId = isInserted.event_id;
+                            eventId = isInserted.event_id;
 
                             onClose();
                             toastSuccess("Aula criada com sucesso!");
@@ -282,11 +273,13 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                                 return;
                             }
 
-                            eventType = "EXAM";
+                            eventType = "ASSESSMENT";
 
                             edv = sessionStorage.getItem("user");
                             user = await getData(`/user/edv/${edv}`);
                             userId = user.user.id;
+
+                            subjectInstructor = await getData(`/subject/${selectedSubject}/instructor/${responsible}`)
 
                             payload = {
                                 title: eventName,
@@ -295,12 +288,10 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                                 endDate: endDate,
                                 createdBy: userId,
                                 roomId: selectedRoom,
-                                // subjectInstructorId: TODO
+                                subjectInstructorId: subjectInstructor.subject_instructor_id
                             };
 
                             isInserted = await postData("/event/", payload);
-
-                            console.log(isInserted)
 
                             if (!isInserted) {
                                 onClose();
@@ -781,10 +772,6 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                                 <DropdownList options={allRooms} selectedValue={selectedRoom} onChange={(e) => setSelectedRoom(Number(e.target.value))} />
                             </div>
                             <div className="dialogInput">
-                                <h4>Turma:</h4>
-                                <DropdownList options={allClasses} selectedValue={selectedClass} onChange={(e) => setSelectedClass(Number(e.target.value))} />
-                            </div>
-                            <div className="dialogInput">
                                 <h4>Matéria:</h4>
                                 <DropdownList options={allSubjects} selectedValue={selectedSubject} onChange={(e) => setSelectedSubject(Number(e.target.value))} />
                             </div>
@@ -809,8 +796,8 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                                 <DropdownList options={allRooms} selectedValue={selectedRoom} onChange={(e) => setSelectedRoom(Number(e.target.value))} />
                             </div>
                             <div className="dialogInput">
-                                <h4>Turma:</h4>
-                                <DropdownList options={allClasses} selectedValue={selectedClass} onChange={(e) => setSelectedClass(Number(e.target.value))} />
+                                <h4>Matéria:</h4>
+                                <DropdownList options={allSubjects} selectedValue={selectedSubject} onChange={(e) => setSelectedSubject(Number(e.target.value))} />
                             </div>
                         </>
                     }
