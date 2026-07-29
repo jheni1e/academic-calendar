@@ -929,10 +929,9 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                                 <h4>Participantes:</h4>
                                 <div className="participantsList">
                                     {participants.map((participant) => (
-                                        <div key={participant.value} className="listItem">
-                                            <span className="itemName">{participant.label}</span>
-
-                                            <button className="removeItem" onClick={() => removeParticipant(participant.value)}>×</button>
+                                        <div className="listItem">
+                                            <span className="itemName">{participant.value}</span>
+                                            <button className="removeItem" onClick={() => removeParticipant(participant.id)}>×</button>
                                         </div>
                                     ))}
                                 </div>
