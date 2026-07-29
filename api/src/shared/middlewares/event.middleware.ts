@@ -150,7 +150,7 @@ export const validateBlockEvent = async (req: Request, res: Response, next: Next
 
         const userId = res.locals.user.id
 
-        if(event.created_at != userId)
+        if(event.created_by != userId)
             throw new UnauthorizedError("Access denied")
 
         if (event.end_date.getTime() < Date.now()) 
