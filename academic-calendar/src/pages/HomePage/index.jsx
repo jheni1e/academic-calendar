@@ -42,7 +42,7 @@ function Home() {
   useEffect(() => {
     if (!userLoaded) return;
 
-    setView(isInstructor ? "CLASSES" : "PERSONAL");
+    setView(isInstructor ? "CLASS" : "PERSONAL");
 
   }, [userLoaded, isInstructor]);
 
@@ -96,7 +96,7 @@ function Home() {
       setUserLoaded(true);
       return;
     } else {
-      await loadSubjects(user.id, null, isInstructor);
+      await loadSubjects(user.id, null, instructor);
     }
 
     setUserLoaded(true);
@@ -233,7 +233,6 @@ function Home() {
         }));
 
       setSubjects(unfinishedSubjects);
-
     } catch (error) {
       toastError(error.message);
     }
