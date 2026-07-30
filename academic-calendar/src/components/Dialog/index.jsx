@@ -41,6 +41,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
 
     const [selectedDays, setSelectedDays] = useState([]);
     const [seriesName, setSeriesName] = useState("");
+    const [updatePage, setUpdatePage] = useState(false)
 
     const [typeStatusEvent, setTypeStatusEvent] = useState(
         event?.is_blocked === true ? 1 : 2);
@@ -75,7 +76,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
         getAllPeople();
         getAllInstructors();
         getAllSubjects();
-    }, []);
+    }, [updatePage]);
 
     useEffect(() => {
         if (
@@ -620,7 +621,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                             eventId = isUpdated.event_id;
 
                             onClose();
-                            window.location.reload()
+                            setUpdatePage(!updatePage)
                             toastSuccess("Evento atualizado com sucesso!");
                             break;
                         case 2:
@@ -707,8 +708,8 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
         try{
             await putData(`/event/cancel/${event.event_id}`)
             onClose()
-            window.location.reload()
             toastSuccess(`Evento ${event.event_id} Deletado`)
+            setUpdatePage(!updatePage)
         } catch(e) {
             toastError(e)
         }
@@ -769,6 +770,19 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
         toastSuccess("Evento Desbloqueado!")
     }
 
+    const confirmLesson = async () => {
+        try{
+            console.log(event.event_id)
+            await putData(`/event/confirm/${event.event_id}`)
+            setUpdatePage(!updatePage)
+            console.log(event.status)
+            onClose()
+            toastSuccess("Aula Confirmada")
+
+        } catch(e) {
+            toastError(e)
+        }
+    }
     const typeEvents = [
         { value: 1, label: "Evento" },
         { value: 2, label: "Aula" },
@@ -1201,34 +1215,18 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                     }
                     <div className="dialogButtons">
                         { event.event_type === "LESSON" && event.status === "SCHEDULED" ? (
-                                <BoschButton
-                                text="Confirmar Aula"
-                                type="primary"
-                                />
-                            ) : (
+                                <BoschButton text="Confirmar Aula" type="primary" onClick={() => confirmLesson()} />
+                            ) : (  
                                 <>
-                                {!event.is_blocked && (
-                                    <>
-                                    <BoschButton
-                                        text="Deletar"
-                                        type="delete"
-                                        onClick={deleteEvent}
-                                    />
-                                    <BoschButton
-                                        text="Editar"
-                                        type="primary"
-                                        onClick={setEvent}
-                                    />
-                                    </>
-                                )}
-
-                                {event.is_blocked && (
-                                    <BoschButton
-                                    text="Desbloquear"
-                                    type="primary"
-                                    onClick={unblockEvent}
-                                    />
-                                )}
+                                    {!event.is_blocked && (
+                                        <>
+                                            <BoschButton text="Deletar" type="delete" onClick={() => deleteEvent()} />
+                                            <BoschButton text="Editar" type="primary" onClick={() => setEvent()} />
+                                        </>
+                                    )}
+                                    {event.is_blocked && (
+                                        <BoschButton text="Desbloquear" type="primary" onClick={() => unblockEvent()} />
+                                    )}
                                 </>
                             )
                             }
