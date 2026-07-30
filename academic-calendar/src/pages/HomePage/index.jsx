@@ -19,6 +19,8 @@ function Home() {
   const [filterType, setFilterType] = useState("");
   const [selectedFilter, setSelectedFilter] = useState("");
 
+  const [updateHomePage, setUpdateHomePage] = useState(false)
+
   const filterOptions = [
     { value: "ALL", label: "Todos" },
     { value: "CLASS", label: "Turmas" },
@@ -50,7 +52,7 @@ function Home() {
     if (!userLoaded || !view) return;
 
     getUserEvents();
-  }, [userLoaded, view, filterType, selectedFilter]);
+  }, [userLoaded, view, filterType, selectedFilter, updateHomePage]);
 
   const filteredEvents = events.filter(event => {
     if (!showExternal && !showLesson) {

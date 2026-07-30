@@ -23,7 +23,9 @@ function EventCard({ event, compact }) {
   const changeModal = () => {
     setIsModalOpen(!isModalOpen)
     setDialogType("view-event")
+    
   }
+
 
   const color = getEventColor(event.event_id);
 
@@ -50,7 +52,7 @@ function EventCard({ event, compact }) {
         )}
       </div>
       {isModalOpen &&
-        <Dialog event={event} isOpen={isModalOpen} onClose={changeModal} title={event.title} type={dialogType} setType={setDialogType}></Dialog>
+        <Dialog event={event} isOpen={isModalOpen} onClose={changeModal}title={event.title} type={dialogType} setType={setDialogType}></Dialog>
       }
     </>
 
