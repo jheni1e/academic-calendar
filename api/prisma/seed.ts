@@ -224,22 +224,6 @@ async function main() {
         ]
     });
 
-    // const recurrence = await prisma.recurrence.create({
-    //     data: {
-    //         series_name: "Python - Segunda e Quarta",
-    //         repeat_until: new Date("2026-09-30T00:00:00Z"),
-
-    //         monday: true,
-    //         wednesday: true,
-
-    //         creator: {
-    //             connect: {
-    //                 user_id: 4
-    //             }
-    //         }
-    //     }
-    // });
-
     const pythonLesson = await prisma.event.create({
         data: {
             title: "Aula de Python",
@@ -283,6 +267,94 @@ async function main() {
             user_id: 1,
             event_id: feedback.event_id,
             status: "PENDING"
+        }
+    });
+
+    const csharpLesson1 = await prisma.event.create({
+        data: {
+            title: "C# Básico - Aula 01",
+            description: "Primeira aula de C#",
+    
+            event_type: EventType.LESSON,
+            status: "COMPLETED",
+    
+            start_date: new Date("2026-07-21T13:30:00Z"),
+            end_date: new Date("2026-07-21T17:30:00Z"),
+    
+            class_id: dta3.class_id,
+            subject_instructor_id: 4,
+    
+            created_by: 5
+        }
+    });
+    
+    await prisma.reservation.create({
+        data: {
+            room_id: 1,
+            event_id: csharpLesson1.event_id,
+            description: "Reserva Aula 01"
+        }
+    });
+    
+    const csharpLesson2 = await prisma.event.create({
+        data: {
+            title: "C# Básico - Aula 02",
+            description: "Segunda aula de C#",
+    
+            event_type: EventType.LESSON,
+            status: "COMPLETED",
+    
+            start_date: new Date("2026-07-23T13:30:00Z"),
+            end_date: new Date("2026-07-23T17:30:00Z"),
+    
+            class_id: dta3.class_id,
+            subject_instructor_id: 4,
+    
+            created_by: 5
+        }
+    });
+    
+    await prisma.reservation.create({
+        data: {
+            room_id: 1,
+            event_id: csharpLesson2.event_id,
+            description: "Reserva Aula 02"
+        }
+    });
+    
+    const csharpLesson3 = await prisma.event.create({
+        data: {
+            title: "C# Básico - Aula 03",
+            description: "Terceira aula de C#",
+    
+            event_type: EventType.LESSON,
+            status: "CONFIRMED",
+    
+            start_date: new Date("2026-08-05T13:30:00Z"),
+            end_date: new Date("2026-08-05T17:30:00Z"),
+    
+            class_id: dta3.class_id,
+            subject_instructor_id: 4,
+    
+            created_by: 5
+        }
+    });
+    
+    await prisma.reservation.create({
+        data: {
+            room_id: 1,
+            event_id: csharpLesson3.event_id,
+            description: "Reserva Aula 03"
+        }
+    });
+
+    await prisma.subject.update({
+        where: {
+            subject_id: 3
+        },
+        data: {
+            scheduled_workload: 12,
+            completed_workload: 8
         }
     });
 }

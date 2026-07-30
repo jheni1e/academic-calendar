@@ -3,6 +3,7 @@ import { AppError } from "../shared/errors/AppError.ts";
 import { NotFoundError } from "../shared/errors/NotFoundError.ts";
 import { createReservation, deleteReservation, findAllReservations, findReservationByEvent, findReservationById, findReservationsByRoom, updateReservation } from "../services/reservation.service.ts";
 import { prisma } from "../lib/prisma.ts";
+import { CreateReservationDTO, UpdateReservationDTO } from "../dtos/reservationDTO.ts";
 
 export class ReservationController {
     static async create(req: Request, res: Response, next: NextFunction) {

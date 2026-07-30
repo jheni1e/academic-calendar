@@ -1,4 +1,4 @@
-import { CreateReservationDTO, UpdateReservationDTO } from "../dtos/ReservationDto.ts";
+import { CreateReservationDTO, UpdateReservationDTO } from "../dtos/reservationDTO.ts";
 import { EventStatus, Prisma, PrismaClient, Reservation } from "../generated/prisma/client.ts";
 import { prisma } from "../lib/prisma.ts";
 import { ConflictError } from "../shared/errors/ConflictError.ts";
