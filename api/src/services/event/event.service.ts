@@ -187,9 +187,9 @@ export const updateEvent = async (
         end
     );
     
-    return prisma.$transaction(async () => {
-    
-        const updatedEvent = await prisma.event.update({
+    return prisma.$transaction(async (tx) => {
+
+        const updatedEvent = await tx.event.update({
             where: {
                 event_id: eventId
             },
@@ -197,30 +197,44 @@ export const updateEvent = async (
                 title: data.title,
                 description: data.description,
                 event_type: data.eventType,
-    
+
                 start_date: start,
                 end_date: end,
-    
+
                 class_id: validation.classId,
                 subject_instructor_id:
                     validation.assignment?.subject_instructor_id,
-    
+
                 recurrence_id: data.recurrenceId
             }
         });
-    
-        if (data.roomId) {
-            await updateReservationByEvent(eventId, {
-                roomId: data.roomId,
-                startDate: start,
-                endDate: end,
-                description: data.description
-            });
+
+        const roomIdWasSent =
+            Object.prototype.hasOwnProperty.call(data, "roomId");
+
+        if (roomIdWasSent) {
+
+            if (data.roomId) {
+
+                await updateReservationByEvent(eventId, {
+                    roomId: data.roomId,
+                    startDate: start,
+                    endDate: end,
+                    description: data.description
+                });
+
+            } else {
+
+                await tx.reservation.deleteMany({
+                    where: {
+                        event_id: eventId
+                    }
+                });
+            }
         }
-    
-        return updatedEvent;
-    });
-};
+
+    return updatedEvent;
+})};
 
 export const deleteEvent = async (
     eventId: number
