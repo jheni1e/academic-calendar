@@ -31,6 +31,8 @@ export const findEventById = async (
     eventId: number
 ): Promise<EventWithRelations | null> => {
 
+    await completePendingLessons();
+
     return prisma.event.findUnique({
         where: {
             event_id: eventId
@@ -118,6 +120,8 @@ export const findEventsByClass = async (
     classId: number
 ): Promise<EventWithRelations[]> => {
 
+    await completePendingLessons();
+
     return prisma.event.findMany({
         where: {
             class_id: classId
@@ -133,6 +137,8 @@ export const findEventsByClass = async (
 export const findEventsByInstructor = async (
     instructorId: number
 ): Promise<EventWithRelations[]> => {
+
+    await completePendingLessons();
 
     return prisma.event.findMany({
         where: {
@@ -151,6 +157,8 @@ export const findEventsByInstructor = async (
 export const findEventsByRoom = async (
     roomId: number
 ): Promise<EventWithRelations[]> => {
+
+    await completePendingLessons();
 
     return prisma.event.findMany({
         where: {
@@ -171,6 +179,8 @@ export const findEventsByRoom = async (
 export const findEventsByUser = async (
     userId: number
 ): Promise<EventWithRelations[]> => {
+
+    await completePendingLessons();
 
     return prisma.event.findMany({
         where: {
