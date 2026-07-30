@@ -97,7 +97,7 @@ export const validateDelete = async (req: Request, res: Response, next: NextFunc
 
 export const validateClassExistsById = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const classId: number = parseInt(req.params.id.toString());
+        const classId: number = parseInt(req.params.classId.toString());
 
         const classItem = await findClassById(classId)
 
