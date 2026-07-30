@@ -1,6 +1,7 @@
 import { EventResponseDTO } from "../../dtos/EventDto.ts";
 import { Prisma } from "../../generated/prisma/client.ts";
 import { prisma } from "../../lib/prisma.ts";
+import { completePendingLessons } from "../lesson-completion.service.ts";
 
 export const EVENT_INCLUDE = {
     class: true,
@@ -41,6 +42,8 @@ export const findEventById = async (
 
 export const findAllEvents = async (): Promise<EventResponseDTO[]> => {
 
+    await completePendingLessons();
+    
     return prisma.event.findMany({
         orderBy: {
             start_date: "asc"
