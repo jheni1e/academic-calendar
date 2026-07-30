@@ -93,7 +93,7 @@ export class ClassController {
     }
 
     static async findClassById(req: Request, res: Response) {
-        const id: number = parseInt(req.params.id.toString());
+        const id: number = parseInt(req.params.classId.toString());
 
         try {
             const classItem = await findClassById(id);

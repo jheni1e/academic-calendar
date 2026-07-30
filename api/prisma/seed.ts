@@ -137,42 +137,48 @@ async function main() {
                 name: "MEC25 - IoT",
                 workload: 40,
                 start_date: new Date("2026-07-20T00:00:00Z"),
-                completed_workload: 0
+                completed_workload: 0,
+                scheduled_workload: 0
             },
             {
                 class_id: add2.class_id,
                 name: "ADD2 - Python",
                 workload: 60,
                 start_date: new Date("2026-07-27T00:00:00Z"),
-                completed_workload: 0
+                completed_workload: 0,
+                scheduled_workload: 0
             },
             {
                 class_id: dta3.class_id,
                 name: "DTA3 - C# Básico",
                 workload: 80,
                 start_date: new Date("2026-07-20T00:00:00Z"),
-                completed_workload: 0
+                completed_workload: 0,
+                scheduled_workload: 0
             },
             {
                 class_id: mec26.class_id,
                 name: "MEC26 - Excel",
                 workload: 30,
                 start_date: new Date("2026-08-03T00:00:00Z"),
-                completed_workload: 0
+                completed_workload: 0,
+                scheduled_workload: 0
             },
             {
                 class_id: man25.class_id,
                 name: "MAN25 - Power BI",
                 workload: 34,
                 start_date: new Date("2026-08-10T00:00:00Z"),
-                completed_workload: 0
+                completed_workload: 0,
+                scheduled_workload: 0
             },
             {
                 class_id: mec25.class_id,
                 name: "MEC25 - Redes",
                 workload: 40,
                 start_date: new Date("2026-07-20T00:00:00Z"),
-                completed_workload: 0
+                completed_workload: 0,
+                scheduled_workload: 0
             }
         ],
         skipDuplicates: true,

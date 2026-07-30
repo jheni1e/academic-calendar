@@ -24,7 +24,7 @@ const validateSubjectWorkload = (
     
     const remainingHours =
     assignment.subject.workload -
-    assignment.subject.completed_workload;
+    assignment.subject.scheduled_workload;
     
     if (remainingHours < LESSON_DURATION) {
         throw new ConflictError(
