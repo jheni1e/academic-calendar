@@ -9,7 +9,7 @@ function getEventColor(id) {
     "#00884A",
     "#9E2896",
     "#18837E",
-    "#ED0007"
+    "#BE0004"
   ];
 
   return colors[id % colors.length];
