@@ -396,6 +396,7 @@ export const createEvent = async (
     validateDates(start, end);
     validateEventDuration(start, end);
     await validateCreator(data.createdBy);
+    await validateRoomRequirements(data.roomId);
 
     let assignment: LoadedAssignment | null = null;
     let classId = data.classId;
@@ -428,24 +429,51 @@ export const createEvent = async (
         default:
             break;
     }
+<<<<<<< HEAD
 
     // --- Room Validation ---
     await validateRoomRequirements(data.roomId);
 
+=======
+>>>>>>> d73952c0c4d5c64b3c81d21ca49723690bcbe758
     return prisma.$transaction(async (tx) => {
 
-        const event = await createEventRecord(
-            tx,
-            data,
-            assignment,
-            classId,
-            start,
-            end
-        );
-    
-        if (data.roomId) {
-            
-            await createReservation(
+    const event = await createEventRecord(
+        tx,
+        data,
+        assignment,
+        classId,
+        start,
+        end
+    );
+
+    if (classId) {
+
+        const classUsers = await tx.classUser.findMany({
+            where: {
+                class_id: classId
+            },
+            select: {
+                user_id: true
+            }
+        });
+
+        if (classUsers.length > 0) {
+
+            await tx.participation.createMany({
+                data: classUsers.map(classUser => ({
+                    event_id: event.event_id,
+                    user_id: classUser.user_id,
+                    status: ParticipationStatus.PENDING
+                })),
+                skipDuplicates: true
+            });
+        }
+    }
+
+    if (data.roomId) {
+
+        await createReservation(
             tx,
             {
                 roomId: data.roomId,
@@ -453,11 +481,14 @@ export const createEvent = async (
                 startDate: start,
                 endDate: end,
                 description: data.description
-            });
-        }
-        return event;
+            }
+        );
+    }
+
+    return event;
     });
-};
+
+}
 
 // ---- CRUD ----
 export const findEventById = async (
@@ -772,20 +803,26 @@ export const deleteEvent = async (
     eventId: number
 ): Promise<void> => {
 
-    const event = await findEventById(eventId);
+    await prisma.$transaction(async (tx) => {
 
-    if (!event) {
-        throw new NotFoundError(
-            "Event not found."
-        );
-    }
+        await tx.participation.deleteMany({
+            where: {
+                event_id: eventId
+            }
+        });
 
-    await prisma.event.delete({
-        where: {
-            event_id: eventId
-        }
+        await tx.reservation.deleteMany({
+            where: {
+                event_id: eventId
+            }
+        });
+
+        await tx.event.delete({
+            where: {
+                event_id: eventId
+            }
+        });
     });
-
 };
 
 export const blockEvent = async (
