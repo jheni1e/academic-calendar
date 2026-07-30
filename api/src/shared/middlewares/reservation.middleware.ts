@@ -25,14 +25,17 @@ export const validateCreate = async (req: Request, res: Response, next: NextFunc
 
         const hasConflict = await prisma.reservation.findFirst({
             where: {
-                room_id,
-                scheduleStart: {
-                    lt: end,
+                room_id: roomId,
+                event: {
+                    status: EventStatus.SCHEDULED,
+                    start_date: {
+                        lt: end
                 },
-                scheduleEnd: {
-                    gt: start,
-                },
-            },
+                    end_date: {
+                        gt: start
+                    }
+                }
+            }
         });
 
         if (hasConflict) {
