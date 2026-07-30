@@ -235,7 +235,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject, on
                             user = await getData(`/user/edv/${edv}`);
                             userId = user.user.id;
 
-                            if (participants.length >= 0) {
+                            if (participants.length <= 0) {
                                 onClose();
                                 toastError("Adicione um ou mais participantes.");
                                 return;
@@ -408,7 +408,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject, on
                             user = await getData(`/user/edv/${edv}`);
                             userId = user.user.id;
 
-                            if (participants.length >= 0) {
+                            if (participants.length <= 0) {
                                 onClose();
                                 toastError("Adicione um ou mais participantes.");
                                 return;
@@ -473,7 +473,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject, on
 
                     const workload = Number(newSubjectWorkload);
 
-                    if (!Number.isInteger(workload) || workload <= 0) {
+                    if (!Number.isInteger(workload) || workload <= 0 || workload % 4 != 0) {
                         onClose();
                         toastWarning("Digite uma carga horária válida.");
                         return;
@@ -548,13 +548,13 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject, on
                         return;
                     }
 
-                    if (!selectedRoom || !responsible || !selectedSubject) {
+                    if (!selectedRoom || !responsible || !selectedClass) {
                         onClose();
                         toastWarning("A sala, professor e matéria são obrigatórios.");
                         return;
                     }
 
-                    if (selectedDays.length >= 0) {
+                    if (selectedDays.length <= 0) {
                         onClose();
                         toastWarning("Selecione a frequência das aulas.");
                         return;
