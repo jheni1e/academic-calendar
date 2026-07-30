@@ -2,7 +2,7 @@
     width: 100%;
 }
 
-.primaryButton, .secondaryButton, .terciaryButton, .disabledButton {
+.primaryButton, .secondaryButton, .terciaryButton, .disabledButton, .deleteButton {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -60,7 +60,13 @@
     background-color: #C1C7CC;
 }
 
-.text, .secondaryText, .disabledText {
+.deleteButton{
+    background-color: rgb(255, 117, 117);
+}
+.deleteButton:hover{
+    background-color: rgb(235, 85, 85);
+}
+.text, .secondaryText, .disabledText, .deleteText {
     color: #fff;
     font-size: 20px;
 }

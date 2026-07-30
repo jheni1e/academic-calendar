@@ -7,24 +7,29 @@ function BoschButton({ text, type, isPaginationButton, ...rest }, ref) {
     return (
         <div className="container">
             {type === "primary" && 
-            <button className={`primaryButton ${buttonClass}`} {...rest} ref={ref}>
-                <span className="text">{text}</span>
-            </button>
+                <button className={`primaryButton ${buttonClass}`} {...rest} ref={ref}>
+                    <span className="text">{text}</span>
+                </button>
             }
             {type === "secondary" && 
-            <button className={`secondaryButton ${buttonClass}`} {...rest} ref={ref}>
-                <span className="secondaryText">{text}</span>
-            </button>
+                <button className={`secondaryButton ${buttonClass}`} {...rest} ref={ref}>
+                    <span className="secondaryText">{text}</span>
+                </button>
             }
             {type === "terciary" && 
-            <button className={`terciaryButton ${buttonClass}`} {...rest} ref={ref}>
-                <span className="secondaryText">{text}</span>
-            </button>
+                <button className={`terciaryButton ${buttonClass}`} {...rest} ref={ref}>
+                    <span className="secondaryText">{text}</span>
+                </button>
+            }
+            {type === "delete" && 
+                <button className={`deleteButton ${buttonClass}`} {...rest} ref={ref}>
+                    <span className="deleteText">{text}</span>
+                </button>
             }
             {type === "disabled" && 
-            <button className={`disabledButton ${buttonClass}`} {...rest} ref={ref} disabled={true}>
-                <span className="disabledText">{text}</span>
-            </button>
+                <button className={`disabledButton ${buttonClass}`} {...rest} ref={ref} disabled={true}>
+                    <span className="disabledText">{text}</span>
+                </button>
             }
         </div>
     );

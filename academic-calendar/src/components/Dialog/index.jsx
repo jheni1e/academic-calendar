@@ -1112,7 +1112,10 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                     }
                     <div className="dialogButtons">
                         {!event.is_blocked &&
-                            <BoschButton text="Editar" type="primary" onClick={() => setEvent()} />
+                            <>
+                                <BoschButton text="Deletar" type="delete" onClick={() => setEvent()} />
+                                <BoschButton text="Editar" type="primary" onClick={() => setEvent()} />
+                            </>
                         }
                         {event.is_blocked &&
                             <BoschButton text="Desbloquear" type="primary" onClick={unblockEvent} />
