@@ -6,11 +6,11 @@ import { findClassById } from "../../services/class.service.ts";
 import { findSubjectById } from "../../services/subject.service.ts";
 import { findSubjectInstructorBySubjectAndInstructor } from "../../services/subjectinstructor.service.ts";
 import { findUserById } from "../../services/user.service.ts";
-import { findEventById } from "../../services/event.service.ts";
 import { findReservationByEvent } from "../../services/reservation.service.ts";
 import { UnauthorizedError } from "../errors/UnauthorizedError.ts";
 import { BadRequestError } from "../errors/BadRequestError.ts";
 import { findParticipationByEvent } from "../../services/participation.service.ts";
+import { findEventById } from "../../services/event/event.query.service.ts";
 
 export const validateCreate = async (req: Request, res: Response, next: NextFunction) => {
     try {

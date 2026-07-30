@@ -3,8 +3,9 @@ import { prisma } from "../../lib/prisma.ts";
 import { NotFoundError } from "../errors/NotFoundError.ts";
 import { ConflictError } from "../errors/ConflictError.ts";
 import { findRoomById } from "../../services/room.service.ts";
-import { findEventById } from "../../services/event.service.ts";
 import { findReservationById } from "../../services/reservation.service.ts";
+import { findEventById } from "../../services/event/event.query.service.ts";
+import { EventStatus } from "../../generated/prisma/enums.ts";
 
 export const validateCreate = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -30,7 +31,7 @@ export const validateCreate = async (req: Request, res: Response, next: NextFunc
                     status: EventStatus.SCHEDULED,
                     start_date: {
                         lt: end
-                },
+                    },
                     end_date: {
                         gt: start
                     }
@@ -90,26 +91,6 @@ export const validateUpdate = async (req: Request, res: Response, next: NextFunc
         if (!reservation) {
             throw new NotFoundError("Reservation not found.");
         }
-
-        // const hasConflict = await prisma.reservation.findFirst({
-        //     where: {
-        //         room_id: roomId ?? reservation.room_id,
-        //         id: {
-        //             not: reservationId,
-        //         },
-        //         scheduleStart: {
-        //             lt: end,
-        //         },
-        //         scheduleEnd: {
-        //             gt: start,
-        //         },
-        //     },
-        // });
-
-        // if (hasConflict) {
-        //     throw new ConflictError("This room is already being used.");
-        // }
-
         next();
     } catch (error) {
         next(error);

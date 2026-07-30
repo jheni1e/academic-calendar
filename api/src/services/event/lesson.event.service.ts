@@ -4,7 +4,7 @@ import { prisma } from "../../lib/prisma.ts";
 import { ConflictError } from "../../shared/errors/ConflictError.ts";
 import { NotFoundError } from "../../shared/errors/NotFoundError.ts";
 import { ValidationError } from "../../shared/errors/ValidationError.ts";
-import { LoadedAssignment } from "../event.service.ts";
+import { LoadedAssignment } from "./event.service.ts";
 import {
     validateInstructorConflictById,
     validateClassConflict,

@@ -2,9 +2,10 @@ import { Request, Response } from "express";
 
 import { AppError } from "../shared/errors/AppError.ts";
 import { CreateEventDTO, UpdateEventDTO } from "../dtos/EventDto.ts";
-import { createEvent, deleteEvent, findAllEvents, findEventsByClass, findEventById, updateEvent, findEventsByUser, findEventsByRoom, blockEvent, unblockEvent, confirmEvent, cancelEvent } from "../services/event.service.ts";
+import { createEvent, deleteEvent, updateEvent, blockEvent, unblockEvent, confirmEvent, cancelEvent } from "../services/event/event.service.ts";
 import { NotFoundError } from "../shared/errors/NotFoundError.ts";
 import { BadRequestError } from "../shared/errors/BadRequestError.ts";
+import { findAllEvents, findEventById, findEventsByClass, findEventsByRoom, findEventsByUser } from "../services/event/event.query.service.ts";
 
 export class EventController {
     static async create(req: Request, res: Response) {

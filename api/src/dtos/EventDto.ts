@@ -22,7 +22,7 @@ export interface UpdateEventDTO {
     title?: string;
     description?: string;
 
-    eventType?: EventType;
+    eventType: EventType;
 
     subjectInstructorId: number; // Cannot be undefined
     recurrenceId?: number;
