@@ -8,7 +8,7 @@ import { deleteData, getData, postData, putData } from "../../utils/apiBack";
 import { toastError, toastSuccess, toastWarning } from '../../components/BoschToast';
 import CadeadoTrancado from "../../images/cadeado-trancado.png"
 
-function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) {
+function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject, onPlanningCreated }) {
     const dialogRef = useRef(null);
 
     const [responsible, setResponsible] = useState(null);
@@ -97,6 +97,10 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
             }));
 
             setAllRooms(formattedRooms);
+
+            if (formattedRooms.length > 0) {
+                setSelectedRoom(formattedRooms[0].value);
+            }
         } catch (error) {
             onClose();
             toastError(`Erro: ${error.message}`)
@@ -113,6 +117,10 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
             }));
 
             setAllClasses(formatedClasses);
+
+            if (formatedClasses.length > 0) {
+                setSelectedClass(formatedClasses[0].value);
+            }
         } catch (error) {
             onClose();
             toastError(`Erro: ${error.message}`)
@@ -145,6 +153,10 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
             }));
 
             setAllInstructors(formatedInstructors);
+
+            if (formatedInstructors.length > 0) {
+                setResponsible(formatedInstructors[0].value);
+            }
         } catch (error) {
             onClose();
             toastError(`Erro: ${error.message}`)
@@ -577,6 +589,8 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                         toastError("Falha ao planejar as aulas.");
                         return;
                     }
+
+                    await onPlanningCreated?.();
 
                     onClose();
                     toastSuccess("Aulas planejadas com sucesso!")
