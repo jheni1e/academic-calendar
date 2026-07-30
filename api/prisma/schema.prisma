@@ -32,7 +32,7 @@ enum EventType {
   FEEDBACK
   EXTERNAL
   PERSONAL
-  OTHER
+  INTERNSHIP
 }
 
 enum EventStatus {

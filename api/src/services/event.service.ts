@@ -7,6 +7,7 @@ import { ConflictError } from "../shared/errors/ConflictError.ts";
 import { createReservation, updateReservationByEvent } from "./reservation.service.ts";
 import { BadRequestError } from "../shared/errors/BadRequestError.ts";
 import { validateLessonEvent } from "./event/lesson.event.service.ts";
+import { validateFeedbackEvent } from "./event/feedback.event.service.ts";
 
 const validateDates = (
     start: Date,
@@ -152,45 +153,6 @@ const validateClassConflict = async (
     if (conflict) {
         throw new ConflictError(
             "Class already has a scheduled event during this period."
-        );
-    }
-};
-
-const validateUserConflict = async (
-    userId: number,
-    start: Date,
-    end: Date,
-    currentEventId?: number
-): Promise<void> => {
-
-    const conflict = await prisma.participation.findFirst({
-        where: {
-            user_id: userId,
-            status: ParticipationStatus.CONFIRMED,
-
-            event: {
-                status: EventStatus.SCHEDULED,
-
-                ...(currentEventId && {
-                    event_id: {
-                        not: currentEventId
-                    }
-                }),
-
-                start_date: {
-                    lt: end
-                },
-
-                end_date: {
-                    gt: start
-                }
-            }
-        }
-    });
-
-    if (conflict) {
-        throw new ConflictError(
-            "User already has another confirmed event during this period."
         );
     }
 };
@@ -439,17 +401,41 @@ export const createEvent = async (
     let assignment: LoadedAssignment | null = null;
     let classId = data.classId;
 
-    if (data.eventType === EventType.LESSON) {
+    switch (data.eventType) {
 
-        const lesson = await validateLessonEvent(
-            data,
-            start,
-            end
-        );
-
-        assignment = lesson.assignment;
-        classId = lesson.classId;
+        case EventType.LESSON: {
+    
+            const lesson = await validateLessonEvent(
+                data,
+                start,
+                end
+            );
+    
+            assignment = lesson.assignment;
+            classId = lesson.classId;
+            break;
+        }
+    
+        case EventType.FEEDBACK: {
+    
+            await validateFeedbackEvent(
+                data,
+                start,
+                end
+            );
+            break;
+        }
+    
+        default:
+            break;
     }
+<<<<<<< HEAD
+
+    // --- Room Validation ---
+    await validateRoomRequirements(data.roomId);
+
+=======
+>>>>>>> d73952c0c4d5c64b3c81d21ca49723690bcbe758
     return prisma.$transaction(async (tx) => {
 
     const event = await createEventRecord(
