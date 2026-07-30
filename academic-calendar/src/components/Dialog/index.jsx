@@ -211,6 +211,12 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                                 return;
                             }
 
+                            if (!startDate || !endDate) {
+                                onClose();
+                                toastWarning("O horário de início e encerramento é obrigatório.");
+                                return;
+                            }
+
                             eventType = "EXTERNAL";
 
                             edv = sessionStorage.getItem("user");
@@ -266,6 +272,18 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                                 return;
                             }
 
+                            if (!startDate || !endDate) {
+                                onClose();
+                                toastWarning("O horário de início e encerramento é obrigatório.");
+                                return;
+                            }
+
+                            if (!selectedRoom || !responsible || !selectedSubject) {
+                                onClose();
+                                toastWarning("A sala, professor e matéria são obrigatórios.");
+                                return;
+                            }
+
                             eventType = "LESSON";
 
                             edv = sessionStorage.getItem("user");
@@ -273,6 +291,12 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                             userId = user.user.id;
 
                             subjectInstructor = await getData(`/subject/${selectedSubject}/instructor/${responsible}`)
+
+                            if (!subjectInstructor) {
+                                onClose();
+                                toastWarning("O instrutor não está associado com a matéria.");
+                                return;
+                            }
 
                             payload = {
                                 title: eventName,
@@ -304,6 +328,18 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                                 return;
                             }
 
+                            if (!startDate || !endDate) {
+                                onClose();
+                                toastWarning("O horário de início e encerramento é obrigatório.");
+                                return;
+                            }
+
+                            if (!selectedRoom || !responsible || !selectedSubject) {
+                                onClose();
+                                toastWarning("A sala, professor e matéria são obrigatórios.");
+                                return;
+                            }
+
                             eventType = "ASSESSMENT";
 
                             edv = sessionStorage.getItem("user");
@@ -311,6 +347,12 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                             userId = user.user.id;
 
                             subjectInstructor = await getData(`/subject/${selectedSubject}/instructor/${responsible}`)
+
+                            if (!subjectInstructor) {
+                                onClose();
+                                toastWarning("O instrutor não está associado com a matéria.");
+                                return;
+                            }
 
                             payload = {
                                 title: eventName,
@@ -339,6 +381,12 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                             if (!eventName.trim()) {
                                 onClose();
                                 toastWarning("O título é obrigatório.");
+                                return;
+                            }
+
+                            if (!startDate || !endDate) {
+                                onClose();
+                                toastWarning("O horário de início e encerramento é obrigatório.");
                                 return;
                             }
 
@@ -398,6 +446,24 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                     edv = sessionStorage.getItem("user");
                     user = await getData(`/user/edv/${edv}`);
                     userId = user.user.id;
+
+                    if (!newSubjectName.trim()) {
+                        onClose();
+                        toastWarning("O nome da matéria é obrigatório.");
+                        return;
+                    }
+
+                    if (!newSubjectWorkload) {
+                        onClose();
+                        toastWarning("A carga horária é obrigatória.");
+                        return;
+                    }
+
+                    if (!parseInt(newSubjectWorkload)) {
+                        onClose();
+                        toastWarning("Digite uma carga horária válida.");
+                        return;
+                    }
 
                     const newSubject = {
                         name: newSubjectName,
@@ -624,13 +690,13 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
 
         setRooms([...newRooms]);
     };
-    
+
     const deleteEvent = async (id) => {
-        try{
+        try {
             deleteData(`event/${id}`)
             onClose()
             toastSuccess(`Evento ${id} Deletado`)
-        } catch(e) {
+        } catch (e) {
             toastError(e)
         }
 
@@ -1061,7 +1127,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                                 <h4>Turma:</h4>
                                 <div className="participantsList">
                                     <div className="listItem">
-                                        <span className="itemName" style={{justifyContent: "center"}}>{event.class.name}</span>
+                                        <span className="itemName" style={{ justifyContent: "center" }}>{event.class.name}</span>
                                     </div>
                                 </div>
                             </div>
@@ -1069,7 +1135,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                                 <h4>Instrutor:</h4>
                                 <div className="participantsList">
                                     <div className="listItem">
-                                        <span className="itemName" style={{justifyContent: "center"}}>{event.subject_instructor.instructor.name}</span>
+                                        <span className="itemName" style={{ justifyContent: "center" }}>{event.subject_instructor.instructor.name}</span>
                                     </div>
                                 </div>
                             </div>
