@@ -91,6 +91,7 @@ export const findParticipationByEvent = async (
         },
         select: {
             participation_id: true,
+            status: true,
 
             user: {
                 select: {
@@ -112,7 +113,9 @@ export const findParticipationByEvent = async (
         eventId: participation.event.event_id,
         eventName: participation.event.title,
         userId: participation.user.user_id,
-        userName: participation.user.name
+        userName: participation.user.name,
+        status: participation.status
+
     }));
 
 }
