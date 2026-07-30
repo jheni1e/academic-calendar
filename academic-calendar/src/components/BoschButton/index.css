@@ -2,7 +2,11 @@
     width: 100%;
 }
 
-.primaryButton, .secondaryButton, .terciaryButton, .disabledButton, .deleteButton {
+.primaryButton,
+.secondaryButton,
+.terciaryButton,
+.disabledButton,
+.deleteButton {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -17,13 +21,13 @@
     background-color: #007bc0;
 }
 
-    .primaryButton:hover {
-        background-color: #00629a;
-    }
+.primaryButton:hover {
+    background-color: #00629a;
+}
 
-    .primaryButton:active {
-        background-color: #004975;
-    }
+.primaryButton:active {
+    background-color: #004975;
+}
 
 .secondaryButton {
     background-color: transparent;
@@ -33,13 +37,13 @@
     color: #007bc0;
 }
 
-    .secondaryButton:hover {
-        background-color: #d1e4ff;
-    }
+.secondaryButton:hover {
+    background-color: #d1e4ff;
+}
 
-    .secondaryButton:active {
-        background-color: #9dc9ff;
-    }
+.secondaryButton:active {
+    background-color: #9dc9ff;
+}
 
 .terciaryButton {
     background-color: transparent;
@@ -48,25 +52,30 @@
     border: none;
 }
 
-    .terciaryButton:hover {
-        background-color: #d1e4ff;
-    }
+.terciaryButton:hover {
+    background-color: #d1e4ff;
+}
 
-    .terciaryButton:active {
-        background-color: #9dc9ff;
-    }
+.terciaryButton:active {
+    background-color: #9dc9ff;
+}
 
 .disabledButton {
     background-color: #C1C7CC;
 }
 
-.deleteButton{
+.deleteButton {
     background-color: rgb(255, 117, 117);
 }
-.deleteButton:hover{
+
+.deleteButton:hover {
     background-color: rgb(235, 85, 85);
 }
-.text, .secondaryText, .disabledText, .deleteText {
+
+.text,
+.secondaryText,
+.disabledText,
+.deleteText {
     color: #fff;
     font-size: 20px;
 }
@@ -84,8 +93,18 @@
     max-width: 4.75rem;
 }
 
-.paginationButton .text, 
-.paginationButton .secondaryText, 
+.paginationButton .text,
+.paginationButton .secondaryText,
 .paginationButton .disabledText {
     font-size: 16px;
+}
+
+.circleButton {
+    border-radius: 50% !important;
+    width: 56px;
+    height: 56px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
