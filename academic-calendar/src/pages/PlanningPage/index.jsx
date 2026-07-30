@@ -119,7 +119,7 @@ function Planning() {
               title={`Planejamento ${subjectSelected.name}`}
               subject={subjectSelected} />
           }
-          <MonthlyCalendar events={events} />
+          <MonthlyCalendar events={events.filter(e => e.status != "CANCELLED")} />
         </div>
       </div>
     </>
