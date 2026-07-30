@@ -6,11 +6,11 @@ import { findClassById } from "../../services/class.service.ts";
 import { findSubjectById } from "../../services/subject.service.ts";
 import { findSubjectInstructorBySubjectAndInstructor } from "../../services/subjectinstructor.service.ts";
 import { findUserById } from "../../services/user.service.ts";
-import { findEventById } from "../../services/event.service.ts";
 import { findReservationByEvent } from "../../services/reservation.service.ts";
 import { UnauthorizedError } from "../errors/UnauthorizedError.ts";
 import { BadRequestError } from "../errors/BadRequestError.ts";
 import { findParticipationByEvent } from "../../services/participation.service.ts";
+import { findEventById } from "../../services/event/event.query.service.ts";
 
 export const validateCreate = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -75,7 +75,7 @@ export const validateCreate = async (req: Request, res: Response, next: NextFunc
 
 export const validateDelete = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const eventId = Number(req.params.id);
+        const eventId = Number(req.params.eventId);
 
         const event = await findEventById(eventId)
 
@@ -107,7 +107,7 @@ export const validateDelete = async (req: Request, res: Response, next: NextFunc
 export const validateUpdate = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { title, description, eventTypeId, subjectId, classId, recurrence, createdBy } = req.body;
-        const eventId: number = parseInt(req.params.id.toString());
+        const eventId: number = parseInt(req.params.eventId.toString());
 
         const event = await findEventById(eventId)
 
@@ -131,9 +131,9 @@ export const validateUpdate = async (req: Request, res: Response, next: NextFunc
 
 export const validateEventExistsById = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const eventId: number = parseInt(req.params.id[0].toString());
+        const { eventId } = req.params
 
-        const event = await findEventById(eventId)
+        const event = await findEventById(Number(eventId))
 
         if (!event) {
             throw new NotFoundError("Event not found.");
@@ -147,12 +147,12 @@ export const validateEventExistsById = async (req: Request, res: Response, next:
 
 export const validateBlockEvent = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { id } = req.params
+        const { eventId } = req.params
 
-        if (Number.isNaN(id)) 
+        if (Number.isNaN(eventId)) 
             throw new BadRequestError("Invalid event id");
         
-        const event = await findEventById(Number(id))
+        const event = await findEventById(Number(eventId))
         
         if(!event)
             throw new NotFoundError("Event not found")
@@ -173,12 +173,12 @@ export const validateBlockEvent = async (req: Request, res: Response, next: Next
 
 export const validateEditEvent = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { id } = req.params
+        const { eventId } = req.params
 
-        if (Number.isNaN(id)) 
+        if (Number.isNaN(eventId)) 
             throw new BadRequestError("Invalid event id");
         
-        const event = await findEventById(Number(id))
+        const event = await findEventById(Number(eventId))
         
         if(!event)
             throw new NotFoundError("Event not found")
