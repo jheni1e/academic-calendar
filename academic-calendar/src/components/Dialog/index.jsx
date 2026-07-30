@@ -211,11 +211,23 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                                 return;
                             }
 
+                            if (!startDate || !endDate) {
+                                onClose();
+                                toastWarning("O horário de início e encerramento é obrigatório.");
+                                return;
+                            }
+
                             eventType = "EXTERNAL";
 
                             edv = sessionStorage.getItem("user");
                             user = await getData(`/user/edv/${edv}`);
                             userId = user.user.id;
+
+                            if (participants.length >= 0) {
+                                onClose();
+                                toastError("Adicione um ou mais participantes.");
+                                return;
+                            }
 
                             payload = {
                                 title: eventName,
@@ -260,6 +272,18 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                                 return;
                             }
 
+                            if (!startDate || !endDate) {
+                                onClose();
+                                toastWarning("O horário de início e encerramento é obrigatório.");
+                                return;
+                            }
+
+                            if (!selectedRoom || !responsible || !selectedSubject) {
+                                onClose();
+                                toastWarning("A sala, professor e matéria são obrigatórios.");
+                                return;
+                            }
+
                             eventType = "LESSON";
 
                             edv = sessionStorage.getItem("user");
@@ -267,6 +291,12 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                             userId = user.user.id;
 
                             subjectInstructor = await getData(`/subject/${selectedSubject}/instructor/${responsible}`)
+
+                            if (!subjectInstructor) {
+                                onClose();
+                                toastWarning("O instrutor não está associado com a matéria.");
+                                return;
+                            }
 
                             payload = {
                                 title: eventName,
@@ -298,6 +328,18 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                                 return;
                             }
 
+                            if (!startDate || !endDate) {
+                                onClose();
+                                toastWarning("O horário de início e encerramento é obrigatório.");
+                                return;
+                            }
+
+                            if (!selectedRoom || !responsible || !selectedSubject) {
+                                onClose();
+                                toastWarning("A sala, professor e matéria são obrigatórios.");
+                                return;
+                            }
+
                             eventType = "ASSESSMENT";
 
                             edv = sessionStorage.getItem("user");
@@ -305,6 +347,12 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                             userId = user.user.id;
 
                             subjectInstructor = await getData(`/subject/${selectedSubject}/instructor/${responsible}`)
+
+                            if (!subjectInstructor) {
+                                onClose();
+                                toastWarning("O instrutor não está associado com a matéria.");
+                                return;
+                            }
 
                             payload = {
                                 title: eventName,
@@ -336,11 +384,23 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                                 return;
                             }
 
+                            if (!startDate || !endDate) {
+                                onClose();
+                                toastWarning("O horário de início e encerramento é obrigatório.");
+                                return;
+                            }
+
                             eventType = "FEEDBACK";
 
                             edv = sessionStorage.getItem("user");
                             user = await getData(`/user/edv/${edv}`);
                             userId = user.user.id;
+
+                            if (participants.length >= 0) {
+                                onClose();
+                                toastError("Adicione um ou mais participantes.");
+                                return;
+                            }
 
                             payload = {
                                 title: eventName,
@@ -359,6 +419,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                             }
 
                             eventId = isInserted.event_id;
+
 
                             participants.forEach(async p => {
                                 let participantPayload = {
@@ -385,6 +446,24 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                     edv = sessionStorage.getItem("user");
                     user = await getData(`/user/edv/${edv}`);
                     userId = user.user.id;
+
+                    if (!newSubjectName.trim()) {
+                        onClose();
+                        toastWarning("O nome da matéria é obrigatório.");
+                        return;
+                    }
+
+                    if (!newSubjectWorkload) {
+                        onClose();
+                        toastWarning("A carga horária é obrigatória.");
+                        return;
+                    }
+
+                    if (!parseInt(newSubjectWorkload)) {
+                        onClose();
+                        toastWarning("Digite uma carga horária válida.");
+                        return;
+                    }
 
                     const newSubject = {
                         name: newSubjectName,
@@ -460,8 +539,6 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                             friday: selectedDays.includes(4)
                         }
                     }
-
-                    console.log(payload)
 
                     const schedulePlanned = await postData('/scheduler/lessons', payload);
 
@@ -1052,7 +1129,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                                 <h4>Turma:</h4>
                                 <div className="participantsList">
                                     <div className="listItem">
-                                        <span className="itemName" style={{justifyContent: "center"}}>{event.class.name}</span>
+                                        <span className="itemName" style={{ justifyContent: "center" }}>{event.class.name}</span>
                                     </div>
                                 </div>
                             </div>
@@ -1060,7 +1137,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                                 <h4>Instrutor:</h4>
                                 <div className="participantsList">
                                     <div className="listItem">
-                                        <span className="itemName" style={{justifyContent: "center"}}>{event.subject_instructor.instructor.name}</span>
+                                        <span className="itemName" style={{ justifyContent: "center" }}>{event.subject_instructor.instructor.name}</span>
                                     </div>
                                 </div>
                             </div>
