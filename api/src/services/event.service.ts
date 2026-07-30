@@ -7,6 +7,7 @@ import { ConflictError } from "../shared/errors/ConflictError.ts";
 import { createReservation, updateReservationByEvent } from "./reservation.service.ts";
 import { BadRequestError } from "../shared/errors/BadRequestError.ts";
 import { validateLessonEvent } from "./event/lesson.event.service.ts";
+import { validateFeedbackEvent } from "./event/feedback.event.service.ts";
 
 const validateDates = (
     start: Date,
@@ -152,45 +153,6 @@ const validateClassConflict = async (
     if (conflict) {
         throw new ConflictError(
             "Class already has a scheduled event during this period."
-        );
-    }
-};
-
-const validateUserConflict = async (
-    userId: number,
-    start: Date,
-    end: Date,
-    currentEventId?: number
-): Promise<void> => {
-
-    const conflict = await prisma.participation.findFirst({
-        where: {
-            user_id: userId,
-            status: ParticipationStatus.CONFIRMED,
-
-            event: {
-                status: EventStatus.SCHEDULED,
-
-                ...(currentEventId && {
-                    event_id: {
-                        not: currentEventId
-                    }
-                }),
-
-                start_date: {
-                    lt: end
-                },
-
-                end_date: {
-                    gt: start
-                }
-            }
-        }
-    });
-
-    if (conflict) {
-        throw new ConflictError(
-            "User already has another confirmed event during this period."
         );
     }
 };
@@ -441,15 +403,15 @@ export const createEvent = async (
     switch (data.eventType) {
 
         case EventType.LESSON: {
-
-        const lesson = await validateLessonEvent(
-            data,
-            start,
-            end
-        );
-
-        assignment = lesson.assignment;
-        classId = lesson.classId;
+    
+            const lesson = await validateLessonEvent(
+                data,
+                start,
+                end
+            );
+    
+            assignment = lesson.assignment;
+            classId = lesson.classId;
             break;
         }
     
