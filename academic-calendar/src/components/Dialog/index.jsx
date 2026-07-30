@@ -1217,28 +1217,39 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                             </div>
                         </div>
                     }
-                    {typeEvent === 3 &&
-                        <div className="dialogContent" style={{ borderRadius: "10px" }}>
-                            <div className="dialogInput">
-                                <h4>Início:</h4>
-                                <h4>{new Date(event.start_date).toLocaleString("pt-BR", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit", })}</h4>
-                            </div>
-                            <div className="dialogInput">
-                                <h4>Encerramento:</h4>
-                                <h4>{new Date(event.end_date).toLocaleString("pt-BR", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit", })}</h4>
-                            </div>
-                        </div>
-                    }
                     <div className="dialogButtons">
-                        {!event.is_blocked &&
-                            <>
-                                <BoschButton text="Deletar" type="delete" onClick={() => deleteEvent()} />
-                                <BoschButton text="Editar" type="primary" onClick={() => setEvent()} />
-                            </>
-                        }
-                        {event.is_blocked &&
-                            <BoschButton text="Desbloquear" type="primary" onClick={unblockEvent} />
-                        }
+                        { event.event_type === "LESSON" && event.status === "SCHEDULED" ? (
+                                <BoschButton
+                                text="Confirmar Aula"
+                                type="primary"
+                                />
+                            ) : (
+                                <>
+                                {!event.is_blocked && (
+                                    <>
+                                    <BoschButton
+                                        text="Deletar"
+                                        type="delete"
+                                        onClick={deleteEvent}
+                                    />
+                                    <BoschButton
+                                        text="Editar"
+                                        type="primary"
+                                        onClick={setEvent}
+                                    />
+                                    </>
+                                )}
+
+                                {event.is_blocked && (
+                                    <BoschButton
+                                    text="Desbloquear"
+                                    type="primary"
+                                    onClick={unblockEvent}
+                                    />
+                                )}
+                                </>
+                            )
+                            }
                     </div>
                 </>
             ) : (
