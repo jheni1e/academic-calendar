@@ -26,6 +26,9 @@ export const validateCreate = async (req: Request, res: Response, next: NextFunc
             throw new BadRequestError("Missing required fields.");
         }
 
+        if (!Object.values(UserRole).includes(role as UserRole)) 
+            throw new BadRequestError("Invalid role.");
+
         const exists = await findUserByEdv(Number(edv))
  
         if (exists) {
