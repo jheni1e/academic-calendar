@@ -41,10 +41,10 @@ export const validateDelete = async (req: Request, res: Response, next: NextFunc
 
 export const validateClassUserExistsByClassAndUser = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const classId: number = parseInt(req.params.id[0].toString());
-        const userId: number = parseInt(req.params.id[1].toString());
+        const { classId } = req.params
+        const userId: number = res.locals.user.id
 
-        const classUser = await findClassUsersByClassAndUser(classId, userId)
+        const classUser = await findClassUsersByClassAndUser(Number(classId), userId)
 
         if (!classUser) {
             throw new NotFoundError("Assignment not found.");

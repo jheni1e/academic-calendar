@@ -40,7 +40,7 @@ export const validateCreate = async (req: Request, res: Response, next: NextFunc
 
 export const validateDisable = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const id: number = parseInt(req.params.id.toString());
+        const id: number = parseInt(req.params.userId.toString());
 
         const exists = await findUserById(id)
 
@@ -56,7 +56,7 @@ export const validateDisable = async (req: Request, res: Response, next: NextFun
 
 export const validateActivate = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const id: number = parseInt(req.params.id.toString());
+        const id: number = parseInt(req.params.userId.toString());
 
         const exists = await findUserById(id)
 
@@ -72,7 +72,7 @@ export const validateActivate = async (req: Request, res: Response, next: NextFu
 
 export const validateUpdate = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const userId: number = parseInt(req.params.id.toString());
+        const userId: number = parseInt(req.params.userId.toString());
 
         if (Number.isNaN(userId)) {
             throw new BadRequestError("User Id is invalid.");
@@ -140,7 +140,7 @@ export const validateUserExistsById = async (req: Request, res: Response, next: 
 
 export const validateParticipationExistsByUserandEvent = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { id } = req.params
+        const { participationId : id } = req.params
         const participation = findParticipationByUserAndEvent(res.locals.user.id, Number(id))
 
         if(!participation)

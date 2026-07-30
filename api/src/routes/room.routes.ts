@@ -15,14 +15,14 @@ route
     .post('/reservation/:roomId', authMiddleware, authorize(Role.ADMIN, Role.INSTRUCTOR), validateCreateReservation, ReservationController.create)
     
     .get('/all', authMiddleware, RoomController.findAllRooms)
-    .get('/:id', authMiddleware, validateRoomExistsById, RoomController.findRoomById)
+    .get('/:eventId', authMiddleware, validateRoomExistsById, RoomController.findRoomById)
     .get('/reservations/:id', authMiddleware, validateRoomExistsById, ReservationController.findReservationById)
     .get('/events/:id', authMiddleware, validateRoomExistsById, RoomController.findEventsByRoom)
 
-    .put('/:id', authMiddleware, authorize(Role.ADMIN, Role.INSTRUCTOR), validateUpdate, RoomController.update)
+    .put('/:eventId', authMiddleware, authorize(Role.ADMIN, Role.INSTRUCTOR), validateUpdate, RoomController.update)
     .put('/deactivate/:id', authMiddleware, authorize(Role.ADMIN, Role.INSTRUCTOR), validateDeactivate, RoomController.disable)
 
     .delete('/reservation/:roomId', authMiddleware, authorize(Role.ADMIN, Role.INSTRUCTOR), validateDelete, ReservationController.delete)
-    .delete("/:id", authMiddleware, authorize(Role.ADMIN, Role.INSTRUCTOR), validateDeleteRoom, RoomController.delete)
+    .delete("/:eventId", authMiddleware, authorize(Role.ADMIN, Role.INSTRUCTOR), validateDeleteRoom, RoomController.delete)
 
 export default route

@@ -83,7 +83,7 @@ export class UserController {
     }
 
     static async update(req: Request, res: Response) {
-        const { id } = req.params
+        const { userId : id } = req.params
         const data : UpdateUserDTO = req.body
 
         try {
@@ -102,7 +102,7 @@ export class UserController {
     
 
     static async disable(req: Request, res: Response) {
-        const { id } = req.params
+        const { userId : id } = req.params
 
         try {
             const user = await disableUser(Number(id))
@@ -120,7 +120,7 @@ export class UserController {
     }
 
     static async activate(req: Request, res: Response) {
-        const { id } = req.params
+        const { userId : id } = req.params
 
         try {
             await activateUser(Number(id))
