@@ -429,13 +429,10 @@ export const createEvent = async (
         default:
             break;
     }
-<<<<<<< HEAD
 
     // --- Room Validation ---
     await validateRoomRequirements(data.roomId);
 
-=======
->>>>>>> d73952c0c4d5c64b3c81d21ca49723690bcbe758
     return prisma.$transaction(async (tx) => {
 
     const event = await createEventRecord(
