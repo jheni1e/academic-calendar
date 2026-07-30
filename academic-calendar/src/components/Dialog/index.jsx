@@ -414,13 +414,15 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                         day => daysNames[day]
                     );
 
+                    subjectInstructor = await getData(`/subject/${subject.subject_id}/instructor/${responsible}`)
+
                     payload = {
                         title: subject.name,
                         startDate: startDate,
                         startHour: startTime,
                         endHour: endTime,
                         createdBy: userId,
-                        subjectInstructorId: Number(responsible),
+                        subjectInstructorId: Number(subjectInstructor.subject_instructor_id),
                         roomId: Number(selectedRoom),
                         classId: Number(selectedClass),
                         recurrence: {
@@ -433,6 +435,8 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                             friday: selectedDays.includes(4)
                         }
                     }
+
+                    console.log(payload)
 
                     const schedulePlanned = await postData('/scheduler/lessons', payload);
 
