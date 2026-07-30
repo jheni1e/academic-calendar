@@ -1,9 +1,11 @@
 import { CreateEventDTO } from "../../dtos/EventDto.ts";
-import { EventStatus } from "../../generated/prisma/enums.ts";
+import { EventStatus, EventType } from "../../generated/prisma/enums.ts";
 import { prisma } from "../../lib/prisma.ts";
 import { ConflictError } from "../../shared/errors/ConflictError.ts";
 import { NotFoundError } from "../../shared/errors/NotFoundError.ts";
 import { ValidationError } from "../../shared/errors/ValidationError.ts";
+import { LoadedAssignment } from "./event.service.ts";
+import { validateLessonUpdate } from "./lesson.event.service.ts";
 
 const MAX_EVENT_DURATION_MINUTES = 9 * 60;
 
@@ -54,18 +56,6 @@ export const validateDates = (
     start: Date,
     end: Date
 ): void => {
-
-    if (isNaN(start.getTime()) || isNaN(end.getTime())) {
-        throw new ValidationError(
-            "Invalid date format."
-        );
-    }
-
-    if (start >= end) {
-        throw new ValidationError(
-            "Start date must be before end date."
-        );
-    }
 
     if (isNaN(start.getTime())) {
         throw new ValidationError(
@@ -129,4 +119,49 @@ export const validateRoomRequirements = async (
             "Room is inactive."
         );
     }
+};
+
+export interface UpdateValidationResult {
+    assignment: LoadedAssignment | null;
+    classId?: number;
+}
+
+export const validateUpdateEvent = async (
+    eventId: number,
+    eventType: EventType,
+    subjectInstructorId: number | undefined,
+    roomId: number | undefined,
+    start: Date,
+    end: Date
+): Promise<UpdateValidationResult> => {
+
+    validateDates(start, end);
+    validateEventDuration(start, end);
+
+    await validateRoomRequirements(roomId);
+
+    if (eventType !== EventType.LESSON) {
+        return {
+            assignment: null
+        };
+    }
+
+    if (!subjectInstructorId) {
+        throw new ValidationError(
+            "Subject instructor is required for lessons."
+        );
+    }
+
+    const assignment = await validateLessonUpdate(
+        eventId,
+        subjectInstructorId,
+        start,
+        end,
+        roomId
+    );
+
+    return {
+        assignment,
+        classId: assignment.subject.class_id
+    };
 };
