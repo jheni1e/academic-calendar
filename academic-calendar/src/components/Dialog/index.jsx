@@ -77,6 +77,16 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
         getAllSubjects();
     }, []);
 
+    useEffect(() => {
+        if (
+            isOpen &&
+            type === "view-event" &&
+            event?.event_type === "FEEDBACK" || event?.event_type === "EXTERNAL"
+        ) {
+            getParticipants();
+        }
+    }, [isOpen, type, event?.event_type, event?.event_id]);
+
     const getAllRooms = async () => {
         try {
             const rooms = await getData("/room/all");
@@ -160,6 +170,21 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
         } catch (error) {
             onClose();
             toastError(`Erro: ${error.message}`);
+        }
+    }
+    const getParticipants = async () => {
+        try {
+            const participantsEvent = await getData(
+                `/event/participants/all/${event.event_id}`
+            );
+
+            setParticipants(participantsEvent.map(p => ({
+                value: p.userId,
+                label: p.userName
+            })));
+
+        } catch (err) {
+            console.error(err);
         }
     }
 
@@ -622,7 +647,6 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
 
     const setEvent = async () => {
         setType("edit-event");
-        console.log(event)
 
         if (event.eventType === "LESSON") {
             setTypeEvent(1);
@@ -636,18 +660,6 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
         setStartDate(new Date(event.start_date));
         setEndDate(new Date(event.end_date));
 
-        try {
-            const participants = await getData(`/event/participants/all/${event.event_id}`);
-
-            setParticipants(
-                participants.map(p => ({
-                    value: p.userId,
-                    label: p.userName
-                }))
-            );
-        } catch (err) {
-            console.error(err);
-        }
     }
 
     const unblockEvent = async () => {
@@ -1057,8 +1069,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                                 <div className="participantsList">
                                     {participants.map((participant) => (
                                         <div className="listItem">
-                                            <span className="itemName">{participant.value}</span>
-                                            <button className="removeItem" onClick={() => removeParticipant(participant.id)}>×</button>
+                                            <span className="itemName">{participant.label}</span>
                                         </div>
                                     ))}
                                 </div>
@@ -1081,8 +1092,6 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                                     {participants.map((participant) => (
                                         <div key={participant.value} className="listItem">
                                             <span className="itemName">{participant.label}</span>
-
-                                            <button className="removeItem" onClick={() => removeParticipant(participant.value)}>×</button>
                                         </div>
                                     ))}
                                 </div>
