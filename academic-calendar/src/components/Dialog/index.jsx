@@ -192,6 +192,12 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                             user = await getData(`/user/edv/${edv}`);
                             userId = user.user.id;
 
+                            if (participants.length >= 0) {
+                                onClose();
+                                toastError("Adicione um ou mais participantes.");
+                                return;
+                            }
+
                             payload = {
                                 title: eventName,
                                 eventType: eventType,
@@ -317,6 +323,12 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                             user = await getData(`/user/edv/${edv}`);
                             userId = user.user.id;
 
+                            if (participants.length >= 0) {
+                                onClose();
+                                toastError("Adicione um ou mais participantes.");
+                                return;
+                            }
+
                             payload = {
                                 title: eventName,
                                 eventType: eventType,
@@ -334,6 +346,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                             }
 
                             eventId = isInserted.event_id;
+
 
                             participants.forEach(async p => {
                                 let participantPayload = {
@@ -435,8 +448,6 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                             friday: selectedDays.includes(4)
                         }
                     }
-
-                    console.log(payload)
 
                     const schedulePlanned = await postData('/scheduler/lessons', payload);
 
