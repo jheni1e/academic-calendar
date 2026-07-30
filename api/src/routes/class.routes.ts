@@ -20,7 +20,7 @@ route
     .get('/events/:id', authMiddleware, validateClassExistsById, validateClassEvent, ClassController.findEventsByClass)
     .get('/participants/:id', authMiddleware, validateClassExistsById, ClassUserController.findClassUsersByClass) // get participants by class id
 
-    .put('/:eventId', authMiddleware, authorize(UserRole.ADMIN, UserRole.INSTRUCTOR), validateClassExistsById, ClassController.update) // get class by id
+    .put('/:id', authMiddleware, authorize(UserRole.ADMIN, UserRole.INSTRUCTOR), validateClassExistsById, ClassController.update) 
     .put("/enable/:id", authMiddleware, authorize(UserRole.ADMIN, UserRole.INSTRUCTOR), validateClassExistsById, ClassController.enable) // enable class
     .put("/disable/:id", authMiddleware, authorize(UserRole.ADMIN, UserRole.INSTRUCTOR), validateClassExistsById, ClassController.disable) // disable class
 
