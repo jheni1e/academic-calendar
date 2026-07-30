@@ -8,7 +8,7 @@ import { deleteData, getData, postData, putData } from "../../utils/apiBack";
 import { toastError, toastSuccess, toastWarning } from '../../components/BoschToast';
 import CadeadoTrancado from "../../images/cadeado-trancado.png"
 
-function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) {
+function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject, onPlanningCreated }) {
     const dialogRef = useRef(null);
 
     const [responsible, setResponsible] = useState(null);
@@ -41,7 +41,6 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
 
     const [selectedDays, setSelectedDays] = useState([]);
     const [seriesName, setSeriesName] = useState("");
-    const [updatePage, setUpdatePage] = useState(false)
 
     const [typeStatusEvent, setTypeStatusEvent] = useState(
         event?.is_blocked === true ? 1 : 2);
@@ -76,7 +75,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
         getAllPeople();
         getAllInstructors();
         getAllSubjects();
-    }, [updatePage]);
+    }, []);
 
     useEffect(() => {
         if (
@@ -98,6 +97,10 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
             }));
 
             setAllRooms(formattedRooms);
+
+            if (formattedRooms.length > 0) {
+                setSelectedRoom(formattedRooms[0].value);
+            }
         } catch (error) {
             onClose();
             toastError(`Erro: ${error.message}`)
@@ -114,6 +117,10 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
             }));
 
             setAllClasses(formatedClasses);
+
+            if (formatedClasses.length > 0) {
+                setSelectedClass(formatedClasses[0].value);
+            }
         } catch (error) {
             onClose();
             toastError(`Erro: ${error.message}`)
@@ -146,6 +153,10 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
             }));
 
             setAllInstructors(formatedInstructors);
+
+            if (formatedInstructors.length > 0) {
+                setResponsible(formatedInstructors[0].value);
+            }
         } catch (error) {
             onClose();
             toastError(`Erro: ${error.message}`)
@@ -156,13 +167,18 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
         try {
             const data = await getData("/subject/all");
 
+            const classCache = {};
+
             const subjectsWithClass = await Promise.all(
                 data.map(async (subject) => {
-                    const classData = await getData(`/class/${subject.class_id}`);
+                    if (!classCache[subject.class_id]) {
+                        classCache[subject.class_id] =
+                            await getData(`/class/${subject.class_id}`);
+                    }
 
                     return {
                         value: subject.subject_id,
-                        label: `${subject.name} - ${classData.name}`
+                        label: `${subject.name} - ${classCache[subject.class_id].name}`
                     };
                 })
             );
@@ -173,6 +189,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
             toastError(`Erro: ${error.message}`);
         }
     }
+
     const getParticipants = async () => {
         try {
             const participantsEvent = await getData(
@@ -224,7 +241,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                             user = await getData(`/user/edv/${edv}`);
                             userId = user.user.id;
 
-                            if (participants.length >= 0) {
+                            if (participants.length <= 0) {
                                 onClose();
                                 toastError("Adicione um ou mais participantes.");
                                 return;
@@ -397,7 +414,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                             user = await getData(`/user/edv/${edv}`);
                             userId = user.user.id;
 
-                            if (participants.length >= 0) {
+                            if (participants.length <= 0) {
                                 onClose();
                                 toastError("Adicione um ou mais participantes.");
                                 return;
@@ -462,7 +479,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
 
                     const workload = Number(newSubjectWorkload);
 
-                    if (!Number.isInteger(workload) || workload <= 0) {
+                    if (!Number.isInteger(workload) || workload <= 0 || workload % 4 != 0) {
                         onClose();
                         toastWarning("Digite uma carga horária válida.");
                         return;
@@ -531,6 +548,24 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                         day => daysNames[day]
                     );
 
+                    if (!startDate || !startTime || !endTime) {
+                        onClose();
+                        toastWarning("A data e horário são campos obrigatórios.");
+                        return;
+                    }
+
+                    if (!selectedRoom || !responsible || !selectedClass) {
+                        onClose();
+                        toastWarning("A sala, professor e matéria são obrigatórios.");
+                        return;
+                    }
+
+                    if (selectedDays.length <= 0) {
+                        onClose();
+                        toastWarning("Selecione a frequência das aulas.");
+                        return;
+                    }
+
                     subjectInstructor = await getData(`/subject/${subject.subject_id}/instructor/${responsible}`)
 
                     payload = {
@@ -560,6 +595,8 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                         toastError("Falha ao planejar as aulas.");
                         return;
                     }
+
+                    await onPlanningCreated?.();
 
                     onClose();
                     toastSuccess("Aulas planejadas com sucesso!")
@@ -621,7 +658,8 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                             eventId = isUpdated.event_id;
 
                             onClose();
-                            setUpdatePage(!updatePage)
+                            
+                            await onPlanningCreated()
                             toastSuccess("Evento atualizado com sucesso!");
                             break;
                         case 2:
@@ -703,13 +741,13 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
 
         setRooms([...newRooms]);
     };
-    
+
     const deleteEvent = async () => {
-        try{
+        try {
             await putData(`/event/cancel/${event.event_id}`)
             onClose()
             toastSuccess(`Evento ${event.event_id} Deletado`)
-            setUpdatePage(!updatePage)
+            await onPlanningCreated()
         } catch(e) {
             toastError(e)
         }
@@ -774,11 +812,11 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
         try{
             console.log(event.event_id)
             await putData(`/event/confirm/${event.event_id}`)
-            setUpdatePage(!updatePage)
             console.log(event.status)
             onClose()
             toastSuccess("Aula Confirmada")
-
+            
+            await onPlanningCreated()
         } catch(e) {
             toastError(e)
         }
@@ -1230,6 +1268,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                                 </>
                             )
                             }
+
                     </div>
                 </>
             ) : (

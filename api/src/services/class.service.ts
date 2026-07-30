@@ -3,6 +3,7 @@ import { CreateClassDTO, UpdateClassDTO } from "../dtos/ClassDto.ts";
 import { Class } from "../generated/prisma/client.ts";
 import { NotFoundError } from "../shared/errors/NotFoundError.ts";
 import { Event } from "../generated/prisma/client.ts";
+import { EventResponseDTO } from "../dtos/EventDto.ts";
 
 export const createClass = async (
     data: CreateClassDTO
@@ -62,16 +63,102 @@ export const deleteClass = async(
 
 export const getEventsByClass = async (
     classId: number
-): Promise<Event[]> => {
+): Promise<EventResponseDTO[]> => {
 
-    const classItem = await prisma.class.findUnique({
+    return prisma.event.findMany({
         where: {
             class_id: classId
         },
-        include: {
-            events: true
+
+        orderBy: {
+            start_date: "asc"
+        },
+
+        select: {
+            event_id: true,
+            title: true,
+            description: true,
+            start_date: true,
+            end_date: true,
+            event_type: true,
+            status: true,
+            is_blocked: true,
+
+            class: {
+                select: {
+                    class_id: true,
+                    name: true
+                }
+            },
+
+            recurrence: {
+                select: {
+                    recurrence_id: true,
+                    series_name: true,
+                    repeat_until: true,
+                    occurrences: true,
+                    monday: true,
+                    tuesday: true,
+                    wednesday: true,
+                    thursday: true,
+                    friday: true
+                }
+            },
+
+            reservation: {
+                select: {
+                    room: {
+                        select: {
+                            room_id: true,
+                            title: true,
+                            capacity: true
+                        }
+                    }
+                }
+            },
+
+            subject_instructor: {
+                select: {
+                    subject: {
+                        select: {
+                            subject_id: true,
+                            name: true
+                        }
+                    },
+
+                    instructor: {
+                        select: {
+                            user_id: true,
+                            user_edv: true,
+                            name: true,
+                            role: true
+                        }
+                    }
+                }
+            },
+
+            participations: {
+                select: {
+                    participation_id: true,
+                    status: true,
+
+                    user: {
+                        select: {
+                            user_id: true,
+                            name: true,
+                            user_edv: true
+                        }
+                    }
+                }
+            },
+
+            creator: {
+                select: {
+                    user_id: true,
+                    name: true,
+                    user_edv: true
+                }
+            }
         }
     });
-
-    return classItem?.events ?? [];
-}
+};

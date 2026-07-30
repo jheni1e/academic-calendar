@@ -2,9 +2,10 @@ import { Request, Response } from "express";
 
 import { AppError } from "../shared/errors/AppError.ts";
 import { CreateEventDTO, UpdateEventDTO } from "../dtos/EventDto.ts";
-import { createEvent, deleteEvent, findAllEvents, findEventsByClass, findEventById, updateEvent, findEventsByUser, findEventsByRoom, blockEvent, unblockEvent, confirmEvent, cancelEvent } from "../services/event.service.ts";
+import { createEvent, deleteEvent, updateEvent, blockEvent, unblockEvent, confirmEvent, cancelEvent } from "../services/event/event.service.ts";
 import { NotFoundError } from "../shared/errors/NotFoundError.ts";
 import { BadRequestError } from "../shared/errors/BadRequestError.ts";
+import { findAllEvents, findEventById, findEventsByClass, findEventsByRoom, findEventsByUser } from "../services/event/event.query.service.ts";
 
 export class EventController {
     static async create(req: Request, res: Response) {
@@ -26,7 +27,7 @@ export class EventController {
     }
 
     static async delete(req: Request, res: Response) {
-        const id: number = parseInt(req.params.id.toString());
+        const id: number = parseInt(req.params.eventId.toString());
 
         try {
             await deleteEvent(id);
@@ -45,7 +46,7 @@ export class EventController {
     }
 
     static async findEventById(req: Request, res: Response) {
-        const id: number = parseInt(req.params.id.toString());
+        const id: number = parseInt(req.params.eventId.toString());
 
         try {
             const event = await findEventById(id);
@@ -100,7 +101,7 @@ export class EventController {
     }
 
     static async findEventByClass(req: Request, res: Response) {
-        const id: number = parseInt(req.params.id.toString());
+        const id: number = parseInt(req.params.classId.toString());
 
         try {
             const event = await findEventsByClass(id);
@@ -136,7 +137,7 @@ export class EventController {
     }
 
     static async update(req: Request, res: Response) {
-        const id: number = parseInt(req.params.id.toString());
+        const id: number = parseInt(req.params.eventId.toString());
         const data: UpdateEventDTO = req.body;
 
         try {
@@ -156,7 +157,7 @@ export class EventController {
     }
 
     static async block(req: Request, res: Response) {
-        const { id } = req.params
+        const { eventId: id } = req.params
 
         try {
             await blockEvent(Number(id))
@@ -171,10 +172,10 @@ export class EventController {
     }
 
     static async unblock(req: Request, res: Response) {
-        const { id } = req.params
+        const { eventId } = req.params
 
         try {
-            await unblockEvent(Number(id))
+            await unblockEvent(Number(eventId))
             return res.status(200).send({ message: "Event unblocked!"})
             
         } catch (error) {
@@ -186,7 +187,7 @@ export class EventController {
     }
 
     static async confirm(req: Request, res: Response) {
-        const { id } = req.params
+        const { eventId : id } = req.params
 
         try {
             await confirmEvent(Number(id))
@@ -201,7 +202,7 @@ export class EventController {
     }
 
     static async cancel(req: Request, res: Response) {
-        const { id } = req.params
+        const { eventId: id } = req.params
 
         try {
             await cancelEvent(Number(id))

@@ -24,14 +24,14 @@ route
     .get('/id/:id', authMiddleware, validateUserExistsById, UserController.getById) // get user by id
     .get('/classes', authMiddleware, ClassUserController.findClassUsersByUser) // get classes of the authenticated user
     .get('/classes/:classId', authMiddleware, validateClassUserExistsByClassAndUser, ClassUserController.findClassUsersByClassAndUser) // get class by id 
-    .get('/events/:id', authMiddleware, EventController.findEventsByUser)
+    .get('/event/:userId', authMiddleware, EventController.findEventsByUser) // get event by user
     .get('/instructors', authMiddleware, UserController.getInstructors) // get instructors and admins
     .get('/subjects', authMiddleware, SubjectInstructorController.findSubjectByInstructor)
 
-    .put('/:id', authMiddleware, validateUpdate, UserController.update) // update user by id
-    .put('/disable/:id', authMiddleware, authorize(UserRole.ADMIN, UserRole.INSTRUCTOR), validateDisable, UserController.disable) // disable a user instead of deleting them
-    .put('/enable/:id', authMiddleware, authorize(UserRole.ADMIN, UserRole.INSTRUCTOR), validateActivate, UserController.activate) // waiting implementation
-    .put('/event/confirm/:id', authMiddleware, validateParticipationExistsByUserandEvent, ParticipationController.confirmParticipation) // confirm event participation
-    .put('/event/decline/:id', authMiddleware, validateParticipationExistsByUserandEvent, ParticipationController.declineParticipation)
+    .put('/:userId', authMiddleware, validateUpdate, UserController.update) // update user by id
+    .put('/disable/:userId', authMiddleware, authorize(UserRole.ADMIN, UserRole.INSTRUCTOR), validateDisable, UserController.disable) // disable a user instead of deleting them
+    .put('/enable/:userId', authMiddleware, authorize(UserRole.ADMIN, UserRole.INSTRUCTOR), validateActivate, UserController.activate) // waiting implementation
+    .put('/event/confirm/:participationId', authMiddleware, validateParticipationExistsByUserandEvent, ParticipationController.confirmParticipation) // confirm event participation
+    .put('/event/decline/:participationId', authMiddleware, validateParticipationExistsByUserandEvent, ParticipationController.declineParticipation)
 
 export default route

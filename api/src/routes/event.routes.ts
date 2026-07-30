@@ -15,17 +15,17 @@ route
     .post('/participants/', authMiddleware, validateCreate, ParticipationController.create)  // add participants to the event
 
     .get('/all', authMiddleware, authorize(Role.ADMIN, Role.INSTRUCTOR), EventController.findAllEvents) // get all events
-    .get('/:id', authMiddleware, validateEventExistsById, EventController.findEventById) // get event by id
-    .get('/participants/all/:id', authMiddleware, validateEventExistsById, ParticipationController.findParticipationByEvent) // get all participants of a specific event
+    .get('/:eventId', authMiddleware, validateEventExistsById, EventController.findEventById) // get event by id
+    .get('/participants/all/:eventId', authMiddleware, validateEventExistsById, ParticipationController.findParticipationByEvent) // get all participants of a specific event
 
     .delete("/participants/remove/:eventId", authMiddleware, validateDeleteByEventandUser, ParticipationController.deleteByEventandUser) // remove a user from an event
 
-    .put('/:id', authMiddleware, validateUpdate, EventController.update) 
-    .put('/block/:id', authMiddleware, validateBlockEvent, EventController.block)
-    .put('/unblock/:id', authMiddleware, validateBlockEvent, EventController.unblock)
-    .put('/confirm/:id', authMiddleware, validateBlockEvent, EventController.confirm)
-    .put('/cancel/:id', authMiddleware, validateBlockEvent, EventController.cancel)
+    .put('/:eventId', authMiddleware, validateUpdate, EventController.update) 
+    .put('/block/:eventId', authMiddleware, validateBlockEvent, EventController.block)
+    .put('/unblock/:eventId', authMiddleware, validateBlockEvent, EventController.unblock)
+    .put('/confirm/:eventId', authMiddleware, validateBlockEvent, EventController.confirm)
+    .put('/cancel/:eventId', authMiddleware, validateBlockEvent, EventController.cancel)
 
-    .delete("/:id", authMiddleware, validateDelete, EventController.delete)
+    .delete("/:eventId", authMiddleware, validateDelete, EventController.delete)
     
 export default route

@@ -117,7 +117,12 @@ function Planning() {
               isOpen={isModalOpen}
               onClose={changeModal}
               title={`Planejamento ${subjectSelected.name}`}
-              subject={subjectSelected} />
+              subject={subjectSelected}
+              onPlanningCreated={async () => {
+                const edv = sessionStorage.getItem("user");
+                const response = await getData(`/user/edv/${edv}`);
+                await loadSubjects(response.user.id);
+              }} />
           }
           <MonthlyCalendar events={events.filter(e => e.status != "CANCELLED")} />
         </div>

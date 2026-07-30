@@ -9,7 +9,7 @@ function getEventColor(id) {
     "#00884A",
     "#9E2896",
     "#18837E",
-    "#ED0007"
+    "#BE0004"
   ];
 
   return colors[id % colors.length];
@@ -38,7 +38,7 @@ function EventCard({ event, compact }) {
     <>
       <div
         className={`event-card ${compact ? "compact" : ""}`}
-        style={{ "--event-color": color }}
+        style={{ "--event-color": color, opacity: event.status === "SCHEDULED" ? 0.4 : 1 }}
         onClick={() => changeModal()}
         >
         {!compact && (
