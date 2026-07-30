@@ -16,15 +16,16 @@ route
     .post('/instructor/', authMiddleware, authorize(Role.ADMIN, Role.INSTRUCTOR), validateCreate, SubjectInstructorController.create) // add a new subject responsible instructor
 
     .get('/all', authMiddleware, SubjectController.findAllSubjects) // get all subjects
-    .get('/:eventId', authMiddleware, validateSubjectExistsById, SubjectController.findSubjectById) // get a subject by its id
+    .get('/:id', authMiddleware, validateSubjectExistsById, SubjectController.findSubjectById) // get a subject by its id
     .get('/instructors/:id', authMiddleware, validateSubjectExistsById, SubjectInstructorController.findSubjectInstructorsBySubject) // get all instructors by subject
     .get('/:subjectId/instructor/:instructorId', authMiddleware, SubjectInstructorController.findSubjectInstructorBySubjectAndInstructor)
     .get('/instructor/:instructorId/ongoing', authMiddleware, authorize(Role.ADMIN, Role.INSTRUCTOR), SubjectController.findOnGoingSubjectsByInstructor) // get active subjects by instructor
     .get('class/:classId/ongoing', SubjectController.findOnGoingSubjectsByClass)
 
-    .put('/:eventId', authMiddleware, authorize(Role.ADMIN, Role.INSTRUCTOR), validateUpdate, SubjectController.update) // update subject
+
+    .put('/:subjectId', authMiddleware, authorize(Role.ADMIN, Role.INSTRUCTOR), validateUpdate, SubjectController.update) // update subject
     
     .delete('/:subjectId/instructor/:instructorId', authMiddleware, authorize(Role.ADMIN, Role.INSTRUCTOR), validateDeleteSI, SubjectInstructorController.delete)
-    .delete("/:eventId", authMiddleware, authorize(Role.ADMIN, Role.INSTRUCTOR), validateDelete, SubjectController.delete)
+    .delete("/:id", authMiddleware, authorize(Role.ADMIN, Role.INSTRUCTOR), validateDelete, SubjectController.delete)
 
 export default route
