@@ -137,7 +137,7 @@ const updateWorkload = async (
             subject_id: subjectId
         },
         data: {
-            completed_workload: {
+            scheduled_workload: {
                 increment: completedHours
             }
         }
@@ -199,7 +199,7 @@ export const scheduleLessonSeries = async (
 
     const subject = assignment.subject;
 
-    if (subject.workload <= subject.completed_workload) {
+    if (subject.workload <= subject.scheduled_workload) {
         throw new ConflictError(
             "This subject has already completed its workload."
         );
@@ -209,10 +209,10 @@ export const scheduleLessonSeries = async (
 
     let remainingHours =
         subject.workload -
-        subject.completed_workload;
+        subject.scheduled_workload;
 
     let lessonNumber =
-        (subject.completed_workload / LESSON_DURATION) + 1;
+        (subject.scheduled_workload / LESSON_DURATION) + 1;
 
     let currentDate = new Date(data.startDate);
 

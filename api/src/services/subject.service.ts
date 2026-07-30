@@ -13,6 +13,7 @@ export const createSubject = async (
             name: data.name,
             workload: data.workload,
             completed_workload: 0,
+            scheduled_workload: 0,
             start_date: data.startDate
         }
     });
@@ -66,7 +67,7 @@ export const findOnGoingSubjectsByInstructor = async (
     });
 
     return subjects.filter(
-        s => s.completed_workload < s.workload
+        s => s.scheduled_workload < s.workload
     );
 };
 
