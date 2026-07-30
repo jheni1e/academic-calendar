@@ -6,6 +6,7 @@ import { ValidationError } from "../shared/errors/ValidationError.ts";
 import { ConflictError } from "../shared/errors/ConflictError.ts";
 import { createReservation, updateReservationByEvent } from "./reservation.service.ts";
 import { BadRequestError } from "../shared/errors/BadRequestError.ts";
+import { validateLessonEvent } from "./event/lesson.event.service.ts";
 
 const validateDates = (
     start: Date,
@@ -263,7 +264,7 @@ const validateRoomConflict = async (
     }
 };
 
-const validateLesson = async (
+export const validateLesson = async (
     subjectInstructorId: number,
     start: Date,
     end: Date
@@ -330,15 +331,79 @@ const validateLessonUpdate = async (
     return assignment;
 };
 
-export const createEvent = async (
+const MAX_EVENT_DURATION_MINUTES = 9 * 60;
+
+const validateEventDuration = (
+    start: Date,
+    end: Date
+): void => {
+
+    const duration =
+        (end.getTime() - start.getTime()) / 60000;
+
+    if (duration > MAX_EVENT_DURATION_MINUTES) {
+        throw new ValidationError(
+            "Event duration cannot exceed 9 hours."
+        );
+    }
+};
+
+const validateRoomRequirements = async (
+    roomId?: number
+): Promise<void> => {
+
+    if (!roomId) {
+        return;
+    }
+
+    const room = await prisma.room.findUnique({
+        where: {
+            room_id: roomId
+        }
+    });
+
+    if (!room) {
+        throw new NotFoundError(
+            "Room not found."
+        );
+    }
+
+    if (!room.is_active) {
+        throw new ValidationError(
+            "Room is inactive."
+        );
+    }
+};
+
+const validateCreator = async (
+    userId: number
+): Promise<void> => {
+
+    const creator = await prisma.user.findUnique({
+        where: {
+            user_id: userId
+        }
+    });
+
+    if (!creator) {
+        throw new NotFoundError(
+            "Creator not found."
+        );
+    }
+};
+
+const validateRequiredFields = (
     data: CreateEventDTO
-): Promise<Event> => {
-
-    // --- Required fields ---
-
+): void => {
     if (!data.title || data.title.trim() === "") {
         throw new ValidationError(
             "Event title is required."
+        );
+    }
+
+    if (!data.eventType) {
+        throw new ValidationError(
+            "Event type is required."
         );
     }
 
@@ -353,104 +418,76 @@ export const createEvent = async (
             "Start date and end date are required."
         );
     }
+}
+
+export const createEvent = async (
+    data: CreateEventDTO
+): Promise<Event> => {
+
+    // --- Required fields ---
+    validateRequiredFields(data)
 
     const start = new Date(data.startDate);
     const end = new Date(data.endDate);
 
+    // --- Date, EventDuration, Creator Validations ---
     validateDates(start, end);
-
-    // --- Duration Validations ---
-    const durationMinutes =
-    (end.getTime() - start.getTime()) / 60000;
-
-    const MAX_DURATION_MINUTES = 9 * 60;
-
-    if (durationMinutes > MAX_DURATION_MINUTES) {
-        throw new ValidationError(
-            "Event duration cannot exceed 9 hours."
-        );
-    }
-
-    // --- Creator validation ---
-    const creator = await prisma.user.findUnique({
-        where: {
-            user_id: data.createdBy
-        }
-    });
-
-    if (!creator) {
-        throw new NotFoundError(
-            "Creator not found."
-        );
-    }
+    validateEventDuration(start, end);
+    await validateCreator(data.createdBy);
+    await validateRoomRequirements(data.roomId);
 
     let assignment: LoadedAssignment | null = null;
-
     let classId = data.classId;
 
-    // --- Lesson Validation ---
     if (data.eventType === EventType.LESSON) {
 
-        if (!data.subjectInstructorId) {
-            throw new ValidationError(
-                "Subject instructor is required for lessons."
-            );
-        }
-
-        if (!data.roomId) {
-            throw new ValidationError(
-                "Room is required for lessons."
-            );
-        }
-
-        assignment = await validateLesson(
-            data.subjectInstructorId,
+        const lesson = await validateLessonEvent(
+            data,
             start,
             end
         );
-        classId = assignment.subject.class_id;
+
+        assignment = lesson.assignment;
+        classId = lesson.classId;
     }
+    return prisma.$transaction(async (tx) => {
 
-    // --- Room Validation ---
-    if (data.roomId) {
+    const event = await createEventRecord(
+        tx,
+        data,
+        assignment,
+        classId,
+        start,
+        end
+    );
 
-        const room = await prisma.room.findUnique({
+    if (classId) {
+
+        const classUsers = await tx.classUser.findMany({
             where: {
-                room_id: data.roomId
+                class_id: classId
+            },
+            select: {
+                user_id: true
             }
         });
 
-        if (!room) {
-            throw new NotFoundError(
-                "Room not found."
-            );
-        }
+        if (classUsers.length > 0) {
 
-        if (!room.is_active) {
-            throw new ValidationError(
-                "Room is inactive."
-            );
+            await tx.participation.createMany({
+                data: classUsers.map(classUser => ({
+                    event_id: event.event_id,
+                    user_id: classUser.user_id,
+                    status: ParticipationStatus.PENDING
+                })),
+                skipDuplicates: true
+            });
         }
     }
 
-    return prisma.$transaction(async (tx) => {
+    if (data.roomId) {
 
-        console.log("Creating event");
-    
-        const event = await createEventRecord(
-            tx,
-            data,
-            assignment,
-            classId,
-            start,
-            end
-        );
-    
-        console.log("Event created", event.event_id);
-    
-        if (data.roomId) {
-            
-            await createReservation(
+        await createReservation(
             tx,
             {
                 roomId: data.roomId,
@@ -458,14 +495,14 @@ export const createEvent = async (
                 startDate: start,
                 endDate: end,
                 description: data.description
-            });
-        }
-    
-        console.log("Transaction finished");
-    
-        return event;
+            }
+        );
+    }
+
+    return event;
     });
-};
+
+}
 
 // ---- CRUD ----
 export const findEventById = async (
@@ -780,20 +817,26 @@ export const deleteEvent = async (
     eventId: number
 ): Promise<void> => {
 
-    const event = await findEventById(eventId);
+    await prisma.$transaction(async (tx) => {
 
-    if (!event) {
-        throw new NotFoundError(
-            "Event not found."
-        );
-    }
+        await tx.participation.deleteMany({
+            where: {
+                event_id: eventId
+            }
+        });
 
-    await prisma.event.delete({
-        where: {
-            event_id: eventId
-        }
+        await tx.reservation.deleteMany({
+            where: {
+                event_id: eventId
+            }
+        });
+
+        await tx.event.delete({
+            where: {
+                event_id: eventId
+            }
+        });
     });
-
 };
 
 export const blockEvent = async (

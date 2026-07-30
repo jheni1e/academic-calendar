@@ -267,7 +267,7 @@ function Home() {
           items={subjects} />
 
         <div className="content">
-          <MonthlyCalendar type={'calendar'} events={filteredEvents} refreshEvents={getUserEvents} />
+          <MonthlyCalendar type={'calendar'} events={filteredEvents.filter(e => e.status != "CANCELLED")} refreshEvents={getUserEvents} />
         </div>
       </div>
     </>

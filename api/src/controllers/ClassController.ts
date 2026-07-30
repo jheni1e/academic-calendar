@@ -64,7 +64,7 @@ export class ClassController {
 
         try {
             await deleteClass(id);
-            return res.status(204).send({ message: "Class deleted successfully." });
+            return res.status(200).send({ message: "Class deleted successfully." });
         } catch (error) {
             if (error instanceof AppError) {
                 return res.status(error.statusCode).json({

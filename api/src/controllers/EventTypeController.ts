@@ -27,7 +27,7 @@ export class CreateEventTypeController {
         try {
             await deleteEventType(id);
 
-            return res.status(204).send({ message: "Event type deleted successfully." });
+            return res.status(200).send({ message: "Event type deleted successfully." });
         } catch (error) {
             if (error instanceof AppError) {
                 return res.status(error.statusCode).json({

@@ -702,13 +702,14 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
 
         setRooms([...newRooms]);
     };
-
-    const deleteEvent = async (id) => {
-        try {
-            deleteData(`event/${id}`)
+    
+    const deleteEvent = async () => {
+        try{
+            await putData(`/event/cancel/${event.event_id}`)
             onClose()
-            toastSuccess(`Evento ${id} Deletado`)
-        } catch (e) {
+            window.location.reload()
+            toastSuccess(`Evento ${event.event_id} Deletado`)
+        } catch(e) {
             toastError(e)
         }
 
@@ -746,6 +747,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
 
     const setEvent = async () => {
         setType("edit-event");
+        console.log(event)
 
         if (event.eventType === "LESSON") {
             setTypeEvent(1);
@@ -1212,7 +1214,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                     <div className="dialogButtons">
                         {!event.is_blocked &&
                             <>
-                                <BoschButton text="Deletar" type="delete" onClick={() => deleteEvent(event.event_id)} />
+                                <BoschButton text="Deletar" type="delete" onClick={() => deleteEvent()} />
                                 <BoschButton text="Editar" type="primary" onClick={() => setEvent()} />
                             </>
                         }

@@ -31,9 +31,9 @@ export class EventController {
         try {
             await deleteEvent(id);
 
-            return res.status(204).send({ message: "Event deleted successfully." });
+            return res.status(200).send({ message: "Event deleted successfully." });
         } catch (error) {
-
+            console.log(error)
             if (error instanceof AppError) {
                 return res.status(error.statusCode).json({
                     message: error.message

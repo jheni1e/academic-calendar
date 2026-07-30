@@ -75,7 +75,7 @@ export const validateCreate = async (req: Request, res: Response, next: NextFunc
 
 export const validateDelete = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const eventId: number = parseInt(req.params.id[0].toString());
+        const eventId = Number(req.params.id);
 
         const event = await findEventById(eventId)
 
@@ -83,12 +83,21 @@ export const validateDelete = async (req: Request, res: Response, next: NextFunc
             throw new NotFoundError("Event not found");
         }
 
+        console.log(res.locals.user.id)
+        console.log(event.created_by)
+        if(event.created_by !== res.locals.user.id)
+            throw new UnauthorizedError("Access denied")
+
+        if(event.is_blocked)
+            throw new BadRequestError("Cannot delete a blocked event")
+
         const reservation = await findReservationByEvent(eventId)
 
         if (reservation) {
             throw new ForbiddenError("Cannot delete an event with a reservation.");
         }
 
+        console.log("validateDelete passou");
         next();
     } catch (error) {
         next(error);
@@ -133,6 +142,32 @@ export const validateEventExistsById = async (req: Request, res: Response, next:
         next();
     } catch (error) {
         next(error);
+    }
+}
+
+export const validateBlockEvent = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { id } = req.params
+
+        if (Number.isNaN(id)) 
+            throw new BadRequestError("Invalid event id");
+        
+        const event = await findEventById(Number(id))
+        
+        if(!event)
+            throw new NotFoundError("Event not found")
+
+        const userId = res.locals.user.id
+
+        if(event.created_by != userId)
+            throw new UnauthorizedError("Access denied")
+
+        if (event.end_date.getTime() < Date.now()) 
+            throw new BadRequestError("Event has already ended");
+        next()
+
+    } catch (error) {
+        next(error)
     }
 }
 
