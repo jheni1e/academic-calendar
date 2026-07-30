@@ -66,19 +66,19 @@ export class EventController {
 
     static async findEventsByRoom(req: Request, res: Response) {
         const roomId = Number(req.params.id);
-    
+
         try {
             const events = await findEventsByRoom(roomId);
-    
+
             return res.status(200).json(events);
         } catch (error) {
-    
+
             if (error instanceof AppError) {
                 return res.status(error.statusCode).json({
                     message: error.message
                 });
             }
-    
+
             return res.status(500).json({
                 message: "Internal server error."
             });
@@ -86,17 +86,18 @@ export class EventController {
     }
 
     static async findEventsByUser(req: Request, res: Response) {
-        const id: number = parseInt(req.params.id.toString());
+        const id: number = parseInt(req.params.userId.toString());
 
         try {
-            const events = await findEventsByUser(Number(id))
+            const events = await findEventsByUser(id)
+
             return res.status(200).send(events)
         } catch (error) {
             if (error instanceof NotFoundError) {
                 return res.status(error.statusCode).send(error.message)
             }
 
-            return res.status(500).send({ message: "Internal server error."})
+            return res.status(500).send({ message: "Internal server error." })
         }
     }
 
@@ -161,13 +162,13 @@ export class EventController {
 
         try {
             await blockEvent(Number(id))
-            return res.status(200).send({ message: "Event blocked!"})
+            return res.status(200).send({ message: "Event blocked!" })
 
         } catch (error) {
             if (error instanceof NotFoundError || error instanceof BadRequestError)
-                return res.status(error.statusCode).send({ message: error.message})
+                return res.status(error.statusCode).send({ message: error.message })
 
-            return res.status(500).send({ message : "Internal server error"})
+            return res.status(500).send({ message: "Internal server error" })
         }
     }
 
@@ -176,28 +177,28 @@ export class EventController {
 
         try {
             await unblockEvent(Number(eventId))
-            return res.status(200).send({ message: "Event unblocked!"})
-            
+            return res.status(200).send({ message: "Event unblocked!" })
+
         } catch (error) {
             if (error instanceof NotFoundError || error instanceof BadRequestError)
-                return res.status(error.statusCode).send({ message: error.message})
+                return res.status(error.statusCode).send({ message: error.message })
 
-            return res.status(500).send({ message : "Internal server error"})
+            return res.status(500).send({ message: "Internal server error" })
         }
     }
 
     static async confirm(req: Request, res: Response) {
-        const { eventId : id } = req.params
+        const { eventId: id } = req.params
 
         try {
             await confirmEvent(Number(id))
-            return res.status(200).send({ message: "Event confirmed!"})
-            
+            return res.status(200).send({ message: "Event confirmed!" })
+
         } catch (error) {
             if (error instanceof AppError)
-                return res.status(error.statusCode).send({ message: error.message})
+                return res.status(error.statusCode).send({ message: error.message })
 
-            return res.status(500).send({ message : "Internal server error"})
+            return res.status(500).send({ message: "Internal server error" })
         }
     }
 
@@ -206,13 +207,13 @@ export class EventController {
 
         try {
             await cancelEvent(Number(id))
-            return res.status(200).send({ message: "Event cancelled!"})
-            
+            return res.status(200).send({ message: "Event cancelled!" })
+
         } catch (error) {
             if (error instanceof AppError)
-                return res.status(error.statusCode).send({ message: error.message})
+                return res.status(error.statusCode).send({ message: error.message })
 
-            return res.status(500).send({ message : "Internal server error"})
+            return res.status(500).send({ message: "Internal server error" })
         }
     }
 }
