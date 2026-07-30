@@ -530,6 +530,24 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                         day => daysNames[day]
                     );
 
+                    if (!startDate || !startTime || !endTime) {
+                        onClose();
+                        toastWarning("A data e horário são campos obrigatórios.");
+                        return;
+                    }
+
+                    if (!selectedRoom || !responsible || !selectedSubject) {
+                        onClose();
+                        toastWarning("A sala, professor e matéria são obrigatórios.");
+                        return;
+                    }
+
+                    if (selectedDays.length >= 0) {
+                        onClose();
+                        toastWarning("Selecione a frequência das aulas.");
+                        return;
+                    }
+
                     subjectInstructor = await getData(`/subject/${subject.subject_id}/instructor/${responsible}`)
 
                     payload = {
