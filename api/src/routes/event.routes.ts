@@ -15,8 +15,9 @@ route
     .post('/participants/', authMiddleware, validateCreate, ParticipationController.create)  // add participants to the event
 
     .get('/all', authMiddleware, authorize(Role.ADMIN, Role.INSTRUCTOR), EventController.findAllEvents) // get all events
-    .get('/:eventId', authMiddleware, validateEventExistsById, EventController.findEventById) // get event by id
+    .get('/confirmed', authMiddleware, EventController.findConfirmedEvents)
     .get('/participants/all/:eventId', authMiddleware, validateEventExistsById, ParticipationController.findParticipationByEvent) // get all participants of a specific event
+    .get('/:eventId', authMiddleware, validateEventExistsById, EventController.findEventById) // get event by id
 
     .delete("/participants/remove/:eventId", authMiddleware, validateDeleteByEventandUser, ParticipationController.deleteByEventandUser) // remove a user from an event
 

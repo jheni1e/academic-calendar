@@ -1,5 +1,5 @@
 import { EventResponseDTO } from "../../dtos/EventDto.ts";
-import { Prisma } from "../../generated/prisma/client.ts";
+import { EventStatus, Prisma } from "../../generated/prisma/client.ts";
 import { prisma } from "../../lib/prisma.ts";
 import { completePendingLessons } from "../lesson-completion.service.ts";
 
@@ -194,6 +194,83 @@ export const findEventsByUser = async (
             start_date: "asc"
         },
         include: EVENT_INCLUDE
+    });
+
+};
+
+export const findConfirmedEvents = async (): Promise<EventResponseDTO[]> => {
+
+    await completePendingLessons();
+
+    return prisma.event.findMany({
+        where: {
+            status: EventStatus.CONFIRMED
+        },
+        orderBy: {
+            start_date: "asc"
+        },
+        select: {
+            event_id: true,
+            title: true,
+            description: true,
+            start_date: true,
+            end_date: true,
+            event_type: true,
+            status: true,
+            is_blocked: true,
+
+            class: {
+                select: {
+                    class_id: true,
+                    name: true
+                }
+            },
+
+            recurrence: {
+                select: {
+                    recurrence_id: true,
+                    series_name: true,
+                    repeat_until: true,
+                    occurrences: true,
+                    monday: true,
+                    tuesday: true,
+                    wednesday: true,
+                    thursday: true,
+                    friday: true
+                }
+            },
+
+            reservation: {
+                select: {
+                    room: {
+                        select: {
+                            room_id: true,
+                            title: true,
+                            capacity: true
+                        }
+                    }
+                }
+            },
+
+            subject_instructor: {
+                select: {
+                    subject: {
+                        select: {
+                            subject_id: true,
+                            name: true
+                        }
+                    },
+                    instructor: {
+                        select: {
+                            user_id: true,
+                            user_edv: true,
+                            name: true,
+                            role: true
+                        }
+                    }
+                }
+            }
+        }
     });
 
 };

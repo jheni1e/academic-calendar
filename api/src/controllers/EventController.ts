@@ -5,7 +5,7 @@ import { CreateEventDTO, UpdateEventDTO } from "../dtos/EventDto.ts";
 import { createEvent, deleteEvent, updateEvent, blockEvent, unblockEvent, confirmEvent, cancelEvent } from "../services/event/event.service.ts";
 import { NotFoundError } from "../shared/errors/NotFoundError.ts";
 import { BadRequestError } from "../shared/errors/BadRequestError.ts";
-import { findAllEvents, findEventById, findEventsByClass, findEventsByRoom, findEventsByUser } from "../services/event/event.query.service.ts";
+import { findAllEvents, findConfirmedEvents, findEventById, findEventsByClass, findEventsByRoom, findEventsByUser } from "../services/event/event.query.service.ts";
 
 export class EventController {
     static async create(req: Request, res: Response) {
@@ -212,6 +212,33 @@ export class EventController {
                 return res.status(error.statusCode).send({ message: error.message})
 
             return res.status(500).send({ message : "Internal server error"})
+        }
+    }
+
+    static async findConfirmedEvents(
+        req: Request,
+        res: Response
+    ) {
+    
+        try {
+            const events = await findConfirmedEvents();
+            return res.status(200).json(events);
+    
+        } 
+        catch (error) {
+
+            console.error(error);
+        
+            if (error instanceof AppError) {
+                return res.status(error.statusCode).json({
+                    message: error.message
+                });
+            }
+        
+            return res.status(500).json({
+                message: "Internal server error.",
+                error
+            });
         }
     }
 }
