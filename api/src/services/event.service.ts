@@ -434,6 +434,7 @@ export const createEvent = async (
     validateDates(start, end);
     validateEventDuration(start, end);
     await validateCreator(data.createdBy);
+    await validateRoomRequirements(data.roomId);
 
     let assignment: LoadedAssignment | null = null;
     let classId = data.classId;
@@ -449,47 +450,44 @@ export const createEvent = async (
         assignment = lesson.assignment;
         classId = lesson.classId;
     }
-
-    // --- Lesson Validation ---
-    // if (data.eventType === EventType.LESSON) {
-
-    //     if (!data.subjectInstructorId) {
-    //         throw new ValidationError(
-    //             "Subject instructor is required for lessons."
-    //         );
-    //     }
-
-    //     if (!data.roomId) {
-    //         throw new ValidationError(
-    //             "Room is required for lessons."
-    //         );
-    //     }
-
-    //     assignment = await validateLesson(
-    //         data.subjectInstructorId,
-    //         start,
-    //         end
-    //     );
-    //     classId = assignment.subject.class_id;
-    // }
-
-    // --- Room Validation ---
-    await validateRoomRequirements(data.roomId);
-
     return prisma.$transaction(async (tx) => {
 
-        const event = await createEventRecord(
-            tx,
-            data,
-            assignment,
-            classId,
-            start,
-            end
-        );
-    
-        if (data.roomId) {
-            
-            await createReservation(
+    const event = await createEventRecord(
+        tx,
+        data,
+        assignment,
+        classId,
+        start,
+        end
+    );
+
+    if (classId) {
+
+        const classUsers = await tx.classUser.findMany({
+            where: {
+                class_id: classId
+            },
+            select: {
+                user_id: true
+            }
+        });
+
+        if (classUsers.length > 0) {
+
+            await tx.participation.createMany({
+                data: classUsers.map(classUser => ({
+                    event_id: event.event_id,
+                    user_id: classUser.user_id,
+                    status: ParticipationStatus.PENDING
+                })),
+                skipDuplicates: true
+            });
+        }
+    }
+
+    if (data.roomId) {
+
+        await createReservation(
             tx,
             {
                 roomId: data.roomId,
@@ -497,11 +495,14 @@ export const createEvent = async (
                 startDate: start,
                 endDate: end,
                 description: data.description
-            });
-        }
-        return event;
+            }
+        );
+    }
+
+    return event;
     });
-};
+
+}
 
 // ---- CRUD ----
 export const findEventById = async (
