@@ -204,7 +204,7 @@ export const findConfirmedEvents = async (): Promise<EventResponseDTO[]> => {
 
     return prisma.event.findMany({
         where: {
-            status: EventStatus.CONFIRMED || EventStatus.COMPLETED
+            status: EventStatus.CONFIRMED && EventStatus.COMPLETED
         },
         orderBy: {
             start_date: "asc"
