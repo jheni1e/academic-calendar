@@ -92,12 +92,13 @@ function Home() {
 
     setIsInstructor(instructor);
 
-    if (!classId) {
-      setUserLoaded(true);
-      return;
-    } else {
-      await loadSubjects(user.id, null, instructor);
+    if (instructor) {
+      await loadSubjects(user.id, null, true);
+    } else if (classId) {
+      await loadSubjects(user.id, classId, false);
     }
+
+    setUserLoaded(true);
 
     setUserLoaded(true);
   };
