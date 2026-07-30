@@ -659,7 +659,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject, on
 
                             onClose();
                             
-                            await onPlanningCreated()
+                            await onPlanningCreated?.();
                             toastSuccess("Evento atualizado com sucesso!");
                             break;
                         case 2:
@@ -747,7 +747,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject, on
             await putData(`/event/cancel/${event.event_id}`)
             onClose()
             toastSuccess(`Evento ${event.event_id} Deletado`)
-            await onPlanningCreated()
+            await onPlanningCreated?.();
         } catch(e) {
             toastError(e)
         }
@@ -816,7 +816,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject, on
             onClose()
             toastSuccess("Aula Confirmada")
             
-            await onPlanningCreated()
+            await onPlanningCreated?.();
         } catch(e) {
             toastError(e)
         }
