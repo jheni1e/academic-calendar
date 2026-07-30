@@ -816,20 +816,26 @@ export const deleteEvent = async (
     eventId: number
 ): Promise<void> => {
 
-    const event = await findEventById(eventId);
+    await prisma.$transaction(async (tx) => {
 
-    if (!event) {
-        throw new NotFoundError(
-            "Event not found."
-        );
-    }
+        await tx.participation.deleteMany({
+            where: {
+                event_id: eventId
+            }
+        });
 
-    await prisma.event.delete({
-        where: {
-            event_id: eventId
-        }
+        await tx.reservation.deleteMany({
+            where: {
+                event_id: eventId
+            }
+        });
+
+        await tx.event.delete({
+            where: {
+                event_id: eventId
+            }
+        });
     });
-
 };
 
 export const blockEvent = async (

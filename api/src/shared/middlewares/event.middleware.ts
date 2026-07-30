@@ -83,7 +83,9 @@ export const validateDelete = async (req: Request, res: Response, next: NextFunc
             throw new NotFoundError("Event not found");
         }
 
-        if(event.created_by != res.locals.user.user_id)
+        console.log(res.locals.user.id)
+        console.log(event.created_by)
+        if(event.created_by !== res.locals.user.id)
             throw new UnauthorizedError("Access denied")
 
         if(event.is_blocked)
@@ -95,6 +97,7 @@ export const validateDelete = async (req: Request, res: Response, next: NextFunc
             throw new ForbiddenError("Cannot delete an event with a reservation.");
         }
 
+        console.log("validateDelete passou");
         next();
     } catch (error) {
         next(error);
