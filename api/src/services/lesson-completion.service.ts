@@ -20,13 +20,21 @@ export const completePendingLessons = async (): Promise<void> => {
         }
     });
 
-    for (const lesson of lessons) {
+    if (lessons.length === 0) {
+        return;
+    }
 
-        const durationHours =
-            (lesson.end_date.getTime() - lesson.start_date.getTime()) /
-            (1000 * 60 * 60);
+    await prisma.$transaction(async (tx) => {
 
-        await prisma.$transaction(async (tx) => {
+        for (const lesson of lessons) {
+
+            if (!lesson.subject_instructor) {
+                continue;
+            }
+
+            const durationHours =
+                (lesson.end_date.getTime() - lesson.start_date.getTime()) /
+                (1000 * 60 * 60);
 
             await tx.event.update({
                 where: {
@@ -39,7 +47,7 @@ export const completePendingLessons = async (): Promise<void> => {
 
             await tx.subject.update({
                 where: {
-                    subject_id: lesson.subject_instructor!.subject.subject_id
+                    subject_id: lesson.subject_instructor.subject.subject_id
                 },
                 data: {
                     completed_workload: {
@@ -47,7 +55,8 @@ export const completePendingLessons = async (): Promise<void> => {
                     }
                 }
             });
+        }
 
-        });
-    }
+    });
+
 };
