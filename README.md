@@ -1,6 +1,6 @@
 # Academic Calendar
 
-This repository contains the final project of the Systems Analysis and Development course at SENAI. An academic calendar made to increase traceability, reduce scheduling conflicts, and manage classes and events.
+Esse repositório contém o projeto final do curso de Análise e Desenvolvimento de Sistemas no SENAI. Um calendário acadêmico criado para aumentar rastreabilidade, reduzir conflitos de horário e gerenciar aulas e eventos.
 
 ---
 
@@ -12,6 +12,7 @@ Antes de executar o projeto, certifique-se de possuir instalado:
 
 - **Node.js** (versão 18 ou superior)
 - **npm** (instalado junto com o Node.js)
+- **XAMPP Control Panel** (para rodar o banco Prisma em MySQL)
 
 ---
 
@@ -47,6 +48,36 @@ npm install
 
 ---
 
+## Execução do Prisma
+
+O primeiro passo é habilitar o **MySQL** no **XAMPP Control Panel**.
+
+Então, para gerar o banco Prisma conforme o schema:
+
+```bash
+npx prisma generate
+```
+
+Para gerar a migration e aplicar no banco:
+
+```bash
+npx prisma migrate dev
+```
+
+Para popular o banco com a seed:
+
+```bash
+npm run seed
+```
+
+Se for preciso resetar o banco:
+
+```bash
+npm run reset
+```
+
+---
+
 ## Executando o projeto
 
 ```bash
@@ -57,7 +88,7 @@ Após iniciar o servidor, a aplicação estará disponível em:
 
 | Serviço | Endereço |
 |----------|----------|
-| Frontend | `http://localhost:5173` |
+| Frontend | `http://localhost:5173/calendario-academico` |
 | Backend | `http://localhost:8080` |
 
 ---
@@ -91,6 +122,7 @@ dist/
 | `npm run push` | Atualiza o banco sem gerar migration | Back |
 | `npm run studio` | Abre interface web para ver o banco | Back |
 | `npm run seed` | Executa a seed que popula o banco | Back |
+| `npm run reset` | Reseta o banco de dados | Back |
 
 ---
 
@@ -98,7 +130,10 @@ dist/
 
 - **React.js**: Construção da interface.
 - **Vite**: Build e servidor de desenvolvimento.
-- **JavaScript**: Linguagem utilizada.
+- **JavaScript**: Linguagem utilizada no Frontend.
+- **TypeScript**: Linguagem utilizada no Backend.
+- **Node**: Ambiente de execução para desenvolver aplicações de servidor.
+- **Express**: Framework que facilita a criação de APIs e aplicações web.
 - **Prisma**: ORM para acesso ao banco de dados.
 - **React Router**: Gerenciamento de rotas.
 - **Axios**: Requisições HTTP para a API.
