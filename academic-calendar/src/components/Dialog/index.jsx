@@ -4,7 +4,7 @@ import BoschButton from "../BoschButton";
 import TextBox from "../TextBox";
 import DropdownList from "../DropdownList";
 import FrequencySelector from "../FrequencySelector";
-import { getData, postData, putData } from "../../utils/apiBack";
+import { deleteData, getData, postData, putData } from "../../utils/apiBack";
 import { toastError, toastSuccess, toastWarning } from '../../components/BoschToast';
 import CadeadoTrancado from "../../images/cadeado-trancado.png"
 
@@ -613,7 +613,17 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
 
         setRooms([...newRooms]);
     };
+    
+    const deleteEvent = async (id) => {
+        try{
+            deleteData(`event/${id}`)
+            onClose()
+            toastSuccess(`Evento ${id} Deletado`)
+        } catch(e) {
+            toastError(e)
+        }
 
+    }
     const addParticipant = () => {
         if (!selectedParticipant) return;
 
@@ -1113,7 +1123,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                     <div className="dialogButtons">
                         {!event.is_blocked &&
                             <>
-                                <BoschButton text="Deletar" type="delete" onClick={() => setEvent()} />
+                                <BoschButton text="Deletar" type="delete" onClick={() => deleteEvent(event.event_id)} />
                                 <BoschButton text="Editar" type="primary" onClick={() => setEvent()} />
                             </>
                         }
