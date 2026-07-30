@@ -115,7 +115,7 @@ export const validateClassExistsById = async (req: Request, res: Response, next:
 
 export const validateClassEvent = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const classId = Number(req.params.id);
+        const classId = Number(req.params.classId);
         const userId = res.locals.user.id;
 
         const user = await findUserById(userId);
