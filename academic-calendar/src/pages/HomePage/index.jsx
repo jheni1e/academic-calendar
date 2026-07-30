@@ -139,21 +139,21 @@ function Home() {
           case "CLASS":
             response = selectedFilter
               ? await getData(`/class/events/${selectedFilter}`)
-              : await getData("/event/all");
+              : await getData("/event/confirmed");
             break;
           case "PERSON":
             response = selectedFilter
               ? await getData(`/user/events/${selectedFilter}`)
-              : await getData("/event/all");
+              : await getData("/event/confirmed");
             break;
           case "ROOMS":
             response = selectedFilter
               ? await getData(`/room/events/${selectedFilter}`)
-              : await getData("/event/all");
+              : await getData("/event/confirmed");
             break;
           case "ALL":
           default:
-            response = await getData("/event/all");
+            response = await getData("/event/confirmed");
             break;
         }
       } else {
