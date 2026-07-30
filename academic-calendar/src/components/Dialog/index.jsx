@@ -8,7 +8,7 @@ import { deleteData, getData, postData, putData } from "../../utils/apiBack";
 import { toastError, toastSuccess, toastWarning } from '../../components/BoschToast';
 import CadeadoTrancado from "../../images/cadeado-trancado.png"
 
-function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject, onPlanningCreated }) {
+function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject, onPlanningCreated}) {
     const dialogRef = useRef(null);
 
     const [responsible, setResponsible] = useState(null);
@@ -45,6 +45,8 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject, on
     const [typeStatusEvent, setTypeStatusEvent] = useState(
         event?.is_blocked === true ? 1 : 2);
 
+    const [updatePage, setUpdatePage] = useState(false)
+
     useEffect(() => {
         const dialog = dialogRef.current;
         if (!dialog) return;
@@ -75,7 +77,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject, on
         getAllPeople();
         getAllInstructors();
         getAllSubjects();
-    }, []);
+    }, [updatePage]);
 
     useEffect(() => {
         if (
@@ -87,6 +89,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject, on
         }
     }, [isOpen, type, event?.event_type, event?.event_id]);
 
+    
     const getAllRooms = async () => {
         try {
             const rooms = await getData("/room/all");
@@ -596,7 +599,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject, on
                         return;
                     }
 
-                    await onPlanningCreated?.();
+                    setUpdatePage(!updatePage)
 
                     onClose();
                     toastSuccess("Aulas planejadas com sucesso!")
@@ -659,7 +662,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject, on
 
                             onClose();
                             
-                            await onPlanningCreated?.();
+                            setUpdatePage(!updatePage)
                             toastSuccess("Evento atualizado com sucesso!");
                             break;
                         case 2:
@@ -747,7 +750,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject, on
             await putData(`/event/cancel/${event.event_id}`)
             onClose()
             toastSuccess(`Evento ${event.event_id} Deletado`)
-            await onPlanningCreated?.();
+            setUpdatePage(!updatePage)
         } catch(e) {
             toastError(e)
         }
@@ -816,7 +819,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject, on
             onClose()
             toastSuccess("Aula Confirmada")
             
-            await onPlanningCreated?.();
+            
         } catch(e) {
             toastError(e)
         }
