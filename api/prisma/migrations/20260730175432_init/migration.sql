@@ -43,7 +43,8 @@ CREATE TABLE `Subject` (
     `subject_id` INTEGER NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(191) NOT NULL,
     `workload` INTEGER NOT NULL,
-    `completed_workload` INTEGER NOT NULL,
+    `scheduled_workload` INTEGER NOT NULL DEFAULT 0,
+    `completed_workload` INTEGER NOT NULL DEFAULT 0,
     `start_date` DATETIME(3) NOT NULL,
     `end_date` DATETIME(3) NULL,
     `class_id` INTEGER NOT NULL,
@@ -97,7 +98,7 @@ CREATE TABLE `Event` (
     `created_by` INTEGER NOT NULL,
     `start_date` DATETIME(3) NOT NULL,
     `end_date` DATETIME(3) NOT NULL,
-    `event_type` ENUM('LESSON', 'ASSESSMENT', 'FEEDBACK', 'EXTERNAL', 'PERSONAL', 'OTHER') NOT NULL,
+    `event_type` ENUM('LESSON', 'ASSESSMENT', 'FEEDBACK', 'EXTERNAL', 'PERSONAL', 'INTERNSHIP') NOT NULL,
     `is_blocked` BOOLEAN NOT NULL DEFAULT false,
     `status` ENUM('SCHEDULED', 'CONFIRMED', 'COMPLETED', 'CANCELLED') NOT NULL DEFAULT 'SCHEDULED',
 

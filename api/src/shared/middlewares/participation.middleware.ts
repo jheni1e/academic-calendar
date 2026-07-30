@@ -8,7 +8,7 @@ import { findEventById } from "../../services/event/event.query.service.ts";
 
 export const validateCreate = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { userId, eventRoleId, eventId, status } = req.body;
+        const { userId, eventId, status } = req.body;
 
         const user = await findUserById(userId)
 

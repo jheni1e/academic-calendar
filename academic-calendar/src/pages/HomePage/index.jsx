@@ -94,12 +94,13 @@ function Home() {
 
     setIsInstructor(instructor);
 
-    if (!classId) {
-      setUserLoaded(true);
-      return;
-    } else {
-      await loadSubjects(user.id, null, instructor);
+    if (instructor) {
+      await loadSubjects(user.id, null, true);
+    } else if (classId) {
+      await loadSubjects(user.id, classId, false);
     }
+
+    setUserLoaded(true);
 
     setUserLoaded(true);
   };
@@ -141,21 +142,21 @@ function Home() {
           case "CLASS":
             response = selectedFilter
               ? await getData(`/class/events/${selectedFilter}`)
-              : await getData("/event/all");
+              : await getData("/event/confirmed");
             break;
           case "PERSON":
             response = selectedFilter
               ? await getData(`/user/events/${selectedFilter}`)
-              : await getData("/event/all");
+              : await getData("/event/confirmed");
             break;
           case "ROOMS":
             response = selectedFilter
               ? await getData(`/room/events/${selectedFilter}`)
-              : await getData("/event/all");
+              : await getData("/event/confirmed");
             break;
           case "ALL":
           default:
-            response = await getData("/event/all");
+            response = await getData("/event/confirmed");
             break;
         }
       } else {
