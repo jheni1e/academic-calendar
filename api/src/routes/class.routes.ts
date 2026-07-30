@@ -17,7 +17,7 @@ route
  
     .get('/all', ClassController.findAll) // get all classes OBS: Removed Token 
     .get('/:classId', authMiddleware, authorize(UserRole.ADMIN, UserRole.INSTRUCTOR), validateClassExistsById, ClassController.findClassById) // get class by id
-    .get('/events/:id', authMiddleware, validateClassExistsById, validateClassEvent, ClassController.findEventsByClass)
+    .get('/events/:classId', authMiddleware, validateClassExistsById, validateClassEvent, ClassController.findEventsByClass)
     .get('/participants/:id', authMiddleware, validateClassExistsById, ClassUserController.findClassUsersByClass) // get participants by class id
 
     .put('/:id', authMiddleware, authorize(UserRole.ADMIN, UserRole.INSTRUCTOR), validateClassExistsById, ClassController.update) 
