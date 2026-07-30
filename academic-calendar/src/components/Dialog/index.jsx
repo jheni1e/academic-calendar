@@ -167,13 +167,18 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject, on
         try {
             const data = await getData("/subject/all");
 
+            const classCache = {};
+
             const subjectsWithClass = await Promise.all(
                 data.map(async (subject) => {
-                    const classData = await getData(`/class/${subject.class_id}`);
+                    if (!classCache[subject.class_id]) {
+                        classCache[subject.class_id] =
+                            await getData(`/class/${subject.class_id}`);
+                    }
 
                     return {
                         value: subject.subject_id,
-                        label: `${subject.name} - ${classData.name}`
+                        label: `${subject.name} - ${classCache[subject.class_id].name}`
                     };
                 })
             );
@@ -184,6 +189,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject, on
             toastError(`Erro: ${error.message}`);
         }
     }
+
     const getParticipants = async () => {
         try {
             const participantsEvent = await getData(
@@ -734,14 +740,14 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject, on
 
         setRooms([...newRooms]);
     };
-    
+
     const deleteEvent = async () => {
-        try{
+        try {
             await putData(`/event/cancel/${event.event_id}`)
             onClose()
             window.location.reload()
             toastSuccess(`Evento ${event.event_id} Deletado`)
-        } catch(e) {
+        } catch (e) {
             toastError(e)
         }
 
@@ -1232,38 +1238,38 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject, on
                         </div>
                     }
                     <div className="dialogButtons">
-                        { event.event_type === "LESSON" && event.status === "SCHEDULED" ? (
-                                <BoschButton
+                        {event.event_type === "LESSON" && event.status === "SCHEDULED" ? (
+                            <BoschButton
                                 text="Confirmar Aula"
                                 type="primary"
-                                />
-                            ) : (
-                                <>
+                            />
+                        ) : (
+                            <>
                                 {!event.is_blocked && (
                                     <>
-                                    <BoschButton
-                                        text="Deletar"
-                                        type="delete"
-                                        onClick={deleteEvent}
-                                    />
-                                    <BoschButton
-                                        text="Editar"
-                                        type="primary"
-                                        onClick={setEvent}
-                                    />
+                                        <BoschButton
+                                            text="Deletar"
+                                            type="delete"
+                                            onClick={deleteEvent}
+                                        />
+                                        <BoschButton
+                                            text="Editar"
+                                            type="primary"
+                                            onClick={setEvent}
+                                        />
                                     </>
                                 )}
 
                                 {event.is_blocked && (
                                     <BoschButton
-                                    text="Desbloquear"
-                                    type="primary"
-                                    onClick={unblockEvent}
+                                        text="Desbloquear"
+                                        type="primary"
+                                        onClick={unblockEvent}
                                     />
                                 )}
-                                </>
-                            )
-                            }
+                            </>
+                        )
+                        }
                     </div>
                 </>
             ) : (
