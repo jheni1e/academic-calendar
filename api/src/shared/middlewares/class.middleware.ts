@@ -97,7 +97,7 @@ export const validateDelete = async (req: Request, res: Response, next: NextFunc
 
 export const validateClassExistsById = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const classId: number = parseInt(req.params.id.toString());
+        const classId: number = parseInt(req.params.classId.toString());
 
         const classItem = await findClassById(classId)
 
@@ -115,7 +115,7 @@ export const validateClassExistsById = async (req: Request, res: Response, next:
 
 export const validateClassEvent = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const classId = Number(req.params.id);
+        const classId = Number(req.params.classId);
         const userId = res.locals.user.id;
 
         const user = await findUserById(userId);

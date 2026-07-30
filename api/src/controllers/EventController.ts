@@ -86,8 +86,7 @@ export class EventController {
     }
 
     static async findEventsByUser(req: Request, res: Response) {
-        const id = res.locals.user.id;
-
+        const { userId : id } = req.params
         try {
             const events = await findEventsByUser(Number(id))
             return res.status(200).send(events)
