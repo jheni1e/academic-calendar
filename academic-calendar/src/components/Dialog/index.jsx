@@ -459,14 +459,26 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                         return;
                     }
 
-                    if (!parseInt(newSubjectWorkload)) {
+                    const workload = Number(newSubjectWorkload);
+
+                    if (!Number.isInteger(workload) || workload <= 0) {
                         onClose();
                         toastWarning("Digite uma carga horária válida.");
                         return;
                     }
 
+                    const classItem = await getData(`/class/${selectedClass}`);
+
+                    if (!classItem) {
+                        onClose();
+                        toastWarning("Erro ao obter informações da turma.");
+                        return;
+                    }
+
+                    const className = classItem.name;
+
                     const newSubject = {
-                        name: newSubjectName,
+                        name: className + " - " + newSubjectName,
                         workload: parseInt(newSubjectWorkload),
                         startDate: startDate,
                         classId: selectedClass
