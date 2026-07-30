@@ -438,7 +438,9 @@ export const createEvent = async (
     let assignment: LoadedAssignment | null = null;
     let classId = data.classId;
 
-    if (data.eventType === EventType.LESSON) {
+    switch (data.eventType) {
+
+        case EventType.LESSON: {
 
         const lesson = await validateLessonEvent(
             data,
@@ -448,30 +450,22 @@ export const createEvent = async (
 
         assignment = lesson.assignment;
         classId = lesson.classId;
+            break;
+        }
+    
+        case EventType.FEEDBACK: {
+    
+            await validateFeedbackEvent(
+                data,
+                start,
+                end
+            );
+            break;
+        }
+    
+        default:
+            break;
     }
-
-    // --- Lesson Validation ---
-    // if (data.eventType === EventType.LESSON) {
-
-    //     if (!data.subjectInstructorId) {
-    //         throw new ValidationError(
-    //             "Subject instructor is required for lessons."
-    //         );
-    //     }
-
-    //     if (!data.roomId) {
-    //         throw new ValidationError(
-    //             "Room is required for lessons."
-    //         );
-    //     }
-
-    //     assignment = await validateLesson(
-    //         data.subjectInstructorId,
-    //         start,
-    //         end
-    //     );
-    //     classId = assignment.subject.class_id;
-    // }
 
     // --- Room Validation ---
     await validateRoomRequirements(data.roomId);
