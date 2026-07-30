@@ -27,7 +27,7 @@ export class ClassUserController {
 
         try {
             await deleteClassUser(id);
-            return res.status(204).send({ message: "Class user deleted successfully." });
+            return res.status(200).send({ message: "Class user deleted successfully." });
         } catch (error) {
             if (error instanceof AppError) {
                 return res.status(error.statusCode).json({
