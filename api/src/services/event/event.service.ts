@@ -151,6 +151,8 @@ export const createEvent = async (
         );
     }
 
+    
+
     return event;
     });
 
@@ -239,18 +241,73 @@ export const deleteEvent = async (
 
     await prisma.$transaction(async (tx) => {
 
+        // busca o evento antes de deletar
+        const event = await tx.event.findUnique({
+            where: {
+                event_id: eventId
+            },
+            select: {
+                event_type: true,
+                start_date: true,
+                end_date: true,
+                subject_instructor_id: true
+            }
+        });
+
+        if (!event) {
+            throw new NotFoundError("Event not found");
+        }
+
+        // se for aula, desconta da carga horária agendada
+        if (
+            event.event_type === EventType.LESSON &&
+            event.subject_instructor_id
+        ) {
+
+            const assignment = await tx.subjectInstructor.findUnique({
+                where: {
+                    subject_instructor_id: event.subject_instructor_id
+                },
+                select: {
+                    subject_id: true
+                }
+            });
+
+            if (assignment) {
+
+                const durationHours =
+                    (event.end_date.getTime() -
+                        event.start_date.getTime()) /
+                    (1000 * 60 * 60);
+
+                await tx.subject.update({
+                    where: {
+                        subject_id: assignment.subject_id
+                    },
+                    data: {
+                        scheduled_workload: {
+                            decrement: durationHours
+                        }
+                    }
+                });
+            }
+        }
+
+        // remove participações
         await tx.participation.deleteMany({
             where: {
                 event_id: eventId
             }
         });
 
+        // remove reserva
         await tx.reservation.deleteMany({
             where: {
                 event_id: eventId
             }
         });
 
+        // remove o evento
         await tx.event.delete({
             where: {
                 event_id: eventId

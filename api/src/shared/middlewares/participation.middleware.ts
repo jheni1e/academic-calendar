@@ -29,7 +29,6 @@ export const validateCreate = async (req: Request, res: Response, next: NextFunc
                 "User is already participating in this event."
             );
         }
-
         next();
     } catch (error) {
         next(error);

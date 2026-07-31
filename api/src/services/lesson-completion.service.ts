@@ -33,9 +33,11 @@ export const completePendingLessons = async (): Promise<void> => {
             }
 
             const durationHours =
-                (lesson.end_date.getTime() - lesson.start_date.getTime()) /
+                (lesson.end_date.getTime() -
+                    lesson.start_date.getTime()) /
                 (1000 * 60 * 60);
 
+            // marca o evento como concluído
             await tx.event.update({
                 where: {
                     event_id: lesson.event_id
@@ -45,11 +47,15 @@ export const completePendingLessons = async (): Promise<void> => {
                 }
             });
 
+            // move horas de scheduled -> completed
             await tx.subject.update({
                 where: {
                     subject_id: lesson.subject_instructor.subject.subject_id
                 },
                 data: {
+                    scheduled_workload: {
+                        decrement: durationHours
+                    },
                     completed_workload: {
                         increment: durationHours
                     }
