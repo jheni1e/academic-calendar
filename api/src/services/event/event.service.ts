@@ -33,7 +33,7 @@ const createEventRecord = async (
             description: data.description,
 
             event_type: data.eventType,
-            status: EventStatus.SCHEDULED,
+            status: data.status ?? EventStatus.CONFIRMED,
 
             start_date: start,
             end_date: end,
@@ -101,9 +101,6 @@ export const createEvent = async (
         default:
             break;
     }
-
-    // --- Room Validation ---
-    await validateRoomRequirements(data.roomId);
 
     return prisma.$transaction(async (tx) => {
 
@@ -266,6 +263,8 @@ export const blockEvent = async (
     eventId : number
 ) : Promise<void> => {
 
+    await findEventById(eventId);
+
     await prisma.event.update({
         where: {
             event_id: eventId
@@ -280,6 +279,8 @@ export const unblockEvent = async (
     eventId : number
 ) : Promise<void> => {
 
+    await findEventById(eventId);
+
     await prisma.event.update({
         where: {
             event_id: eventId
@@ -293,13 +294,15 @@ export const unblockEvent = async (
 export const confirmEvent = async (
     eventId : number
 ) : Promise<void> => {
+
+    await findEventById(eventId);
     
     await prisma.event.update({
         where: {
             event_id: eventId
         },
         data: {
-            status: "CONFIRMED"
+            status: EventStatus.CONFIRMED
         }
     })
 }
@@ -308,12 +311,14 @@ export const cancelEvent = async (
     eventId : number
 ) : Promise<void> => {
 
+    await findEventById(eventId);
+
     await prisma.event.update({
         where: {
             event_id: eventId
         },
         data: {
-            status: "CANCELLED"
+            status: EventStatus.CONFIRMED
         }
     })
 }

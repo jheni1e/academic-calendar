@@ -10,6 +10,7 @@ export interface CreateEventDTO {
     classId?: number;
     recurrenceId?: number;
     roomId?: number;
+    status?: EventStatus;
 
     startDate: Date;
     endDate: Date;
