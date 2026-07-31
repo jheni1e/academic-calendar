@@ -5,7 +5,7 @@ import { CreateEventDTO, UpdateEventDTO } from "../dtos/EventDto.ts";
 import { createEvent, deleteEvent, updateEvent, blockEvent, unblockEvent, confirmEvent, cancelEvent } from "../services/event/event.service.ts";
 import { NotFoundError } from "../shared/errors/NotFoundError.ts";
 import { BadRequestError } from "../shared/errors/BadRequestError.ts";
-import { findAllEvents, findConfirmedEvents, findEventById, findEventsByClass, findEventsByRoom, findEventsByUser } from "../services/event/event.query.service.ts";
+import { findAllEvents, findConfirmedEvents, findEventById, findEventsByClass, findEventsByRoom, findEventsBySubject, findEventsByUser } from "../services/event/event.query.service.ts";
 
 export class EventController {
     static async create(req: Request, res: Response) {
@@ -85,6 +85,32 @@ export class EventController {
         }
     }
 
+    static async findEventsBySubject(
+        req: Request,
+        res: Response
+    ) {
+        const subjectId = Number(req.params.id);
+
+        try {
+
+            const events = await findEventsBySubject(subjectId);
+
+            return res.status(200).json(events);
+
+        } catch (error) {
+
+            if (error instanceof AppError) {
+                return res.status(error.statusCode).json({
+                    message: error.message
+                });
+            }
+
+            return res.status(500).json({
+                message: "Internal server error."
+            });
+        }
+    }
+
     static async findEventsByUser(req: Request, res: Response) {
         const id: number = parseInt(req.params.userId.toString());
 
@@ -98,6 +124,23 @@ export class EventController {
             }
 
             return res.status(500).send({ message: "Internal server error." })
+        }
+    }
+
+    static async findAllEvents(req: Request, res: Response) {
+        try {
+            const events = await findAllEvents();
+
+            return res.status(200).json(events);
+        } catch (error) {
+
+            if (error instanceof AppError) {
+                return res.status(error.statusCode).json({
+                    message: error.message
+                });
+            }
+
+            return res.status(500).json({ message: "Internal server error." });
         }
     }
 
@@ -120,22 +163,6 @@ export class EventController {
         }
     }
 
-    static async findAllEvents(req: Request, res: Response) {
-        try {
-            const events = await findAllEvents();
-
-            return res.status(200).json(events);
-        } catch (error) {
-
-            if (error instanceof AppError) {
-                return res.status(error.statusCode).json({
-                    message: error.message
-                });
-            }
-
-            return res.status(500).json({ message: "Internal server error." });
-        }
-    }
 
     static async update(req: Request, res: Response) {
         const id: number = parseInt(req.params.eventId.toString());

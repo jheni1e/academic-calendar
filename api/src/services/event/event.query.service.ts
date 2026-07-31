@@ -134,6 +134,85 @@ export const findEventsByClass = async (
 
 };
 
+export const findEventsBySubject = async (
+    subjectId: number
+): Promise<EventResponseDTO[]> => {
+
+    return prisma.event.findMany({
+        where: {
+            subject_instructor: {
+                subject_id: subjectId
+            }
+        },
+        orderBy: {
+            start_date: "asc"
+        },
+        select: {
+            event_id: true,
+            title: true,
+            description: true,
+            start_date: true,
+            end_date: true,
+            event_type: true,
+            status: true,
+            is_blocked: true,
+
+            class: {
+                select: {
+                    class_id: true,
+                    name: true
+                }
+            },
+
+            recurrence: {
+                select: {
+                    recurrence_id: true,
+                    series_name: true,
+                    repeat_until: true,
+                    occurrences: true,
+                    monday: true,
+                    tuesday: true,
+                    wednesday: true,
+                    thursday: true,
+                    friday: true
+                }
+            },
+
+            reservation: {
+                select: {
+                    room: {
+                        select: {
+                            room_id: true,
+                            title: true,
+                            capacity: true
+                        }
+                    }
+                }
+            },
+
+            subject_instructor: {
+                select: {
+                    subject: {
+                        select: {
+                            subject_id: true,
+                            name: true
+                        }
+                    },
+                    instructor: {
+                        select: {
+                            user_id: true,
+                            user_edv: true,
+                            name: true,
+                            role: true
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+};
+
 export const findEventsByInstructor = async (
     instructorId: number
 ): Promise<EventWithRelations[]> => {
