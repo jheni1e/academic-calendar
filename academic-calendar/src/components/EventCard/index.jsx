@@ -16,13 +16,17 @@ function getEventColor(id) {
 }
 
 
-function EventCard({ event, compact }) {
+function EventCard({ event, compact, refreshEvents }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [dialogType, setDialogType] = useState("view-event");
 
-  const changeModal = () => {
+  const changeModal = async () => {
     setIsModalOpen(!isModalOpen)
     setDialogType("view-event")
+    
+    if (refreshEvents) {
+      await refreshEvents();
+    }
     
   }
 
@@ -52,7 +56,7 @@ function EventCard({ event, compact }) {
         )}
       </div>
       {isModalOpen &&
-        <Dialog event={event} isOpen={isModalOpen} onClose={changeModal}title={event.title} type={dialogType} setType={setDialogType}></Dialog>
+        <Dialog event={event} isOpen={isModalOpen} onClose={changeModal} title={event.title} type={dialogType} setType={setDialogType}></Dialog>
       }
     </>
 

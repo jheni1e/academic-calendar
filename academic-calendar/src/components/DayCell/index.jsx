@@ -1,7 +1,7 @@
 import EventCard from "../EventCard";
 import "./index.css";
 
-function DayCell({ day, month, year, events = [], viewMode, compact }) {
+function DayCell({ day, month, year, events = [], viewMode, compact, refreshEvents }) {
   const dayEvents = events.filter((event) => {
     const date = new Date(event.start_date);
 
@@ -34,7 +34,7 @@ function DayCell({ day, month, year, events = [], viewMode, compact }) {
 
       <div className={`period afternoon ${viewMode === "week" ? "week-period" : ""}`}>
         {afternoonEvents.map((event) => (
-          <EventCard key={event.event_id} event={event} compact={compact} />
+          <EventCard key={event.event_id} event={event} compact={compact} refreshEvents={refreshEvents} />
         ))}
       </div>
     </div>
