@@ -1,5 +1,5 @@
 import { ScheduleLessonResponseDTO, ScheduleLessonsDTO } from "../dtos/SchedulerDto.ts";
-import { EventType, Recurrence } from "../generated/prisma/client.ts";
+import { EventStatus, EventType, Recurrence } from "../generated/prisma/client.ts";
 import { prisma } from "../lib/prisma.ts";
 import { ConflictError } from "../shared/errors/ConflictError.ts";
 import { NotFoundError } from "../shared/errors/NotFoundError.ts";
@@ -171,14 +171,15 @@ const createLesson = async (
         description: data.description,
 
         eventType: EventType.LESSON,
+        status: EventStatus.SCHEDULED,
 
         createdBy: data.createdBy,
 
-        classId: assignment.subject.class.class_id,
+        subjectInstructorId:
+            assignment.subject_instructor_id,
 
-        subjectInstructorId: assignment.subject_instructor_id,
-
-        recurrenceId: recurrence.recurrence_id,
+        recurrenceId:
+            recurrence.recurrence_id,
 
         roomId: data.roomId,
 
