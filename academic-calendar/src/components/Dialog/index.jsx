@@ -835,6 +835,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
 
     const setEvent = async () => {
         setType("edit-event");
+        console.log(event)
 
         if (event.eventType === "LESSON") {
             setTypeEvent(1);
