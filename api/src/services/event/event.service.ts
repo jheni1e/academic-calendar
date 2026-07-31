@@ -318,7 +318,7 @@ export const cancelEvent = async (
             event_id: eventId
         },
         data: {
-            status: EventStatus.CONFIRMED
+            status: EventStatus.CANCELLED
         }
     })
 }
