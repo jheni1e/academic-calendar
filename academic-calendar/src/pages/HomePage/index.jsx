@@ -96,8 +96,12 @@ function Home() {
 
     if (instructor) {
       await loadSubjects(user.id, null, true);
-    } else if (classId) {
-      await loadSubjects(user.id, classId, false);
+    } else {
+      if (classId) {
+        await loadSubjects(user.id, classId, false);
+      } else {
+        setSubjects([]);
+      }
     }
 
     setUserLoaded(true);
@@ -168,7 +172,7 @@ function Home() {
             return;
           }
 
-          let response = await getData(`/user/edv/${edv}`);
+          response = await getData(`/user/edv/${edv}`);
 
           const user = response.user;
           const userId = user.id;
@@ -185,13 +189,21 @@ function Home() {
             return;
           }
 
-          const classUser = await getData('/user/classes');
+          const classUser = await getData("/user/classes");
 
-          const classId = classUser[0].classId;
+          const classId =
+            Array.isArray(classUser) && classUser.length > 0
+              ? classUser[0].classId
+              : null;
 
-          let response = await getData(`/class/events/${classId}`);
+          if (!classId) {
+            setEvents([]);
+            return;
+          }
 
-          setEvents(response)
+          response = await getData(`/class/events/${classId}`);
+
+          setEvents(response);
         }
       }
 
@@ -219,15 +231,8 @@ function Home() {
         response = await getData(`/subject/class/${classId}/ongoing`);
       }
 
-      if (!response) {
-        setSubjects([]);
-        return;
-      }
-
-      const unfinishedSubjects = response
-        .filter(subject =>
-          subject.completed_workload < subject.workload
-        )
+      const unfinishedSubjects = (response ?? [])
+        .filter(subject => subject.completed_workload < subject.workload)
         .map(subject => ({
           name: subject.name,
           value: Math.round(
@@ -237,6 +242,11 @@ function Home() {
 
       setSubjects(unfinishedSubjects);
     } catch (error) {
+      if (error.status === 404 || error.response?.status === 404) {
+        setSubjects([]);
+        return;
+      }
+
       toastError(error.message);
     }
   };
