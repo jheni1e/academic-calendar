@@ -10,7 +10,9 @@ export class ParticipationController {
             const participation = await createParticipation(data);
 
             return res.status(201).json(participation);
-        } catch (error) {
+        } 
+        catch (error) {
+            console.log(error)
             if (error instanceof AppError) {
                 return res.status(error.statusCode).json({
                     message: error.message
