@@ -326,7 +326,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject, on
                                 endDate: endDate,
                                 createdBy: userId,
                                 roomId: selectedRoom,
-                                subjectInstructor: subjectInstructor.subject_instructor_id
+                                subjectInstructorId: subjectInstructor.subject_instructor_id
                             };
 
                             isInserted = await postData("/event/", payload);
