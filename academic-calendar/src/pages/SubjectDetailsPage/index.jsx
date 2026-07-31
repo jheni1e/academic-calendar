@@ -113,7 +113,7 @@ function SubjectDetails() {
                             {lessons.map((lesson, index) => (
                                 <div key={lesson.id ?? index} className="lesson-card">
                                     <span>
-                                        Aula {lesson.event_id} |
+                                        {lesson.title} |
                                     </span>
                                     <span>
                                         {lesson.reservation.room.title} |
