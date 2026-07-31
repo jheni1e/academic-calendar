@@ -98,7 +98,6 @@ export class EventController {
             return res.status(200).json(events);
 
         } catch (error) {
-
             if (error instanceof AppError) {
                 return res.status(error.statusCode).json({
                     message: error.message

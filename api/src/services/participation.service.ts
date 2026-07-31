@@ -233,10 +233,12 @@ const validateConfirmedParticipantConflict = async (
                 event_id: {
                     not: eventId
                 },
-                in: [
-                    EventStatus.SCHEDULED,
-                    EventStatus.CONFIRMED
-                ],
+                status: {
+                    in: [
+                        EventStatus.SCHEDULED,
+                        EventStatus.CONFIRMED
+                    ]
+                },
                 start_date: {
                     lt: end
                 },
