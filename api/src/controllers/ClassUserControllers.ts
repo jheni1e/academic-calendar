@@ -27,7 +27,7 @@ export class ClassUserController {
 
         try {
             await deleteClassUser(id);
-            return res.status(204).send({ message: "Class user deleted successfully." });
+            return res.status(200).send({ message: "Class user deleted successfully." });
         } catch (error) {
             if (error instanceof AppError) {
                 return res.status(error.statusCode).json({
@@ -40,7 +40,7 @@ export class ClassUserController {
     }
 
     static async findClassUsersByClassAndUser(req: Request, res: Response) {
-        const id: number = parseInt(req.params.id.toString());
+        const id: number = parseInt(req.params.classId.toString());
 
         try {
             const classUser = await findClassUsersByClassAndUser(id, res.locals.user.id);
@@ -76,7 +76,7 @@ export class ClassUserController {
     }
     
     static async findClassUsersByUser(req: Request, res: Response) {
-        const id = res.locals.id
+        const id = res.locals.user.id
 
         try {
             const classes = await findClassUsersByUser(id);

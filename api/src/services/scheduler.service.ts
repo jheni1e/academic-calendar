@@ -1,9 +1,9 @@
 import { ScheduleLessonResponseDTO, ScheduleLessonsDTO } from "../dtos/SchedulerDto.ts";
-import { EventType, Recurrence } from "../generated/prisma/client.ts";
+import { EventStatus, EventType, Recurrence } from "../generated/prisma/client.ts";
 import { prisma } from "../lib/prisma.ts";
 import { ConflictError } from "../shared/errors/ConflictError.ts";
 import { NotFoundError } from "../shared/errors/NotFoundError.ts";
-import { createEvent, LoadedAssignment } from "./event.service.ts";
+import { createEvent, LoadedAssignment } from "./event/event.service.ts";
 import { createRecurrence } from "./Recurrence.service.ts";
 import { Event } from "../generated/prisma/client.ts";
 
@@ -137,7 +137,7 @@ const updateWorkload = async (
             subject_id: subjectId
         },
         data: {
-            completed_workload: {
+            scheduled_workload: {
                 increment: completedHours
             }
         }
@@ -171,14 +171,15 @@ const createLesson = async (
         description: data.description,
 
         eventType: EventType.LESSON,
+        status: EventStatus.SCHEDULED,
 
         createdBy: data.createdBy,
 
-        classId: assignment.subject.class.class_id,
+        subjectInstructorId:
+            assignment.subject_instructor_id,
 
-        subjectInstructorId: assignment.subject_instructor_id,
-
-        recurrenceId: recurrence.recurrence_id,
+        recurrenceId:
+            recurrence.recurrence_id,
 
         roomId: data.roomId,
 
@@ -199,7 +200,7 @@ export const scheduleLessonSeries = async (
 
     const subject = assignment.subject;
 
-    if (subject.workload <= subject.completed_workload) {
+    if (subject.workload <= subject.scheduled_workload) {
         throw new ConflictError(
             "This subject has already completed its workload."
         );
@@ -209,10 +210,10 @@ export const scheduleLessonSeries = async (
 
     let remainingHours =
         subject.workload -
-        subject.completed_workload;
+        subject.scheduled_workload;
 
     let lessonNumber =
-        (subject.completed_workload / LESSON_DURATION) + 1;
+        (subject.scheduled_workload / LESSON_DURATION) + 1;
 
     let currentDate = new Date(data.startDate);
 

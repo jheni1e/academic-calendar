@@ -13,6 +13,7 @@ export class SubjectController {
 
             return res.status(201).json(subject);
         } catch (error) {
+            console.log(error)
             if (error instanceof AppError) {
                 return res.status(error.statusCode).json({
                     message: error.message
@@ -29,7 +30,7 @@ export class SubjectController {
         try {
             await deleteSubject(id);
 
-            return res.status(204).send({ message: "Subject deleted successfully." });
+            return res.status(200).send({ message: "Subject deleted successfully." });
         } catch (error) {
             if (error instanceof AppError) {
                 return res.status(error.statusCode).json({
@@ -134,7 +135,7 @@ export class SubjectController {
     }
 
     static async update(req: Request, res: Response) {
-        const id: number = parseInt(req.params.id.toString());
+        const id: number = parseInt(req.params.subjectId.toString());
         const data: UpdateSubjectDTO = req.body;
 
         try {

@@ -6,7 +6,7 @@
 ### Get
     http://localhost:8080/api/user/all
     http://localhost:8080/api/user/edv/:edv 
-    http://localhost:8080/api/user/id/:id 
+    http://localhost:8080/api/user/id/:userId 
     http://localhost:8080/api/user/classes
     http://localhost:8080/api/user/classes/:classId 
     http://localhost:8080/api/user/events 
@@ -15,11 +15,11 @@
 
 
 ### Put
-    http://localhost:8080/api/user/:id
-    http://localhost:8080/api/user/disable/:id
-    http://localhost:8080/api/user/enable/:id
-    http://localhost:8080/api/user/event/confirm/:id
-    http://localhost:8080/api/user/event/decline/:id
+    http://localhost:8080/api/user/:userId
+    http://localhost:8080/api/user/disable/:userId
+    http://localhost:8080/api/user/enable/:userId
+    http://localhost:8080/api/user/event/confirm/:participationId
+    http://localhost:8080/api/user/event/decline/:participationId
 
 # Login
 
@@ -34,17 +34,17 @@
 
 ### Get
     http://localhost:8080/api/class/all
-    http://localhost:8080/api/class/:id
-    http://localhost:8080/api/class/participants/:id - all participants
-    http://localhost:8080/api/class/events/:id
+    http://localhost:8080/api/class/:classId
+    http://localhost:8080/api/class/participants/:classId - all participants
+    http://localhost:8080/api/class/events/:classId
 
 ### Put
-    http://localhost:8080/api/class/:id
-    http://localhost:8080/api/class/enable/:id
-    http://localhost:8080/api/class/disable/:id
+    http://localhost:8080/api/class/:classId
+    http://localhost:8080/api/class/enable/:classId
+    http://localhost:8080/api/class/disable/:classId
 
 ### Delete
-    http://localhost:8080/api/class/:id
+    http://localhost:8080/api/class/:classId
 
 # Room
 
@@ -54,12 +54,12 @@
 
 ### Get
     http://localhost:8080/api/room/all
-    http://localhost:8080/api/room/:id
+    http://localhost:8080/api/room/:roomId
     http://localhost:8080/api/room/reservations/:roomId
-    http://localhost:8080/api/room/events/:id
+    http://localhost:8080/api/room/events/:roomId
 
 ### Put
-    http://localhost:8080/api/room/:id
+    http://localhost:8080/api/room/:roomId
     http://localhost:8080/api/room/deactivate/:roomId
 
 ### Delete
@@ -75,17 +75,17 @@
 
 ### Get
     http://localhost:8080/api/subject/all
-    http://localhost:8080/api/subject/:id
+    http://localhost:8080/api/subject/:subjectId
     http://localhost:8080/api/subject/instructors/:subjectId
     http://localhost:8080/api/subject/instructor/:instructorId/ongoing
     http://localhost:8080/api/subject/class/:classId/ongoing
     http://localhost:8080/api/subject/:subjectId/instructor/:instructorId
 
 ### Put
-    http://localhost:8080/api/subject/:id
+    http://localhost:8080/api/subject/:subjectId
 
 ### Delete
-    http://localhost:8080/api/subject/:id
+    http://localhost:8080/api/subject/:subjectId
     http://localhost:8080/api/subject/:subjectId/instructor/:instructorId
 
 # Event
@@ -96,15 +96,15 @@
 
 ### Get
     http://localhost:8080/api/event/all
-    http://localhost:8080/api/event/:id
+    http://localhost:8080/api/event/:eventId
     http://localhost:8080/api/event/participants/all/:eventId
 
 ### Put
-    http://localhost:8080/api/event/:id
-    http://localhost:8080/api/event/block/:id
-    http://localhost:8080/api/event/unblock/:id
-    http://localhost:8080/api/event/confirm/:id
-    http://localhost:8080/api/event/cancel/:id
+    http://localhost:8080/api/event/:eventId
+    http://localhost:8080/api/event/block/:eventId
+    http://localhost:8080/api/event/unblock/:eventId
+    http://localhost:8080/api/event/confirm/:eventId
+    http://localhost:8080/api/event/cancel/:eventId
 
 
 ### Delete

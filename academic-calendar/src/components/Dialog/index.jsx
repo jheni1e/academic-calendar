@@ -4,7 +4,7 @@ import BoschButton from "../BoschButton";
 import TextBox from "../TextBox";
 import DropdownList from "../DropdownList";
 import FrequencySelector from "../FrequencySelector";
-import { getData, postData, putData } from "../../utils/apiBack";
+import { deleteData, getData, postData, putData } from "../../utils/apiBack";
 import { toastError, toastSuccess, toastWarning } from '../../components/BoschToast';
 import CadeadoTrancado from "../../images/cadeado-trancado.png"
 
@@ -45,6 +45,8 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
     const [typeStatusEvent, setTypeStatusEvent] = useState(
         event?.is_blocked === true ? 1 : 2);
 
+    const [updatePage, setUpdatePage] = useState(false)
+
     useEffect(() => {
         const dialog = dialogRef.current;
         if (!dialog) return;
@@ -75,7 +77,18 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
         getAllPeople();
         getAllInstructors();
         getAllSubjects();
-    }, []);
+    }, [updatePage]);
+
+    useEffect(() => {
+        if (
+            isOpen &&
+            type === "view-event" &&
+            event?.event_type === "FEEDBACK" || event?.event_type === "EXTERNAL"
+        ) {
+            getParticipants();
+        }
+    }, [isOpen, type, event?.event_type, event?.event_id]);
+
 
     const getAllRooms = async () => {
         try {
@@ -87,6 +100,10 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
             }));
 
             setAllRooms(formattedRooms);
+
+            if (formattedRooms.length > 0) {
+                setSelectedRoom(formattedRooms[0].value);
+            }
         } catch (error) {
             onClose();
             toastError(`Erro: ${error.message}`)
@@ -103,6 +120,10 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
             }));
 
             setAllClasses(formatedClasses);
+
+            if (formatedClasses.length > 0) {
+                setSelectedClass(formatedClasses[0].value);
+            }
         } catch (error) {
             onClose();
             toastError(`Erro: ${error.message}`)
@@ -135,6 +156,10 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
             }));
 
             setAllInstructors(formatedInstructors);
+
+            if (formatedInstructors.length > 0) {
+                setResponsible(formatedInstructors[0].value);
+            }
         } catch (error) {
             onClose();
             toastError(`Erro: ${error.message}`)
@@ -145,13 +170,18 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
         try {
             const data = await getData("/subject/all");
 
+            const classCache = {};
+
             const subjectsWithClass = await Promise.all(
                 data.map(async (subject) => {
-                    const classData = await getData(`/class/${subject.class_id}`);
+                    if (!classCache[subject.class_id]) {
+                        classCache[subject.class_id] =
+                            await getData(`/class/${subject.class_id}`);
+                    }
 
                     return {
                         value: subject.subject_id,
-                        label: `${subject.name} - ${classData.name}`
+                        label: `${subject.name} - ${classCache[subject.class_id].name}`
                     };
                 })
             );
@@ -160,6 +190,22 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
         } catch (error) {
             onClose();
             toastError(`Erro: ${error.message}`);
+        }
+    }
+
+    const getParticipants = async () => {
+        try {
+            const participantsEvent = await getData(
+                `/event/participants/all/${event.event_id}`
+            );
+
+            setParticipants(participantsEvent.map(p => ({
+                value: p.userId,
+                label: p.userName
+            })));
+
+        } catch (err) {
+            console.error(err);
         }
     }
 
@@ -186,11 +232,23 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                                 return;
                             }
 
+                            if (!startDate || !endDate) {
+                                onClose();
+                                toastWarning("O horário de início e encerramento é obrigatório.");
+                                return;
+                            }
+
                             eventType = "EXTERNAL";
 
                             edv = sessionStorage.getItem("user");
                             user = await getData(`/user/edv/${edv}`);
                             userId = user.user.id;
+
+                            if (participants.length <= 0) {
+                                onClose();
+                                toastError("Adicione um ou mais participantes.");
+                                return;
+                            }
 
                             payload = {
                                 title: eventName,
@@ -235,6 +293,18 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                                 return;
                             }
 
+                            if (!startDate || !endDate) {
+                                onClose();
+                                toastWarning("O horário de início e encerramento é obrigatório.");
+                                return;
+                            }
+
+                            if (!selectedRoom || !responsible || !selectedSubject) {
+                                onClose();
+                                toastWarning("A sala, professor e matéria são obrigatórios.");
+                                return;
+                            }
+
                             eventType = "LESSON";
 
                             edv = sessionStorage.getItem("user");
@@ -243,6 +313,12 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
 
                             subjectInstructor = await getData(`/subject/${selectedSubject}/instructor/${responsible}`)
 
+                            if (!subjectInstructor) {
+                                onClose();
+                                toastWarning("O instrutor não está associado com a matéria.");
+                                return;
+                            }
+
                             payload = {
                                 title: eventName,
                                 eventType: eventType,
@@ -250,7 +326,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                                 endDate: endDate,
                                 createdBy: userId,
                                 roomId: selectedRoom,
-                                subjectInstructor: subjectInstructor.subject_instructor_id
+                                subjectInstructorId: subjectInstructor.subject_instructor_id
                             };
 
                             isInserted = await postData("/event/", payload);
@@ -273,6 +349,18 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                                 return;
                             }
 
+                            if (!startDate || !endDate) {
+                                onClose();
+                                toastWarning("O horário de início e encerramento é obrigatório.");
+                                return;
+                            }
+
+                            if (!selectedRoom || !responsible || !selectedSubject) {
+                                onClose();
+                                toastWarning("A sala, professor e matéria são obrigatórios.");
+                                return;
+                            }
+
                             eventType = "ASSESSMENT";
 
                             edv = sessionStorage.getItem("user");
@@ -280,6 +368,12 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                             userId = user.user.id;
 
                             subjectInstructor = await getData(`/subject/${selectedSubject}/instructor/${responsible}`)
+
+                            if (!subjectInstructor) {
+                                onClose();
+                                toastWarning("O instrutor não está associado com a matéria.");
+                                return;
+                            }
 
                             payload = {
                                 title: eventName,
@@ -311,11 +405,23 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                                 return;
                             }
 
+                            if (!startDate || !endDate) {
+                                onClose();
+                                toastWarning("O horário de início e encerramento é obrigatório.");
+                                return;
+                            }
+
                             eventType = "FEEDBACK";
 
                             edv = sessionStorage.getItem("user");
                             user = await getData(`/user/edv/${edv}`);
                             userId = user.user.id;
+
+                            if (participants.length <= 0) {
+                                onClose();
+                                toastError("Adicione um ou mais participantes.");
+                                return;
+                            }
 
                             payload = {
                                 title: eventName,
@@ -334,6 +440,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                             }
 
                             eventId = isInserted.event_id;
+
 
                             participants.forEach(async p => {
                                 let participantPayload = {
@@ -361,11 +468,42 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                     user = await getData(`/user/edv/${edv}`);
                     userId = user.user.id;
 
+                    if (!newSubjectName.trim()) {
+                        onClose();
+                        toastWarning("O nome da matéria é obrigatório.");
+                        return;
+                    }
+
+                    if (!newSubjectWorkload) {
+                        onClose();
+                        toastWarning("A carga horária é obrigatória.");
+                        return;
+                    }
+
+                    const workload = Number(newSubjectWorkload);
+
+                    if (!Number.isInteger(workload) || workload <= 0 || workload % 4 != 0) {
+                        onClose();
+                        toastWarning("Digite uma carga horária válida.");
+                        return;
+                    }
+
+                    const classItem = await getData(`/class/${selectedClass}`);
+
+                    if (!classItem) {
+                        onClose();
+                        toastWarning("Erro ao obter informações da turma.");
+                        return;
+                    }
+
+                    const className = classItem.name;
+
                     const newSubject = {
-                        name: newSubjectName,
+                        name: className + " - " + newSubjectName,
                         workload: parseInt(newSubjectWorkload),
                         startDate: startDate,
-                        classId: selectedClass
+                        classId: selectedClass,
+                        completedWorkload: 0
                     }
 
                     const isInserted = await postData("/subject", newSubject);
@@ -414,6 +552,24 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                         day => daysNames[day]
                     );
 
+                    if (!startDate || !startTime || !endTime) {
+                        onClose();
+                        toastWarning("A data e horário são campos obrigatórios.");
+                        return;
+                    }
+
+                    if (!selectedRoom || !responsible || !selectedClass) {
+                        onClose();
+                        toastWarning("A sala, professor e matéria são obrigatórios.");
+                        return;
+                    }
+
+                    if (selectedDays.length <= 0) {
+                        onClose();
+                        toastWarning("Selecione a frequência das aulas.");
+                        return;
+                    }
+
                     subjectInstructor = await getData(`/subject/${subject.subject_id}/instructor/${responsible}`)
 
                     payload = {
@@ -436,8 +592,6 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                         }
                     }
 
-                    console.log(payload)
-
                     const schedulePlanned = await postData('/scheduler/lessons', payload);
 
                     if (!schedulePlanned) {
@@ -445,6 +599,8 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                         toastError("Falha ao planejar as aulas.");
                         return;
                     }
+
+                    setUpdatePage(!updatePage)
 
                     onClose();
                     toastSuccess("Aulas planejadas com sucesso!")
@@ -506,7 +662,8 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                             eventId = isUpdated.event_id;
 
                             onClose();
-                            window.location.reload()
+
+                            setUpdatePage(!updatePage)
                             toastSuccess("Evento atualizado com sucesso!");
                             break;
                         case 2:
@@ -522,11 +679,13 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                             user = await getData(`/user/edv/${edv}`);
                             userId = user.user.id;
 
+                            subjectInstructor = await getData(`/subject/${subject.subject_id}/instructor/${responsible}`)
+
                             payload = {
                                 title: eventName,
                                 eventType: eventType,
                                 startDate: startDate,
-                                subjectInstructorId: responsible,
+                                subjectInstructorId: subjectInstructor.subject_instructor_id,
                                 createdBy: userId,
                                 roomId: selectedRoom,
                                 startDate: startDate
@@ -546,7 +705,49 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                             toastSuccess("Aulas atualizadas com sucesso!");
                             break;
                         case 3:
-                            eventType = "EXAM";
+                            if (!eventName.trim()) {
+                                onClose();
+                                toastWarning("O título é obrigatório.");
+                                return;
+                            }
+
+                            if (!startDate || !endDate) {
+                                onClose();
+                                toastWarning("O horário de início e encerramento é obrigatório.");
+                                return;
+                            }
+
+                            eventType = "ASSESSMENT";
+
+                            edv = sessionStorage.getItem("user");
+                            user = await getData(`/user/edv/${edv}`);
+                            userId = user.user.id;
+
+                            subjectInstructor = await getData(`/subject/${subject.subject_id}/instructor/${responsible}`)
+
+                            payload = {
+                                title: eventName,
+                                eventType: eventType,
+                                startDate: startDate,
+                                endDate: endDate,
+                                createdBy: userId,
+                                roomId: selectedRoom,
+                                subjectInstructorId: subjectInstructor.subject_instructor_id
+                            };
+
+                            isUpdated = await putData(
+                                `/event/${event.event_id}`,
+                                payload
+                            );
+
+                            if (!isUpdated) {
+                                onClose();
+                                toastError("Falha ao atualizar avaliação.");
+                                return;
+                            }
+
+                            onClose();
+                            toastSuccess("Avaliação atualizada com sucesso!");
                             break;
                     }
                     break;
@@ -589,6 +790,18 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
         setRooms([...newRooms]);
     };
 
+    const deleteEvent = async () => {
+        try {
+            await putData(`/event/cancel/${event.event_id}`);
+
+            onClose();
+            toastSuccess('Evento deletado.');
+            setUpdatePage(!updatePage);
+        } catch (e) {
+            toastError(e)
+        }
+
+    }
     const addParticipant = () => {
         if (!selectedParticipant) return;
 
@@ -622,38 +835,44 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
 
     const setEvent = async () => {
         setType("edit-event");
-        console.log(event)
 
         if (event.eventType === "LESSON") {
             setTypeEvent(1);
         } else if (event.eventType === "EXTERNAL") {
             setTypeEvent(2);
-        } else if (event.eventType === "EXAM") {
+        } else if (event.eventType === "ASSESSMENT") {
             setTypeEvent(3);
         }
 
         setEventName(event.title);
         setStartDate(new Date(event.start_date));
         setEndDate(new Date(event.end_date));
-
-        try {
-            const participants = await getData(`/event/participants/all/${event.event_id}`);
-
-            setParticipants(
-                participants.map(p => ({
-                    value: p.userId,
-                    label: p.userName
-                }))
-            );
-        } catch (err) {
-            console.error(err);
-        }
     }
 
     const unblockEvent = async () => {
-        await putData(`/event/unblock/${event.event_id}`)
-        onClose()
-        toastSuccess("Evento Desbloqueado!")
+        await putData(`/event/unblock/${event.event_id}`);
+
+        onClose();
+        toastSuccess("Evento desbloqueado.");
+    }
+
+    const confirmLesson = async () => {
+        try {
+            await putData(`/event/confirm/${event.event_id}`);
+
+            onClose();
+            toastSuccess("Aula confirmada.");
+
+        } catch (e) {
+            onClose()
+            if (e.message === "Event has already ended") {
+                toastError("O evento já terminou.");
+            }
+            else {
+                toastError("Não foi possivel confirmar a aula.");
+            }
+
+        }
     }
 
     const typeEvents = [
@@ -662,10 +881,12 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
         { value: 3, label: "Avaliação" },
         { value: 4, label: "Feedback" }
     ];
+
     const typeStatus = [
         { value: 1, label: "Bloqueado" },
         { value: 2, label: "Desbloqueado" }
     ];
+
     return (
         <dialog ref={dialogRef} className="customDialog">
             <div className="dialogHeader">
@@ -948,10 +1169,6 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                                 <h4>Encerramento:</h4>
                                 <TextBox placeholder="XX/XX/XXXX XX:XX" type="datetime-local" value={formatDateTimeLocal(endDate)} onChange={(e) => setEndDate(new Date(e.target.value))} />
                             </div>
-                            <div style={{ display: "flex", flexDirection: "column", width: "500px" }}>
-                                <h4>Frequência:</h4>
-                                <FrequencySelector />
-                            </div>
                             <div className="dialogInput">
                                 <h4>Status Evento:</h4>
                                 <DropdownList options={typeStatus} selectedValue={typeStatusEvent} onChange={(e) => setTypeStatusEvent(Number(e.target.value))} />
@@ -1028,7 +1245,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                                 <h4>Turma:</h4>
                                 <div className="participantsList">
                                     <div className="listItem">
-                                        <span className="itemName" style={{justifyContent: "center"}}>{event.class.name}</span>
+                                        <span className="itemName" style={{ justifyContent: "center" }}>{event.class.name}</span>
                                     </div>
                                 </div>
                             </div>
@@ -1036,7 +1253,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                                 <h4>Instrutor:</h4>
                                 <div className="participantsList">
                                     <div className="listItem">
-                                        <span className="itemName" style={{justifyContent: "center"}}>{event.subject_instructor.instructor.name}</span>
+                                        <span className="itemName" style={{ justifyContent: "center" }}>{event.subject_instructor.instructor.name}</span>
                                     </div>
                                 </div>
                             </div>
@@ -1057,8 +1274,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                                 <div className="participantsList">
                                     {participants.map((participant) => (
                                         <div className="listItem">
-                                            <span className="itemName">{participant.value}</span>
-                                            <button className="removeItem" onClick={() => removeParticipant(participant.id)}>×</button>
+                                            <span className="itemName">{participant.label}</span>
                                         </div>
                                     ))}
                                 </div>
@@ -1081,33 +1297,58 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                                     {participants.map((participant) => (
                                         <div key={participant.value} className="listItem">
                                             <span className="itemName">{participant.label}</span>
-
-                                            <button className="removeItem" onClick={() => removeParticipant(participant.value)}>×</button>
                                         </div>
                                     ))}
                                 </div>
                             </div>
                         </div>
                     }
-                    {typeEvent === 3 &&
+                    {event.event_type === "ASSESSMENT" &&
                         <div className="dialogContent" style={{ borderRadius: "10px" }}>
                             <div className="dialogInput">
                                 <h4>Início:</h4>
-                                <h4>{new Date(event.start_date).toLocaleString("pt-BR", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit", })}</h4>
+                                <h4>
+                                    {new Date(event.start_date).toLocaleString("pt-BR", {
+                                        day: "2-digit",
+                                        month: "2-digit",
+                                        year: "numeric",
+                                        hour: "2-digit",
+                                        minute: "2-digit"
+                                    })}
+                                </h4>
                             </div>
                             <div className="dialogInput">
                                 <h4>Encerramento:</h4>
-                                <h4>{new Date(event.end_date).toLocaleString("pt-BR", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit", })}</h4>
+                                <h4>
+                                    {new Date(event.end_date).toLocaleString("pt-BR", {
+                                        day: "2-digit",
+                                        month: "2-digit",
+                                        year: "numeric",
+                                        hour: "2-digit",
+                                        minute: "2-digit"
+                                    })}
+                                </h4>
                             </div>
                         </div>
                     }
                     <div className="dialogButtons">
-                        {!event.is_blocked &&
-                            <BoschButton text="Editar" type="primary" onClick={() => setEvent()} />
+                        {event.event_type === "LESSON" && event.status === "SCHEDULED" ? (
+                            <BoschButton text="Confirmar Aula" type="primary" onClick={() => confirmLesson()} />
+                        ) : (
+                            <>
+                                {!event.is_blocked && (
+                                    <>
+                                        <BoschButton text="Deletar" type="delete" onClick={() => deleteEvent()} />
+                                        <BoschButton text="Editar" type="primary" onClick={() => setEvent()} />
+                                    </>
+                                )}
+                                {event.is_blocked && (
+                                    <BoschButton text="Desbloquear" type="primary" onClick={() => unblockEvent()} />
+                                )}
+                            </>
+                        )
                         }
-                        {event.is_blocked &&
-                            <BoschButton text="Desbloquear" type="primary" onClick={unblockEvent} />
-                        }
+
                     </div>
                 </>
             ) : (

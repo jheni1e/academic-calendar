@@ -137,42 +137,48 @@ async function main() {
                 name: "MEC25 - IoT",
                 workload: 40,
                 start_date: new Date("2026-07-20T00:00:00Z"),
-                completed_workload: 0
+                completed_workload: 0,
+                scheduled_workload: 0
             },
             {
                 class_id: add2.class_id,
                 name: "ADD2 - Python",
                 workload: 60,
                 start_date: new Date("2026-07-27T00:00:00Z"),
-                completed_workload: 0
+                completed_workload: 0,
+                scheduled_workload: 0
             },
             {
                 class_id: dta3.class_id,
                 name: "DTA3 - C# Básico",
                 workload: 80,
                 start_date: new Date("2026-07-20T00:00:00Z"),
-                completed_workload: 0
+                completed_workload: 0,
+                scheduled_workload: 0
             },
             {
                 class_id: mec26.class_id,
                 name: "MEC26 - Excel",
                 workload: 30,
                 start_date: new Date("2026-08-03T00:00:00Z"),
-                completed_workload: 0
+                completed_workload: 0,
+                scheduled_workload: 0
             },
             {
                 class_id: man25.class_id,
                 name: "MAN25 - Power BI",
                 workload: 34,
                 start_date: new Date("2026-08-10T00:00:00Z"),
-                completed_workload: 0
+                completed_workload: 0,
+                scheduled_workload: 0
             },
             {
                 class_id: mec25.class_id,
                 name: "MEC25 - Redes",
                 workload: 40,
                 start_date: new Date("2026-07-20T00:00:00Z"),
-                completed_workload: 0
+                completed_workload: 0,
+                scheduled_workload: 0
             }
         ],
         skipDuplicates: true,
@@ -218,22 +224,6 @@ async function main() {
         ]
     });
 
-    // const recurrence = await prisma.recurrence.create({
-    //     data: {
-    //         series_name: "Python - Segunda e Quarta",
-    //         repeat_until: new Date("2026-09-30T00:00:00Z"),
-
-    //         monday: true,
-    //         wednesday: true,
-
-    //         creator: {
-    //             connect: {
-    //                 user_id: 4
-    //             }
-    //         }
-    //     }
-    // });
-
     const pythonLesson = await prisma.event.create({
         data: {
             title: "Aula de Python",
@@ -277,6 +267,94 @@ async function main() {
             user_id: 1,
             event_id: feedback.event_id,
             status: "PENDING"
+        }
+    });
+
+    const csharpLesson1 = await prisma.event.create({
+        data: {
+            title: "C# Básico - Aula 01",
+            description: "Primeira aula de C#",
+    
+            event_type: EventType.LESSON,
+            status: "COMPLETED",
+    
+            start_date: new Date("2026-07-21T13:30:00Z"),
+            end_date: new Date("2026-07-21T17:30:00Z"),
+    
+            class_id: dta3.class_id,
+            subject_instructor_id: 4,
+    
+            created_by: 5
+        }
+    });
+    
+    await prisma.reservation.create({
+        data: {
+            room_id: 1,
+            event_id: csharpLesson1.event_id,
+            description: "Reserva Aula 01"
+        }
+    });
+    
+    const csharpLesson2 = await prisma.event.create({
+        data: {
+            title: "C# Básico - Aula 02",
+            description: "Segunda aula de C#",
+    
+            event_type: EventType.LESSON,
+            status: "COMPLETED",
+    
+            start_date: new Date("2026-07-23T13:30:00Z"),
+            end_date: new Date("2026-07-23T17:30:00Z"),
+    
+            class_id: dta3.class_id,
+            subject_instructor_id: 4,
+    
+            created_by: 5
+        }
+    });
+    
+    await prisma.reservation.create({
+        data: {
+            room_id: 1,
+            event_id: csharpLesson2.event_id,
+            description: "Reserva Aula 02"
+        }
+    });
+    
+    const csharpLesson3 = await prisma.event.create({
+        data: {
+            title: "C# Básico - Aula 03",
+            description: "Terceira aula de C#",
+    
+            event_type: EventType.LESSON,
+            status: "CONFIRMED",
+    
+            start_date: new Date("2026-08-05T13:30:00Z"),
+            end_date: new Date("2026-08-05T17:30:00Z"),
+    
+            class_id: dta3.class_id,
+            subject_instructor_id: 4,
+    
+            created_by: 5
+        }
+    });
+    
+    await prisma.reservation.create({
+        data: {
+            room_id: 1,
+            event_id: csharpLesson3.event_id,
+            description: "Reserva Aula 03"
+        }
+    });
+
+    await prisma.subject.update({
+        where: {
+            subject_id: 3
+        },
+        data: {
+            scheduled_workload: 12,
+            completed_workload: 8
         }
     });
 }

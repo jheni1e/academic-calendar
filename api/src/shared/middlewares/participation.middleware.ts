@@ -2,14 +2,13 @@ import { NextFunction, Request, Response } from "express";
 import { prisma } from "../../lib/prisma.ts";
 import { NotFoundError } from "../errors/NotFoundError.ts";
 import { findUserById } from "../../services/user.service.ts";
-import { findEventById } from "../../services/event.service.ts";
-import { findEventRoleById } from "../../services/eventrole.service.ts";
 import { findParticipationById, findParticipationByUserAndEvent } from "../../services/participation.service.ts";
 import { ConflictError } from "../errors/ConflictError.ts";
+import { findEventById } from "../../services/event/event.query.service.ts";
 
 export const validateCreate = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { userId, eventRoleId, eventId, status } = req.body;
+        const { userId, eventId, status } = req.body;
 
         const user = await findUserById(userId)
 

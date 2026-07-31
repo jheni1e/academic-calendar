@@ -1,5 +1,5 @@
 import { CreateParticipationDTO, ParticipationResponseDTO, UpdateParticipationDTO } from "../dtos/ParticipationDTO.ts";
-import { EventStatus, Participation, ParticipationStatus } from "../generated/prisma/client.ts";
+import { EventStatus, EventType, Participation, ParticipationStatus } from "../generated/prisma/client.ts";
 import { prisma } from "../lib/prisma.ts";
 import { ConflictError } from "../shared/errors/ConflictError.ts";
 import { NotFoundError } from "../shared/errors/NotFoundError.ts";
@@ -91,6 +91,7 @@ export const findParticipationByEvent = async (
         },
         select: {
             participation_id: true,
+            status: true,
 
             user: {
                 select: {
@@ -112,7 +113,9 @@ export const findParticipationByEvent = async (
         eventId: participation.event.event_id,
         eventName: participation.event.title,
         userId: participation.user.user_id,
-        userName: participation.user.name
+        userName: participation.user.name,
+        status: participation.status
+
     }));
 
 }
@@ -152,11 +155,12 @@ export const confirmParticipation = async (
     return participation;
     }
 
-    await validateParticipantConflict(
+    await validateConfirmedParticipantConflict(
         participation.user_id,
         participation.event.start_date,
         participation.event.end_date,
-        participation.event.event_id
+        participation.event.event_id,
+        participation.event.event_type
     );
 
     return prisma.participation.update({
@@ -195,39 +199,59 @@ export const declineParticipation = async (
     }
 }
 
-const validateParticipantConflict = async (
+const validateConfirmedParticipantConflict = async (
     userId: number,
     start: Date,
     end: Date,
-    eventId: number
+    eventId: number,
+    eventType: EventType
 ): Promise<void> => {
 
     const conflict = await prisma.participation.findFirst({
         where: {
             user_id: userId,
             status: ParticipationStatus.CONFIRMED,
-
             event: {
                 event_id: {
                     not: eventId
                 },
-
                 status: EventStatus.SCHEDULED,
-
                 start_date: {
                     lt: end
                 },
-
                 end_date: {
                     gt: start
                 }
             }
+        },
+        include: {
+            event: true
         }
     });
 
-    if (conflict) {
-        throw new ConflictError(
-            "You already have another confirmed event during this period."
+    if (!conflict) return;
+
+    const canOverlap =
+        (
+            eventType === EventType.FEEDBACK &&
+            (
+                conflict.event.event_type === EventType.LESSON ||
+                conflict.event.event_type === EventType.INTERNSHIP
+            )
+        ) ||
+        (
+            conflict.event.event_type === EventType.FEEDBACK &&
+            (
+                eventType === EventType.LESSON ||
+                eventType === EventType.INTERNSHIP
+            )
         );
+    
+    if (canOverlap) {
+        return;
     }
+    
+    throw new ConflictError(
+        "You already have another confirmed event during this period."
+    );
 }

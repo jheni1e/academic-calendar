@@ -2,9 +2,10 @@ import { Request, Response } from "express";
 
 import { AppError } from "../shared/errors/AppError.ts";
 import { CreateEventDTO, UpdateEventDTO } from "../dtos/EventDto.ts";
-import { createEvent, deleteEvent, findAllEvents, findEventsByClass, findEventById, updateEvent, findEventsByUser, findEventsByRoom, blockEvent, unblockEvent, confirmEvent, cancelEvent } from "../services/event.service.ts";
+import { createEvent, deleteEvent, updateEvent, blockEvent, unblockEvent, confirmEvent, cancelEvent } from "../services/event/event.service.ts";
 import { NotFoundError } from "../shared/errors/NotFoundError.ts";
 import { BadRequestError } from "../shared/errors/BadRequestError.ts";
+import { findAllEvents, findConfirmedEvents, findEventById, findEventsByClass, findEventsByRoom, findEventsBySubject, findEventsByUser } from "../services/event/event.query.service.ts";
 
 export class EventController {
     static async create(req: Request, res: Response) {
@@ -26,14 +27,14 @@ export class EventController {
     }
 
     static async delete(req: Request, res: Response) {
-        const id: number = parseInt(req.params.id.toString());
+        const id: number = parseInt(req.params.eventId.toString());
 
         try {
             await deleteEvent(id);
 
-            return res.status(204).send({ message: "Event deleted successfully." });
+            return res.status(200).send({ message: "Event deleted successfully." });
         } catch (error) {
-
+            console.log(error)
             if (error instanceof AppError) {
                 return res.status(error.statusCode).json({
                     message: error.message
@@ -45,7 +46,7 @@ export class EventController {
     }
 
     static async findEventById(req: Request, res: Response) {
-        const id: number = parseInt(req.params.id.toString());
+        const id: number = parseInt(req.params.eventId.toString());
 
         try {
             const event = await findEventById(id);
@@ -65,19 +66,45 @@ export class EventController {
 
     static async findEventsByRoom(req: Request, res: Response) {
         const roomId = Number(req.params.id);
-    
+
         try {
             const events = await findEventsByRoom(roomId);
-    
+
             return res.status(200).json(events);
         } catch (error) {
-    
+
             if (error instanceof AppError) {
                 return res.status(error.statusCode).json({
                     message: error.message
                 });
             }
-    
+
+            return res.status(500).json({
+                message: "Internal server error."
+            });
+        }
+    }
+
+    static async findEventsBySubject(
+        req: Request,
+        res: Response
+    ) {
+        const subjectId = Number(req.params.id);
+
+        try {
+
+            const events = await findEventsBySubject(subjectId);
+
+            return res.status(200).json(events);
+
+        } catch (error) {
+
+            if (error instanceof AppError) {
+                return res.status(error.statusCode).json({
+                    message: error.message
+                });
+            }
+
             return res.status(500).json({
                 message: "Internal server error."
             });
@@ -85,36 +112,18 @@ export class EventController {
     }
 
     static async findEventsByUser(req: Request, res: Response) {
-        const id: number = parseInt(req.params.id.toString());
+        const id: number = parseInt(req.params.userId.toString());
 
         try {
-            const events = await findEventsByUser(Number(id))
+            const events = await findEventsByUser(id)
+
             return res.status(200).send(events)
         } catch (error) {
             if (error instanceof NotFoundError) {
                 return res.status(error.statusCode).send(error.message)
             }
 
-            return res.status(500).send({ message: "Internal server error."})
-        }
-    }
-
-    static async findEventByClass(req: Request, res: Response) {
-        const id: number = parseInt(req.params.id.toString());
-
-        try {
-            const event = await findEventsByClass(id);
-
-            return res.status(200).json(event);
-        } catch (error) {
-
-            if (error instanceof AppError) {
-                return res.status(error.statusCode).json({
-                    message: error.message
-                });
-            }
-
-            return res.status(500).json({ message: "Internal server error." });
+            return res.status(500).send({ message: "Internal server error." })
         }
     }
 
@@ -135,8 +144,28 @@ export class EventController {
         }
     }
 
+    static async findEventByClass(req: Request, res: Response) {
+        const id: number = parseInt(req.params.classId.toString());
+
+        try {
+            const event = await findEventsByClass(id);
+
+            return res.status(200).json(event);
+        } catch (error) {
+
+            if (error instanceof AppError) {
+                return res.status(error.statusCode).json({
+                    message: error.message
+                });
+            }
+
+            return res.status(500).json({ message: "Internal server error." });
+        }
+    }
+
+
     static async update(req: Request, res: Response) {
-        const id: number = parseInt(req.params.id.toString());
+        const id: number = parseInt(req.params.eventId.toString());
         const data: UpdateEventDTO = req.body;
 
         try {
@@ -156,62 +185,89 @@ export class EventController {
     }
 
     static async block(req: Request, res: Response) {
-        const { id } = req.params
+        const { eventId: id } = req.params
 
         try {
             await blockEvent(Number(id))
-            return res.status(200).send({ message: "Event blocked!"})
+            return res.status(200).send({ message: "Event blocked!" })
 
         } catch (error) {
             if (error instanceof NotFoundError || error instanceof BadRequestError)
-                return res.status(error.statusCode).send({ message: error.message})
+                return res.status(error.statusCode).send({ message: error.message })
 
-            return res.status(500).send({ message : "Internal server error"})
+            return res.status(500).send({ message: "Internal server error" })
         }
     }
 
     static async unblock(req: Request, res: Response) {
-        const { id } = req.params
+        const { eventId } = req.params
 
         try {
-            await unblockEvent(Number(id))
-            return res.status(200).send({ message: "Event unblocked!"})
-            
+            await unblockEvent(Number(eventId))
+            return res.status(200).send({ message: "Event unblocked!" })
+
         } catch (error) {
             if (error instanceof NotFoundError || error instanceof BadRequestError)
-                return res.status(error.statusCode).send({ message: error.message})
+                return res.status(error.statusCode).send({ message: error.message })
 
-            return res.status(500).send({ message : "Internal server error"})
+            return res.status(500).send({ message: "Internal server error" })
         }
     }
 
     static async confirm(req: Request, res: Response) {
-        const { id } = req.params
+        const { eventId: id } = req.params
 
         try {
             await confirmEvent(Number(id))
-            return res.status(200).send({ message: "Event confirmed!"})
-            
+            return res.status(200).send({ message: "Event confirmed!" })
+
         } catch (error) {
             if (error instanceof AppError)
-                return res.status(error.statusCode).send({ message: error.message})
+                return res.status(error.statusCode).send({ message: error.message })
 
-            return res.status(500).send({ message : "Internal server error"})
+            return res.status(500).send({ message: "Internal server error" })
         }
     }
 
     static async cancel(req: Request, res: Response) {
-        const { id } = req.params
+        const { eventId: id } = req.params
 
         try {
             await cancelEvent(Number(id))
-            return res.status(200).send({ message: "Event cancelled!"})
-            
+            return res.status(200).send({ message: "Event cancelled!" })
+
         } catch (error) {
             if (error instanceof AppError)
-                return res.status(error.statusCode).send({ message: error.message})
+                return res.status(error.statusCode).send({ message: error.message })
 
-            return res.status(500).send({ message : "Internal server error"})
+            return res.status(500).send({ message: "Internal server error" })
+        }
+    }
+
+    static async findConfirmedEvents(
+        req: Request,
+        res: Response
+    ) {
+    
+        try {
+            const events = await findConfirmedEvents();
+            return res.status(200).json(events);
+    
+        } 
+        catch (error) {
+
+            console.error(error);
+        
+            if (error instanceof AppError) {
+                return res.status(error.statusCode).json({
+                    message: error.message
+                });
+            }
+        
+            return res.status(500).json({
+                message: "Internal server error.",
+                error
+            });
         }
     }
 }

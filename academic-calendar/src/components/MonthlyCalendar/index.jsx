@@ -177,6 +177,7 @@ function MonthlyCalendar({ initialDate, compact = false, type, events = [], refr
                       events={events}
                       viewMode={viewMode}
                       compact={compact}
+                      refreshEvents={refreshEvents}
                     />
                   );
                 })}
@@ -192,6 +193,7 @@ function MonthlyCalendar({ initialDate, compact = false, type, events = [], refr
                   events={events}
                   isToday={date.toDateString() === new Date().toDateString()}
                   viewMode={viewMode}
+                  refreshEvents={refreshEvents}
                 />
               ))
             )}

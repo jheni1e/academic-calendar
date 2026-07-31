@@ -27,7 +27,7 @@ export class ParticipationController {
         try {
             await deleteParticipation(id);
 
-            return res.status(204).send({ message: "Participation deleted successfully." });
+            return res.status(200).send({ message: "Participation deleted successfully." });
         } catch (error) {
             if (error instanceof AppError) {
                 return res.status(error.statusCode).json({
@@ -43,7 +43,7 @@ export class ParticipationController {
         try {
             await deleteParticipation(res.locals.participationId);
 
-            return res.status(204).send({ message: "Participation deleted successfully." });
+            return res.status(200).send({ message: "Participation deleted successfully." });
         } catch (error) {
             if (error instanceof AppError) {
                 return res.status(error.statusCode).json({
@@ -90,7 +90,7 @@ export class ParticipationController {
     }
 
     static async findParticipationByEvent(req: Request, res: Response) {
-        const id: number = parseInt(req.params.id.toString());
+        const id: number = parseInt(req.params.eventId.toString());
 
         try {
             const participations = await findParticipationByEvent(id);
@@ -165,7 +165,7 @@ export class ParticipationController {
     }
 
     static async confirmParticipation(req: Request, res: Response) {
-        const { id } = req.params
+        const { participationId: id } = req.params
 
         try {
             await confirmParticipation(Number(id), res.locals.user.id)
@@ -182,7 +182,7 @@ export class ParticipationController {
     }
 
     static async declineParticipation(req: Request, res: Response) {
-        const { id } = req.params
+        const { participationId: id } = req.params
 
         try {
             await declineParticipation(Number(id), res.locals.user.id)

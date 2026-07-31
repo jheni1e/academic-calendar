@@ -10,6 +10,7 @@ export interface CreateEventDTO {
     classId?: number;
     recurrenceId?: number;
     roomId?: number;
+    status?: EventStatus;
 
     startDate: Date;
     endDate: Date;
@@ -22,7 +23,7 @@ export interface UpdateEventDTO {
     title?: string;
     description?: string;
 
-    eventType?: EventType;
+    eventType: EventType;
 
     subjectInstructorId: number; // Cannot be undefined
     recurrenceId?: number;

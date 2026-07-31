@@ -11,7 +11,8 @@ export interface UpdateParticipationDTO {
 }
 
 export interface ParticipationResponseDTO {
-    participationId: number
+    participationId: number,
+    status: string,
     eventId: number
     eventName: string
     userId: number

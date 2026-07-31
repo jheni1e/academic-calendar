@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
 
-import { AppError } from "../../../shared/errors/AppError.ts";
 
 import { PrismaSubjectRoomRepository } from "../repositories/PrismaSubjectRoomRepository.ts";
 import { CreateSubjectRoomUseCase } from "../usecases/CreateSubjectRoomUseCase.ts";
@@ -10,6 +9,7 @@ import { GetSubjectRoomsByRoomUseCase } from "../usecases/GetSubjectRoomsByRoomU
 import { GetSubjectRoomsBySubjectUseCase } from "../usecases/GetSubjectRoomsBySubjectUseCase.ts";
 import { GetSubjectRoomsUseCase } from "../usecases/GetSubjectRoomsUseCase.ts";
 import { UpdateSubjectRoomUseCase } from "../usecases/UpdateSubjectRoomUseCase.ts";
+import { AppError } from "../shared/errors/AppError.ts";
 
 export class SubjectRoomController {
 
@@ -54,11 +54,9 @@ export class SubjectRoomController {
             await this.deleteUseCase.execute(
                 Number(req.params.id)
             );
-
-            return res.sendStatus(204);
+            return res.sendStatus(200);
 
         } catch (error) {
-
             if (error instanceof AppError) {
                 return res.status(error.statusCode).json({
                     message: error.message

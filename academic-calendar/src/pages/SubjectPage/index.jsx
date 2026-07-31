@@ -52,10 +52,16 @@ function Subject() {
     try {
       const data = await getData("/class/all");
 
-      const formatedClasses = data.map((d) => ({
-        value: d.class_id,
-        label: d.name
-      }));
+      const formatedClasses = [
+        {
+          value: 0,
+          label: "Todas"
+        },
+        ...data.map((d) => ({
+          value: d.class_id,
+          label: d.name
+        }))
+      ];
 
       setListMenu(formatedClasses);
     } catch (error) {
@@ -66,15 +72,15 @@ function Subject() {
   const loadSubjects = async () => {
     try {
       const data = await getData("/subject/all");
-  
+
       const subjectsWithClass = await Promise.all(
         data.map(async (subject) => {
           const classData = await getData(`/class/${subject.class_id}`);
-  
+
           const subjectInstructors = await getData(
             `/subject/instructors/${subject.subject_id}`
           );
-  
+
           return {
             ...subject,
             className: classData.name,
@@ -82,7 +88,7 @@ function Subject() {
           };
         })
       );
-  
+
       setSubjects(subjectsWithClass);
     } catch (error) {
       toastError(`Erro: ${error.message}`);
@@ -116,18 +122,19 @@ function Subject() {
           <div className="subjects-list">
             {subjects
               .filter(subject =>
-                selectedValue === "" || subject.class_id === Number(selectedValue)
+                Number(selectedValue) === 0 ||
+                subject.class_id === Number(selectedValue)
               )
               .map(subject => (
-                <div style={{"cursor": "pointer"}} onClick={() => navigate(`/materias/${subject.subject_id}`)}>
-                <ViewSubjectComponent
-                  key={subject.name}
-                  subjectName={subject.name}
-                  responsible={subject.instructors[0]?.instructor.name}
-                  workload={subject.workload}
-                  completedWorkload={subject.completed_workload}
-                  studentClass={subject.className}
-                />
+                <div style={{ "cursor": "pointer" }} onClick={() => navigate(`/materias/${subject.subject_id}`)}>
+                  <ViewSubjectComponent
+                    key={subject.name}
+                    subjectName={subject.name}
+                    responsible={subject.instructors[0]?.instructor.name}
+                    workload={subject.workload}
+                    completedWorkload={subject.completed_workload}
+                    studentClass={subject.className}
+                  />
                 </div>
               ))}
           </div>

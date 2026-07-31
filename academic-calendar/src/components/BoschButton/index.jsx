@@ -3,28 +3,40 @@ import './index.css';
 
 function BoschButton({ text, type, isPaginationButton, ...rest }, ref) { 
     const buttonClass = isPaginationButton ? 'paginationButton' : '';
+    const isCircle = text?.length === 1 ? 'circleButton' : '';
+
+    const classes = `${buttonClass} ${isCircle}`;
 
     return (
         <div className="container">
             {type === "primary" && 
-            <button className={`primaryButton ${buttonClass}`} {...rest} ref={ref}>
-                <span className="text">{text}</span>
-            </button>
+                <button className={`primaryButton ${classes}`} {...rest} ref={ref}>
+                    <span className="text">{text}</span>
+                </button>
             }
+
             {type === "secondary" && 
-            <button className={`secondaryButton ${buttonClass}`} {...rest} ref={ref}>
-                <span className="secondaryText">{text}</span>
-            </button>
+                <button className={`secondaryButton ${classes}`} {...rest} ref={ref}>
+                    <span className="secondaryText">{text}</span>
+                </button>
             }
+
             {type === "terciary" && 
-            <button className={`terciaryButton ${buttonClass}`} {...rest} ref={ref}>
-                <span className="secondaryText">{text}</span>
-            </button>
+                <button className={`terciaryButton ${classes}`} {...rest} ref={ref}>
+                    <span className="secondaryText">{text}</span>
+                </button>
             }
+
+            {type === "delete" && 
+                <button className={`deleteButton ${classes}`} {...rest} ref={ref}>
+                    <span className="deleteText">{text}</span>
+                </button>
+            }
+
             {type === "disabled" && 
-            <button className={`disabledButton ${buttonClass}`} {...rest} ref={ref} disabled={true}>
-                <span className="disabledText">{text}</span>
-            </button>
+                <button className={`disabledButton ${classes}`} {...rest} ref={ref} disabled={true}>
+                    <span className="disabledText">{text}</span>
+                </button>
             }
         </div>
     );

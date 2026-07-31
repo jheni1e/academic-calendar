@@ -19,6 +19,8 @@ function Home() {
   const [filterType, setFilterType] = useState("");
   const [selectedFilter, setSelectedFilter] = useState("");
 
+  const [updateHomePage, setUpdateHomePage] = useState(false)
+
   const filterOptions = [
     { value: "ALL", label: "Todos" },
     { value: "CLASS", label: "Turmas" },
@@ -50,7 +52,7 @@ function Home() {
     if (!userLoaded || !view) return;
 
     getUserEvents();
-  }, [userLoaded, view, filterType, selectedFilter]);
+  }, [userLoaded, view, filterType, selectedFilter, updateHomePage]);
 
   const filteredEvents = events.filter(event => {
     if (!showExternal && !showLesson) {
@@ -92,12 +94,17 @@ function Home() {
 
     setIsInstructor(instructor);
 
-    if (!classId) {
-      setUserLoaded(true);
-      return;
+    if (instructor) {
+      await loadSubjects(user.id, null, true);
     } else {
-      await loadSubjects(user.id, null, instructor);
+      if (classId) {
+        await loadSubjects(user.id, classId, false);
+      } else {
+        setSubjects([]);
+      }
     }
+
+    setUserLoaded(true);
 
     setUserLoaded(true);
   };
@@ -139,21 +146,21 @@ function Home() {
           case "CLASS":
             response = selectedFilter
               ? await getData(`/class/events/${selectedFilter}`)
-              : await getData("/event/all");
+              : await getData("/event/confirmed");
             break;
           case "PERSON":
             response = selectedFilter
               ? await getData(`/user/events/${selectedFilter}`)
-              : await getData("/event/all");
+              : await getData("/event/confirmed");
             break;
           case "ROOMS":
             response = selectedFilter
               ? await getData(`/room/events/${selectedFilter}`)
-              : await getData("/event/all");
+              : await getData("/event/confirmed");
             break;
           case "ALL":
           default:
-            response = await getData("/event/all");
+            response = await getData("/event/confirmed");
             break;
         }
       } else {
@@ -165,7 +172,7 @@ function Home() {
             return;
           }
 
-          let response = await getData(`/user/edv/${edv}`);
+          response = await getData(`/user/edv/${edv}`);
 
           const user = response.user;
           const userId = user.id;
@@ -182,13 +189,21 @@ function Home() {
             return;
           }
 
-          const classUser = await getData('/user/classes');
+          const classUser = await getData("/user/classes");
 
-          const classId = classUser[0].classId;
+          const classId =
+            Array.isArray(classUser) && classUser.length > 0
+              ? classUser[0].classId
+              : null;
 
-          let response = await getData(`/class/events/${classId}`);
+          if (!classId) {
+            setEvents([]);
+            return;
+          }
 
-          setEvents(response)
+          response = await getData(`/class/events/${classId}`);
+
+          setEvents(response);
         }
       }
 
@@ -216,15 +231,8 @@ function Home() {
         response = await getData(`/subject/class/${classId}/ongoing`);
       }
 
-      if (!response) {
-        setSubjects([]);
-        return;
-      }
-
-      const unfinishedSubjects = response
-        .filter(subject =>
-          subject.completed_workload < subject.workload
-        )
+      const unfinishedSubjects = (response ?? [])
+        .filter(subject => subject.completed_workload < subject.workload)
         .map(subject => ({
           name: subject.name,
           value: Math.round(
@@ -234,6 +242,11 @@ function Home() {
 
       setSubjects(unfinishedSubjects);
     } catch (error) {
+      if (error.status === 404 || error.response?.status === 404) {
+        setSubjects([]);
+        return;
+      }
+
       toastError(error.message);
     }
   };
@@ -267,7 +280,7 @@ function Home() {
           items={subjects} />
 
         <div className="content">
-          <MonthlyCalendar type={'calendar'} events={filteredEvents} refreshEvents={getUserEvents} />
+          <MonthlyCalendar type={'calendar'} events={filteredEvents.filter(e => e.status != "CANCELLED")} refreshEvents={getUserEvents} />
         </div>
       </div>
     </>

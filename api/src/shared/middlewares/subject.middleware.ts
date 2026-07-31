@@ -120,7 +120,7 @@ export const validateDelete = async (req: Request, res: Response, next: NextFunc
 
 export const validateUpdate = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const subjectId: number = parseInt(req.params.id.toString());
+        const subjectId: number = parseInt(req.params.subjectId.toString());
         const { classId, name, workload, startDate, endDate, isActive } = req.body;
 
         const subject = await prisma.subject.findFirst({
@@ -140,10 +140,13 @@ export const validateUpdate = async (req: Request, res: Response, next: NextFunc
         }
 
         const start = new Date(startDate ?? subject.start_date);
-        const end = new Date(endDate ?? subject.end_date);
 
-        if (start >= end) {
-            throw new Error("Start date must be scheduled before finish date.");
+        if(endDate != null) {
+            const end = new Date(endDate ?? subject.end_date);
+
+            if (start >= end) {
+                throw new Error("Start date must be scheduled before finish date.");
+            }
         }
 
         next();
