@@ -822,7 +822,12 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject, on
             
         } catch(e) {
             onClose()
-            toastError(e.message)
+            if (e.message ==="Event has already ended"){
+                toastError("O evento já terminou")
+            }
+            else{
+                toastError("Não foi possivel confirmar a aula")
+            }  
             
         }
     }
