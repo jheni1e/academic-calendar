@@ -149,10 +149,12 @@ export const validateBlockEvent = async (req: Request, res: Response, next: Next
     try {
         const { eventId } = req.params
 
-        if (Number.isNaN(eventId)) 
+        const id = Number(eventId);
+
+        if (Number.isNaN(id)) 
             throw new BadRequestError("Invalid event id");
         
-        const event = await findEventById(Number(eventId))
+        const event = await findEventById(id)
         
         if(!event)
             throw new NotFoundError("Event not found")
