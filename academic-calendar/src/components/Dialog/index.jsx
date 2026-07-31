@@ -820,9 +820,10 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject, on
             onClose()
             toastSuccess("Aula Confirmada")
             
-            
         } catch(e) {
-            toastError(e)
+            onClose()
+            toastError(e.message)
+            
         }
     }
     const typeEvents = [
