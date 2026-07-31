@@ -124,7 +124,7 @@ function Planning() {
                 await loadSubjects(response.user.id);
               }} />
           }
-          <MonthlyCalendar events={events.filter(e => e.status != "CANCELLED")} />
+          <MonthlyCalendar type="calendar" events={events.filter(e => e.status != "CANCELLED")} />
         </div>
       </div>
     </>
