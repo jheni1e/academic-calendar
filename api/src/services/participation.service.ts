@@ -12,7 +12,7 @@ export const createParticipation = async (
         data: {
             user_id: data.userId,
             event_id: data.eventId,
-            status: "CONFIRMED"
+            status: ParticipationStatus.CONFIRMED
         }
     });
 
