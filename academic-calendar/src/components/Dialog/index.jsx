@@ -502,7 +502,8 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject, on
                         name: className + " - " + newSubjectName,
                         workload: parseInt(newSubjectWorkload),
                         startDate: startDate,
-                        classId: selectedClass
+                        classId: selectedClass,
+                        completedWorkload: 0
                     }
 
                     const isInserted = await postData("/subject", newSubject);
