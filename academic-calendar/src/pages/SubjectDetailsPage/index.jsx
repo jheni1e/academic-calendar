@@ -68,8 +68,6 @@ function SubjectDetails() {
         try {
             const data = await getData(`/subject/events/${id}`);
 
-            console.log(data)
-
             setLessons(data);
         } catch (error) {
             toastError(`Erro: ${error.message}`)

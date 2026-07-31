@@ -8,7 +8,7 @@ import { deleteData, getData, postData, putData } from "../../utils/apiBack";
 import { toastError, toastSuccess, toastWarning } from '../../components/BoschToast';
 import CadeadoTrancado from "../../images/cadeado-trancado.png"
 
-function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject, onPlanningCreated}) {
+function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) {
     const dialogRef = useRef(null);
 
     const [responsible, setResponsible] = useState(null);
@@ -89,7 +89,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject, on
         }
     }, [isOpen, type, event?.event_type, event?.event_id]);
 
-    
+
     const getAllRooms = async () => {
         try {
             const rooms = await getData("/room/all");
@@ -662,7 +662,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject, on
                             eventId = isUpdated.event_id;
 
                             onClose();
-                            
+
                             setUpdatePage(!updatePage)
                             toastSuccess("Evento atualizado com sucesso!");
                             break;
@@ -679,11 +679,13 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject, on
                             user = await getData(`/user/edv/${edv}`);
                             userId = user.user.id;
 
+                            subjectInstructor = await getData(`/subject/${subject.subject_id}/instructor/${responsible}`)
+
                             payload = {
                                 title: eventName,
                                 eventType: eventType,
                                 startDate: startDate,
-                                subjectInstructorId: responsible,
+                                subjectInstructorId: subjectInstructor.subject_instructor_id,
                                 createdBy: userId,
                                 roomId: selectedRoom,
                                 startDate: startDate
@@ -703,7 +705,49 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject, on
                             toastSuccess("Aulas atualizadas com sucesso!");
                             break;
                         case 3:
-                            eventType = "EXAM";
+                            if (!eventName.trim()) {
+                                onClose();
+                                toastWarning("O título é obrigatório.");
+                                return;
+                            }
+
+                            if (!startDate || !endDate) {
+                                onClose();
+                                toastWarning("O horário de início e encerramento é obrigatório.");
+                                return;
+                            }
+
+                            eventType = "ASSESSMENT";
+
+                            edv = sessionStorage.getItem("user");
+                            user = await getData(`/user/edv/${edv}`);
+                            userId = user.user.id;
+
+                            subjectInstructor = await getData(`/subject/${subject.subject_id}/instructor/${responsible}`)
+
+                            payload = {
+                                title: eventName,
+                                eventType: eventType,
+                                startDate: startDate,
+                                endDate: endDate,
+                                createdBy: userId,
+                                roomId: selectedRoom,
+                                subjectInstructorId: subjectInstructor.subject_instructor_id
+                            };
+
+                            isUpdated = await putData(
+                                `/event/${event.event_id}`,
+                                payload
+                            );
+
+                            if (!isUpdated) {
+                                onClose();
+                                toastError("Falha ao atualizar avaliação.");
+                                return;
+                            }
+
+                            onClose();
+                            toastSuccess("Avaliação atualizada com sucesso!");
                             break;
                     }
                     break;
@@ -748,11 +792,12 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject, on
 
     const deleteEvent = async () => {
         try {
-            await putData(`/event/cancel/${event.event_id}`)
-            onClose()
-            toastSuccess(`Evento ${event.event_id} Deletado`)
-            setUpdatePage(!updatePage)
-        } catch(e) {
+            await putData(`/event/cancel/${event.event_id}`);
+
+            onClose();
+            toastSuccess('Evento deletado.');
+            setUpdatePage(!updatePage);
+        } catch (e) {
             toastError(e)
         }
 
@@ -790,57 +835,58 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject, on
 
     const setEvent = async () => {
         setType("edit-event");
-        console.log(event)
 
         if (event.eventType === "LESSON") {
             setTypeEvent(1);
         } else if (event.eventType === "EXTERNAL") {
             setTypeEvent(2);
-        } else if (event.eventType === "EXAM") {
+        } else if (event.eventType === "ASSESSMENT") {
             setTypeEvent(3);
         }
 
         setEventName(event.title);
         setStartDate(new Date(event.start_date));
         setEndDate(new Date(event.end_date));
-
     }
 
     const unblockEvent = async () => {
-        await putData(`/event/unblock/${event.event_id}`)
-        onClose()
-        toastSuccess("Evento Desbloqueado!")
+        await putData(`/event/unblock/${event.event_id}`);
+
+        onClose();
+        toastSuccess("Evento desbloqueado.");
     }
 
     const confirmLesson = async () => {
-        try{
-            console.log(event.event_id)
-            await putData(`/event/confirm/${event.event_id}`)
-            console.log(event.status)
+        try {
+            await putData(`/event/confirm/${event.event_id}`);
+
+            onClose();
+            toastSuccess("Aula confirmada.");
+
+        } catch (e) {
             onClose()
-            toastSuccess("Aula Confirmada")
-            
-        } catch(e) {
-            onClose()
-            if (e.message ==="Event has already ended"){
-                toastError("O evento já terminou")
+            if (e.message === "Event has already ended") {
+                toastError("O evento já terminou.");
             }
-            else{
-                toastError("Não foi possivel confirmar a aula")
-            }  
-            
+            else {
+                toastError("Não foi possivel confirmar a aula.");
+            }
+
         }
     }
+
     const typeEvents = [
         { value: 1, label: "Evento" },
         { value: 2, label: "Aula" },
         { value: 3, label: "Avaliação" },
         { value: 4, label: "Feedback" }
     ];
+
     const typeStatus = [
         { value: 1, label: "Bloqueado" },
         { value: 2, label: "Desbloqueado" }
     ];
+
     return (
         <dialog ref={dialogRef} className="customDialog">
             <div className="dialogHeader">
@@ -1123,10 +1169,6 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject, on
                                 <h4>Encerramento:</h4>
                                 <TextBox placeholder="XX/XX/XXXX XX:XX" type="datetime-local" value={formatDateTimeLocal(endDate)} onChange={(e) => setEndDate(new Date(e.target.value))} />
                             </div>
-                            <div style={{ display: "flex", flexDirection: "column", width: "500px" }}>
-                                <h4>Frequência:</h4>
-                                <FrequencySelector />
-                            </div>
                             <div className="dialogInput">
                                 <h4>Status Evento:</h4>
                                 <DropdownList options={typeStatus} selectedValue={typeStatusEvent} onChange={(e) => setTypeStatusEvent(Number(e.target.value))} />
@@ -1261,23 +1303,51 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject, on
                             </div>
                         </div>
                     }
+                    {event.event_type === "ASSESSMENT" &&
+                        <div className="dialogContent" style={{ borderRadius: "10px" }}>
+                            <div className="dialogInput">
+                                <h4>Início:</h4>
+                                <h4>
+                                    {new Date(event.start_date).toLocaleString("pt-BR", {
+                                        day: "2-digit",
+                                        month: "2-digit",
+                                        year: "numeric",
+                                        hour: "2-digit",
+                                        minute: "2-digit"
+                                    })}
+                                </h4>
+                            </div>
+                            <div className="dialogInput">
+                                <h4>Encerramento:</h4>
+                                <h4>
+                                    {new Date(event.end_date).toLocaleString("pt-BR", {
+                                        day: "2-digit",
+                                        month: "2-digit",
+                                        year: "numeric",
+                                        hour: "2-digit",
+                                        minute: "2-digit"
+                                    })}
+                                </h4>
+                            </div>
+                        </div>
+                    }
                     <div className="dialogButtons">
-                        { event.event_type === "LESSON" && event.status === "SCHEDULED" ? (
-                                <BoschButton text="Confirmar Aula" type="primary" onClick={() => confirmLesson()} />
-                            ) : (  
-                                <>
-                                    {!event.is_blocked && (
-                                        <>
-                                            <BoschButton text="Deletar" type="delete" onClick={() => deleteEvent()} />
-                                            <BoschButton text="Editar" type="primary" onClick={() => setEvent()} />
-                                        </>
-                                    )}
-                                    {event.is_blocked && (
-                                        <BoschButton text="Desbloquear" type="primary" onClick={() => unblockEvent()} />
-                                    )}
-                                </>
-                            )
-                            }
+                        {event.event_type === "LESSON" && event.status === "SCHEDULED" ? (
+                            <BoschButton text="Confirmar Aula" type="primary" onClick={() => confirmLesson()} />
+                        ) : (
+                            <>
+                                {!event.is_blocked && (
+                                    <>
+                                        <BoschButton text="Deletar" type="delete" onClick={() => deleteEvent()} />
+                                        <BoschButton text="Editar" type="primary" onClick={() => setEvent()} />
+                                    </>
+                                )}
+                                {event.is_blocked && (
+                                    <BoschButton text="Desbloquear" type="primary" onClick={() => unblockEvent()} />
+                                )}
+                            </>
+                        )
+                        }
 
                     </div>
                 </>
