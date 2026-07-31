@@ -8,14 +8,31 @@ export const createParticipation = async (
     data: CreateParticipationDTO
 ): Promise<Participation> => {
 
+    const event = await prisma.event.findUnique({
+        where: {
+            event_id: data.eventId
+        }
+    });
+
+    if (!event) {
+        throw new NotFoundError("Event not found.");
+    }
+
+    await validateConfirmedParticipantConflict(
+        data.userId,
+        event.start_date,
+        event.end_date,
+        event.event_id,
+        event.event_type
+    );
+
     return prisma.participation.create({
         data: {
             user_id: data.userId,
             event_id: data.eventId,
-            status: "CONFIRMED"
+            status: ParticipationStatus.CONFIRMED
         }
     });
-
 }
 
 export const updateParticipation = async (
@@ -216,7 +233,10 @@ const validateConfirmedParticipantConflict = async (
                 event_id: {
                     not: eventId
                 },
-                status: EventStatus.SCHEDULED,
+                in: [
+                    EventStatus.SCHEDULED,
+                    EventStatus.CONFIRMED
+                ],
                 start_date: {
                     lt: end
                 },
