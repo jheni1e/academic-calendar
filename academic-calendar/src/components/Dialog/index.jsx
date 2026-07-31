@@ -268,23 +268,31 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
 
                             eventId = isInserted.event_id;
 
-                            participants.forEach(async p => {
-                                let participantPayload = {
-                                    userId: p.value,
-                                    eventId: eventId
-                                };
+                            try {
+                                for (const p of participants) {
+                                    const participantPayload = {
+                                        userId: p.value,
+                                        eventId
+                                    };
 
-                                const participation = await postData("/event/participants", participantPayload);
-
-                                if (!participation) {
-                                    onClose();
-                                    toastError("Falha ao adicionar participantes.");
-                                    return;
+                                    await postData("/event/participants", participantPayload);
                                 }
-                            });
 
-                            onClose();
-                            toastSuccess("Evento criado com sucesso!");
+                                onClose();
+                                toastSuccess("Evento criado com sucesso!");
+                            } catch (error) {
+                                console.log("Entrou no catch", error);
+
+                                await deleteData(`/event/${eventId}`);
+
+                                if (error.message.includes("another confirmed event")) {
+                                    onClose();
+                                    toastError("Um dos participantes já possui outro evento nesse horário.");
+                                } else {
+                                    onClose();
+                                    toastError(error.message);
+                                }
+                            }
                             break;
                         case 2:
                             if (!eventName.trim()) {
@@ -441,24 +449,31 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
 
                             eventId = isInserted.event_id;
 
+                            try {
+                                for (const p of participants) {
+                                    const participantPayload = {
+                                        userId: p.value,
+                                        eventId
+                                    };
 
-                            participants.forEach(async p => {
-                                let participantPayload = {
-                                    userId: p.value,
-                                    eventId: eventId
-                                };
-
-                                const participation = await postData("/event/participants", participantPayload);
-
-                                if (!participation) {
-                                    onClose();
-                                    toastError("Falha ao adicionar participantes.");
-                                    return;
+                                    await postData("/event/participants", participantPayload);
                                 }
-                            });
 
-                            onClose();
-                            toastSuccess("Feedback criado com sucesso!");
+                                onClose();
+                                toastSuccess("Feedback criado com sucesso!");
+                            } catch (error) {
+                                console.log("Entrou no catch", error);
+                                
+                                await deleteData(`/event/${eventId}`);
+
+                                if (error.message.includes("another confirmed event")) {
+                                    onClose();
+                                    toastError("Um dos participantes já possui outro evento nesse horário.");
+                                } else {
+                                    onClose();
+                                    toastError(error.message);
+                                }
+                            }
                             break;
                     }
                     break;
