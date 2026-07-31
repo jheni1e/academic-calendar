@@ -55,6 +55,10 @@ function MonthlyCalendar({ initialDate, compact = false, type, events = [], refr
 
   const handleClose = async () => {
     setIsModalOpen(false);
+
+    if (refreshEvents) {
+      await refreshEvents();
+    }
   };
 
   const startOfWeek = (date) => {
