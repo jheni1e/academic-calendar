@@ -167,7 +167,7 @@ async function main() {
             {
                 class_id: man25.class_id,
                 name: "MAN25 - Power BI",
-                workload: 34,
+                workload: 36,
                 start_date: new Date("2026-08-10T00:00:00Z"),
                 completed_workload: 0,
                 scheduled_workload: 0
