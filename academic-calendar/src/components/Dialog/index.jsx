@@ -59,6 +59,13 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
     }, [isOpen]);
 
     useEffect(() => {
+        if (subject?.class_id) {
+            setSelectedClass(subject.class_id);
+            setSelectedSubject(subject.subject_id)
+        }
+    }, [subject]);
+
+    useEffect(() => {
         const dialog = dialogRef.current;
         if (!dialog) return;
 
@@ -122,11 +129,13 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
             setAllClasses(formatedClasses);
 
             if (formatedClasses.length > 0) {
-                setSelectedClass(formatedClasses[0].value);
+                setSelectedClass(
+                    subject?.class_id ?? formatedClasses[0].value
+                );
             }
         } catch (error) {
             onClose();
-            toastError(`Erro: ${error.message}`)
+            toastError(`Erro: ${error.message}`);
         }
     };
 
@@ -968,10 +977,6 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                         <div className="itemSelector">
                             <DropdownList options={allRooms} selectedValue={selectedRoom} onChange={(e) => setSelectedRoom(Number(e.target.value))} />
                         </div>
-                    </div>
-                    <div className="dialogInput">
-                        <h4>Turma:</h4>
-                        <DropdownList options={allClasses} selectedValue={selectedClass} onChange={(e) => setSelectedClass(Number(e.target.value))} />
                     </div>
                 </div>
             }

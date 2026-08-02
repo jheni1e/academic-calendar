@@ -54,22 +54,20 @@ function Planning() {
   const loadSubjects = async (userId) => {
     try {
       const response = await getData(`/subject/instructor/${userId}/ongoing`);
-  
+
       const unfinishedSubjects = response
-        .filter(subject =>
-          subject.completed_workload < subject.workload
-        )
-        .map(subject => ({
+        .filter((subject) => subject.completed_workload < subject.workload)
+        .map((subject) => ({
           subject_id: subject.subject_id,
+          class_id: subject.class_id,
           name: subject.name,
           workload: subject.workload,
           value: Math.round(
-            (subject.completed_workload / subject.workload) * 100
-          )
+            (subject.completed_workload / subject.workload) * 100,
+          ),
         }));
-  
+
       setSubjects(unfinishedSubjects);
-  
     } catch (error) {
       console.error(error);
     }
@@ -89,13 +87,13 @@ function Planning() {
   };
 
   const changeModal = () => {
-    setIsModalOpen(!isModalOpen)
-  }
+    setIsModalOpen(!isModalOpen);
+  };
 
   const handleSubjectClick = (item) => {
-    changeModal()
-    setSujectSelected(item)
-  }
+    changeModal();
+    setSujectSelected(item);
+  };
 
   return (
     <>
@@ -111,15 +109,19 @@ function Planning() {
           onItemClick={(item) => handleSubjectClick(item)}
         />
         <div className="content">
-          {isModalOpen &&
+          {isModalOpen && (
             <Dialog
-              type={'planning'}
+              type={"planning"}
               isOpen={isModalOpen}
               onClose={changeModal}
               title={`Planejamento ${subjectSelected.name}`}
-              subject={subjectSelected} />
-          }
-          <MonthlyCalendar type="calendar" events={events.filter(e => e.status != "CANCELLED")} />
+              subject={subjectSelected}
+            />
+          )}
+          <MonthlyCalendar
+            type="calendar"
+            events={events.filter((e) => e.status != "CANCELLED")}
+          />
         </div>
       </div>
     </>
