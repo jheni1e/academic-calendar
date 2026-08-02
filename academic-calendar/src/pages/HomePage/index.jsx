@@ -232,7 +232,7 @@ function Home() {
       }
 
       const unfinishedSubjects = (response ?? [])
-        .filter(subject => subject.completed_workload < subject.workload)
+        .filter(subject => subject.scheduled_workload  < subject.workload)
         .map(subject => ({
           name: subject.name,
           value: Math.round(

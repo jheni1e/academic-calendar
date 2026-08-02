@@ -56,7 +56,7 @@ function Planning() {
       const response = await getData(`/subject/instructor/${userId}/ongoing`);
 
       const unfinishedSubjects = response
-        .filter((subject) => subject.completed_workload < subject.workload)
+        .filter((subject) => subject.scheduled_workload  < subject.workload)
         .map((subject) => ({
           subject_id: subject.subject_id,
           class_id: subject.class_id,
