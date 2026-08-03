@@ -35,16 +35,45 @@
 }
 
 .divUser {
+    position: relative;
+    display: flex;
+    align-items: center;
+    margin-right: 2.5vw;
+}
+
+.divUserInfo {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    margin-right: 2.5vw;
     cursor: pointer;
 }
 
+.userMenu {
+    position: absolute;
+    top: 110%;
+    right: 0;
+    width: 160px;
+    background: #fff;
+    border: 1px solid #ddd;
+    box-shadow: 0 4px 12px rgba(0,0,0,.15);
+    z-index: 1000;
+    overflow: hidden;
+}
+
+.userMenuItem {
+    padding: 12px 16px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.userMenuItem:hover {
+    background: #f5f5f5;
+    color: #d50000;
+}
+
 .userIcon {
-    width: 2rem;
-    height: 2rem;
+    width: 1.8rem;
+    height: 1.8rem;
     background-size: contain;
     background-image: url('../../images/UserIcon.png');
     background-position: center;
