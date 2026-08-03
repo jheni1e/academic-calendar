@@ -6,13 +6,32 @@ import { createEvent, deleteEvent, updateEvent, blockEvent, unblockEvent, confir
 import { NotFoundError } from "../shared/errors/NotFoundError.ts";
 import { BadRequestError } from "../shared/errors/BadRequestError.ts";
 import { findAllEvents, findConfirmedEvents, findEventById, findEventsByClass, findEventsByRoom, findEventsBySubject, findEventsByUser } from "../services/event/event.query.service.ts";
+import { createParticipation } from "../services/participation.service.ts";
+import { prisma } from "../lib/prisma.ts";
 
 export class EventController {
     static async create(req: Request, res: Response) {
         const data: CreateEventDTO = req.body;
         try {
             const event = await createEvent(data);
+            if (data.subjectInstructorId) {
+                const assignment = await prisma.subjectInstructor.findUnique({
+                    where: {
+                        subject_instructor_id: data.subjectInstructorId
+                    },
+                    select: {
+                        instructor_id: true
+                    }
+                });
 
+                if (assignment) {
+
+                    await createParticipation({
+                        userId: assignment.instructor_id,
+                        eventId: event.event_id
+                    });
+                }
+            }
             return res.status(201).json(event);
         } catch (error) {
 

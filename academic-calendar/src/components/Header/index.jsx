@@ -1,4 +1,4 @@
-import React, { forwardRef, useEffect, useState } from "react";
+import React, { forwardRef, useEffect, useState, useRef } from "react";
 import HeaderOption from "../HeaderOption";
 import "./index.css";
 import { getData } from "../../utils/apiBack";
@@ -8,11 +8,27 @@ import { useNavigate } from "react-router-dom";
 function Header() {
   const [userName, setUserName] = useState("");
   const [isInstructor, setIsInstructor] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef(null);
 
   const navigate = useNavigate();
 
   useEffect(() => {
     initUserInfo();
+  }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setMenuOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
   }, []);
 
   const initUserInfo = async () => {
@@ -45,9 +61,25 @@ function Header() {
           </>)}
         </div>
 
-        <div className="divUser" onClick={handleLogout}>
-          <div className="userIcon" />
-          <span className="txtUserName">{userName}</span>
+        <div className="divUser" ref={menuRef}>
+          <div
+            className="divUserInfo"
+            onClick={() => setMenuOpen(!menuOpen)}
+          >
+            <div className="userIcon" />
+            <span className="txtUserName">{userName}</span>
+          </div>
+
+          {menuOpen && (
+            <div className="userMenu">
+              <div
+                className="userMenuItem"
+                onClick={handleLogout}
+              >
+                Logout
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

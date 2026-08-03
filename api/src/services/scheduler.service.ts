@@ -6,6 +6,7 @@ import { NotFoundError } from "../shared/errors/NotFoundError.ts";
 import { createEvent, LoadedAssignment } from "./event/event.service.ts";
 import { createRecurrence } from "./Recurrence.service.ts";
 import { Event } from "../generated/prisma/client.ts";
+import { createParticipation } from "./participation.service.ts";
 
 const LESSON_DURATION = 4;
 
@@ -248,6 +249,11 @@ export const scheduleLessonSeries = async (
                 startDate,
                 endDate
             );
+
+            await createParticipation({
+                userId: assignment.instructor_id,
+                eventId: event.event_id
+            });
             
             eventIds.push(event.event_id);
 
