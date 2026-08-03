@@ -13,6 +13,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
 
     const [responsible, setResponsible] = useState(null);
     const [allInstructors, setAllInstructors] = useState([]);
+    const [subjectInstructors, setSubjectInstructors] = useState([]);
     const [allPeople, setAllPeople] = useState([]);
 
     const [studentClass, setStudentClass] = useState(null)
@@ -102,6 +103,17 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
         }
     }, [isOpen, type, event?.event_type, event?.event_id]);
 
+    useEffect(() => {
+        if (selectedSubject) {
+            getSubjectInstructors(selectedSubject);
+        }
+    }, [selectedSubject]);
+
+    useEffect(() => {
+        if (type === "planning" && subject?.subject_id) {
+            getSubjectInstructors(subject.subject_id);
+        }
+    }, [type, subject]);
 
     const getAllRooms = async () => {
         try {
@@ -207,6 +219,30 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
             toastError(`Erro: ${error.message}`);
         }
     }
+
+    const getSubjectInstructors = async (subjectId) => {
+        if (!subjectId) return;
+
+        try {
+            const data = await getData(`/subject/instructors/${subjectId}`);
+
+            const instructors = data.map(item => ({
+                value: item.instructor.id,
+                label: item.instructor.name
+            }));
+
+            setSubjectInstructors(instructors);
+
+            if (instructors.length > 0) {
+                setResponsible(instructors[0].value);
+            } else {
+                setResponsible(null);
+            }
+
+        } catch (error) {
+            toastError(error.message);
+        }
+    };
 
     const getParticipants = async () => {
         try {
@@ -482,7 +518,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                                 toastSuccess("Feedback criado com sucesso!");
                             } catch (error) {
                                 console.log("Entrou no catch", error);
-                                
+
                                 await deleteData(`/event/${eventId}`);
 
                                 if (error.message.includes("another confirmed event")) {
@@ -981,7 +1017,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                     <div className="dialogInput">
                         <h4>Professor:</h4>
                         <div className="itemSelector">
-                            <DropdownList options={allInstructors} selectedValue={responsible} onChange={(e) => setResponsible(Number(e.target.value))} />
+                            <DropdownList options={subjectInstructors} selectedValue={responsible} onChange={(e) => setResponsible(Number(e.target.value))} />
                         </div>
                     </div>
                     <div style={{ display: "flex", flexDirection: "column" }}>
@@ -1079,7 +1115,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                             </div>
                             <div className="dialogInput">
                                 <h4>Professor:</h4>
-                                <DropdownList options={allInstructors} selectedValue={responsible} onChange={(e) => setResponsible(e.target.value)} />
+                                <DropdownList options={subjectInstructors} selectedValue={responsible} onChange={(e) => setResponsible(Number(e.target.value))} />
                             </div>
                             <div className="dialogInput">
                                 <h4>Sala:</h4>
@@ -1107,7 +1143,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                             </div>
                             <div className="dialogInput">
                                 <h4>Professor:</h4>
-                                <DropdownList options={allInstructors} selectedValue={responsible} onChange={(e) => setResponsible(e.target.value)} />
+                                <DropdownList options={subjectInstructors} selectedValue={responsible} onChange={(e) => setResponsible(Number(e.target.value))} />
                             </div>
                             <div className="dialogInput">
                                 <h4>Sala:</h4>
