@@ -533,6 +533,66 @@ async function main() {
         start: new Date("2026-08-12T08:00:00Z"),
         end: new Date("2026-08-12T10:00:00Z")
     });
+
+    // ======================================
+    // Ajusta cargas horárias já concluídas
+    // ======================================
+
+    await prisma.subject.update({
+        where: { subject_id: 1 }, // MEC25 - Internet of Things
+        data: {
+            completed_workload: 40
+        }
+    });
+
+    await prisma.subject.update({
+        where: { subject_id: 2 }, // MEC25 - Eletrônica
+        data: {
+            completed_workload: 12
+        }
+    });
+
+    await prisma.subject.update({
+        where: { subject_id: 3 }, // MEC25 - Desenho Técnico
+        data: {
+            completed_workload: 18
+        }
+    });
+
+    await prisma.subject.update({
+        where: { subject_id: 7 }, // MAN25 - Eletrônica
+        data: {
+            completed_workload: 10
+        }
+    });
+
+    await prisma.subject.update({
+        where: { subject_id: 11 }, // ADD2 - Python
+        data: {
+            completed_workload: 24
+        }
+    });
+
+    await prisma.subject.update({
+        where: { subject_id: 14 }, // ADD2 - Power BI
+        data: {
+            completed_workload: 8
+        }
+    });
+
+    await prisma.subject.update({
+        where: { subject_id: 16 }, // DTA2 - Python
+        data: {
+            completed_workload: 36
+        }
+    });
+
+    await prisma.subject.update({
+        where: { subject_id: 17 }, // DTA2 - Angular
+        data: {
+            completed_workload: 12
+        }
+    });
 }
 
 main()
