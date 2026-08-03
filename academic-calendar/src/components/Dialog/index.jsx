@@ -190,7 +190,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
 
                     return {
                         value: subject.subject_id,
-                        label: `${subject.name} - ${classCache[subject.class_id].name}`
+                        label: `${subject.name}`
                     };
                 })
             );
