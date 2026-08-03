@@ -190,7 +190,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
 
                     return {
                         value: subject.subject_id,
-                        label: `${subject.name} - ${classCache[subject.class_id].name}`
+                        label: `${subject.name}`
                     };
                 })
             );
@@ -819,13 +819,18 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
             await putData(`/event/cancel/${event.event_id}`);
 
             onClose();
-            toastSuccess('Evento deletado.');
+            toastSuccess("Evento deletado.");
             setUpdatePage(!updatePage);
-        } catch (e) {
-            toastError(e)
-        }
 
-    }
+        } catch (e) {
+            if (e.response?.status === 401) {
+                onClose();
+                toastError("Você não tem permissão para deletar esse evento");
+            } else {
+                toastError("Erro ao deletar o evento.");
+            }
+        }
+    };
     const addParticipant = () => {
         if (!selectedParticipant) return;
 
@@ -1354,7 +1359,10 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                     }
                     <div className="dialogButtons">
                         {event.event_type === "LESSON" && event.status === "SCHEDULED" ? (
-                            <BoschButton text="Confirmar Aula" type="primary" onClick={() => confirmLesson()} />
+                            <>
+                                <BoschButton text="Deletar" type="delete" onClick={() => deleteEvent()} />
+                                <BoschButton text="Confirmar Aula" type="primary" onClick={() => confirmLesson()} />
+                            </>
                         ) : (
                             <>
                                 {!event.is_blocked && (
