@@ -374,38 +374,38 @@ async function main() {
             // ==========================
             // MEC25
             // ==========================
-            { subject_id: 1, instructor_id: 5 },  // MEC25 - Internet of Things -> Patrick
-            { subject_id: 2, instructor_id: 5 },  // MEC25 - Eletrônica -> Patrick
-            { subject_id: 3, instructor_id: 6 },  // MEC25 - Desenho Técnico -> Gabriel
+            { subject_id: 1, instructor_id: 8 },  // MEC25 - Internet of Things -> Patrick
+            { subject_id: 2, instructor_id: 8 },  // MEC25 - Eletrônica -> Patrick
+            { subject_id: 3, instructor_id: 9 },  // MEC25 - Desenho Técnico -> Gabriel
             { subject_id: 4, instructor_id: 10 }, // MEC25 - Trigonometria -> Lucas
-            { subject_id: 5, instructor_id: 4 },  // MEC25 - Inglês -> Queila
+            { subject_id: 5, instructor_id: 7 },  // MEC25 - Inglês -> Queila
     
             // ==========================
             // MAN25
             // ==========================
-            { subject_id: 6, instructor_id: 5 },  // MAN25 - Internet of Things -> Patrick
-            { subject_id: 7, instructor_id: 5 },  // MAN25 - Eletrônica -> Patrick
-            { subject_id: 8, instructor_id: 6 },  // MAN25 - Desenho Técnico -> Gabriel
-            { subject_id: 9, instructor_id: 10 }, // MAN25 - Trigonometria -> Lucas
-            { subject_id: 10, instructor_id: 4 }, // MAN25 - Inglês -> Queila
+            { subject_id: 6, instructor_id: 8 },  // Internet of Things
+            { subject_id: 7, instructor_id: 8 },  // Eletrônica
+            { subject_id: 8, instructor_id: 9 },  // Desenho Técnico
+            { subject_id: 9, instructor_id: 10 }, // Trigonometria
+            { subject_id: 10, instructor_id: 7 }, // Inglês
     
             // ==========================
             // ADD2
             // ==========================
-            { subject_id: 11, instructor_id: 4 },  // ADD2 - Python -> Queila
-            { subject_id: 12, instructor_id: 11 }, // ADD2 - Angular -> Nycollas
-            { subject_id: 13, instructor_id: 11 }, // ADD2 - C# -> Nycollas
-            { subject_id: 14, instructor_id: 4 },  // ADD2 - Power BI -> Queila
-            { subject_id: 15, instructor_id: 4 },  // ADD2 - Inglês -> Queila
+            { subject_id: 11, instructor_id: 7 },  // Python
+            { subject_id: 12, instructor_id: 11 }, // Angular
+            { subject_id: 13, instructor_id: 11 }, // C#
+            { subject_id: 14, instructor_id: 7 },  // Power BI
+            { subject_id: 15, instructor_id: 7 },  // Inglês
     
             // ==========================
             // DTA2
             // ==========================
-            { subject_id: 16, instructor_id: 4 },  // DTA2 - Python -> Queila
-            { subject_id: 17, instructor_id: 11 }, // DTA2 - Angular -> Nycollas
-            { subject_id: 18, instructor_id: 11 }, // DTA2 - C# -> Nycollas
-            { subject_id: 19, instructor_id: 4 },  // DTA2 - Power BI -> Queila
-            { subject_id: 20, instructor_id: 4 },  // DTA2 - Inglês -> Queila
+            { subject_id: 16, instructor_id: 7 },  // Python
+            { subject_id: 17, instructor_id: 11 }, // Angular
+            { subject_id: 18, instructor_id: 11 }, // C#
+            { subject_id: 19, instructor_id: 7 },  // Power BI
+            { subject_id: 20, instructor_id: 7 },  // Inglês
         ],
         skipDuplicates: true
     });
