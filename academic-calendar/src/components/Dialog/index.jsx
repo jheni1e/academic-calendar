@@ -46,6 +46,8 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
         event?.is_blocked === true ? 1 : 2);
 
     const [updatePage, setUpdatePage] = useState(false)
+    const [description, setDescription] = useState(
+        event !== null ? event.description : "");
 
     useEffect(() => {
         const dialog = dialogRef.current;
@@ -57,6 +59,10 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
             dialog.close();
         }
     }, [isOpen]);
+
+    useEffect(() => {
+        setDescription(event?.description ?? "");
+    }, [event]);
 
     useEffect(() => {
         if (subject?.class_id) {
@@ -260,6 +266,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                             }
 
                             payload = {
+                                description:  description,
                                 title: eventName,
                                 eventType: eventType,
                                 startDate: startDate,
@@ -337,6 +344,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                             }
 
                             payload = {
+                                description:  description,
                                 title: eventName,
                                 eventType: eventType,
                                 startDate: startDate,
@@ -393,6 +401,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                             }
 
                             payload = {
+                                description:  description,
                                 title: eventName,
                                 eventType: eventType,
                                 startDate: startDate,
@@ -441,6 +450,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                             }
 
                             payload = {
+                                description:  description,
                                 title: eventName,
                                 eventType: eventType,
                                 startDate: startDate,
@@ -597,6 +607,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                     subjectInstructor = await getData(`/subject/${subject.subject_id}/instructor/${responsible}`)
 
                     payload = {
+                        description:  description,
                         title: subject.name,
                         startDate: startDate,
                         startHour: startTime,
@@ -662,6 +673,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                             userId = user.user.id;
 
                             payload = {
+                                description:  description,
                                 title: eventName,
                                 eventType: eventType,
                                 startDate: startDate,
@@ -706,6 +718,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                             subjectInstructor = await getData(`/subject/${subject.subject_id}/instructor/${responsible}`)
 
                             payload = {
+                                description:  description,
                                 title: eventName,
                                 eventType: eventType,
                                 startDate: startDate,
@@ -750,6 +763,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                             subjectInstructor = await getData(`/subject/${subject.subject_id}/instructor/${responsible}`)
 
                             payload = {
+                                description:  description,
                                 title: eventName,
                                 eventType: eventType,
                                 startDate: startDate,
@@ -1047,6 +1061,10 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                                 <h4>Encerramento:</h4>
                                 <TextBox placeholder="XX/XX/XXXX XX:XX" type="datetime-local" value={formatDateTimeLocal(endDate)} onChange={(e) => setEndDate(new Date(e.target.value))} />
                             </div>
+                            <div className="dialogInput">
+                                <h4>Descrição:</h4>
+                                <TextBox placeholder="decrição" type="text-area" value={description} onChange={(e) => setDescription(e.target.value)} />
+                            </div>
                         </>
                     }
                     {typeEvent === 2 &&
@@ -1071,6 +1089,10 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                                 <h4>Matéria:</h4>
                                 <DropdownList options={allSubjects} selectedValue={selectedSubject} onChange={(e) => setSelectedSubject(Number(e.target.value))} />
                             </div>
+                            <div className="dialogInput">
+                                <h4>Descrição:</h4>
+                                <TextBox placeholder="decrição" type="text-area" value={description} onChange={(e) => setDescription(e.target.value)} />
+                            </div>
                         </>
                     }
                     {typeEvent === 3 &&
@@ -1094,6 +1116,10 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                             <div className="dialogInput">
                                 <h4>Matéria:</h4>
                                 <DropdownList options={allSubjects} selectedValue={selectedSubject} onChange={(e) => setSelectedSubject(Number(e.target.value))} />
+                            </div>
+                            <div className="dialogInput">
+                                <h4>Descrição:</h4>
+                                <TextBox placeholder="decrição" type="text-area" value={description} onChange={(e) => setDescription(e.target.value)} />
                             </div>
                         </>
                     }
@@ -1122,6 +1148,10 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                             <div className="dialogInput">
                                 <h4>Encerramento:</h4>
                                 <TextBox placeholder="XX/XX/XXXX XX:XX" type="datetime-local" value={formatDateTimeLocal(endDate)} onChange={(e) => setEndDate(new Date(e.target.value))} />
+                            </div>
+                            <div className="dialogInput">
+                                <h4>Descrição:</h4>
+                                <TextBox placeholder="decrição" type="text-area" value={description} onChange={(e) => setDescription(e.target.value)} />
                             </div>
                         </>
                     }
@@ -1193,6 +1223,10 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                                 <h4>Status Evento:</h4>
                                 <DropdownList options={typeStatus} selectedValue={typeStatusEvent} onChange={(e) => setTypeStatusEvent(Number(e.target.value))} />
                             </div>
+                            <div className="dialogInput">
+                                <h4>Descrição:</h4>
+                                <TextBox placeholder="decrição" type="text-area" value={description} onChange={(e) => setDescription(e.target.value)} />
+                            </div>
                         </>
                     }
                     {typeEvent === 2 &&
@@ -1216,6 +1250,10 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                             <div className="dialogInput">
                                 <h4>Status Evento:</h4>
                                 <DropdownList options={typeStatus} selectedValue={typeStatusEvent} onChange={(e) => setTypeStatusEvent(Number(e.target.value))} />
+                            </div>
+                            <div className="dialogInput">
+                                <h4>Descrição:</h4>
+                                <TextBox placeholder="decrição" type="text-area" value={description} onChange={(e) => setDescription(e.target.value)} />
                             </div>
                         </>
                     }
@@ -1244,6 +1282,10 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                             <div className="dialogInput">
                                 <h4>Status Evento:</h4>
                                 <DropdownList options={typeStatus} selectedValue={typeStatusEvent} onChange={(e) => setTypeStatusEvent(Number(e.target.value))} />
+                            </div>
+                            <div className="dialogInput">
+                                <h4>Descrição:</h4>
+                                <TextBox placeholder="decrição" type="text-area" value={description} onChange={(e) => setDescription(e.target.value)} />
                             </div>
                         </>
                     }
@@ -1287,7 +1329,8 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                             </div>
                             <div className="dialogInput">
                                 <h4>Descrição:</h4>
-                            </div>
+                                <h4>{event.description}</h4>
+                            </div> 
                         </div>
                     }
                     {event.event_type === "EXTERNAL" &&
@@ -1311,16 +1354,9 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                                 </div>
                             </div>
                             <div className="dialogInput">
-                                <h4>Salas:</h4>
-                                <div className="participantsList">
-                                    <div className="listItem">
-                                        <span className="itemName" style={{ justifyContent: "center" }}>{event.reservation.room.title}</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="dialogInput">
                                 <h4>Descrição:</h4>
-                            </div>
+                                <h4>{description}</h4>
+                            </div> 
                         </div>
                     }
                     {event.event_type === "FEEDBACK" &&
@@ -1353,7 +1389,8 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                             </div>
                             <div className="dialogInput">
                                 <h4>Descrição:</h4>
-                            </div>
+                                <h4>{description}</h4>
+                            </div> 
                         </div>
                     }
                     {event.event_type === "ASSESSMENT" &&
@@ -1392,7 +1429,8 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                             </div>
                             <div className="dialogInput">
                                 <h4>Descrição:</h4>
-                            </div>  
+                                <h4>{description}</h4>
+                            </div> 
                         </div>
                     }
                     <div className="dialogButtons">
