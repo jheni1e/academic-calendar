@@ -83,19 +83,19 @@ export const validateDelete = async (req: Request, res: Response, next: NextFunc
             throw new NotFoundError("Event not found");
         }
 
-        console.log(res.locals.user.id)
+        console.log(res.locals.user.role)
         console.log(event.created_by)
-        if(event.created_by !== res.locals.user.id)
+        if(res.locals.user.role != "ADMIN" && event.created_by !== res.locals.user.id)
             throw new UnauthorizedError("Access denied")
 
         if(event.is_blocked)
             throw new BadRequestError("Cannot delete a blocked event")
 
-        const reservation = await findReservationByEvent(eventId)
+        // const reservation = await findReservationByEvent(eventId)
 
-        if (reservation) {
-            throw new ForbiddenError("Cannot delete an event with a reservation.");
-        }
+        // if (reservation) {
+        //     throw new ForbiddenError("Cannot delete an event with a reservation.");
+        // }
 
         console.log("validateDelete passou");
         next();

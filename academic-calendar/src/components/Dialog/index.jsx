@@ -855,13 +855,18 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
             await putData(`/event/cancel/${event.event_id}`);
 
             onClose();
-            toastSuccess('Evento deletado.');
+            toastSuccess("Evento deletado.");
             setUpdatePage(!updatePage);
-        } catch (e) {
-            toastError(e)
-        }
 
-    }
+        } catch (e) {
+            if (e.response?.status === 401) {
+                onClose();
+                toastError("Você não tem permissão para deletar esse evento");
+            } else {
+                toastError("Erro ao deletar o evento.");
+            }
+        }
+    };
     const addParticipant = () => {
         if (!selectedParticipant) return;
 
@@ -1007,12 +1012,6 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                             value={selectedDays}
                             onChange={(value) => setSelectedDays(value)}
                         />
-                    </div>
-                    <div className="dialogInput">
-                        <h4>Sala:</h4>
-                        <div className="itemSelector">
-                            <DropdownList options={allRooms} selectedValue={selectedRoom} onChange={(e) => setSelectedRoom(Number(e.target.value))} />
-                        </div>
                     </div>
                 </div>
             }
@@ -1314,6 +1313,17 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                                     </div>
                                 </div>
                             </div>
+                            <div className="dialogInput">
+                                <h4>Salas:</h4>
+                                <div className="participantsList">
+                                    <div className="listItem">
+                                        <span className="itemName" style={{ justifyContent: "center" }}>{event.reservation.room.title}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="dialogInput">
+                                <h4>Descrição:</h4>
+                            </div>
                         </div>
                     }
                     {event.event_type === "EXTERNAL" &&
@@ -1336,6 +1346,17 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                                     ))}
                                 </div>
                             </div>
+                            <div className="dialogInput">
+                                <h4>Salas:</h4>
+                                <div className="participantsList">
+                                    <div className="listItem">
+                                        <span className="itemName" style={{ justifyContent: "center" }}>{event.reservation.room.title}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="dialogInput">
+                                <h4>Descrição:</h4>
+                            </div>
                         </div>
                     }
                     {event.event_type === "FEEDBACK" &&
@@ -1357,6 +1378,17 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                                         </div>
                                     ))}
                                 </div>
+                            </div>
+                            <div className="dialogInput">
+                                <h4>Salas:</h4>
+                                <div className="participantsList">
+                                    <div className="listItem">
+                                        <span className="itemName" style={{ justifyContent: "center" }}>{event.reservation.room.title}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="dialogInput">
+                                <h4>Descrição:</h4>
                             </div>
                         </div>
                     }
@@ -1386,11 +1418,25 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                                     })}
                                 </h4>
                             </div>
+                            <div className="dialogInput">
+                                <h4>Salas:</h4>
+                                <div className="participantsList">
+                                    <div className="listItem">
+                                        <span className="itemName" style={{ justifyContent: "center" }}>{event.reservation.room.title}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="dialogInput">
+                                <h4>Descrição:</h4>
+                            </div>  
                         </div>
                     }
                     <div className="dialogButtons">
                         {event.event_type === "LESSON" && event.status === "SCHEDULED" ? (
-                            <BoschButton text="Confirmar Aula" type="primary" onClick={() => confirmLesson()} />
+                            <>
+                                <BoschButton text="Deletar" type="delete" onClick={() => deleteEvent()} />
+                                <BoschButton text="Confirmar Aula" type="primary" onClick={() => confirmLesson()} />
+                            </>
                         ) : (
                             <>
                                 {!event.is_blocked && (

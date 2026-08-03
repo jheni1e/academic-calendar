@@ -245,6 +245,14 @@ export const deleteEvent = async (
             }
         });
 
+        const reservations = await tx.reservation.findMany({
+            where: {
+                event_id: eventId
+            }
+        });
+
+        console.log("Reservations found:", reservations);
+
         await tx.reservation.deleteMany({
             where: {
                 event_id: eventId
