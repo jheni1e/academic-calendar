@@ -1309,7 +1309,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                                 <h4>Instrutor:</h4>
                                 <div className="participantsList">
                                     <div className="listItem">
-                                        <span className="itemName" style={{ justifyContent: "center" }}>{event.subject_instructor.instructor.name}</span>
+                                        <span className="itemName" style={{ justifyContent: "center" }}>{event.subject_instructor?.instructor?.name ?? "Não informado"}</span>
                                     </div>
                                 </div>
                             </div>
@@ -1317,7 +1317,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                                 <h4>Salas:</h4>
                                 <div className="participantsList">
                                     <div className="listItem">
-                                        <span className="itemName" style={{ justifyContent: "center" }}>{event.reservation.room.title}</span>
+                                        <span className="itemName" style={{ justifyContent: "center" }}>{event.reservation?.room?.title ?? "Não informada"}</span>
                                     </div>
                                 </div>
                             </div>
@@ -1350,7 +1350,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                                 <h4>Salas:</h4>
                                 <div className="participantsList">
                                     <div className="listItem">
-                                        <span className="itemName" style={{ justifyContent: "center" }}>{event.reservation.room.title}</span>
+                                        <span className="itemName" style={{ justifyContent: "center" }}>{event.reservation?.room?.title ?? "Não informada"}</span>
                                     </div>
                                 </div>
                             </div>
@@ -1383,7 +1383,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                                 <h4>Salas:</h4>
                                 <div className="participantsList">
                                     <div className="listItem">
-                                        <span className="itemName" style={{ justifyContent: "center" }}>{event.reservation.room.title}</span>
+                                        <span className="itemName" style={{ justifyContent: "center" }}>{event.reservation?.room?.title ?? "Não informada"}</span>
                                     </div>
                                 </div>
                             </div>
@@ -1422,7 +1422,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                                 <h4>Salas:</h4>
                                 <div className="participantsList">
                                     <div className="listItem">
-                                        <span className="itemName" style={{ justifyContent: "center" }}>{event.reservation.room.title}</span>
+                                        <span className="itemName" style={{ justifyContent: "center" }}>{event.reservation?.room?.title ?? "Não informada"}</span>
                                     </div>
                                 </div>
                             </div>
