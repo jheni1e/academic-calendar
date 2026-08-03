@@ -1,12 +1,16 @@
 import "dotenv/config"
-import { EventType, PrismaClient } from "../src/generated/prisma/client.ts";
+import { EventStatus, EventType, ParticipationStatus, Prisma, PrismaClient } from "../src/generated/prisma/client.ts";
 import { hashPassword } from "../src/app/utils/password.ts";
 
 const prisma = new PrismaClient();
 
 async function main() {
+
     await prisma.user.createMany({
         data: [
+            // ==========================
+            // Apprentices
+            // ==========================
             {
                 user_edv: 92906824,
                 name: "Jhenifer Halma",
@@ -20,34 +24,6 @@ async function main() {
                 password: await hashPassword("fefito123"),
                 birthday: new Date("2006-02-02T00:00:00Z"),
                 role: "APPRENTICE"
-            },
-            {
-                user_edv: 92906899,
-                name: "Fabio Silveira",
-                password: await hashPassword("fabio123"),
-                birthday: new Date("1970-02-02T00:00:00Z"),
-                role: "ADMIN"
-            },
-            {
-                user_edv: 92906898,
-                name: "Queila Lima",
-                password: await hashPassword("queila123"),
-                birthday: new Date("2002-02-02T00:00:00Z"),
-                role: "ADMIN"
-            },
-            {
-                user_edv: 92906897,
-                name: "Patrick Pereira",
-                password: await hashPassword("quadrado1"),
-                birthday: new Date("2003-02-02T00:00:00Z"),
-                role: "INSTRUCTOR"
-            },
-            {
-                user_edv: 92906896,
-                name: "Gabriel Bernadelli",
-                password: await hashPassword("bernadelli123"),
-                birthday: new Date("2004-02-02T00:00:00Z"),
-                role: "INSTRUCTOR"
             },
             {
                 user_edv: 92906895,
@@ -69,9 +45,65 @@ async function main() {
                 password: await hashPassword("kindle123"),
                 birthday: new Date("2006-02-02T00:00:00Z"),
                 role: "APPRENTICE"
+            },
+    
+            // ==========================
+            // Administrators
+            // ==========================
+            {
+                user_edv: 92906899,
+                name: "Fabio Silveira",
+                password: await hashPassword("fabio123"),
+                birthday: new Date("1970-02-02T00:00:00Z"),
+                role: "ADMIN"
+            },
+            {
+                user_edv: 92906898,
+                name: "Queila Lima",
+                password: await hashPassword("queila123"),
+                birthday: new Date("2002-02-02T00:00:00Z"),
+                role: "ADMIN"
+            },
+    
+            // ==========================
+            // Instructors
+            // ==========================
+            {
+                user_edv: 92906897,
+                name: "Patrick Pereira",
+                password: await hashPassword("quadrado1"),
+                birthday: new Date("2003-02-02T00:00:00Z"),
+                role: "INSTRUCTOR"
+            },
+            {
+                user_edv: 92906896,
+                name: "Gabriel Bernadelli",
+                password: await hashPassword("bernadelli123"),
+                birthday: new Date("2004-02-02T00:00:00Z"),
+                role: "INSTRUCTOR"
+            },
+            {
+                user_edv: 92906892,
+                name: "Lucas Buchner",
+                password: await hashPassword("lucas123"),
+                birthday: new Date("2002-05-15T00:00:00Z"),
+                role: "INSTRUCTOR"
+            },
+            {
+                user_edv: 92906891,
+                name: "Nycollas Sobolevski",
+                password: await hashPassword("nycollas123"),
+                birthday: new Date("2001-08-20T00:00:00Z"),
+                role: "INSTRUCTOR"
             }
         ],
         skipDuplicates: true,
+    });
+
+    const dta2 = await prisma.class.create({
+        data: {
+            name: "DTA2"
+        }
     });
 
     const dta3 = await prisma.class.create({
@@ -132,14 +164,97 @@ async function main() {
 
     await prisma.subject.createMany({
         data: [
+            // ==========================
+            // MEC25
+            // ==========================
             {
                 class_id: mec25.class_id,
-                name: "MEC25 - IoT",
+                name: "MEC25 - Internet of Things",
                 workload: 40,
                 start_date: new Date("2026-07-20T00:00:00Z"),
                 completed_workload: 0,
                 scheduled_workload: 0
             },
+            {
+                class_id: mec25.class_id,
+                name: "MEC25 - Eletrônica",
+                workload: 40,
+                start_date: new Date("2026-08-17T00:00:00Z"),
+                completed_workload: 0,
+                scheduled_workload: 0
+            },
+            {
+                class_id: mec25.class_id,
+                name: "MEC25 - Desenho Técnico",
+                workload: 40,
+                start_date: new Date("2026-09-14T00:00:00Z"),
+                completed_workload: 0,
+                scheduled_workload: 0
+            },
+            {
+                class_id: mec25.class_id,
+                name: "MEC25 - Trigonometria",
+                workload: 40,
+                start_date: new Date("2026-10-12T00:00:00Z"),
+                completed_workload: 0,
+                scheduled_workload: 0
+            },
+            {
+                class_id: mec25.class_id,
+                name: "MEC25 - Inglês",
+                workload: 40,
+                start_date: new Date("2026-11-09T00:00:00Z"),
+                completed_workload: 0,
+                scheduled_workload: 0
+            },
+    
+            // ==========================
+            // MAN25
+            // ==========================
+            {
+                class_id: man25.class_id,
+                name: "MAN25 - Internet of Things",
+                workload: 40,
+                start_date: new Date("2026-07-20T00:00:00Z"),
+                completed_workload: 0,
+                scheduled_workload: 0
+            },
+            {
+                class_id: man25.class_id,
+                name: "MAN25 - Eletrônica",
+                workload: 40,
+                start_date: new Date("2026-08-17T00:00:00Z"),
+                completed_workload: 0,
+                scheduled_workload: 0
+            },
+            {
+                class_id: man25.class_id,
+                name: "MAN25 - Desenho Técnico",
+                workload: 40,
+                start_date: new Date("2026-09-14T00:00:00Z"),
+                completed_workload: 0,
+                scheduled_workload: 0
+            },
+            {
+                class_id: man25.class_id,
+                name: "MAN25 - Trigonometria",
+                workload: 40,
+                start_date: new Date("2026-10-12T00:00:00Z"),
+                completed_workload: 0,
+                scheduled_workload: 0
+            },
+            {
+                class_id: man25.class_id,
+                name: "MAN25 - Inglês",
+                workload: 40,
+                start_date: new Date("2026-11-09T00:00:00Z"),
+                completed_workload: 0,
+                scheduled_workload: 0
+            },
+    
+            // ==========================
+            // ADD2
+            // ==========================
             {
                 class_id: add2.class_id,
                 name: "ADD2 - Python",
@@ -149,34 +264,78 @@ async function main() {
                 scheduled_workload: 0
             },
             {
-                class_id: dta3.class_id,
-                name: "DTA3 - C# Básico",
-                workload: 80,
-                start_date: new Date("2026-07-20T00:00:00Z"),
+                class_id: add2.class_id,
+                name: "ADD2 - Angular",
+                workload: 60,
+                start_date: new Date("2026-08-24T00:00:00Z"),
                 completed_workload: 0,
                 scheduled_workload: 0
             },
             {
-                class_id: mec26.class_id,
-                name: "MEC26 - Excel",
-                workload: 30,
-                start_date: new Date("2026-08-03T00:00:00Z"),
+                class_id: add2.class_id,
+                name: "ADD2 - C#",
+                workload: 60,
+                start_date: new Date("2026-09-21T00:00:00Z"),
                 completed_workload: 0,
                 scheduled_workload: 0
             },
             {
-                class_id: man25.class_id,
-                name: "MAN25 - Power BI",
-                workload: 36,
-                start_date: new Date("2026-08-10T00:00:00Z"),
-                completed_workload: 0,
-                scheduled_workload: 0
-            },
-            {
-                class_id: mec25.class_id,
-                name: "MEC25 - Redes",
+                class_id: add2.class_id,
+                name: "ADD2 - Power BI",
                 workload: 40,
-                start_date: new Date("2026-07-20T00:00:00Z"),
+                start_date: new Date("2026-10-19T00:00:00Z"),
+                completed_workload: 0,
+                scheduled_workload: 0
+            },
+            {
+                class_id: add2.class_id,
+                name: "ADD2 - Inglês",
+                workload: 40,
+                start_date: new Date("2026-11-16T00:00:00Z"),
+                completed_workload: 0,
+                scheduled_workload: 0
+            },
+    
+            // ==========================
+            // DTA2
+            // ==========================
+            {
+                class_id: dta2.class_id,
+                name: "DTA2 - Python",
+                workload: 60,
+                start_date: new Date("2026-07-27T00:00:00Z"),
+                completed_workload: 0,
+                scheduled_workload: 0
+            },
+            {
+                class_id: dta2.class_id,
+                name: "DTA2 - Angular",
+                workload: 60,
+                start_date: new Date("2026-08-24T00:00:00Z"),
+                completed_workload: 0,
+                scheduled_workload: 0
+            },
+            {
+                class_id: dta2.class_id,
+                name: "DTA2 - C#",
+                workload: 60,
+                start_date: new Date("2026-09-21T00:00:00Z"),
+                completed_workload: 0,
+                scheduled_workload: 0
+            },
+            {
+                class_id: dta2.class_id,
+                name: "DTA2 - Power BI",
+                workload: 40,
+                start_date: new Date("2026-10-19T00:00:00Z"),
+                completed_workload: 0,
+                scheduled_workload: 0
+            },
+            {
+                class_id: dta2.class_id,
+                name: "DTA2 - Inglês",
+                workload: 40,
+                start_date: new Date("2026-11-16T00:00:00Z"),
                 completed_workload: 0,
                 scheduled_workload: 0
             }
@@ -212,150 +371,167 @@ async function main() {
 
     await prisma.subjectInstructor.createMany({
         data: [
-            { subject_id: 1, instructor_id: 6 }, // IoT -> Gabriel
-            { subject_id: 2, instructor_id: 4 }, // Python -> Queila
-            { subject_id: 2, instructor_id: 5 }, // Python -> Patrick
-            { subject_id: 3, instructor_id: 5 }, // C# -> Patrick
-            { subject_id: 3, instructor_id: 6 }, // C# -> Gabriel
-            { subject_id: 4, instructor_id: 6 }, // Excel -> Gabriel
-            { subject_id: 5, instructor_id: 4 }, // Power BI -> Queila
-            { subject_id: 5, instructor_id: 6 }, // Power BI -> Gabriel
-            { subject_id: 6, instructor_id: 5 }, // Redes -> Patrick
-        ]
+            // ==========================
+            // MEC25
+            // ==========================
+            { subject_id: 1, instructor_id: 5 },  // MEC25 - Internet of Things -> Patrick
+            { subject_id: 2, instructor_id: 5 },  // MEC25 - Eletrônica -> Patrick
+            { subject_id: 3, instructor_id: 6 },  // MEC25 - Desenho Técnico -> Gabriel
+            { subject_id: 4, instructor_id: 10 }, // MEC25 - Trigonometria -> Lucas
+            { subject_id: 5, instructor_id: 4 },  // MEC25 - Inglês -> Queila
+    
+            // ==========================
+            // MAN25
+            // ==========================
+            { subject_id: 6, instructor_id: 5 },  // MAN25 - Internet of Things -> Patrick
+            { subject_id: 7, instructor_id: 5 },  // MAN25 - Eletrônica -> Patrick
+            { subject_id: 8, instructor_id: 6 },  // MAN25 - Desenho Técnico -> Gabriel
+            { subject_id: 9, instructor_id: 10 }, // MAN25 - Trigonometria -> Lucas
+            { subject_id: 10, instructor_id: 4 }, // MAN25 - Inglês -> Queila
+    
+            // ==========================
+            // ADD2
+            // ==========================
+            { subject_id: 11, instructor_id: 4 },  // ADD2 - Python -> Queila
+            { subject_id: 12, instructor_id: 11 }, // ADD2 - Angular -> Nycollas
+            { subject_id: 13, instructor_id: 11 }, // ADD2 - C# -> Nycollas
+            { subject_id: 14, instructor_id: 4 },  // ADD2 - Power BI -> Queila
+            { subject_id: 15, instructor_id: 4 },  // ADD2 - Inglês -> Queila
+    
+            // ==========================
+            // DTA2
+            // ==========================
+            { subject_id: 16, instructor_id: 4 },  // DTA2 - Python -> Queila
+            { subject_id: 17, instructor_id: 11 }, // DTA2 - Angular -> Nycollas
+            { subject_id: 18, instructor_id: 11 }, // DTA2 - C# -> Nycollas
+            { subject_id: 19, instructor_id: 4 },  // DTA2 - Power BI -> Queila
+            { subject_id: 20, instructor_id: 4 },  // DTA2 - Inglês -> Queila
+        ],
+        skipDuplicates: true
+    });
+    
+    // =====================================================
+    // ADD2 - Power BI (5 aulas)
+    // =====================================================
+
+    await createSeedLesson(prisma, {
+        title: "ADD2 - Power BI - Aula 1",
+        description: "Introdução ao Power BI",
+        createdBy: 3,
+        subjectInstructorId: 14,
+        roomId: 1,
+        start: new Date("2026-07-20T08:00:00Z"),
+        end: new Date("2026-07-20T10:00:00Z")
     });
 
-    const pythonLesson = await prisma.event.create({
-        data: {
-            title: "Aula de Python",
-            description: "Introdução à linguagem Python",
-            event_type: EventType.LESSON,
-    
-            start_date: new Date("2026-07-27T13:30:00Z"),
-            end_date: new Date("2026-07-27T17:30:00Z"),
-    
-            class_id: add2.class_id,
-            subject_instructor_id: 2,
-    
-            created_by: 4
-        }
+    await createSeedLesson(prisma, {
+        title: "ADD2 - Power BI - Aula 2",
+        description: "Importação de Dados",
+        createdBy: 3,
+        subjectInstructorId: 14,
+        roomId: 1,
+        start: new Date("2026-07-27T08:00:00Z"),
+        end: new Date("2026-07-27T10:00:00Z")
     });
 
-    await prisma.reservation.create({
-        data: {
-            room_id: 1,
-            event_id: pythonLesson.event_id,
-            description: "Python room reservation"
-        }
+    await createSeedLesson(prisma, {
+        title: "ADD2 - Power BI - Aula 3",
+        description: "Modelagem de Dados",
+        createdBy: 3,
+        subjectInstructorId: 14,
+        roomId: 1,
+        start: new Date("2026-08-03T08:00:00Z"),
+        end: new Date("2026-08-03T10:00:00Z")
     });
 
-    const feedback = await prisma.event.create({
-        data: {
-            title: "Feedback Individual",
-            description: "Feedback mensal com a aprendiz Jhenifer Halma.",
-    
-            event_type: EventType.FEEDBACK,
-    
-            start_date: new Date("2026-07-28T14:00:00Z"),
-            end_date: new Date("2026-07-28T14:30:00Z"),
-    
-            created_by: 4
-        }
+    await createSeedLesson(prisma, {
+        title: "ADD2 - Power BI - Aula 4",
+        description: "Relacionamentos",
+        createdBy: 3,
+        subjectInstructorId: 14,
+        roomId: 1,
+        start: new Date("2026-08-10T08:00:00Z"),
+        end: new Date("2026-08-10T10:00:00Z")
     });
 
-    await prisma.participation.create({
-        data: {
-            user_id: 1,
-            event_id: feedback.event_id,
-            status: "PENDING"
-        }
+    await createSeedLesson(prisma, {
+        title: "ADD2 - Power BI - Aula 5",
+        description: "Dashboards",
+        createdBy: 3,
+        subjectInstructorId: 14,
+        roomId: 1,
+        start: new Date("2026-08-17T08:00:00Z"),
+        end: new Date("2026-08-17T10:00:00Z")
     });
 
-    const csharpLesson1 = await prisma.event.create({
-        data: {
-            title: "C# Básico - Aula 01",
-            description: "Primeira aula de C#",
-    
-            event_type: EventType.LESSON,
-            status: "COMPLETED",
-    
-            start_date: new Date("2026-07-21T13:30:00Z"),
-            end_date: new Date("2026-07-21T17:30:00Z"),
-    
-            class_id: dta3.class_id,
-            subject_instructor_id: 4,
-    
-            created_by: 5
-        }
-    });
-    
-    await prisma.reservation.create({
-        data: {
-            room_id: 1,
-            event_id: csharpLesson1.event_id,
-            description: "Reserva Aula 01"
-        }
-    });
-    
-    const csharpLesson2 = await prisma.event.create({
-        data: {
-            title: "C# Básico - Aula 02",
-            description: "Segunda aula de C#",
-    
-            event_type: EventType.LESSON,
-            status: "COMPLETED",
-    
-            start_date: new Date("2026-07-23T13:30:00Z"),
-            end_date: new Date("2026-07-23T17:30:00Z"),
-    
-            class_id: dta3.class_id,
-            subject_instructor_id: 4,
-    
-            created_by: 5
-        }
-    });
-    
-    await prisma.reservation.create({
-        data: {
-            room_id: 1,
-            event_id: csharpLesson2.event_id,
-            description: "Reserva Aula 02"
-        }
-    });
-    
-    const csharpLesson3 = await prisma.event.create({
-        data: {
-            title: "C# Básico - Aula 03",
-            description: "Terceira aula de C#",
-    
-            event_type: EventType.LESSON,
-            status: "CONFIRMED",
-    
-            start_date: new Date("2026-08-05T13:30:00Z"),
-            end_date: new Date("2026-08-05T17:30:00Z"),
-    
-            class_id: dta3.class_id,
-            subject_instructor_id: 4,
-    
-            created_by: 5
-        }
-    });
-    
-    await prisma.reservation.create({
-        data: {
-            room_id: 1,
-            event_id: csharpLesson3.event_id,
-            description: "Reserva Aula 03"
-        }
+
+    // =====================================================
+    // MAN25 - Eletrônica (2 aulas)
+    // =====================================================
+
+    await createSeedLesson(prisma, {
+        title: "MAN25 - Eletrônica - Aula 1",
+        description: "Fundamentos da Eletrônica",
+        createdBy: 3,
+        subjectInstructorId: 7,
+        roomId: 2,
+        start: new Date("2026-07-21T13:30:00Z"),
+        end: new Date("2026-07-21T15:30:00Z")
     });
 
-    await prisma.subject.update({
-        where: {
-            subject_id: 3
-        },
-        data: {
-            scheduled_workload: 12,
-            completed_workload: 8
-        }
+    await createSeedLesson(prisma, {
+        title: "MAN25 - Eletrônica - Aula 2",
+        description: "Componentes Eletrônicos",
+        createdBy: 3,
+        subjectInstructorId: 7,
+        roomId: 2,
+        start: new Date("2026-07-28T13:30:00Z"),
+        end: new Date("2026-07-28T15:30:00Z")
+    });
+
+
+    // =====================================================
+    // MEC25 - Desenho Técnico (4 aulas)
+    // =====================================================
+
+    await createSeedLesson(prisma, {
+        title: "MEC25 - Desenho Técnico - Aula 1",
+        description: "Normas Técnicas",
+        createdBy: 3,
+        subjectInstructorId: 3,
+        roomId: 3,
+        start: new Date("2026-07-22T08:00:00Z"),
+        end: new Date("2026-07-22T10:00:00Z")
+    });
+
+    await createSeedLesson(prisma, {
+        title: "MEC25 - Desenho Técnico - Aula 2",
+        description: "Escalas",
+        createdBy: 3,
+        subjectInstructorId: 3,
+        roomId: 3,
+        start: new Date("2026-07-29T08:00:00Z"),
+        end: new Date("2026-07-29T10:00:00Z")
+    });
+
+    await createSeedLesson(prisma, {
+        title: "MEC25 - Desenho Técnico - Aula 3",
+        description: "Projeções Ortogonais",
+        createdBy: 3,
+        subjectInstructorId: 3,
+        roomId: 3,
+        start: new Date("2026-08-05T08:00:00Z"),
+        end: new Date("2026-08-05T10:00:00Z")
+    });
+
+    await createSeedLesson(prisma, {
+        title: "MEC25 - Desenho Técnico - Aula 4",
+        description: "Cortes e Seções",
+        createdBy: 3,
+        subjectInstructorId: 3,
+        roomId: 3,
+        start: new Date("2026-08-12T08:00:00Z"),
+        end: new Date("2026-08-12T10:00:00Z")
     });
 }
 
@@ -363,3 +539,97 @@ main()
     .finally(async () => {
         await prisma.$disconnect();
     });
+
+const createSeedLesson = async (
+    db: PrismaClient | Prisma.TransactionClient,
+    data: {
+        title: string;
+        description?: string;
+
+        subjectInstructorId: number;
+        roomId: number;
+
+        createdBy: number;
+
+        start: Date;
+        end: Date;
+    }
+) => {
+
+    const assignment = await db.subjectInstructor.findUnique({
+        where: {
+            subject_instructor_id: data.subjectInstructorId
+        },
+        include: {
+            subject: true
+        }
+    });
+
+    if (!assignment) {
+        throw new Error("Subject instructor not found.");
+    }
+
+    const event = await db.event.create({
+        data: {
+            title: data.title,
+            description: data.description,
+
+            event_type: EventType.LESSON,
+            status: EventStatus.CONFIRMED,
+
+            start_date: data.start,
+            end_date: data.end,
+
+            created_by: data.createdBy,
+
+            class_id: assignment.subject.class_id,
+            subject_instructor_id: assignment.subject_instructor_id,
+
+            is_blocked: false
+        }
+    });
+
+    await db.reservation.create({
+        data: {
+            room_id: data.roomId,
+            event_id: event.event_id,
+            description: data.description
+        }
+    });
+
+    const students = await db.classUser.findMany({
+        where: {
+            class_id: assignment.subject.class_id
+        },
+        select: {
+            user_id: true
+        }
+    });
+
+    if (students.length > 0) {
+        await db.participation.createMany({
+            data: students.map(student => ({
+                user_id: student.user_id,
+                event_id: event.event_id,
+                status: ParticipationStatus.CONFIRMED
+            })),
+            skipDuplicates: true
+        });
+    }
+
+    const durationHours =
+        (data.end.getTime() - data.start.getTime()) / (1000 * 60 * 60);
+
+    await db.subject.update({
+        where: {
+            subject_id: assignment.subject.subject_id
+        },
+        data: {
+            scheduled_workload: {
+                increment: durationHours
+            }
+        }
+    });
+
+    return event;
+};
