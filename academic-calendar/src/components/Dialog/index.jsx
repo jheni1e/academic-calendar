@@ -977,12 +977,6 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                             onChange={(value) => setSelectedDays(value)}
                         />
                     </div>
-                    <div className="dialogInput">
-                        <h4>Sala:</h4>
-                        <div className="itemSelector">
-                            <DropdownList options={allRooms} selectedValue={selectedRoom} onChange={(e) => setSelectedRoom(Number(e.target.value))} />
-                        </div>
-                    </div>
                 </div>
             }
             {type === "subject" &&
@@ -1283,6 +1277,17 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                                     </div>
                                 </div>
                             </div>
+                            <div className="dialogInput">
+                                <h4>Salas:</h4>
+                                <div className="participantsList">
+                                    <div className="listItem">
+                                        <span className="itemName" style={{ justifyContent: "center" }}>{event.reservation.room.title}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="dialogInput">
+                                <h4>Descrição:</h4>
+                            </div>
                         </div>
                     }
                     {event.event_type === "EXTERNAL" &&
@@ -1305,6 +1310,17 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                                     ))}
                                 </div>
                             </div>
+                            <div className="dialogInput">
+                                <h4>Salas:</h4>
+                                <div className="participantsList">
+                                    <div className="listItem">
+                                        <span className="itemName" style={{ justifyContent: "center" }}>{event.reservation.room.title}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="dialogInput">
+                                <h4>Descrição:</h4>
+                            </div>
                         </div>
                     }
                     {event.event_type === "FEEDBACK" &&
@@ -1326,6 +1342,17 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                                         </div>
                                     ))}
                                 </div>
+                            </div>
+                            <div className="dialogInput">
+                                <h4>Salas:</h4>
+                                <div className="participantsList">
+                                    <div className="listItem">
+                                        <span className="itemName" style={{ justifyContent: "center" }}>{event.reservation.room.title}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="dialogInput">
+                                <h4>Descrição:</h4>
                             </div>
                         </div>
                     }
@@ -1355,6 +1382,17 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                                     })}
                                 </h4>
                             </div>
+                            <div className="dialogInput">
+                                <h4>Salas:</h4>
+                                <div className="participantsList">
+                                    <div className="listItem">
+                                        <span className="itemName" style={{ justifyContent: "center" }}>{event.reservation.room.title}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="dialogInput">
+                                <h4>Descrição:</h4>
+                            </div>  
                         </div>
                     }
                     <div className="dialogButtons">
