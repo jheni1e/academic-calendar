@@ -300,40 +300,40 @@ async function main() {
             // DTA2
             // ==========================
             {
-                class_id: dta2.class_id,
-                name: "DTA2 - Python",
+                class_id: dta3.class_id,
+                name: "DTA3 - Python",
                 workload: 60,
                 start_date: new Date("2026-07-27T00:00:00Z"),
                 completed_workload: 0,
                 scheduled_workload: 0
             },
             {
-                class_id: dta2.class_id,
-                name: "DTA2 - Angular",
+                class_id: dta3.class_id,
+                name: "DTA3 - Angular",
                 workload: 60,
                 start_date: new Date("2026-08-24T00:00:00Z"),
                 completed_workload: 0,
                 scheduled_workload: 0
             },
             {
-                class_id: dta2.class_id,
-                name: "DTA2 - C#",
+                class_id: dta3.class_id,
+                name: "DTA3 - C#",
                 workload: 60,
                 start_date: new Date("2026-09-21T00:00:00Z"),
                 completed_workload: 0,
                 scheduled_workload: 0
             },
             {
-                class_id: dta2.class_id,
-                name: "DTA2 - Power BI",
+                class_id: dta3.class_id,
+                name: "DTA3 - Power BI",
                 workload: 40,
                 start_date: new Date("2026-10-19T00:00:00Z"),
                 completed_workload: 0,
                 scheduled_workload: 0
             },
             {
-                class_id: dta2.class_id,
-                name: "DTA2 - Inglês",
+                class_id: dta3.class_id,
+                name: "DTA3 - Inglês",
                 workload: 40,
                 start_date: new Date("2026-11-16T00:00:00Z"),
                 completed_workload: 0,
@@ -399,7 +399,7 @@ async function main() {
             { subject_id: 15, instructor_id: 7 },  // Inglês
     
             // ==========================
-            // DTA2
+            // DTA3
             // ==========================
             { subject_id: 16, instructor_id: 7 },  // Python
             { subject_id: 17, instructor_id: 11 }, // Angular
