@@ -1365,7 +1365,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                             </div>
                             <div className="dialogInput">
                                 <h4>Descrição:</h4>
-                                <h4>{event.description}</h4>
+                                <p style={{"margin": 0}}>{event.description}</p>
                             </div> 
                         </div>
                     }
@@ -1391,7 +1391,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                             </div>
                             <div className="dialogInput">
                                 <h4>Descrição:</h4>
-                                <h4>{description}</h4>
+                                <p style={{"margin": 0}}>{event.description}</p>
                             </div> 
                         </div>
                     }
@@ -1425,7 +1425,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                             </div>
                             <div className="dialogInput">
                                 <h4>Descrição:</h4>
-                                <h4>{description}</h4>
+                                <p style={{"margin": 0}}>{event.description}</p>
                             </div> 
                         </div>
                     }
@@ -1465,7 +1465,7 @@ function Dialog({ isOpen, onClose, type, setType, title, event = {}, subject }) 
                             </div>
                             <div className="dialogInput">
                                 <h4>Descrição:</h4>
-                                <h4>{description}</h4>
+                                <p style={{"margin": 0}}>{event.description}</p>
                             </div> 
                         </div>
                     }
